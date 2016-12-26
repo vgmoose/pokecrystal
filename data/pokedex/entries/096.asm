@@ -1,10 +1,15 @@
-; DrowzeePokedexEntry: ; 0x1b8d0a
-	db "HYPNOSIS@" ; species name
-	dw 303, 710 ; height, width
+	ctxt "Meteorite" ; species name
+	done
+	dw 303, 3704 ; height, weight
 
-	db   "When it twitches"
-	next "its nose, it can"
-	next "tell where someone"
-	page "is sleeping and"
-	next "what that person"
-	next "is dreaming about.@"
+	db .page2 - .page1
+.page1
+	ctxt "Because it turns"
+	next "active on nights"
+	next "of the full moon,"
+	done
+.page2
+	ctxt "it is said to have"
+	next "some link to the"
+	next "lunar phases."
+	done

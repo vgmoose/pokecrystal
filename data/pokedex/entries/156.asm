@@ -1,10 +1,15 @@
-; QuilavaPokedexEntry: ; 0x1ccb33
-	db "VOLCANO@" ; species name
-	dw 211, 420 ; height, width
+	ctxt "Volcano" ; species name
+	done
+	dw 211, 420 ; height, weight
 
-	db   "Before battle, it"
+	db .page2 - .page1
+.page1
+	ctxt "Before battle, it"
 	next "turns its back on"
 	next "its opponent to"
-	page "demonstrate how"
+	done
+.page2
+	ctxt "demonstrate how"
 	next "ferociously its"
-	next "fire blazes.@"
+	next "fire blazes."
+	done

@@ -1,313 +1,188 @@
-NurseMornText:
-	text "Good morning!"
+NurseMornText::
+	ctxt "Good morning!"
 	line "Welcome to our"
-	cont "#MON CENTER."
+	cont "#mon Center."
 	done
 
-NurseDayText:
-	text "Hello!"
+NurseDayText::
+	ctxt "Hello!"
 	line "Welcome to our"
-	cont "#MON CENTER."
+	cont "#mon Center."
 	done
 
-NurseNiteText:
-	text "Good evening!"
+NurseNiteText::
+	ctxt "Good evening!"
 	line "You're out late."
 
 	para "Welcome to our"
-	line "#MON CENTER."
+	line "#mon Center."
 	done
-
-PokeComNurseMornText:
-	text "Good morning!"
+PokeComNurseMornText::
+	ctxt "Good morning!"
 
 	para "This is the #-"
-	line "MON COMMUNICATION"
+	line "mon Communication"
 
-	para "CENTER--or the"
-	line "#COM CENTER."
+	para "Center--or the"
+	line "#com Center."
 	done
 
-PokeComNurseDayText:
-	text "Hello!"
+PokeComNurseDayText::
+	ctxt "Hello!"
 
 	para "This is the #-"
-	line "MON COMMUNICATION"
+	line "mon Communication"
 
-	para "CENTER--or the"
-	line "#COM CENTER."
+	para "Center--or the"
+	line "#com Center."
 	done
 
-PokeComNurseNiteText:
-	text "Good to see you"
+PokeComNurseNiteText::
+	ctxt "Good to see you"
 	line "working so late."
 
 	para "This is the #-"
-	line "MON COMMUNICATION"
+	line "mon Communication"
 
-	para "CENTER--or the"
-	line "#COM CENTER."
+	para "Center--or the"
+	line "#com Center."
 	done
 
-NurseAskHealText:
-	text "We can heal your"
-	line "#MON to perfect"
+NurseAskHealText::
+	ctxt "We can heal your"
+	line "#mon to perfect"
 	cont "health."
 
 	para "Shall we heal your"
-	line "#MON?"
+	line "#mon?"
 	done
 
-NurseTakePokemonText:
-	text "OK, may I see your"
-	line "#MON?"
+NurseTakePokemonText::
+	ctxt "OK, may I see your"
+	line "#mon?"
 	done
 
-NurseReturnPokemonText:
-	text "Thank you for"
+NurseReturnPokemonText::
+	ctxt "Thank you for"
 	line "waiting."
 
-	para "Your #MON are"
+	para "Your #mon are"
 	line "fully healed."
 	done
 
-NurseGoodbyeText:
-	text "We hope to see you"
+NurseGoodbyeText::
+	ctxt "We hope to see you"
 	line "again."
 	done
 
-; not used
-	text "We hope to see you"
-	line "again."
-	done
-
-NursePokerusText:
-	text "Your #MON"
+NursePokerusText::
+	ctxt "Your #mon"
 	line "appear to be"
 
 	para "infected by tiny"
 	line "life forms."
 
-	para "Your #MON are"
+	para "Your #mon are"
 	line "healthy and seem"
 	cont "to be fine."
 
 	para "But we can't tell"
 	line "you anything more"
 
-	para "at a #MON"
-	line "CENTER."
+	para "at a #mon"
+	line "Center."
 	done
 
-PokeComNursePokerusText:
-	text "Your #MON"
-	line "appear to be"
-
-	para "infected by tiny"
-	line "life forms."
-
-	para "Your #MON are"
-	line "healthy and seem"
-	cont "to be fine."
-
-	para "But we can't tell"
-	line "you anything more."
-	done
-
-DifficultBookshelfText:
-	text "It's full of"
+DifficultBookshelfText::
+	ctxt "It's full of"
 	line "difficult books."
 	done
 
-PictureBookshelfText:
-	text "A whole collection"
-	line "of #MON picture"
+PictureBookshelfText::
+	ctxt "A whole collection"
+	line "of #mon picture"
 	cont "books!"
 	done
 
-MagazineBookshelfText:
-	text "#MON magazines…"
-	line "#MON PAL,"
+MagazineBookshelfText::
+	ctxt "#mon magazines…"
+	line "#mon Pal,"
 
-	para "#MON HANDBOOK,"
-	line "#MON GRAPH…"
+	para "#mon Handbook,"
+	line "#mon Graph…"
 	done
 
-TeamRocketOathText:
-	text "TEAM ROCKET OATH"
-
-	para "Steal #MON for"
-	line "profit!"
-
-	para "Exploit #MON"
-	line "for profit!"
-
-	para "All #MON exist"
-	line "for the glory of"
-	cont "TEAM ROCKET!"
+FastCurrentText::
+	ctxt "The current is too"
+	line "fast to surf on!"
 	done
 
-IncenseBurnerText:
-	text "What is this?"
-
-	para "Oh, it's an"
-	line "incense burner!"
-	done
-
-MerchandiseShelfText:
-	text "Lots of #MON"
+MerchandiseShelfText::
+	ctxt "Lots of #mon"
 	line "merchandise!"
 	done
 
-TownMapText:
-	text "It's the TOWN MAP."
+TownMapText::
+	ctxt "It's the TOWN MAP."
 	done
 
-WindowText:
-	text "My reflection!"
-	line "Lookin' good!"
-	done
-
-TVText:
-	text "It's a TV."
-	done
-
-HomepageText:
-	text "#MON JOURNAL"
-	line "HOME PAGE…"
+HomepageText::
+	ctxt "#mon Journal"
+	line "home page…"
 
 	para "It hasn't been"
 	line "updated…"
 	done
 
-; not used
-	text "#MON RADIO!"
-
-	para "Call in with your"
-	line "requests now!"
-	done
-
-TrashCanText:
-	text "There's nothing in"
+TrashCanText::
+	ctxt "There's nothing in"
 	line "here…"
 	done
 
-; not used
-	text "A #MON may be"
-	line "able to move this."
+PokeCenterSignText::
+	ctxt "Heal Your #mon!"
+	line "#mon Center"
 	done
 
-; not used
-	text "Maybe a #MON"
-	line "can break this."
+MartSignText::
+	ctxt "For All Your"
+	line "#mon Needs"
+
+	para "#mon Mart"
 	done
 
-PokeCenterSignText:
-	text "Heal Your #MON!"
-	line "#MON CENTER"
+STDReceivedItemText::
+	ctxt "<PLAYER> received"
+	line "<STRBF4>."
 	done
 
-MartSignText:
-	text "For All Your"
-	line "#MON Needs"
-
-	para "#MON MART"
+GymStatue_CityGymText::
+	ctxt "<STRBF3>"
+	line "#mon Gym"
 	done
 
-ContestResults_ReadyToJudgeText:
-	text "We will now judge"
-	line "the #MON you've"
-	cont "caught."
-
-	para $56
-	line $56
-
-	para "We have chosen the"
-	line "winners!"
-
-	para "Are you ready for"
-	line "this?"
-	done
-
-ContestResults_PlayerWonAPrizeText:
-	text "<PLAYER>, the No.@"
-	text_from_ram StringBuffer3
-	text ""
-	line "finisher, wins"
-	cont "@"
-	text_from_ram StringBuffer4
-	text "!"
-	done
-
-ReceivedItemText:
-	text "<PLAYER> received"
-	line "@"
-	text_from_ram StringBuffer4
-	text "."
-	done
-
-ContestResults_JoinUsNextTimeText:
-	text "Please join us for"
-	line "the next Contest!"
-	done
-
-ContestResults_ConsolationPrizeText:
-	text "Everyone else gets"
-	line "a BERRY as a con-"
-	cont "solation prize!"
-	done
-
-ContestResults_DidNotWinText:
-	text "We hope you do"
-	line "better next time."
-	done
-
-ContestResults_ReturnPartyText:
-	text "We'll return the"
-	line "#MON we kept"
-
-	para "for you."
-	line "Here you go!"
-	done
-
-ContestResults_PartyFullText:
-	text "Your party's full,"
-	line "so the #MON was"
-
-	para "sent to your BOX"
-	line "in BILL's PC."
-	done
-
-GymStatue_CityGymText:
-	text_from_ram StringBuffer3
-	text ""
-	line "#MON GYM"
-	done
-
-GymStatue_WinningTrainersText:
-	text "LEADER: @"
-	text_from_ram StringBuffer4
-	text ""
+GymStatue_WinningTrainersText::
+	ctxt "LEADER: <STRBF4>"
 	para "WINNING TRAINERS:"
 	line "<PLAYER>"
 	done
 
-CoinVendor_WelcomeText:
-	text "Welcome to the"
-	line "GAME CORNER."
+CoinVendor_WelcomeText::
+	ctxt "Welcome to the"
+	line "Game Corner."
 	done
 
-CoinVendor_NoCoinCaseText:
-	text "Do you need game"
+CoinVendor_NoCoinCaseText::
+	ctxt "Do you need game"
 	line "coins?"
 
 	para "Oh, you don't have"
-	line "a COIN CASE for"
+	line "a Coin Case for"
 	cont "your coins."
 	done
 
-CoinVendor_IntroText:
-	text "Do you need some"
+CoinVendor_IntroText::
+	ctxt "Do you need some"
 	line "game coins?"
 
 	para "It costs ¥1000 for"
@@ -315,74 +190,49 @@ CoinVendor_IntroText:
 	cont "want some?"
 	done
 
-CoinVendor_Buy50CoinsText:
-	text "Thank you!"
+CoinVendor_Buy50CoinsText::
+	ctxt "Thank you!"
 	line "Here are 50 coins."
 	done
 
-CoinVendor_Buy500CoinsText:
-	text "Thank you! Here"
+CoinVendor_Buy500CoinsText::
+	ctxt "Thank you! Here"
 	line "are 500 coins."
 	done
 
-CoinVendor_NotEnoughMoneyText:
-	text "You don't have"
+CoinVendor_NotEnoughMoneyText::
+	ctxt "You don't have"
 	line "enough money."
 	done
 
-CoinVendor_CoinCaseFullText:
-	text "Whoops! Your COIN"
-	line "CASE is full."
+CoinVendor_CoinCaseFullText::
+	ctxt "Whoops! Your Coin"
+	line "Case is full."
 	done
 
-CoinVendor_CancelText:
-	text "No coins for you?"
+CoinVendor_CancelText::
+	ctxt "No coins for you?"
 	line "Come again!"
 	done
 
-BugContestPrizeNoRoomText:
-	text "Oh? Your PACK is"
-	line "full."
-
-	para "We'll keep this"
-	line "for you today, so"
-
-	para "come back when you"
-	line "make room for it."
-	done
-
-HappinessText3:
-	text "Wow! You and your"
-	line "#MON are really"
+HappinessText3::
+	ctxt "Wow! You and your"
+	line "#mon are really"
 	cont "close!"
 	done
 
-HappinessText2:
-	text "#MON get more"
+HappinessText2::
+	ctxt "#mon get more"
 	line "friendly if you"
 
-	para "spend time with"
-	line "them."
+	para "spend more time"
+	line "with them."
 	done
 
-HappinessText1:
-	text "You haven't tamed"
-	line "your #MON."
+HappinessText1::
+	ctxt "You haven't tamed"
+	line "your #mon."
 
 	para "If you aren't"
 	line "nice, it'll pout."
-	done
-
-RegisteredNumber1Text:
-	text "<PLAYER> registered"
-	line "@"
-	text_from_ram StringBuffer3
-	text "'s number."
-	done
-
-RegisteredNumber2Text:
-	text "<PLAYER> registered"
-	line "@"
-	text_from_ram StringBuffer3
-	text "'s number."
 	done

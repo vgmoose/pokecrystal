@@ -1,10 +1,15 @@
-; IvysaurPokedexEntry: ; 0x181702
-	db "SEED@" ; species name
-	dw 303, 290 ; height, width
+	ctxt "Seed" ; species name
+	done
+	dw 303, 290 ; height, weight
 
-	db   "The bulb on its"
+	db .page2 - .page1
+.page1
+	ctxt "The bulb on its"
 	next "back grows as it"
 	next "absorbs nutrients."
-	page "The bulb gives off"
+	done
+.page2
+	ctxt "The bulb gives off"
 	next "a pleasant aroma"
-	next "when it blooms.@"
+	next "when it blooms."
+	done

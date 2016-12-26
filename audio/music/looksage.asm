@@ -1,6 +1,7 @@
 Music_LookSage: ; ee35e
-	musicheader 2, 1, Music_LookSage_Ch1
-	musicheader 1, 3, Music_LookSage_Ch3
+	channelcount 2
+	channel 1, Music_LookSage_Ch1
+	channel 3, Music_LookSage_Ch3
 ; ee364
 
 Music_LookSage_Ch1: ; ee364

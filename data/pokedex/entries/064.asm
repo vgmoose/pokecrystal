@@ -1,10 +1,15 @@
-; KadabraPokedexEntry: ; 0x18313c
-	db "PSI@" ; species name
-	dw 403, 1250 ; height, width
+	ctxt "Psi" ; species name
+	done
+	dw 403, 1250 ; height, weight
 
-	db   "When it closes its"
+	db .page2 - .page1
+.page1
+	ctxt "When it closes its"
 	next "eyes, twice as"
 	next "many alpha parti-"
-	page "cles come out of"
+	done
+.page2
+	ctxt "cles come out of"
 	next "the surface of its"
-	next "body.@"
+	next "body."
+	done

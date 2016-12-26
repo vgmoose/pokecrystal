@@ -1,10 +1,15 @@
-; DragonairPokedexEntry: ; 0x1cc7dc
-	db "DRAGON@" ; species name
-	dw 1301, 360 ; height, width
+	ctxt "Iron Claw" ; species name
+	done
+	dw 311, 4464 ; height, weight
 
-	db   "It is called the"
-	next "divine #MON."
-	next "When its entire"
-	page "body brightens"
-	next "slightly, the"
-	next "weather changes.@"
+	db .page2 - .page1
+.page1
+	ctxt "It is formed by"
+	next "two Beldum joining"
+	next "together. Its two"
+	done
+.page2
+	ctxt "brains are linked,"
+	next "amplifying its"
+	next "psychic power."
+	done

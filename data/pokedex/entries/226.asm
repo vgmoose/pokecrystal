@@ -1,10 +1,15 @@
-; MantinePokedexEntry: ; 0x1d0e25
-	db "KITE@" ; species name
-	dw 611, 4850 ; height, width
+	ctxt "Endurance" ; species name
+	done
+	dw 307, 2436 ; height, weight
 
-	db   "It swims along"
-	next "freely, eating"
-	next "things that swim"
-	page "into its mouth."
-	next "Its whole body is"
-	next "very coarse.@"
+	db .page2 - .page1
+.page1
+	ctxt "It surrounds its"
+	next "body in an iron-"
+	next "hard shell to"
+	done
+.page2
+	ctxt "accumulate enough"
+	next "power to evolve."
+	done
+

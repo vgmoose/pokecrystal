@@ -1,10 +1,15 @@
-; PichuPokedexEntry: ; 0x1cd243
-	db "TINY MOUSE@" ; species name
-	dw 100, 40 ; height, width
+	ctxt "Tiny Mouse" ; species name
+	done
+	dw 100, 40 ; height, weight
 
-	db   "It is unskilled at"
+	db .page2 - .page1
+.page1
+	ctxt "It is unskilled at"
 	next "storing electric"
 	next "power. Any kind of"
-	page "shock causes it to"
+	done
+.page2
+	ctxt "shock causes it to"
 	next "discharge energy"
-	next "spontaneously.@"
+	next "spontaneously."
+	done

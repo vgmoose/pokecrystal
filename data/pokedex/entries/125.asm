@@ -1,10 +1,15 @@
-; ElectabuzzPokedexEntry: ; 0x1b992a
-	db "ELECTRIC@" ; species name
-	dw 307, 660 ; height, width
+	ctxt "Electric" ; species name
+	done
+	dw 307, 660 ; height, weight
 
-	db   "When two"
-	next "ELECTABUZZ touch,"
+	db .page2 - .page1
+.page1
+	ctxt "When two"
+	next "Electabuzz touch,"
 	next "they control the"
-	page "electric currents"
+	done
+.page2
+	ctxt "electric currents"
 	next "to communicate"
-	next "their feelings.@"
+	next "their feelings."
+	done

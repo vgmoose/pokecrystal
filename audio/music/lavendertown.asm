@@ -1,7 +1,8 @@
 Music_LavenderTown: ; ef72f
-	musicheader 3, 1, Music_LavenderTown_Ch1
-	musicheader 1, 2, Music_LavenderTown_Ch2
-	musicheader 1, 3, Music_LavenderTown_Ch3
+	channelcount 3
+	channel 1, Music_LavenderTown_Ch1
+	channel 2, Music_LavenderTown_Ch2
+	channel 3, Music_LavenderTown_Ch3
 ; ef738
 
 	db $3

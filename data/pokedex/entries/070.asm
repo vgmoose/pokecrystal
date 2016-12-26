@@ -1,10 +1,15 @@
-; WeepinbellPokedexEntry: ; 0x1b81fd
-	db "FLYCATCHER@" ; species name
-	dw 303, 140 ; height, width
+	ctxt "Flycatcher" ; species name
+	done
+	dw 303, 140 ; height, weight
 
-	db   "When it's hungry,"
+	db .page2 - .page1
+.page1
+	ctxt "When it's hungry,"
 	next "it swings its"
 	next "razor-sharp"
-	page "leaves, slicing up"
+	done
+.page2
+	ctxt "leaves, slicing up"
 	next "any unlucky object"
-	next "nearby for food.@"
+	next "nearby for food."
+	done

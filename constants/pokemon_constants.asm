@@ -1,6 +1,6 @@
-
 ; pokemon
-const_value set 1
+const_value set 0
+	const NO_POKEMON
 	const BULBASAUR
 	const IVYSAUR
 	const VENUSAUR
@@ -13,56 +13,56 @@ const_value set 1
 	const CATERPIE
 	const METAPOD
 	const BUTTERFREE
-	const WEEDLE
-	const KAKUNA
-	const BEEDRILL
+	const CHINGLING
+	const CHIMECHO
+	const TORKOAL
 	const PIDGEY
 	const PIDGEOTTO
 	const PIDGEOT
-	const RATTATA
-	const RATICATE
+	const TAILLOW
+	const SWELLOW
 	const SPEAROW
 	const FEAROW
-	const EKANS
-	const ARBOK
+	const BUNEARY
+	const LOPUNNY
 	const PIKACHU
 	const RAICHU
-	const SANDSHREW
-	const SANDSLASH
-	const NIDORAN_F
-	const NIDORINA
-	const NIDOQUEEN
-	const NIDORAN_M
-	const NIDORINO
-	const NIDOKING
-	const CLEFAIRY
-	const CLEFABLE
+	const SHINX
+	const LUXIO
+	const LUXRAY
+	const ELECTRIKE
+	const MANECTRIC
+	const SNORUNT
+	const GLALIE
+	const FROSLASS
+	const VOLBEAT
+	const ILLUMISE
 	const VULPIX
 	const NINETALES
 	const JIGGLYPUFF
 	const WIGGLYTUFF
 	const ZUBAT
 	const GOLBAT
-	const ODDISH
-	const GLOOM
-	const VILEPLUME
+	const ARON
+	const LAIRON
+	const AGGRON
 	const PARAS
 	const PARASECT
 	const VENONAT
 	const VENOMOTH
-	const DIGLETT
-	const DUGTRIO
-	const MEOWTH
-	const PERSIAN
-	const PSYDUCK
-	const GOLDUCK
-	const MANKEY
-	const PRIMEAPE
+	const BRONZOR
+	const BRONZONG
+	const SKORUPI
+	const DRAPION
+	const CRANIDOS
+	const RAMPARDOS
+	const SHIELDON
+	const BASTIODON
 	const GROWLITHE
 	const ARCANINE
-	const POLIWAG
-	const POLIWHIRL
-	const POLIWRATH
+	const WHISMUR
+	const LOUDRED
+	const EXPLOUD
 	const ABRA
 	const KADABRA
 	const ALAKAZAM
@@ -83,32 +83,32 @@ const_value set 1
 	const SLOWBRO
 	const MAGNEMITE
 	const MAGNETON
-	const FARFETCH_D
-	const DODUO
-	const DODRIO
-	const SEEL
-	const DEWGONG
-	const GRIMER
-	const MUK
-	const SHELLDER
-	const CLOYSTER
+	const MAGNEZONE
+	const DRIFLOON
+	const DRIFBLIM
+	const SABLEYE
+	const SPIRITOMB
+	const SHUPPET
+	const BANETTE
+	const DUSKULL
+	const DUSCLOPS
 	const GASTLY
 	const HAUNTER
 	const GENGAR
 	const ONIX
-	const DROWZEE
-	const HYPNO
-	const KRABBY
-	const KINGLER
-	const VOLTORB
-	const ELECTRODE
+	const LUNATONE
+	const SOLROCK
+	const VIBRAVA
+	const FLYGON
+	const MAKUHITA
+	const HARIYAMA
 	const EXEGGCUTE
 	const EXEGGUTOR
-	const CUBONE
-	const MAROWAK
+	const CACNEA
+	const CACTURNE
 	const HITMONLEE
 	const HITMONCHAN
-	const LICKITUNG
+	const TRAPINCH
 	const KOFFING
 	const WEEZING
 	const RHYHORN
@@ -116,40 +116,40 @@ const_value set 1
 	const CHANSEY
 	const TANGELA
 	const KANGASKHAN
-	const HORSEA
-	const SEADRA
+	const TANGROWTH
+	const MAWILE
 	const GOLDEEN
 	const SEAKING
-	const STARYU
-	const STARMIE
-	const MR__MIME
+	const LOTAD
+	const LOMBRE
+	const LUDICOLO
 	const SCYTHER
-	const JYNX
+	const RELICANTH
 	const ELECTABUZZ
 	const MAGMAR
-	const PINSIR
-	const TAUROS
+	const ELECTIVIRE
+	const MAGMORTAR
 	const MAGIKARP
 	const GYARADOS
-	const LAPRAS
+	const ABSOL
 	const DITTO
 	const EEVEE
 	const VAPOREON
 	const JOLTEON
 	const FLAREON
 	const PORYGON
-	const OMANYTE
-	const OMASTAR
-	const KABUTO
-	const KABUTOPS
-	const AERODACTYL
+	const VARANEOUS
+	const LILEEP
+	const CRADILY
+	const ANORITH
+	const ARMALDO
 	const SNORLAX
 	const ARTICUNO
 	const ZAPDOS
 	const MOLTRES
-	const DRATINI
-	const DRAGONAIR
-	const DRAGONITE
+	const BELDUM
+	const METANG
+	const METAGROSS
 	const MEWTWO
 	const MEW
 	const CHIKORITA
@@ -163,17 +163,17 @@ const_value set 1
 	const FERALIGATR
 	const SENTRET
 	const FURRET
-	const HOOTHOOT
-	const NOCTOWL
-	const LEDYBA
-	const LEDIAN
+	const RALTS
+	const KIRLIA
+	const GARDEVOIR
+	const GALLADE
 	const SPINARAK
 	const ARIADOS
 	const CROBAT
 	const CHINCHOU
 	const LANTURN
 	const PICHU
-	const CLEFFA
+	const CARNIVINE
 	const IGGLYBUFF
 	const TOGEPI
 	const TOGETIC
@@ -182,39 +182,39 @@ const_value set 1
 	const MAREEP
 	const FLAAFFY
 	const AMPHAROS
-	const BELLOSSOM
+	const TOGEKISS
 	const MARILL
 	const AZUMARILL
-	const SUDOWOODO
-	const POLITOED
-	const HOPPIP
-	const SKIPLOOM
-	const JUMPLUFF
-	const AIPOM
-	const SUNKERN
-	const SUNFLORA
+	const NUMEL
+	const CAMERUPT
+	const WAILMER
+	const WAILORD
+	const SURSKIT
+	const MASQUERAIN
+	const SHROOMISH
+	const BRELOOM
 	const YANMA
-	const WOOPER
-	const QUAGSIRE
+	const YANMEGA
+	const LEAFEON
 	const ESPEON
 	const UMBREON
-	const MURKROW
+	const GLACEON
 	const SLOWKING
 	const MISDREAVUS
-	const UNOWN
-	const WOBBUFFET
-	const GIRAFARIG
+	const MISMAGIUS
+	const SWABLU
+	const ALTARIA
 	const PINECO
 	const FORRETRESS
-	const DUNSPARCE
+	const RHYPERIOR
 	const GLIGAR
 	const STEELIX
-	const SNUBBULL
-	const GRANBULL
-	const QWILFISH
+	const GLISCOR
+	const FEEBAS
+	const MILOTIC
 	const SCIZOR
-	const SHUCKLE
-	const HERACROSS
+	const RIOLU
+	const LUCARIO
 	const SNEASEL
 	const TEDDIURSA
 	const URSARING
@@ -222,75 +222,79 @@ const_value set 1
 	const MAGCARGO
 	const SWINUB
 	const PILOSWINE
-	const CORSOLA
-	const REMORAID
-	const OCTILLERY
-	const DELIBIRD
-	const MANTINE
-	const SKARMORY
+	const GIBLE
+	const GABITE
+	const GARCHOMP
+	const BAGON
+	const SHELGON
+	const SALAMENCE
 	const HOUNDOUR
 	const HOUNDOOM
-	const KINGDRA
+	const MAMOSWINE
 	const PHANPY
 	const DONPHAN
 	const PORYGON2
-	const STANTLER
-	const SMEARGLE
+	const PORYGONZ
+	const WEAVILE
 	const TYROGUE
 	const HITMONTOP
-	const SMOOCHUM
+	const FAMBACO
 	const ELEKID
 	const MAGBY
-	const MILTANK
+	const SYLVEON
 	const BLISSEY
-	const RAIKOU
-	const ENTEI
-	const SUICUNE
+	const GROUDON
+	const KYOGRE
+	const RAYQUAZA
 	const LARVITAR
 	const PUPITAR
 	const TYRANITAR
 	const LUGIA
 	const HO_OH
-	const CELEBI
+	const RAIWATO
+	const PHANCERO
+	const EGG
+	const LIBABEEL
 
 const_value SET const_value + -1
 
 NUM_POKEMON EQU const_value
 
-EGG EQU 253
+const_value SET 1 ;Get rid of these constants so the game can run
+
 
 ; pokemon structure in RAM
-MON_SPECIES              EQUS "(PartyMon1Species - PartyMon1)"
-MON_ITEM                 EQUS "(PartyMon1Item - PartyMon1)"
-MON_MOVES                EQUS "(PartyMon1Moves - PartyMon1)"
-MON_ID                   EQUS "(PartyMon1ID - PartyMon1)"
-MON_EXP                  EQUS "(PartyMon1Exp - PartyMon1)"
-MON_STAT_EXP             EQUS "(PartyMon1StatExp - PartyMon1)"
-MON_HP_EXP               EQUS "(PartyMon1HPExp - PartyMon1)"
-MON_ATK_EXP              EQUS "(PartyMon1AtkExp - PartyMon1)"
-MON_DEF_EXP              EQUS "(PartyMon1DefExp - PartyMon1)"
-MON_SPD_EXP              EQUS "(PartyMon1SpdExp - PartyMon1)"
-MON_SPC_EXP              EQUS "(PartyMon1SpcExp - PartyMon1)"
-MON_DVS                  EQUS "(PartyMon1DVs - PartyMon1)"
-MON_PP                   EQUS "(PartyMon1PP - PartyMon1)"
-MON_HAPPINESS            EQUS "(PartyMon1Happiness - PartyMon1)"
-MON_PKRUS                EQUS "(PartyMon1PokerusStatus - PartyMon1)"
-MON_CAUGHTDATA           EQUS "(PartyMon1CaughtData - PartyMon1)"
-MON_CAUGHTLEVEL          EQUS "(PartyMon1CaughtLevel - PartyMon1)"
-MON_CAUGHTTIME           EQUS "(PartyMon1CaughtTime - PartyMon1)"
-MON_CAUGHTGENDER         EQUS "(PartyMon1CaughtGender - PartyMon1)"
-MON_CAUGHTLOCATION       EQUS "(PartyMon1CaughtLocation - PartyMon1)"
-MON_LEVEL                EQUS "(PartyMon1Level - PartyMon1)"
-MON_STATUS               EQUS "(PartyMon1Status - PartyMon1)"
-MON_HP                   EQUS "(PartyMon1HP - PartyMon1)"
-MON_MAXHP                EQUS "(PartyMon1MaxHP - PartyMon1)"
-MON_ATK                  EQUS "(PartyMon1Attack - PartyMon1)"
-MON_DEF                  EQUS "(PartyMon1Defense - PartyMon1)"
-MON_SPD                  EQUS "(PartyMon1Speed - PartyMon1)"
-MON_SAT                  EQUS "(PartyMon1SpclAtk - PartyMon1)"
-MON_SDF                  EQUS "(PartyMon1SpclDef - PartyMon1)"
-BOXMON_STRUCT_LENGTH     EQUS "(PartyMon1End - PartyMon1)"
-PARTYMON_STRUCT_LENGTH   EQUS "(PartyMon1StatsEnd - PartyMon1)"
+MON_SPECIES              EQUS "(PartyMon1Species - wPartyMon1)"
+MON_ITEM                 EQUS "(PartyMon1Item - wPartyMon1)"
+MON_MOVES                EQUS "(PartyMon1Moves - wPartyMon1)"
+MON_ID                   EQUS "(PartyMon1ID - wPartyMon1)"
+MON_EXP                  EQUS "(PartyMon1Exp - wPartyMon1)"
+MON_STAT_EXP             EQUS "(PartyMon1StatExp - wPartyMon1)"
+MON_HP_EXP               EQUS "(PartyMon1HPExp - wPartyMon1)"
+MON_ATK_EXP              EQUS "(PartyMon1AtkExp - wPartyMon1)"
+MON_DEF_EXP              EQUS "(PartyMon1DefExp - wPartyMon1)"
+MON_SPD_EXP              EQUS "(PartyMon1SpdExp - wPartyMon1)"
+MON_SPC_EXP              EQUS "(PartyMon1SpcExp - wPartyMon1)"
+MON_DVS                  EQUS "(PartyMon1DVs - wPartyMon1)"
+MON_PP                   EQUS "(PartyMon1PP - wPartyMon1)"
+MON_HAPPINESS            EQUS "(PartyMon1Happiness - wPartyMon1)"
+MON_PKRUS                EQUS "(PartyMon1PokerusStatus - wPartyMon1)"
+MON_CAUGHTDATA           EQUS "(PartyMon1CaughtData - wPartyMon1)"
+MON_CAUGHTLEVEL          EQUS "(PartyMon1CaughtLevel - wPartyMon1)"
+MON_CAUGHTTIME           EQUS "(PartyMon1CaughtTime - wPartyMon1)"
+MON_CAUGHTGENDER         EQUS "(PartyMon1CaughtGender - wPartyMon1)"
+MON_CAUGHTLOCATION       EQUS "(PartyMon1CaughtLocation - wPartyMon1)"
+MON_LEVEL                EQUS "(PartyMon1Level - wPartyMon1)"
+MON_STATUS               EQUS "(PartyMon1Status - wPartyMon1)"
+MON_HP                   EQUS "(PartyMon1HP - wPartyMon1)"
+MON_MAXHP                EQUS "(PartyMon1MaxHP - wPartyMon1)"
+MON_ATK                  EQUS "(PartyMon1Attack - wPartyMon1)"
+MON_DEF                  EQUS "(PartyMon1Defense - wPartyMon1)"
+MON_SPD                  EQUS "(PartyMon1Speed - wPartyMon1)"
+MON_SAT                  EQUS "(PartyMon1SpclAtk - wPartyMon1)"
+MON_SDF                  EQUS "(PartyMon1SpclDef - wPartyMon1)"
+BOXMON_STRUCT_LENGTH     EQUS "(PartyMon1End - wPartyMon1)"
+PARTYMON_STRUCT_LENGTH   EQUS "(PartyMon1StatsEnd - wPartyMon1)"
 REDMON_STRUCT_LENGTH EQU 44
 
 const_value SET 1
@@ -316,6 +320,7 @@ const_value SET 1
 	const MONMENU_MOVE       ; 19
 	const MONMENU_MAIL       ; 20
 	const MONMENU_ERROR      ; 21
+	const MONMENU_PMODE_ITEM ; 22
 
 MONMENU_FIELD_MOVE EQU 0
 MONMENU_MENUOPTION EQU 1

@@ -1,16 +1,44 @@
-AddNTimes:: ; 0x30fe
+GetScriptStringBuffer:
+	call GetScriptByte
+
+GetNthStringBuffer::
+	ld hl, wStringBuffer1
+	ld bc, wStringBuffer2 - wStringBuffer1
+	jr _AddNTimes
+
+GetPartyLocation::
+; Add the length of a PartyMon struct to hl a times.
+	ld bc, PARTYMON_STRUCT_LENGTH
+	jr _AddNTimes
+
+SkipNames::
+; Skip a names.
+	ld bc, NAME_LENGTH
+
+; fallthrough
+_AddNTimes::
 ; Add bc * a to hl.
+; Preserves bc
 	and a
 	ret z
-.loop
-	add hl, bc
-	dec a
-	jr nz, .loop
-	ret
-; 0x3105
 
-SimpleMultiply:: ; 3105
+	push bc
+.loop
+	rra ; and a from below and above resets carry
+	jr nc, .noadd
+	add hl, bc
+.noadd
+	sla c
+	rl b
+	and a
+	jr nz, .loop
+.done
+	pop bc
+	ret
+
+SimpleMultiply::
 ; Return a * c.
+; honestly does not need to be this complicated
 	and a
 	ret z
 
@@ -23,56 +51,61 @@ SimpleMultiply:: ; 3105
 	jr nz, .loop
 	pop bc
 	ret
-; 3110
 
-
-SimpleDivide:: ; 3110
+SimpleDivide::
 ; Divide a by c. Return quotient b and remainder a.
+	inc c
+	dec c
+	jr z, .div0
 	ld b, 0
+	and a
+	ret z
 .loop
 	inc b
 	sub c
 	jr nc, .loop
-	dec b
+	ret z
 	add c
+	dec b
 	ret
-; 3119
 
+.div0 ; OH SHI-
+	ld [hCrashSavedA], a
+	ld a, $2
+	jp Crash
 
-Multiply:: ; 3119
-; Multiply hMultiplicand (3 bytes) by hMultiplier. Result in hProduct.
-; All values are big endian.
-	push hl
-	push bc
-
-	callab _Multiply
-
-	pop bc
-	pop hl
-	ret
-; 3124
-
-
-Divide:: ; 3124
-; Divide hDividend length b (max 4 bytes) by hDivisor. Result in hQuotient.
-; All values are big endian.
-	push hl
-	push de
-	push bc
-	homecall _Divide
-	pop bc
-	pop de
-	pop hl
-	ret
-; 3136
-
-
-SubtractSigned:: ; 3136
+SubtractSigned::
 ; Return a - b, sign in carry.
 	sub b
 	ret nc
 	cpl
-	add 1
+	inc a
 	scf
 	ret
-; 313d
+
+Multiply16::
+	; calculates bc * de and stores the result in bcde (bc: high word, de: low word) and in hProduct
+	push hl
+	callba _Multiply16
+	pop hl
+	ret
+
+Divide16::
+	; calculates bc / de, stores quotient in de and remainder in bc
+	; also stores quotient in hQuotient and remainder in hRemainder
+	push hl
+	callba _Divide16
+	pop hl
+	ret
+
+AddNTimes16::
+	; calculates hProduct + bc * de, returns in hProduct
+	; returns carry status for the addition
+	push hl
+	push bc
+	push de
+	callba _AddNTimes16
+	pop de
+	pop bc
+	pop hl
+	ret

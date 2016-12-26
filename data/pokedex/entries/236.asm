@@ -1,10 +1,15 @@
-; TyroguePokedexEntry: ; 0x1d124b
-	db "SCUFFLE@" ; species name
-	dw 204, 460 ; height, width
+	ctxt "Scuffle" ; species name
+	done
+	dw 204, 460 ; height, weight
 
-	db   "To brush up on its"
+	db .page2 - .page1
+.page1
+	ctxt "To brush up on its"
 	next "fighting skills,"
 	next "it will challenge"
-	page "anyone. It has a"
+	done
+.page2
+	ctxt "anyone. It has a"
 	next "very strong com-"
-	next "petitive spirit.@"
+	next "petitive spirit."
+	done

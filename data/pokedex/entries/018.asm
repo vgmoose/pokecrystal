@@ -1,10 +1,15 @@
-; PidgeotPokedexEntry: ; 0x181dd7
-	db "BIRD@" ; species name
-	dw 411, 870 ; height, width
+	ctxt "Bird" ; species name
+	done
+	dw 411, 870 ; height, weight
 
-	db   "Its outstanding"
+	db .page2 - .page1
+.page1
+	ctxt "Its outstanding"
 	next "vision allows it"
 	next "to spot splashing"
-	page "MAGIKARP, even"
+	done
+.page2
+	ctxt "Magikarp, even"
 	next "while flying at"
-	next "3300 feet.@"
+	next "3300 feet."
+	done

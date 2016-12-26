@@ -1,4 +1,4 @@
-QueueBattleAnimation: ; cc9a1 (33:49a1)
+QueueBattleAnimation:
 	ld hl, ActiveAnimObjects
 	ld e, 10
 .loop
@@ -17,25 +17,19 @@ QueueBattleAnimation: ; cc9a1 (33:49a1)
 	ld b, h
 	ld hl, wNumActiveBattleAnims
 	inc [hl]
-	call InitBattleAnimation
-	ret
+	; fallthrough
 
-DeinitBattleAnimation: ; cc9bd
-	ld hl, BATTLEANIMSTRUCT_INDEX
-	add hl, bc
-	ld [hl], $0
-	ret
-
-; cc9c4
-
-InitBattleAnimation: ; cc9c4 (33:49c4)
+InitBattleAnimation:
 	ld a, [wBattleAnimTemp0]
-	ld e, a
-	ld d, 0
-	ld hl, BattleAnimObjects
-rept 6
+	ld l, a
+	ld h, 0
+	ld e, l
+	ld d, h
+	add hl, hl ; x2
+	add hl, de ; x3
+	add hl, hl ; x6
+	ld de, BattleAnimObjects
 	add hl, de
-endr
 	ld e, l
 	ld d, h
 	ld hl, BATTLEANIMSTRUCT_INDEX
@@ -56,7 +50,7 @@ endr
 	ld [hli], a ; Function
 	ld a, [de]
 	inc de
-	ld [hli], a ; 05
+	ld [hli], a ; Palette
 	ld a, [de]
 	call GetBattleAnimTileOffset
 	ld [hli], a ; Tile ID
@@ -68,7 +62,7 @@ endr
 	ld [hli], a ; X Offset
 	ld [hli], a ; Y Offset
 	ld a, [wBattleAnimTemp3]
-	ld [hli], a ; 0b
+	ld [hli], a ; Param
 	xor a
 	ld [hli], a ; 0c
 	dec a
@@ -79,7 +73,13 @@ endr
 	ld [hl], a  ; 10
 	ret
 
-BattleAnimOAMUpdate: ; cca09
+DeinitBattleAnimation:
+	ld hl, BATTLEANIMSTRUCT_INDEX
+	add hl, bc
+	ld [hl], $0
+	ret
+
+BattleAnimOAMUpdate:
 	call InitBattleAnimBuffer
 	call GetBattleAnimFrame
 	cp -3
@@ -191,10 +191,8 @@ BattleAnimOAMUpdate: ; cca09
 	scf
 	ret
 
-; ccaaa
-
-InitBattleAnimBuffer: ; ccaaa
-	ld hl, BATTLEANIMSTRUCT_01
+InitBattleAnimBuffer:
+	ld hl, BATTLEANIMSTRUCT_FLAGS
 	add hl, bc
 	ld a, [hl]
 	and %10000000
@@ -205,7 +203,7 @@ InitBattleAnimBuffer: ; ccaaa
 	add hl, bc
 	ld a, [hl]
 	ld [wBattleAnimTempPalette], a
-	ld hl, BATTLEANIMSTRUCT_02
+	ld hl, BATTLEANIMSTRUCT_YFIX
 	add hl, bc
 	ld a, [hl]
 	ld [wBattleAnimTemp1], a
@@ -221,15 +219,18 @@ InitBattleAnimBuffer: ; ccaaa
 	ld [wBattleAnimTempXOffset], a
 	ld a, [hli]
 	ld [wBattleAnimTempYOffset], a
+	; Is this the enemy's turn?
 	ld a, [hBattleTurn]
 	and a
 	ret z
-	ld hl, BATTLEANIMSTRUCT_01
+	; Is coord fixing enabled?
+	ld hl, BATTLEANIMSTRUCT_FLAGS
 	add hl, bc
 	ld a, [hl]
 	ld [wBattleAnimTempOAMFlags], a
 	bit 0, [hl]
 	ret z
+	; Fix the X coord
 	ld hl, BATTLEANIMSTRUCT_XCOORD
 	add hl, bc
 	ld a, [hli]
@@ -237,8 +238,10 @@ InitBattleAnimBuffer: ; ccaaa
 	ld a, (-10 * 8) + 4
 	sub d
 	ld [wBattleAnimTempXCoord], a
+	; Fix the Y coord
 	ld a, [hli]
 	ld d, a
+	; if this is -1, move 5 tiles down
 	ld a, [wBattleAnimTemp1]
 	cp $ff
 	jr nz, .check_kinesis_softboiled_milkdrink
@@ -247,21 +250,16 @@ InitBattleAnimBuffer: ; ccaaa
 	jr .done
 
 .check_kinesis_softboiled_milkdrink
+	; negate the Y coordinate
 	sub d
+	; if using softboiled, subtract 1 more tile
 	push af
 	ld a, [FXAnimIDHi]
 	or a
 	jr nz, .no_sub
 	ld a, [FXAnimIDLo]
-	cp KINESIS
-	jr z, .kinesis
 	cp SOFTBOILED
-	jr z, .softboiled
-	cp MILK_DRINK
 	jr nz, .no_sub
-.kinesis
-.softboiled
-.milk_drink
 	pop af
 	sub 1 * 8
 	jr .done
@@ -276,9 +274,7 @@ InitBattleAnimBuffer: ; ccaaa
 	ld [wBattleAnimTempXOffset], a
 	ret
 
-; ccb31
-
-GetBattleAnimTileOffset: ; ccb31 (33:4b31)
+GetBattleAnimTileOffset:
 	push hl
 	push bc
 	ld hl, wBattleAnimTileDict
@@ -300,15 +296,3 @@ GetBattleAnimTileOffset: ; ccb31 (33:4b31)
 	pop bc
 	pop hl
 	ret
-
-_ExecuteBGEffects: ; ccb48
-	callab ExecuteBGEffects
-	ret
-
-; ccb4f
-
-_QueueBGEffect: ; ccb4f (33:4b4f)
-	callab QueueBGEffect
-	ret
-
-; ccb56 (33:4b56)

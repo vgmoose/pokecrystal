@@ -1,8 +1,9 @@
 Music_Route3: ; ec2ca
-	musicheader 4, 1, Music_Route3_Ch1
-	musicheader 1, 2, Music_Route3_Ch2
-	musicheader 1, 3, Music_Route3_Ch3
-	musicheader 1, 4, Music_Route3_Ch4
+	channelcount 4
+	channel 1, Music_Route3_Ch1
+	channel 2, Music_Route3_Ch2
+	channel 3, Music_Route3_Ch3
+	channel 4, Music_Route3_Ch4
 ; ec2d6
 
 Music_Route3_Ch1: ; ec2d6

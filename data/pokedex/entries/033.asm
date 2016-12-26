@@ -1,10 +1,15 @@
-; NidorinoPokedexEntry: ; 0x1823fd
-	db "POISON PIN@" ; species name
-	dw 211, 430 ; height, width
+	ctxt "Face" ; species name
+	done
+	dw 411, 5655 ; height, weight
 
-	db   "It is easily"
-	next "agitated and uses"
-	next "its horn for"
-	page "offense as soon as"
-	next "it notices an"
-	next "attacker.@"
+	db .page2 - .page1
+.page1
+	ctxt "To protect itself,"
+	next "it clads its body"
+	next "in an armor of"
+	done
+.page2
+	ctxt "ice, made by"
+	next "freezing moisture"
+	next "in the air."
+	done

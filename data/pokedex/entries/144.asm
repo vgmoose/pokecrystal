@@ -1,10 +1,15 @@
-; ArticunoPokedexEntry: ; 0x1cc632
-	db "FREEZE@" ; species name
-	dw 507, 1220 ; height, width
+	ctxt "Freeze" ; species name
+	done
+	dw 507, 1220 ; height, weight
 
-	db   "Legendary bird"
-	next "#MON. As it"
+	db .page2 - .page1
+.page1
+	ctxt "Legendary bird"
+	next "#mon. As it"
 	next "flies through the"
-	page "sky, it cools the"
+	done
+.page2
+	ctxt "sky, it cools the"
 	next "air, causing snow"
-	next "to fall.@"
+	next "to fall."
+	done

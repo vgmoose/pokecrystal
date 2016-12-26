@@ -1,419 +1,154 @@
-const_value set 2
-	const POWERPLANT_OFFICER1
-	const POWERPLANT_GYM_GUY1
-	const POWERPLANT_GYM_GUY2
-	const POWERPLANT_OFFICER2
-	const POWERPLANT_GYM_GUY3
-	const POWERPLANT_FISHER
-	const POWERPLANT_FOREST
-
-PowerPlant_MapScriptHeader:
-.MapTriggers:
+PowerPlant_MapScriptHeader;trigger count
 	db 2
-
-	; triggers
-	dw UnknownScript_0x188dc3, 0
-	dw UnknownScript_0x188dc4, 0
-
-.MapCallbacks:
+	maptrigger .Trigger0
+	maptrigger .Trigger1
+ ;callback count
 	db 0
-
-UnknownScript_0x188dc3:
+	
+.Trigger0
+	priorityjump PowerPlantWalkToLance
 	end
-
-UnknownScript_0x188dc4:
+	
+.Trigger1
 	end
-
-PowerPlantGuardPhoneScript:
-	playsound SFX_CALL
-	showemote EMOTE_SHOCK, POWERPLANT_OFFICER1, 15
-	waitsfx
-	pause 30
-	applymovement POWERPLANT_OFFICER1, MovementData_0x188ed5
-	spriteface POWERPLANT_GYM_GUY1, DOWN
-	spriteface POWERPLANT_GYM_GUY2, DOWN
-	opentext
-	writetext UnknownText_0x188f22
-	waitbutton
-	closetext
-	spriteface POWERPLANT_OFFICER1, LEFT
-	spriteface PLAYER, RIGHT
-	opentext
-	writetext UnknownText_0x188f7f
-	waitbutton
-	closetext
-	spriteface PLAYER, DOWN
-	applymovement POWERPLANT_OFFICER1, MovementData_0x188eda
-	dotrigger $0
-	end
-
-OfficerScript_0x188df5:
-	faceplayer
-	opentext
-	checkevent EVENT_RETURNED_MACHINE_PART
-	iftrue UnknownScript_0x188e0f
-	checkevent EVENT_MET_MANAGER_AT_POWER_PLANT
-	iftrue UnknownScript_0x188e09
-	writetext UnknownText_0x188ee0
-	waitbutton
-	closetext
-	end
-
-UnknownScript_0x188e09:
-	writetext UnknownText_0x188f7f
-	waitbutton
-	closetext
-	end
-
-UnknownScript_0x188e0f:
-	writetext UnknownText_0x188fa2
-	waitbutton
-	closetext
-	end
-
-GymGuyScript_0x188e15:
-	faceplayer
-	opentext
-	checkevent EVENT_RETURNED_MACHINE_PART
-	iftrue UnknownScript_0x188e23
-	writetext UnknownText_0x188fcf
-	waitbutton
-	closetext
-	end
-
-UnknownScript_0x188e23:
-	writetext UnknownText_0x189038
-	waitbutton
-	closetext
-	end
-
-GymGuyScript_0x188e29:
-	faceplayer
-	opentext
-	checkevent EVENT_RETURNED_MACHINE_PART
-	iftrue UnknownScript_0x188e37
-	writetext UnknownText_0x189079
-	waitbutton
-	closetext
-	end
-
-UnknownScript_0x188e37:
-	writetext UnknownText_0x1890ef
-	waitbutton
-	closetext
-	end
-
-OfficerScript_0x188e3d:
-	faceplayer
-	opentext
-	checkevent EVENT_RETURNED_MACHINE_PART
-	iftrue UnknownScript_0x188e4b
-	writetext UnknownText_0x18910e
-	waitbutton
-	closetext
-	end
-
-UnknownScript_0x188e4b:
-	writetext UnknownText_0x18917f
-	waitbutton
-	closetext
-	end
-
-GymGuyScript_0x188e51:
-	faceplayer
-	opentext
-	checkevent EVENT_RETURNED_MACHINE_PART
-	iftrue UnknownScript_0x188e5f
-	writetext UnknownText_0x1891c2
-	waitbutton
-	closetext
-	end
-
-UnknownScript_0x188e5f:
-	writetext UnknownText_0x189225
-	waitbutton
-	closetext
-	end
-
-PowerPlantManager:
-	faceplayer
-	opentext
-	checkevent EVENT_RETURNED_MACHINE_PART
-	iftrue UnknownScript_0x188eac
-	checkitem MACHINE_PART
-	iftrue UnknownScript_0x188e93
-	checkevent EVENT_MET_MANAGER_AT_POWER_PLANT
-	iftrue UnknownScript_0x188e8d
-	writetext UnknownText_0x189264
-	waitbutton
-	closetext
-	setevent EVENT_MET_MANAGER_AT_POWER_PLANT
-	clearevent EVENT_CERULEAN_GYM_ROCKET
-	clearevent EVENT_FOUND_MACHINE_PART_IN_CERULEAN_GYM
-	domaptrigger CERULEAN_GYM, $1
-	dotrigger $1
-	end
-
-UnknownScript_0x188e8d:
-	writetext UnknownText_0x189308
-	waitbutton
-	closetext
-	end
-
-UnknownScript_0x188e93:
-	writetext UnknownText_0x18936e
-	buttonsound
-	takeitem MACHINE_PART
-	setevent EVENT_RETURNED_MACHINE_PART
-	clearevent EVENT_SAFFRON_TRAIN_STATION_POPULATION
-	setevent EVENT_ROUTE_5_6_POKEFAN_M_BLOCKS_UNDERGROUND_PATH
-	setevent EVENT_ROUTE_24_ROCKET
-	setevent EVENT_RESTORED_POWER_TO_KANTO
-	clearevent EVENT_GOLDENROD_TRAIN_STATION_GENTLEMAN
-UnknownScript_0x188eac:
-	checkevent EVENT_GOT_TM07_ZAP_CANNON
-	iftrue UnknownScript_0x188ec5
-	writetext UnknownText_0x1893c4
-	buttonsound
-	verbosegiveitem TM_ZAP_CANNON
-	iffalse UnknownScript_0x188ec3
-	setevent EVENT_GOT_TM07_ZAP_CANNON
-	writetext UnknownText_0x1893f4
-	waitbutton
-UnknownScript_0x188ec3:
-	closetext
-	end
-
-UnknownScript_0x188ec5:
-	writetext UnknownText_0x189475
-	waitbutton
-	closetext
-	end
-
-Forest:
-	faceplayer
-	opentext
-	trade $6
-	waitbutton
-	closetext
-	end
-
-PowerPlantBookshelf:
-	jumpstd difficultbookshelf
-
-MovementData_0x188ed5:
-	step RIGHT
-	step RIGHT
-	step UP
-	step UP
+	
+PowerPlantWalkToLance:
+	applymovement 0, PowerPlantWalkLance
+	spriteface 11, LEFT
+	dotrigger 1
+PowerPlantLanceNPC:
+	jumptextfaceplayer PowerPlantLanceTextTemp
+	
+PowerPlantNPC4:
+	jumptextfaceplayer PowerPlantNPC4Text
+	
+PowerPlantWalkLance:
+	step_up
+	step_up
+	step_up
+	step_up
+	step_up
+	step_up
+	step_up
+	step_right
+	step_right
+	step_right
+	step_right
+	step_right
+	step_right
+	step_right
 	step_end
+	
+	
+PowerPlantHiddenItem_1:
+	dw EVENT_POWER_PLANT_HIDDENITEM_GOLD_TOKEN
+	db GOLD_TOKEN
 
-MovementData_0x188eda:
-	step DOWN
-	step DOWN
-	step LEFT
-	step LEFT
-	turn_head DOWN
-	step_end
+PowerPlantNPC1:
+	jumptextfaceplayer PowerPlantNPC1_Text_201ea0
 
-UnknownText_0x188ee0:
-	text "A thief broke into"
-	line "the POWER PLANT…"
+PowerPlantNPC2:
+	jumptextfaceplayer PowerPlantNPC2_Text_201f00
 
-	para "What is the world"
-	line "coming to?"
+PowerPlantNPC3:
+	jumptextfaceplayer PowerPlantNPC3_Text_201f5f
+
+PowerPlant_Item_1:
+	db FAST_BALL, 2
+
+PowerPlant_Item_2:
+	db THUNDER_RING, 1
+
+PowerPlant_Item_3:
+	db X_SPECIAL, 2
+
+PowerPlant_Item_4:
+	db ELECTRIZER, 1
+	
+PowerPlantMeetLance:
+	ctxt ""
+	done
+	
+PowerPlantNPC4Text:
+	ctxt "I will help your"
+	line "father in a later"
+	cont "version of Prism!"
+	done
+	
+PowerPlantLanceTextTemp:
+	ctxt "My child!"
+
+	para "I will have a"
+	line "mission for you"
+	
+	para "in a later version"
+	line "of Prism."
+	
+	para "Keep an eye on the"
+	line "Facebook Page and"
+	
+	para "Rijon.com for"
+	line "newer versions!"
 	done
 
-UnknownText_0x188f22:
-	text "I just got word"
-	line "from CERULEAN."
+PowerPlantNPC1_Text_201ea0:
+	ctxt "We're almost done"
+	line "renovating this"
+	cont "place."
 
-	para "It appears that a"
-	line "shady character"
-
-	para "has been loitering"
-	line "around."
+	para "We need a way to"
+	line "get rid of all"
+	cont "the #mon later."
 	done
 
-UnknownText_0x188f7f:
-	text "Could I ask for"
-	line "your cooperation?"
+PowerPlantNPC2_Text_201f00:
+	ctxt "Glad this equip-"
+	line "ment is still"
+	cont "functional."
+
+	para "Practically runs"
+	line "itself."
 	done
 
-UnknownText_0x188fa2:
-	text "We'll have to beef"
-	line "up our security"
-	cont "presence."
+PowerPlantNPC3_Text_201f5f:
+	ctxt "There's an Ice"
+	line "Gym that uses"
+
+	para "way too many"
+	line "air conditioners."
+
+	para "That's one of the"
+	line "reasons why this"
+
+	para "place is being"
+	line "maintained again."
 	done
 
-UnknownText_0x188fcf:
-	text "Someone made off"
-	line "with a part that's"
-
-	para "essential for the"
-	line "generator."
-
-	para "Without it, the"
-	line "new generator's"
-	cont "useless!"
-	done
-
-UnknownText_0x189038:
-	text "The generator's up"
-	line "and running. It's"
-
-	para "making electricity"
-	line "to spare."
-	done
-
-UnknownText_0x189079:
-	text "This POWER PLANT"
-	line "had been abandoned"
-	cont "in the past."
-
-	para "We got it back up"
-	line "and running to"
-
-	para "provide power to"
-	line "the MAGNET TRAIN."
-	done
-
-UnknownText_0x1890ef:
-	text "The generator's"
-	line "running again!"
-	done
-
-UnknownText_0x18910e:
-	text "The POWER PLANT's"
-	line "MANAGER is up"
-	cont "ahead."
-
-	para "But since someone"
-	line "wrecked the gener-"
-	cont "ator, he's been"
-	cont "both sad and"
-	cont "furious…"
-	done
-
-UnknownText_0x18917f:
-	text "Since the gener-"
-	line "ator's been fixed,"
-
-	para "the MANAGER has"
-	line "been cheerful."
-	done
-
-UnknownText_0x1891c2:
-	text "The MAGNET TRAIN"
-	line "consumes a lot of"
-	cont "electricity."
-
-	para "It can't move if"
-	line "the new generator"
-	cont "isn't operating."
-	done
-
-UnknownText_0x189225:
-	text "All right! We can"
-	line "finally get the"
-
-	para "MAGNET TRAIN"
-	line "running again."
-	done
-
-UnknownText_0x189264:
-	text "MANAGER: I, I, I'm"
-	line "ready to blast"
-	cont "someone!"
-
-	para "Who would dare"
-	line "ruin my generator?"
-
-	para "I spent so much"
-	line "time on it!"
-
-	para "If I catch him,"
-	line "he's going to get"
-
-	para "a taste of my ZAP"
-	line "CANNON!"
-	done
-
-UnknownText_0x189308:
-	text "MANAGER: I won't"
-	line "forgive him!"
-
-	para "The culprit can"
-	line "cry and apologize,"
-
-	para "but I'll still"
-	line "hammer him!"
-
-	para "Gahahahah!"
-	done
-
-UnknownText_0x18936e:
-	text "MANAGER: Ah! Yeah!"
-
-	para "That's the missing"
-	line "PART from my be-"
-	cont "loved generator!"
-	cont "You found it?"
-	done
-
-UnknownText_0x1893c4:
-	text "Wahah! Thanks!"
-
-	para "Here! Take this TM"
-	line "as a reward!"
-	done
-
-UnknownText_0x1893f4:
-	text "MANAGER: TM07 is"
-	line "my ZAP CANNON."
-
-	para "It's a powerful"
-	line "technique!"
-
-	para "It's not what any-"
-	line "one would consider"
-
-	para "accurate, but it"
-	line "packs a wallop!"
-	done
-
-UnknownText_0x189475:
-	text "MANAGER: My be-"
-	line "loved generator!"
-
-	para "Keep pumping the"
-	line "electricity out!"
-	done
-
-PowerPlant_MapEventHeader:
-	; filler
+PowerPlant_MapEventHeader ;filler
 	db 0, 0
 
-.Warps:
+;warps
 	db 2
-	warp_def $11, $2, 2, ROUTE_10_NORTH
-	warp_def $11, $3, 2, ROUTE_10_NORTH
+	warp_def $27, $6, 1, ROUTE_60
+	warp_def $27, $7, 1, ROUTE_60
 
-.XYTriggers:
+	;xy triggers
+	db 0
+
+	;signposts
 	db 1
-	xy_trigger 1, $c, $5, $0, PowerPlantGuardPhoneScript, $0, $0
+	signpost 16, 10, SIGNPOST_ITEM, PowerPlantHiddenItem_1
 
-.Signposts:
-	db 2
-	signpost 1, 0, SIGNPOST_READ, PowerPlantBookshelf
-	signpost 1, 1, SIGNPOST_READ, PowerPlantBookshelf
-
-.PersonEvents:
-	db 7
-	person_event SPRITE_OFFICER, 14, 4, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, (1 << 3) | PAL_OW_GREEN, PERSONTYPE_SCRIPT, 0, OfficerScript_0x188df5, -1
-	person_event SPRITE_GYM_GUY, 9, 2, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, (1 << 3) | PAL_OW_BLUE, PERSONTYPE_SCRIPT, 0, GymGuyScript_0x188e15, -1
-	person_event SPRITE_GYM_GUY, 11, 6, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, (1 << 3) | PAL_OW_BLUE, PERSONTYPE_SCRIPT, 0, GymGuyScript_0x188e29, -1
-	person_event SPRITE_OFFICER, 3, 9, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, (1 << 3) | PAL_OW_GREEN, PERSONTYPE_SCRIPT, 0, OfficerScript_0x188e3d, -1
-	person_event SPRITE_GYM_GUY, 2, 7, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 0, 1, -1, -1, (1 << 3) | PAL_OW_BLUE, PERSONTYPE_SCRIPT, 0, GymGuyScript_0x188e51, -1
-	person_event SPRITE_FISHER, 10, 14, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, (1 << 3) | PAL_OW_RED, PERSONTYPE_SCRIPT, 0, PowerPlantManager, -1
-	person_event SPRITE_GYM_GUY, 5, 5, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, (1 << 3) | PAL_OW_BLUE, PERSONTYPE_SCRIPT, 0, Forest, -1
+	;people-events
+	db 10
+	person_event SPRITE_FISHING_GURU, 12, 19, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_OW_RED, 0, 0, PowerPlantNPC1, -1
+	person_event SPRITE_POKEFAN_M, 17, 2, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_OW_RED, 0, 0, PowerPlantNPC2, -1
+	person_event SPRITE_SUPER_NERD, 37, 47, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_OW_RED, 0, 0, PowerPlantNPC3, -1
+	person_event SPRITE_POKE_BALL, 35, 1, SPRITEMOVEDATA_ITEM_TREE, 0, 0, -1, -1, PAL_OW_RED, 1, 0, PowerPlant_Item_1, EVENT_POWER_PLANT_ITEM_1
+	person_event SPRITE_POKE_BALL, 35, 26, SPRITEMOVEDATA_ITEM_TREE, 0, 0, -1, -1, PAL_OW_YELLOW, 1, 0, PowerPlant_Item_2, EVENT_POWER_PLANT_ITEM_2
+	person_event SPRITE_POKE_BALL, 5, 38, SPRITEMOVEDATA_ITEM_TREE, 0, 0, -1, -1, PAL_OW_YELLOW, 1, 0, PowerPlant_Item_3, EVENT_POWER_PLANT_ITEM_3
+	person_event SPRITE_POKE_BALL, 4, 5, SPRITEMOVEDATA_ITEM_TREE, 0, 0, -1, -1, PAL_OW_YELLOW, 1, 0, PowerPlant_Item_4, EVENT_POWER_PLANT_ITEM_4
+	person_event SPRITE_POKE_BALL, 13, 25, SPRITEMOVEDATA_ITEM_TREE, 0, 0, -1, -1, PAL_OW_RED, 3, TM_CRYSTAL_BOLT, 0, EVENT_POWER_PLANT_NPC_4
+	person_event SPRITE_SUPER_NERD, 35, 15, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_OW_RED, 0, 0, PowerPlantNPC4, -1
+	person_event SPRITE_LANCE, 32, 15, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_OW_RED, 0, 0, PowerPlantLanceNPC, -1
+	

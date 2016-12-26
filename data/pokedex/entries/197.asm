@@ -1,10 +1,15 @@
-; UmbreonPokedexEntry: ; 0x1d01af
-	db "MOONLIGHT@" ; species name
-	dw 303, 600 ; height, width
+	ctxt "Moonlight" ; species name
+	done
+	dw 303, 600 ; height, weight
 
-	db   "On the night of a"
+	db .page2 - .page1
+.page1
+	ctxt "On the night of a"
 	next "full moon, or when"
 	next "it gets excited,"
-	page "the ring patterns"
+	done
+.page2
+	ctxt "the ring patterns"
 	next "on its body glow"
-	next "yellow.@"
+	next "yellow."
+	done

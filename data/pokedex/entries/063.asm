@@ -1,10 +1,15 @@
-; AbraPokedexEntry: ; 0x1830d5
-	db "PSI@" ; species name
-	dw 211, 430 ; height, width
+	ctxt "Psi" ; species name
+	done
+	dw 211, 430 ; height, weight
 
-	db   "It hypnotizes"
+	db .page2 - .page1
+.page1
+	ctxt "It hypnotizes"
 	next "itself so that it"
 	next "can teleport away"
-	page "when it senses"
+	done
+.page2
+	ctxt "when it senses"
 	next "danger, even"
-	next "if it is asleep.@"
+	next "if it is asleep."
+	done

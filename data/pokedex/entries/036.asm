@@ -1,10 +1,14 @@
-; ClefablePokedexEntry: ; 0x182530
-	db "FAIRY@" ; species name
-	dw 403, 880 ; height, width
+	ctxt "Firefly" ; species name
+	done
+	dw 200, 390 ; height, weight
 
-	db   "Said to live in"
-	next "quiet, remote"
-	next "mountains, this"
-	page "type of fairy has"
-	next "a strong aversion"
-	next "to being seen.@"
+	db .page2 - .page1
+.page1
+	ctxt "With its sweet"
+	next "aroma, it guides"
+	next "Volbeat to draw"
+	done
+.page2
+	ctxt "signs with light"
+	next "in the night sky."
+	done

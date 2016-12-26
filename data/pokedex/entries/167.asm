@@ -1,10 +1,15 @@
-; SpinarakPokedexEntry: ; 0x1cd012
-	db "STRINGSPIT@" ; species name
-	dw 108, 190 ; height, width
+	ctxt "Stringspit" ; species name
+	done
+	dw 108, 190 ; height, weight
 
-	db   "If prey becomes"
+	db .page2 - .page1
+.page1
+	ctxt "If prey becomes"
 	next "ensnared in its"
 	next "nest of spun"
-	page "string, it waits"
+	done
+.page2
+	ctxt "string, it waits"
 	next "motionlessly until"
-	next "it becomes dark.@"
+	next "it becomes dark."
+	done

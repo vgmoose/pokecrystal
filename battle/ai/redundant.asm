@@ -3,17 +3,14 @@ AI_Redundant: ; 2c41a
 ; Return z if the move is a good choice.
 ; Return nz if the move is a bad choice.
 	ld a, c
-	ld de, 3
+	ld e, 3
 	ld hl, .Moves
 	call IsInArray
-	jp nc, .NotRedundant
-	inc hl
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	jp [hl]
+	jp c, CallLocalPointer_AfterIsInArray
+	xor a
+	ret
 
-.Moves: ; 2c42c
+.Moves
 	dbw EFFECT_DREAM_EATER,  .DreamEater
 	dbw EFFECT_HEAL,         .Heal
 	dbw EFFECT_LIGHT_SCREEN, .LightScreen
@@ -26,7 +23,6 @@ AI_Redundant: ; 2c41a
 	dbw EFFECT_LEECH_SEED,   .LeechSeed
 	dbw EFFECT_DISABLE,      .Disable
 	dbw EFFECT_ENCORE,       .Encore
-	dbw EFFECT_SNORE,        .Snore
 	dbw EFFECT_SLEEP_TALK,   .SleepTalk
 	dbw EFFECT_MEAN_LOOK,    .MeanLook
 	dbw EFFECT_NIGHTMARE,    .Nightmare
@@ -44,155 +40,168 @@ AI_Redundant: ; 2c41a
 	dbw EFFECT_MOONLIGHT,    .Moonlight
 	dbw EFFECT_SWAGGER,      .Swagger
 	dbw EFFECT_FUTURE_SIGHT, .FutureSight
+	dbw EFFECT_LAVA_POOL,    .LavaPool
+	dbw EFFECT_FINAL_CHANCE, .FinalChance
 	db -1
-
-.LightScreen: ; 2c487
-	ld a, [EnemyScreens]
+	
+.FinalChance
+	ld a, [wPlayerSubStatus2]
+	bit SUBSTATUS_FINAL_CHANCE, a
+	ret
+	
+.LavaPool
+	ld a, [wPlayerScreens]
+	bit SCREENS_LAVA_POOL, a
+	ret
+	
+.LightScreen
+	ld a, [wEnemyScreens]
 	bit SCREENS_LIGHT_SCREEN, a
 	ret
 
-.Mist: ; 2c48d
-	ld a, [EnemySubStatus4]
+.Mist
+	ld a, [wEnemySubStatus4]
 	bit SUBSTATUS_MIST, a
 	ret
 
-.FocusEnergy: ; 2c493
-	ld a, [EnemySubStatus4]
+.FocusEnergy
+	ld a, [wEnemySubStatus4]
 	bit SUBSTATUS_FOCUS_ENERGY, a
 	ret
 
-.Confuse: ; 2c499
-	ld a, [PlayerSubStatus3]
+.Confuse
+	ld a, [wPlayerSubStatus3]
 	bit SUBSTATUS_CONFUSED, a
 	ret nz
-	ld a, [PlayerScreens]
+	ld a, [wPlayerScreens]
 	bit SCREENS_SAFEGUARD, a
 	ret
 
-.Transform: ; 2c4a5
-	ld a, [EnemySubStatus5]
+.Transform
+	ld a, [wEnemySubStatus5]
 	bit SUBSTATUS_TRANSFORMED, a
 	ret
 
-.Reflect: ; 2c4ab
-	ld a, [EnemyScreens]
+.Reflect
+	ld a, [wEnemyScreens]
 	bit SCREENS_REFLECT, a
 	ret
 
-.Substitute: ; 2c4b1
-	ld a, [EnemySubStatus4]
+.Substitute
+	ld a, [wEnemySubStatus4]
 	bit SUBSTATUS_SUBSTITUTE, a
 	ret
 
-.LeechSeed: ; 2c4b7
-	ld a, [PlayerSubStatus4]
+.LeechSeed
+	ld a, [wPlayerSubStatus4]
 	bit SUBSTATUS_LEECH_SEED, a
 	ret
 
-.Disable: ; 2c4bd
+.Disable
 	ld a, [PlayerDisableCount]
 	and a
 	ret
 
-.Encore: ; 2c4c2
-	ld a, [PlayerSubStatus5]
+.Encore
+	ld a, [wPlayerSubStatus5]
 	bit SUBSTATUS_ENCORED, a
 	ret
 
-.Snore:
-.SleepTalk: ; 2c4c8
+.SleepTalk
 	ld a, [EnemyMonStatus]
 	and SLP
-	jr z, .Redundant
-	jr .NotRedundant
-
-.MeanLook: ; 2c4d1
-	ld a, [EnemySubStatus5]
-	bit SUBSTATUS_CANT_RUN, a
+.InvertZero
+	jr nz, .zero
+	rlca
+	rrca
+	ret
+.zero
+	cp a
 	ret
 
-.Nightmare: ; 2c4d7
+.MeanLook
+	ld a, [wEnemySubStatus5]
+	bit SUBSTATUS_CANT_RUN, a
+	ret nz
+	ld a, [wPlayerSubStatus2]
+	bit SUBSTATUS_FINAL_CHANCE, a
+	ret
+
+.Nightmare
 	ld a, [BattleMonStatus]
 	and a
 	jr z, .Redundant
-	ld a, [PlayerSubStatus1]
+	ld a, [wPlayerSubStatus1]
 	bit SUBSTATUS_NIGHTMARE, a
 	ret
 
-.Spikes: ; 2c4e3
-	ld a, [PlayerScreens]
+.Spikes
+	ld a, [wPlayerScreens]
 	bit SCREENS_SPIKES, a
 	ret
 
-.Foresight: ; 2c4e9
-	ld a, [PlayerSubStatus1]
+.Foresight
+	ld a, [wPlayerSubStatus1]
 	bit SUBSTATUS_IDENTIFIED, a
 	ret
 
-.PerishSong: ; 2c4ef
-	ld a, [PlayerSubStatus1]
+.PerishSong
+	ld a, [wPlayerSubStatus1]
 	bit SUBSTATUS_PERISH, a
 	ret
 
-.Sandstorm: ; 2c4f5
+.Sandstorm
 	ld a, [Weather]
 	cp WEATHER_SANDSTORM
-	jr z, .Redundant
-	jr .NotRedundant
+	jr .InvertZero
 
-.Attract: ; 2c4fe
+.Attract
 	callba CheckOppositeGender
 	jr c, .Redundant
-	ld a, [PlayerSubStatus1]
+	ld a, [wPlayerSubStatus1]
 	bit SUBSTATUS_IN_LOVE, a
 	ret
 
-.Safeguard: ; 2c50c
-	ld a, [EnemyScreens]
+.Safeguard
+	ld a, [wEnemyScreens]
 	bit SCREENS_SAFEGUARD, a
 	ret
 
-.RainDance: ; 2c512
+.RainDance
 	ld a, [Weather]
 	cp WEATHER_RAIN
-	jr z, .Redundant
-	jr .NotRedundant
+	jr .InvertZero
 
-.SunnyDay: ; 2c51b
+.SunnyDay
 	ld a, [Weather]
 	cp WEATHER_SUN
-	jr z, .Redundant
-	jr .NotRedundant
+	jr .InvertZero
 
-.DreamEater: ; 2c524
+.DreamEater
 	ld a, [BattleMonStatus]
 	and SLP
-	jr z, .Redundant
-	jr .NotRedundant
+	jr .InvertZero
 
-.Swagger: ; 2c52d
-	ld a, [PlayerSubStatus3]
+.Swagger
+	ld a, [wPlayerSubStatus3]
 	bit SUBSTATUS_CONFUSED, a
 	ret
 
-.FutureSight: ; 2c533
-	ld a, [EnemyScreens]
+.FutureSight
+	ld a, [wEnemyScreens]
 	bit 5, a
 	ret
 
-.Heal:
-.MorningSun:
-.Synthesis:
-.Moonlight: ; 2c539
+.Heal
+.MorningSun
+.Synthesis
+.Moonlight
 	callba AICheckEnemyMaxHP
-	jr nc, .NotRedundant
-
-.Teleport:
-.Redundant: ; 2c541
-	ld a, 1
-	and a
+	jr c, .Redundant
+	xor a
 	ret
 
-.NotRedundant: ; 2c545
-	xor a
+.Teleport
+.Redundant
+	rlca
 	ret

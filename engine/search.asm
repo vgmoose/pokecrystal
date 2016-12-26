@@ -1,66 +1,34 @@
-SpecialBeastsCheck: ; 0x4a6e8
-; Check if the player owns all three legendary beasts.
-; They must exist in either party or PC, and have the player's OT and ID.
-; Return the result in ScriptVar.
-
-	ld a, RAIKOU
-	ld [ScriptVar], a
-	call CheckOwnMonAnywhere
-	jr nc, .notexist
-
-	ld a, ENTEI
-	ld [ScriptVar], a
-	call CheckOwnMonAnywhere
-	jr nc, .notexist
-
-	ld a, SUICUNE
-	ld [ScriptVar], a
-	call CheckOwnMonAnywhere
-	jr nc, .notexist
-
-	; they exist
-	ld a, 1
-	ld [ScriptVar], a
-	ret
-
-.notexist
-	xor a
-	ld [ScriptVar], a
-	ret
-
-
-SpecialMonCheck: ; 0x4a711
-; Check if the player owns any monsters of the species in ScriptVar.
-; Return the result in ScriptVar.
+SpecialMonCheck:
+; Check if the player owns any monsters of the species in hScriptVar.
+; Return the result in hScriptVar.
 
 	call CheckOwnMonAnywhere
 	jr c, .exists
 
 	; doesn't exist
 	xor a
-	ld [ScriptVar], a
+	ld [hScriptVar], a
 	ret
 
 .exists
 	ld a, 1
-	ld [ScriptVar], a
+	ld [hScriptVar], a
 	ret
 
-
-CheckOwnMonAnywhere: ; 0x4a721
-; Check if the player owns any monsters of the species in ScriptVar.
+CheckOwnMonAnywhere:
+; Check if the player owns any monsters of the species in hScriptVar.
 ; It must exist in either party or PC, and have the player's OT and ID.
 
 	; If there are no monsters in the party,
 	; the player must not own any yet.
-	ld a, [PartyCount]
+	ld a, [wPartyCount]
 	and a
 	ret z
 
 	ld d, a
 	ld e, 0
 	ld hl, PartyMon1Species
-	ld bc, PartyMonOT
+	ld bc, wPartyMonOT
 
 	; Run CheckOwnMon on each Pokémon in the party.
 .partymon
@@ -90,8 +58,7 @@ CheckOwnMonAnywhere: ; 0x4a721
 	jr nc, .loop
 
 	; found!
-	call CloseSRAM
-	ret
+	jp CloseSRAM
 
 .loop
 	push bc
@@ -154,8 +121,7 @@ CheckOwnMonAnywhere: ; 0x4a721
 
 	; found!
 	pop bc
-	call CloseSRAM
-	ret
+	jp CloseSRAM
 
 .loopboxmon
 	push bc
@@ -178,14 +144,13 @@ CheckOwnMonAnywhere: ; 0x4a721
 	and a
 	ret
 
-
-CheckOwnMon: ; 0x4a7ba
+CheckOwnMon:
 ; Check if a Pokémon belongs to the player and is of a specific species.
 
 ; inputs:
 ; hl, pointer to PartyMonNSpecies
 ; bc, pointer to PartyMonNOT
-; ScriptVar should contain the species we're looking for
+; hScriptVar should contain the species we're looking for
 
 ; outputs:
 ; sets carry if monster matches species, ID, and OT name.
@@ -197,7 +162,7 @@ CheckOwnMon: ; 0x4a7ba
 	ld e, c
 
 ; check species
-	ld a, [ScriptVar] ; species we're looking for
+	ld a, [hScriptVar] ; species we're looking for
 	ld b, [hl] ; species we have
 	cp b
 	jr nz, .notfound ; species doesn't match
@@ -214,12 +179,11 @@ CheckOwnMon: ; 0x4a7ba
 	jr nz, .notfound ; ID doesn't match
 
 ; check OT
-; This only checks five characters, which is fine for the Japanese version,
-; but in the English version the player name is 7 characters, so this is wrong.
 
 	ld hl, PlayerName
+	ld b, 7
 
-	rept 4
+.otcheckloop
 	ld a, [de]
 	cp [hl]
 	jr nz, .notfound
@@ -227,11 +191,8 @@ CheckOwnMon: ; 0x4a7ba
 	jr z, .found ; reached end of string
 	inc hl
 	inc de
-	endr
-
-	ld a, [de]
-	cp [hl]
-	jr z, .found
+	dec b
+	jr nz, .otcheckloop
 
 .notfound
 	pop de
@@ -246,9 +207,8 @@ CheckOwnMon: ; 0x4a7ba
 	pop bc
 	scf
 	ret
-; 0x4a810
 
-BoxAddressTable1: ; 4a810
+BoxAddressTable1:
 	dba sBox1
 	dba sBox2
 	dba sBox3
@@ -263,9 +223,8 @@ BoxAddressTable1: ; 4a810
 	dba sBox12
 	dba sBox13
 	dba sBox14
-; 4a83a
 
-UpdateOTPointer: ; 0x4a83a
+UpdateOTPointer:
 	push hl
 	ld hl, NAME_LENGTH
 	add hl, bc
@@ -273,4 +232,3 @@ UpdateOTPointer: ; 0x4a83a
 	ld c, l
 	pop hl
 	ret
-; 0x4a843

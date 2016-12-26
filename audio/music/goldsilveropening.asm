@@ -1,7 +1,8 @@
 Music_GoldSilverOpening: ; f7055
-	musicheader 3, 1, Music_GoldSilverOpening_Ch1
-	musicheader 1, 2, Music_GoldSilverOpening_Ch2
-	musicheader 1, 3, Music_GoldSilverOpening_Ch3
+	channelcount 3
+	channel 1, Music_GoldSilverOpening_Ch1
+	channel 2, Music_GoldSilverOpening_Ch2
+	channel 3, Music_GoldSilverOpening_Ch3
 ; f705e
 
 Music_GoldSilverOpening_Ch1: ; f705e

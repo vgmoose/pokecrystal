@@ -1,20 +1,6 @@
-ClearSpriteAnims: ; 8cf53
-	ld hl, wSpriteAnimDict
-	ld bc, wSpriteAnimsEnd - wSpriteAnimDict
-.loop
-	ld [hl], $0
-	inc hl
-	dec bc
-	ld a, c
-	or b
-	jr nz, .loop
-	ret
-; 8cf62
-
 PlaySpriteAnimationsAndDelayFrame: ; 8cf62
 	call PlaySpriteAnimations
-	call DelayFrame
-	ret
+	jp DelayFrame
 ; 8cf69
 
 PlaySpriteAnimations: ; 8cf69
@@ -23,7 +9,7 @@ PlaySpriteAnimations: ; 8cf69
 	push bc
 	push af
 
-	ld a, Sprites % $100
+	xor a
 	ld [wCurrSpriteOAMAddr], a
 	call DoNextFrameForAllSprites
 
@@ -50,7 +36,7 @@ DoNextFrameForAllSprites: ; 8cf7a
 	call UpdateAnimFrame
 	pop de
 	pop hl
-	jr c, .done
+	ret c
 
 .next
 	ld bc, $10
@@ -65,13 +51,10 @@ DoNextFrameForAllSprites: ; 8cf7a
 .loop2 ; Clear (Sprites + [wCurrSpriteOAMAddr] --> SpritesEnd)
 	ld a, l
 	cp SpritesEnd % $100
-	jr nc, .done
+	ret nc
 	xor a
 	ld [hli], a
 	jr .loop2
-
-.done
-	ret
 ; 8cfa8
 
 DoNextFrameForFirst16Sprites: ; 8cfa8 (23:4fa8)
@@ -90,7 +73,7 @@ DoNextFrameForFirst16Sprites: ; 8cfa8 (23:4fa8)
 	call UpdateAnimFrame
 	pop de
 	pop hl
-	jr c, .done
+	ret c
 
 .next
 	ld bc, $10
@@ -105,17 +88,18 @@ DoNextFrameForFirst16Sprites: ; 8cfa8 (23:4fa8)
 .loop2 ; Clear (Sprites + [wCurrSpriteOAMAddr] --> Sprites + $40)
 	ld a, l
 	cp (Sprites + 16 * 4) % $100
-	jr nc, .done
+	ret nc
 	xor a
 	ld [hli], a
 	jr .loop2
 
-.done
-	ret
+InitSpriteAnimStruct_IDToBuffer:
+	ld [wSpriteAnimIDBuffer], a
 
 InitSpriteAnimStruct:: ; 8cfd6
 ; Initialize animation a at pixel x=e, y=d
-; Find if there's any room in the wSpriteAnimationStructs array, which is 10x16
+; Returns pointer to struct in bc.
+; Up to 10 structs can be allocated.
 	push de
 	push af
 	ld hl, wSpriteAnimationStructs
@@ -136,7 +120,7 @@ InitSpriteAnimStruct:: ; 8cfd6
 	ret
 
 .found
-; Back up the structure address to bc.
+; Copy the struct pointer to bc.
 	ld c, l
 	ld b, h
 ; Value [wSpriteAnimCount] is initially set to -1. Set it to
@@ -198,9 +182,10 @@ InitSpriteAnimStruct:: ; 8cfd6
 	ld [hli], a
 ; load 0 into the last five fields
 	xor a
-rept 4
 	ld [hli], a
-endr
+	ld [hli], a
+	ld [hli], a
+	ld [hli], a
 	ld [hl], a
 ; back up the address of the first field to wSpriteAnimAddrBackup
 	ld a, c
@@ -296,8 +281,12 @@ UpdateAnimFrame: ; 8d04c
 	inc de
 	; fourth byte: attributes
 	; [de] = GetSpriteOAMAttr([hl])
+	ld a, [hl]
+	cp $ff
+	jr z, .skipOAM
 	call GetSpriteOAMAttr
 	ld [de], a
+.skipOAM
 	inc hl
 	inc de
 	ld a, e
@@ -341,7 +330,7 @@ AddOrSubtractX: ; 8d0ce
 	push hl
 	ld a, [hl]
 	ld hl, wCurrSpriteAddSubFlags
-	bit 5, [hl] ; x flip
+	bit 5, [hl]
 	jr z, .ok
 	; 8 - a
 	add $8
@@ -411,6 +400,9 @@ GetSpriteAnimVTile: ; 8d109
 	ret
 ; 8d120
 
+_ReinitSpriteAnimFrame_IDToBuffer:
+	ld [wSpriteAnimIDBuffer], a
+
 _ReinitSpriteAnimFrame:: ; 8d120
 	ld hl, SPRITEANIMSTRUCT_FRAMESET_ID
 	add hl, bc
@@ -423,7 +415,6 @@ _ReinitSpriteAnimFrame:: ; 8d120
 	ld [hl], -1
 	ret
 ; 8d132
-
 
 GetSpriteAnimFrame: ; 8d132
 .loop
@@ -527,41 +518,18 @@ GetFrameOAMPointer: ; 8d1a2
 	ret
 ; 8d1ac
 
-BrokenGetStdGraphics: ; 8d1ac
-; dummied out
-	push hl
-	ld l, a
-	ld h, 0
-	add hl, hl
-	add hl, hl
-	ld de, BrokenStdGFXPointers ; broken 2bpp pointers
-	add hl, de
-	ld c, [hl]
-	inc hl
-	ld b, [hl]
-	inc hl
-	ld e, [hl]
-	inc hl
-	ld d, [hl]
-	pop hl
-	push bc
-	call Request2bpp
-	pop bc
-	ret
-; 8d1c4
-
 SpriteAnimSeqData: ; 8d1c4
 	; frameset sequence, tile
 	db SPRITE_ANIM_FRAMESET_01, SPRITE_ANIM_SEQ_01, $00 ; 00
 	db SPRITE_ANIM_FRAMESET_07, SPRITE_ANIM_SEQ_04, $00 ; 01
-	db SPRITE_ANIM_FRAMESET_08, SPRITE_ANIM_SEQ_05, $05 ; 02
+	db SPRITE_ANIM_FRAMESET_08, SPRITE_ANIM_SEQ_05, $05 ; 02 naming screen cursor
 	db SPRITE_ANIM_FRAMESET_GAMEFREAK_LOGO, SPRITE_ANIM_SEQ_GAMEFREAK_LOGO, $00 ; 03
-	db SPRITE_ANIM_FRAMESET_0B, SPRITE_ANIM_SEQ_07, $06 ; 04 gs intro star
-	db SPRITE_ANIM_FRAMESET_0C, SPRITE_ANIM_SEQ_08, $06 ; 05 gs intro sparkle
+	db SPRITE_ANIM_FRAMESET_0B, SPRITE_ANIM_SEQ_07, $06 ; 04
+	db SPRITE_ANIM_FRAMESET_0C, SPRITE_ANIM_SEQ_08, $06 ; 05
 	db SPRITE_ANIM_FRAMESET_SLOT_GOLEM, SPRITE_ANIM_SEQ_SLOT_GOLEM, $07 ; 06 slots golem
 	db SPRITE_ANIM_FRAMESET_SLOTS_CHANSEY, SPRITE_ANIM_SEQ_SLOTS_CHANSEY, $07 ; 07 slots chansey
 	db SPRITE_ANIM_FRAMESET_SLOTS_EGG, SPRITE_ANIM_SEQ_SLOTS_EGG, $07 ; 08 slots egg
-	db SPRITE_ANIM_FRAMESET_08, SPRITE_ANIM_SEQ_0C, $05 ; 09
+	; db SPRITE_ANIM_FRAMESET_08, SPRITE_ANIM_SEQ_0C, $05 ; 09 mail composition cursor
 	db SPRITE_ANIM_FRAMESET_WALK_CYCLE, SPRITE_ANIM_SEQ_NULL, $00 ; 0a walk cycle
 	db SPRITE_ANIM_FRAMESET_12, SPRITE_ANIM_SEQ_0D, $08 ; 0b
 	db SPRITE_ANIM_FRAMESET_12, SPRITE_ANIM_SEQ_0E, $08 ; 0c
@@ -569,21 +537,21 @@ SpriteAnimSeqData: ; 8d1c4
 	db SPRITE_ANIM_FRAMESET_13, SPRITE_ANIM_SEQ_10, $00 ; 0e
 	db SPRITE_ANIM_FRAMESET_15, SPRITE_ANIM_SEQ_NULL, $00 ; 0f
 	db SPRITE_ANIM_FRAMESET_16, SPRITE_ANIM_SEQ_11, $00 ; 10
-	db SPRITE_ANIM_FRAMESET_TRADEMON_ICON, SPRITE_ANIM_SEQ_TRADEMON_IN_TUBE, $00 ; 11
-	db SPRITE_ANIM_FRAMESET_TRADEMON_BUBBLE, SPRITE_ANIM_SEQ_TRADEMON_IN_TUBE, $00 ; 12
+	db SPRITE_ANIM_FRAMESET_17, SPRITE_ANIM_SEQ_12, $00 ; 11
+	db SPRITE_ANIM_FRAMESET_18, SPRITE_ANIM_SEQ_12, $00 ; 12
 	db SPRITE_ANIM_FRAMESET_19, SPRITE_ANIM_SEQ_13, $00 ; 13
 	db SPRITE_ANIM_FRAMESET_1A, SPRITE_ANIM_SEQ_14, $00 ; 14 radio tuning knob
-	db SPRITE_ANIM_FRAMESET_1B, SPRITE_ANIM_SEQ_NULL, $00 ; 15 chris on magnet train
+	db SPRITE_ANIM_FRAMESET_1B, SPRITE_ANIM_SEQ_NULL, $00 ; 15
 	db SPRITE_ANIM_FRAMESET_LEAF, SPRITE_ANIM_SEQ_15, $00 ; 16 leaves when cutting down a tree
-	db SPRITE_ANIM_FRAMESET_1E, SPRITE_ANIM_SEQ_NULL, $00 ; 17
+	db SPRITE_ANIM_FRAMESET_1E, SPRITE_ANIM_SEQ_NULL, $00 ; 17 cut tree
 	db SPRITE_ANIM_FRAMESET_LEAF, SPRITE_ANIM_SEQ_FLY_LEAF, $00 ; 18 flying leaves
 	db SPRITE_ANIM_FRAMESET_1F, SPRITE_ANIM_SEQ_NULL, $00 ; 19
 	db SPRITE_ANIM_FRAMESET_24, SPRITE_ANIM_SEQ_19, $00 ; 1a
 	db SPRITE_ANIM_FRAMESET_25, SPRITE_ANIM_SEQ_NULL, $00 ; 1b headbutt
 	db SPRITE_ANIM_FRAMESET_20, SPRITE_ANIM_SEQ_13, $00 ; 1c
 	db SPRITE_ANIM_FRAMESET_26, SPRITE_ANIM_SEQ_1A, $00 ; 1d
-	db SPRITE_ANIM_FRAMESET_2D, SPRITE_ANIM_SEQ_NULL, $00 ; 1e kris on map
-	db SPRITE_ANIM_FRAMESET_2E, SPRITE_ANIM_SEQ_NULL, $00 ; 1f kris on magnet train
+	db SPRITE_ANIM_FRAMESET_2D, SPRITE_ANIM_SEQ_NULL, $00 ; 1e walk cycle pal 1
+	db SPRITE_ANIM_FRAMESET_2E, SPRITE_ANIM_SEQ_NULL, $00 ; 1f
 	db SPRITE_ANIM_FRAMESET_2F, SPRITE_ANIM_SEQ_NULL, $00 ; 20
 	db SPRITE_ANIM_FRAMESET_30, SPRITE_ANIM_SEQ_NULL, $00 ; 21
 	db SPRITE_ANIM_FRAMESET_31, SPRITE_ANIM_SEQ_NULL, $00 ; 22
@@ -597,6 +565,16 @@ SpriteAnimSeqData: ; 8d1c4
 	db SPRITE_ANIM_FRAMESET_3F, SPRITE_ANIM_SEQ_21, $00 ; 2a
 	db SPRITE_ANIM_FRAMESET_3E, SPRITE_ANIM_SEQ_22, $00 ; 2b
 	db SPRITE_ANIM_FRAMESET_40, SPRITE_ANIM_SEQ_NULL, $00 ; 2c
+	db SPRITE_ANIM_FRAMESET_CUSTOMIZATION_PLAYER, SPRITE_ANIM_SEQ_NULL, $00
+	db SPRITE_ANIM_FRAMESET_PAL02_WALK, SPRITE_ANIM_SEQ_NULL, $00 ; 1e walk cycle pal 2
+	db SPRITE_ANIM_FRAMESET_PAL03_WALK, SPRITE_ANIM_SEQ_NULL, $00 ; 1e walk cycle pal 3
+	db SPRITE_ANIM_FRAMESET_PAL04_WALK, SPRITE_ANIM_SEQ_NULL, $00 ; 1e walk cycle pal 4
+	db SPRITE_ANIM_FRAMESET_PAL05_WALK, SPRITE_ANIM_SEQ_NULL, $00 ; 1e walk cycle pal 5
+	db SPRITE_ANIM_FRAMESET_PAL06_WALK, SPRITE_ANIM_SEQ_NULL, $00 ; 1e walk cycle pal 6
+	db SPRITE_ANIM_FRAMESET_PAL07_WALK, SPRITE_ANIM_SEQ_NULL, $00 ; 1e walk cycle pal 7
+	db SPRITE_ANIM_FRAMESET_SLIDER_CURSOR, SPRITE_ANIM_SEQ_SLIDER_CURSOR, $00
+	db SPRITE_ANIM_FRAMESET_CALENDAR_CURSOR, SPRITE_ANIM_SEQ_CALENDAR_CURSOR, $00
+	db SPRITE_ANIM_FRAMESET_00, SPRITE_ANIM_SEQ_NULL, $00
 ; 8d24b
 
 INCLUDE "engine/sprite_anims.asm" ; DoAnimFrame
@@ -605,62 +583,8 @@ INCLUDE "data/sprite_engine.asm"
 ; SpriteAnimFrameData
 ; SpriteAnimOAMData
 
-Sprites_Cosine: ; 8e72a
-	add $10
-Sprites_Sine: ; 8e72c
-; floor(d * sin(a * pi/32))
-	and $3f
-	cp $20
-	jr nc, .negative
-	call .ApplySineWave
-	ld a, h
-	ret
-
-.negative
-	and $1f
-	call .ApplySineWave
-	ld a, h
-	xor $ff ; cpl
-	inc a
-	ret
-; 8e741
-
-.ApplySineWave: ; 8e741
-	ld e, a
-	ld a, d
-	ld d, 0
-	ld hl, .sinewave
-	add hl, de
-	add hl, de
-	ld e, [hl]
-	inc hl
-	ld d, [hl]
-	ld hl, 0
-.multiply
-	srl a
-	jr nc, .even
-	add hl, de
-
-.even
-	sla e
-	rl d
-	and a
-	jr nz, .multiply
-	ret
-; 8e75d
-
-.sinewave ; 8e75d
-	sine_wave $100
-
-
 AnimateEndOfExpBar: ; 8e79d
-	ld a, [hSGB]
 	ld de, EndOfExpBarGFX
-	and a
-	jr z, .load
-	ld de, SGBEndOfExpBarGFX
-
-.load
 	ld hl, VTiles0 tile $00
 	lb bc, BANK(EndOfExpBarGFX), 1
 	call Request2bpp
@@ -675,8 +599,7 @@ AnimateEndOfExpBar: ; 8e79d
 	inc d
 	dec c
 	jr nz, .loop
-	call ClearSprites
-	ret
+	jp ClearSprites
 ; 8e7c6
 
 .AnimateFrame: ; 8e7c6
@@ -689,14 +612,14 @@ AnimateEndOfExpBar: ; 8e79d
 	dec c
 	ld a, c
 ; multiply by 8
-	sla a
-	sla a
-	sla a
+	add a
+	add a
+	add a
 	push af
 
 	push de
 	push hl
-	call Sprites_Sine
+	call Sine
 	pop hl
 	pop de
 	add 13 * 8
@@ -705,13 +628,13 @@ AnimateEndOfExpBar: ; 8e79d
 	pop af
 	push de
 	push hl
-	call Sprites_Cosine
+	call Cosine
 	pop hl
 	pop de
 	add 10 * 8 + 4
 	ld [hli], a
 
-	ld a, $0
+	xor a
 	ld [hli], a
 	ld a, $6 ; OBJ 6
 	ld [hli], a
@@ -725,21 +648,18 @@ INCBIN "gfx/battle/expbarend_sgb.2bpp"
 
 ClearSpriteAnims2: ; 8e814
 	push hl
-	push de
 	push bc
 	push af
-	ld hl, wSpriteAnimDict
-	ld bc, wSpriteAnimsEnd - wSpriteAnimDict
-.loop
-	ld [hl], $0
-	inc hl
-	dec bc
-	ld a, c
-	or b
-	jr nz, .loop
+	call ClearSpriteAnims
 	pop af
 	pop bc
-	pop de
 	pop hl
 	ret
 ; 8e82b
+
+ClearSpriteAnims: ; 8cf53
+	ld hl, wSpriteAnimDict
+	ld bc, wSpriteAnimsEnd - wSpriteAnimDict
+	xor a
+	jp ByteFill
+; 8cf62

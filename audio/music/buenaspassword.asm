@@ -1,8 +1,9 @@
 Music_BuenasPassword: ; 178153
-	musicheader 4, 1, Music_BuenasPassword_Ch1
-	musicheader 1, 2, Music_BuenasPassword_Ch2
-	musicheader 1, 3, Music_BuenasPassword_Ch3
-	musicheader 1, 4, Music_BuenasPassword_Ch4
+	channelcount 4
+	channel 1, Music_BuenasPassword_Ch1
+	channel 2, Music_BuenasPassword_Ch2
+	channel 3, Music_BuenasPassword_Ch3
+	channel 4, Music_BuenasPassword_Ch4
 ; 17815f
 
 Music_BuenasPassword_Ch1: ; 17815f

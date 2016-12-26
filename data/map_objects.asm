@@ -1,3 +1,5 @@
+SpriteMovementData::
+
 sprite_movement_data: macro
 	db \1, \2, \3, \4, \5
 	dn \6, 0
@@ -26,7 +28,7 @@ endm
 	sprite_movement_data SPRITEMOVEFN_FOLLOW,                DOWN,   PERSON_ACTION_STAND,    $02,    $00,    %0000 ; 13
 	sprite_movement_data SPRITEMOVEFN_SCRIPTED,              DOWN,   PERSON_ACTION_STAND,    $02,    $00,    %0000 ; 14
 	sprite_movement_data SPRITEMOVEFN_BIG_SNORLAX,           DOWN,   PERSON_ACTION_09,       $2e,    $01,    %1100 ; 15
-	sprite_movement_data SPRITEMOVEFN_BOUNCE,                DOWN,   PERSON_ACTION_0A,       $2e,    $00,    %0000 ; 16
+	sprite_movement_data SPRITEMOVEFN_BOUNCE,                DOWN,   PERSON_ACTION_0A,       $2a,    $00,    %0000 ; 16
 	sprite_movement_data SPRITEMOVEFN_STANDING,              DOWN,   PERSON_ACTION_STAND,    $0c,    $00,    %0000 ; 17
 	sprite_movement_data SPRITEMOVEFN_STANDING,              DOWN,   PERSON_ACTION_STAND,    $2e,    $10,    %0000 ; 18
 	sprite_movement_data SPRITEMOVEFN_STRENGTH,              DOWN,   PERSON_ACTION_STAND,    $2e,    $00,    %0100 ; 19
@@ -41,4 +43,5 @@ endm
 	sprite_movement_data SPRITEMOVEFN_BOULDERDUST,           DOWN,   PERSON_ACTION_0E,       $8e,    $01,    %0000 ; 22
 	sprite_movement_data SPRITEMOVEFN_GRASS,                 DOWN,   PERSON_ACTION_0F,       $8e,    $02,    %0000 ; 23
 	sprite_movement_data SPRITEMOVEFN_RANDOM_WALK_XY,        DOWN,   PERSON_ACTION_STAND,    $00,    $00,    %0010 ; 24
-	sprite_movement_data SPRITEMOVEFN_00,                    DOWN,   PERSON_ACTION_STAND,    $00,    $00,    %0000 ; 25
+	sprite_movement_data SPRITEMOVEFN_SNOW,                  DOWN,   PERSON_ACTION_SNOW,     $8e,    $02,    %0000 ; 25
+	sprite_movement_data SPRITEMOVEFN_00,                    DOWN,   PERSON_ACTION_STAND,    $00,    $00,    %0000 ; 26

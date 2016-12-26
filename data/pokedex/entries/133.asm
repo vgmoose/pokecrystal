@@ -1,10 +1,15 @@
-; EeveePokedexEntry: ; 0x1cc1b2
-	db "EVOLUTION@" ; species name
-	dw 100, 140 ; height, width
+	ctxt "Evolution" ; species name
+	done
+	dw 100, 140 ; height, weight
 
-	db   "Its ability to"
+	db .page2 - .page1
+.page1
+	ctxt "Its ability to"
 	next "evolve into many"
 	next "forms allows it to"
-	page "adapt smoothly"
+	done
+.page2
+	ctxt "adapt smoothly"
 	next "and perfectly to"
-	next "any environment.@"
+	next "any environment."
+	done

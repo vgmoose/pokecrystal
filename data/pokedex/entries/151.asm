@@ -1,10 +1,15 @@
-; MewPokedexEntry: ; 0x1cc915
-	db "NEW SPECIE@" ; species name
-	dw 104, 90 ; height, width
+	ctxt "New Specie" ; species name
+	done
+	dw 104, 90 ; height, weight
 
-	db   "Because it can"
+	db .page2 - .page1
+.page1
+	ctxt "Because it can"
 	next "learn any move,"
 	next "some people began"
-	page "research to see if"
+	done
+.page2
+	ctxt "research to see if"
 	next "it is the ancestor"
-	next "of all #MON.@"
+	next "of all #mon."
+	done

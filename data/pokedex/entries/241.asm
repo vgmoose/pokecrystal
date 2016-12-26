@@ -1,10 +1,15 @@
-; MiltankPokedexEntry: ; 0x1d1482
-	db "MILK COW@" ; species name
-	dw 311, 1660 ; height, width
+	ctxt "Intertwining" ; species name
+	done
+	dw 303, 518 ; height, weight
 
-	db   "In order to milk a"
-	next "MILTANK, one must"
-	next "have a knack for"
-	page "rhythmically pull-"
-	next "ing up and down"
-	next "on its udders.@"
+	db .page2 - .page1
+.page1
+	ctxt "It wraps its"
+	next "ribbonlike feelers"
+	next "around the arm of"
+	done
+.page2
+	ctxt "its beloved Train-"
+	next "er and walks with"
+	next "him or her."
+	done

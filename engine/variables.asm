@@ -1,4 +1,4 @@
-_GetVarAction:: ; 80648 (20:4648)
+_GetVarAction::
 	ld a, c
 	cp NUM_VARS
 	jr c, .valid
@@ -10,38 +10,28 @@ _GetVarAction:: ; 80648 (20:4648)
 	add hl, bc
 	add hl, bc
 	add hl, bc
-	ld e, [hl]
-	inc hl
-	ld d, [hl]
-	inc hl
+	ld a, [hli]
+	ld e, a
+	ld a, [hli]
+	ld d, a
 	ld b, [hl]
 	ld a, b
 	and RETVAR_EXECUTE
-	jr nz, .call
+	jp nz, _de_
 	ld a, b
 	and RETVAR_ADDR_DE
 	ret nz
 	ld a, [de]
-	jr .loadstringbuffer2
+	jp .loadstringbuffer2
 
-.call
-	call _de_
-	ret
-
-.loadstringbuffer2 ; 8066c (20:466c)
-	ld de, StringBuffer2
-	ld [de], a
-	ret
-; 80671 (20:4671)
-
-.VarActionTable: ; 80671
-; $00: copy [de] to StringBuffer2
+.VarActionTable
+; $00: copy [de] to wStringBuffer2
 ; $40: return address in de
 ; $80: call function
-	dwb StringBuffer2,                  RETVAR_STRBUF2
-	dwb PartyCount,                     RETVAR_STRBUF2
+	dwb wStringBuffer2,                 RETVAR_STRBUF2
+	dwb wPartyCount,                    RETVAR_STRBUF2
 	dwb .BattleResult,                  RETVAR_EXECUTE
-	dwb BattleType,                     RETVAR_ADDR_DE
+	dwb wBattleType,                    RETVAR_ADDR_DE
 	dwb TimeOfDay,                      RETVAR_STRBUF2
 	dwb .CountCaughtMons,               RETVAR_EXECUTE
 	dwb .CountSeenMons,                 RETVAR_EXECUTE
@@ -52,85 +42,48 @@ _GetVarAction:: ; 80648 (20:4648)
 	dwb .DayOfWeek,                     RETVAR_EXECUTE
 	dwb MapGroup,                       RETVAR_STRBUF2
 	dwb MapNumber,                      RETVAR_STRBUF2
-	dwb .UnownCaught,                   RETVAR_EXECUTE
+	dwb wStringBuffer2,                 RETVAR_STRBUF2
 	dwb wPermission,                    RETVAR_STRBUF2
 	dwb .BoxFreeSpace,                  RETVAR_EXECUTE
-	dwb wBugContestMinsRemaining,       RETVAR_STRBUF2
+	dwb wStringBuffer2,                 RETVAR_STRBUF2
 	dwb XCoord,                         RETVAR_STRBUF2
 	dwb YCoord,                         RETVAR_STRBUF2
-	dwb wSpecialPhoneCallID,            RETVAR_STRBUF2
-	dwb wNrOfBeatenBattleTowerTrainers, RETVAR_STRBUF2
-	dwb wKurtApricornQuantity,          RETVAR_STRBUF2
-	dwb wCurrentCaller,                 RETVAR_ADDR_DE
-	dwb wBlueCardBalance,               RETVAR_ADDR_DE
-	dwb wBuenasPassword,                RETVAR_ADDR_DE
-	dwb wKenjiBreakTimer,               RETVAR_STRBUF2
-	dwb NULL,                           RETVAR_STRBUF2
-; 806c5
 
-.CountCaughtMons: ; 806c5
+.CountCaughtMons
 ; Caught mons.
 	ld hl, PokedexCaught
 	ld b, EndPokedexCaught - PokedexCaught
-	call CountSetBits
-	ld a, [wd265]
-	jp .loadstringbuffer2
-; 806d3
+	jr .bits
 
-.CountSeenMons: ; 806d3
+.CountSeenMons
 ; Seen mons.
 	ld hl, PokedexSeen
 	ld b, EndPokedexSeen - PokedexSeen
-	call CountSetBits
-	ld a, [wd265]
-	jp .loadstringbuffer2
-; 806e1
+	jr .bits
 
-.CountBadges: ; 806e1
+.CountBadges
 ; Number of owned badges.
 	ld hl, Badges
-	ld b, 2
+	ld b, 3
+.bits
 	call CountSetBits
 	ld a, [wd265]
-	jp .loadstringbuffer2
-; 806ef
+	jr .loadstringbuffer2
 
-.PlayerFacing: ; 806ef
+.PlayerFacing
 ; The direction the player is facing.
 	ld a, [PlayerDirection]
 	and $c
 	rrca
 	rrca
-	jp .loadstringbuffer2
-; 806f9
+	jr .loadstringbuffer2
 
-.DayOfWeek: ; 806f9
+.DayOfWeek
 ; The day of the week.
 	call GetWeekday
-	jp .loadstringbuffer2
-; 806ff
+	jr .loadstringbuffer2
 
-.UnownCaught: ; 806ff
-; Number of unique Unown caught.
-	call .count
-	ld a, b
-	jp .loadstringbuffer2
-
-.count
-	ld hl, UnownDex
-	ld b, 0
-.loop
-	ld a, [hli]
-	and a
-	ret z
-	inc b
-	ld a, b
-	cp 26
-	jr c, .loop
-	ret
-; 80715
-
-.BoxFreeSpace: ; 80715
+.BoxFreeSpace
 ; Remaining slots in the current box.
 	ld a, BANK(sBoxCount)
 	call GetSRAMBank
@@ -140,11 +93,12 @@ _GetVarAction:: ; 80648 (20:4648)
 	ld b, a
 	call CloseSRAM
 	ld a, b
-	jp .loadstringbuffer2
-; 80728
+	jr .loadstringbuffer2
 
-.BattleResult: ; 80728
+.BattleResult
 	ld a, [wBattleResult]
 	and $3f
-	jp .loadstringbuffer2
-; 80730
+.loadstringbuffer2
+	ld de, wStringBuffer2
+	ld [de], a
+	ret

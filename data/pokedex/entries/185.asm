@@ -1,10 +1,15 @@
-; SudowoodoPokedexEntry: ; 0x1cd7d9
-	db "IMITATION@" ; species name
-	dw 311, 840 ; height, width
+	ctxt "Numb" ; species name
+	done
+	dw 204, 529 ; height, weight
 
-	db   "If a tree branch"
-	next "shakes when there"
-	next "is no wind, it's a"
-	page "SUDOWOODO, not a"
-	next "tree. It hides"
-	next "from the rain.@"
+	db .page2 - .page1
+.page1
+	ctxt "The flaming magma"
+	next "it stores in the"
+	next "hump on its back"
+	done
+.page2
+	ctxt "is the source of"
+	next "its tremendous"
+	next "power."
+	done

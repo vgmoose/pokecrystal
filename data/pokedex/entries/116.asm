@@ -1,10 +1,15 @@
-; HorseaPokedexEntry: ; 0x1b9553
-	db "DRAGON@" ; species name
-	dw 104, 180 ; height, width
+	ctxt "Vine" ; species name
+	done
+	dw 607, 2835 ; height, weight
 
-	db   "When they're in a"
-	next "safe location,"
-	next "they can be seen"
-	page "playfully tangling"
-	next "their tails"
-	next "together.@"
+	db .page2 - .page1
+.page1
+	ctxt "Its arms are made"
+	next "of plants that"
+	next "bind themselves to"
+	done
+.page2
+	ctxt "things. They grow"
+	next "back right away if"
+	next "cut."
+	done

@@ -1,7 +1,8 @@
 Music_KantoTrainerBattle: ; ec9fa
-	musicheader 3, 1, Music_KantoTrainerBattle_Ch1
-	musicheader 1, 2, Music_KantoTrainerBattle_Ch2
-	musicheader 1, 3, Music_KantoTrainerBattle_Ch3
+	channelcount 3
+	channel 1, Music_KantoTrainerBattle_Ch1
+	channel 2, Music_KantoTrainerBattle_Ch2
+	channel 3, Music_KantoTrainerBattle_Ch3
 ; eca03
 
 	db $3
@@ -9,7 +10,7 @@ Music_KantoTrainerBattle: ; ec9fa
 Music_KantoTrainerBattle_Ch1: ; eca04
 	tempo 114
 	volume $77
-	pitchoffset 1, B_
+	forceoctave $1b
 	notetype $c, $b3
 	vibrato $12, $24
 	dutycycle $1
@@ -467,7 +468,7 @@ Music_KantoTrainerBattle_branch_eca88: ; eca88
 ; ecbea
 
 Music_KantoTrainerBattle_Ch2: ; ecbea
-	pitchoffset 1, B_
+	forceoctave $1b
 	vibrato $6, $36
 	dutycycle $1
 	notetype $c, $d1
@@ -920,7 +921,7 @@ Music_KantoTrainerBattle_branch_ecc41: ; ecc41
 ; ecdd2
 
 Music_KantoTrainerBattle_Ch3: ; ecdd2
-	pitchoffset 1, B_
+	forceoctave $1b
 	vibrato $12, $23
 	notetype $c, $15
 	octave 2

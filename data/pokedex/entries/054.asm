@@ -1,10 +1,15 @@
-; PsyduckPokedexEntry: ; 0x182cee
-	db "DUCK@" ; species name
-	dw 207, 430 ; height, width
+	ctxt "Head Butt" ; species name
+	done
+	dw 211, 694 ; height, weight
 
-	db   "The only time it"
-	next "can use its psy-"
-	next "chic power is when"
-	page "its sleeping brain"
-	next "cells happen to"
-	next "wake.@"
+	db .page2 - .page1
+.page1
+	ctxt "A lifelong jungle"
+	next "dweller from 100"
+	next "million years ago,"
+	done
+.page2
+	ctxt "it would snap"
+	next "obstructing trees"
+	next "with headbutts."
+	done

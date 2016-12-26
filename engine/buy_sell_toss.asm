@@ -1,38 +1,36 @@
 SelectQuantityToToss: ; 24fbf
 	ld hl, TossItem_MenuDataHeader
 	call LoadMenuDataHeader
-	call Toss_Sell_Loop
-	ret
+	jp Toss_Sell_Loop
 ; 24fc9
 
 SelectQuantityToBuy: ; 24fc9
 	callba GetItemPrice
 RooftopSale_SelectQuantityToBuy: ; 24fcf
 	ld a, d
-	ld [Buffer1], a
+	ld [wCurItemPrice], a
 	ld a, e
-	ld [Buffer2], a
+	ld [wCurItemPrice + 1], a
 	ld hl, BuyItem_MenuDataHeader
 	call LoadMenuDataHeader
-	call Toss_Sell_Loop
-	ret
+	jp Toss_Sell_Loop
 ; 24fe1
 
 SelectQuantityToSell: ; 24fe1
 	callba GetItemPrice
 	ld a, d
-	ld [Buffer1], a
+	ld [wCurItemPrice], a
 	ld a, e
-	ld [Buffer2], a
+	ld [wCurItemPrice + 1], a
 	ld hl, SellItem_MenuDataHeader
 	call LoadMenuDataHeader
-	call Toss_Sell_Loop
-	ret
+	jp Toss_Sell_Loop
 ; 24ff9
 
 Toss_Sell_Loop: ; 24ff9
 	ld a, 1
 	ld [wItemQuantityChangeBuffer], a
+	ld [hBGMapMode], a
 .loop
 	call BuySellToss_UpdateQuantityDisplay ; update display
 	call BuySellToss_InterpretJoypad       ; joy action
@@ -48,7 +46,7 @@ Toss_Sell_Loop: ; 24ff9
 ; 2500e
 
 BuySellToss_InterpretJoypad: ; 2500e
-	call JoyTextDelay_ForcehJoyDown ; get joypad
+	call GetJoypadForQuantitySelectionMenus ; get joypad
 	bit B_BUTTON_F, c
 	jr nz, .b
 	bit A_BUTTON_F, c
@@ -70,7 +68,7 @@ BuySellToss_InterpretJoypad: ; 2500e
 	ret
 
 .a
-	ld a, 0
+	xor a
 	scf
 	ret
 
@@ -139,64 +137,16 @@ BuySellToss_UpdateQuantityDisplay: ; 25072
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 2
 	call PrintNum
 	ld a, [wMenuData2Pointer]
-	ld e, a
+	ld c, a
 	ld a, [wMenuData2Pointer + 1]
-	ld d, a
+	ld b, a
+	or b
+	ret z
+	push hl
+	ld h, b
+	ld l, c
 	ld a, [wMenuDataBank]
-	call FarCall_de
-	ret
-; 25097
-
-ret_25097: ; 25097
-	ret
-; 25098
-
-DisplayPurchasePrice: ; 25098
-	call BuySell_MultiplyPrice
-	call BuySell_DisplaySubtotal
-	ret
-; 2509f
-
-DisplaySellingPrice: ; 2509f
-	call BuySell_MultiplyPrice
-	call Sell_HalvePrice
-	call BuySell_DisplaySubtotal
-	ret
-; 250a9
-
-BuySell_MultiplyPrice: ; 250a9
-	xor a
-	ld [hMultiplicand + 0], a
-	ld a, [Buffer1]
-	ld [hMultiplicand + 1], a
-	ld a, [Buffer2]
-	ld [hMultiplicand + 2], a
-	ld a, [wItemQuantityChangeBuffer]
-	ld [hMultiplier], a
-	push hl
-	call Multiply
-	pop hl
-	ret
-; 250c1
-
-Sell_HalvePrice: ; 250c1
-	push hl
-	ld hl, hProduct + 1
-	ld a, [hl]
-	srl a
-	ld [hli], a
-	ld a, [hl]
-	rra
-	ld [hli], a
-	ld a, [hl]
-	rra
-	ld [hl], a
-	pop hl
-	ret
-; 250d1
-
-BuySell_DisplaySubtotal: ; 250d1
-	push hl
+	call FarCall_hl
 	ld hl, hMoneyTemp
 	ld a, [hProduct + 1]
 	ld [hli], a
@@ -208,16 +158,40 @@ BuySell_DisplaySubtotal: ; 250d1
 	inc hl
 	ld de, hMoneyTemp
 	lb bc, PRINTNUM_MONEY | 3, 6
-	call PrintNum
-	call WaitBGMap
-	ret
+	jp PrintNum
 ; 250ed
+
+BuySell_MultiplyPrice: ; 250a9
+	xor a
+	ld [hMultiplicand + 0], a
+	ld a, [wCurItemPrice]
+	ld [hMultiplicand + 1], a
+	ld a, [wCurItemPrice + 1]
+	ld [hMultiplicand + 2], a
+	ld a, [wItemQuantityChangeBuffer]
+	ld [hMultiplier], a
+	predef_jump Multiply
+
+DisplaySellingPrice: ; 2509f
+	call BuySell_MultiplyPrice
+	ld hl, hProduct + 1
+	ld a, [hl]
+	srl a
+	ld [hli], a
+	ld a, [hl]
+	rra
+	ld [hli], a
+	ld a, [hl]
+	rra
+	ld [hl], a
+	ret
+; 250d1
 
 TossItem_MenuDataHeader: ; 0x250ed
 	db $40 ; flags
 	db 09, 15 ; start coords
 	db 11, 19 ; end coords
-	dw ret_25097
+	dw NULL
 	db 0 ; default option
 ; 0x250f5
 
@@ -225,7 +199,7 @@ BuyItem_MenuDataHeader: ; 0x250f5
 	db $40 ; flags
 	db 15, 07 ; start coords
 	db 17, 19 ; end coords
-	dw DisplayPurchasePrice
+	dw BuySell_MultiplyPrice
 	db -1 ; default option
 ; 0x250fd
 

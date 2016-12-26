@@ -1,4 +1,4 @@
-SwitchItemsInBag: ; 2490c (9:490c)
+SwitchItemsInBag:
 	ld a, [wSwitchItem]
 	and a
 	jr z, .init
@@ -77,14 +77,14 @@ SwitchItemsInBag: ; 2490c (9:490c)
 	call ItemSwitch_ConvertSpacingToDW
 	add hl, bc
 	pop bc
-	call CopyBytes
+	rst CopyBytes
 	ld a, [wScrollingMenuCursorPosition]
 	call Function24a4d
 	xor a
 	ld [wSwitchItem], a
 	ret
 
-Function249a7: ; 249a7 (9:49a7)
+Function249a7:
 	ld a, [wSwitchItem]
 	call ItemSwitch_GetNthItem
 	ld d, h
@@ -110,7 +110,7 @@ Function249a7: ; 249a7 (9:49a7)
 	scf
 	ret
 
-Function249d1: ; 249d1 (9:49d1)
+Function249d1:
 	ld a, [wSwitchItem]
 	call ItemSwitch_GetNthItem
 	inc hl
@@ -180,23 +180,23 @@ Function249d1: ; 249d1 (9:49d1)
 	ld [wSwitchItem], a
 	ret
 
-Function24a40: ; 24a40 (9:4a40)
+Function24a40:
 	call ItemSwitch_GetNthItem
 	ld de, wd002
 	call ItemSwitch_ConvertSpacingToDW
-	call CopyBytes
+	rst CopyBytes
 	ret
 
-Function24a4d: ; 24a4d (9:4a4d)
+Function24a4d:
 	call ItemSwitch_GetNthItem
 	ld d, h
 	ld e, l
 	ld hl, wd002
 	call ItemSwitch_ConvertSpacingToDW
-	call CopyBytes
+	rst CopyBytes
 	ret
 
-ItemSwitch_GetNthItem: ; 24a5c (9:4a5c)
+ItemSwitch_GetNthItem:
 	push af
 	call ItemSwitch_ConvertSpacingToDW
 	ld hl, wMenuData2_ItemsPointerAddr
@@ -205,10 +205,10 @@ ItemSwitch_GetNthItem: ; 24a5c (9:4a5c)
 	ld l, a
 	inc hl
 	pop af
-	call AddNTimes
+	rst AddNTimes
 	ret
 
-Function24a6c: ; 24a6c (9:4a6c)
+Function24a6c:
 	push hl
 	call ItemSwitch_ConvertSpacingToDW
 	ld a, d
@@ -218,34 +218,36 @@ Function24a6c: ; 24a6c (9:4a6c)
 	cpl
 .dont_negate
 	ld hl, 0
-	call AddNTimes
+	rst AddNTimes
 	ld b, h
 	ld c, l
 	pop hl
 	ret
 
-ItemSwitch_ConvertSpacingToDW: ; 24a80 (9:4a80)
-; This function is absolutely idiotic.
-	push hl
+ItemSwitch_ConvertSpacingToDW:
+; I'm going to leave the original here commented because the world deserves to see this laughable attempt at coding.
 	ld a, [wMenuData2_ScrollingMenuSpacing]
 	ld c, a
 	ld b, 0
-	ld hl, .spacing_dws
-	add hl, bc
-	add hl, bc
-	ld c, [hl]
-	inc hl
-	ld b, [hl]
-	pop hl
 	ret
 
-; 24a91 (9:4a91)
+; Original:
+;	push hl
+;	ld a, [wMenuData2_ScrollingMenuSpacing]
+;	ld c, a
+;	ld b, 0
+;	ld hl, .spacing_dws
+;	add hl, bc
+;	add hl, bc
+;	ld c, [hl]
+;	inc hl
+;	ld b, [hl]
+;	pop hl
+;	ret
+;.spacing_dws
+;	dw 0, 1, 2
 
-.spacing_dws ; 24a91
-	dw 0, 1, 2
-; 24a97
-
-Function24a97: ; 24a97 (9:4a97)
+Function24a97:
 	push af
 	call ItemSwitch_ConvertSpacingToDW
 	ld a, c
@@ -262,7 +264,7 @@ Function24a97: ; 24a97 (9:4a97)
 	ld a, $1
 	ret
 
-Function24aab: ; 24aab (9:4aab)
+Function24aab:
 .loop
 	ld a, [hld]
 	ld [de], a

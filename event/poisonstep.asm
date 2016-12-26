@@ -1,5 +1,5 @@
-DoPoisonStep:: ; 505da
-	ld a, [PartyCount]
+DoPoisonStep::
+	ld a, [wPartyCount]
 	and a
 	jr z, .no_faint
 
@@ -12,13 +12,13 @@ DoPoisonStep:: ; 505da
 	jr nz, .loop_clearEngineBuffer1
 
 	xor a
-	ld [CurPartyMon], a
+	ld [wCurPartyMon], a
 .loop_check_poison
 	call .DamageMonIfPoisoned
 	jr nc, .not_poisoned
-; the output flag is stored in c, copy it to the ([CurPartyMon] + 2)nd EngineBuffer
+; the output flag is stored in c, copy it to the ([wCurPartyMon] + 2)nd EngineBuffer
 ; and set the corresponding flag in EngineBuffer1
-	ld a, [CurPartyMon]
+	ld a, [wCurPartyMon]
 	ld e, a
 	ld d, 0
 	ld hl, EngineBuffer2
@@ -29,8 +29,8 @@ DoPoisonStep:: ; 505da
 	ld [EngineBuffer1], a
 
 .not_poisoned
-	ld a, [PartyCount]
-	ld hl, CurPartyMon
+	ld a, [wPartyCount]
+	ld hl, wCurPartyMon
 	inc [hl]
 	cp [hl]
 	jr nz, .loop_check_poison
@@ -55,9 +55,8 @@ DoPoisonStep:: ; 505da
 .no_faint
 	xor a
 	ret
-; 5062e
 
-.DamageMonIfPoisoned: ; 5062e
+.DamageMonIfPoisoned
 ; check if mon is poisoned, return if not
 	ld a, MON_STATUS
 	call GetPartyParamLocation
@@ -76,14 +75,10 @@ DoPoisonStep:: ; 505da
 
 ; do 1 HP damage
 	dec bc
-	ld [hl], c
-	dec hl
-	ld [hl], b
-
-; check if mon has fainted as a result of poison damage
 	ld a, b
 	or c
 	jr nz, .not_fainted
+; check if mon has fainted as a result of poison damage
 
 ; the mon has fainted, reset its status, set carry, and return %10
 	ld a, MON_STATUS
@@ -95,36 +90,31 @@ DoPoisonStep:: ; 505da
 
 .not_fainted
 ; set carry and return %01
+	ld [hl], c
+	dec hl
+	ld [hl], b
+
 	ld c, %01
 	scf
 	ret
-; 50658
 
-.PlayPoisonSFX: ; 50658
+.PlayPoisonSFX
 	ld de, SFX_POISON
 	call PlaySFX
 	ld b, $2
-	predef LoadPoisonBGPals
-	call DelayFrame
-	ret
-; 50669
+	call LoadPoisonBGPals
+	jp DelayFrame
 
-.Script_MonFaintedToPoison: ; 50669
+.Script_MonFaintedToPoison
 	callasm .PlayPoisonSFX
 	opentext
 	callasm .CheckWhitedOut
-	iffalse .whiteout
 	closetext
 	end
-; 50677
 
-.whiteout ; 50677
-	farjump Script_OverworldWhiteout
-; 5067b
-
-.CheckWhitedOut: ; 5067b
+.CheckWhitedOut
 	xor a
-	ld [CurPartyMon], a
+	ld [wCurPartyMon], a
 	ld de, EngineBuffer2
 .party_loop
 	push de
@@ -140,23 +130,41 @@ DoPoisonStep:: ; 505da
 .mon_not_fainted
 	pop de
 	inc de
-	ld hl, CurPartyMon
+	ld hl, wCurPartyMon
 	inc [hl]
-	ld a, [PartyCount]
+	ld a, [wPartyCount]
 	cp [hl]
 	jr nz, .party_loop
-	predef CheckPlayerPartyForFitPkmn
+	callba CheckPlayerPartyForFitPkmn
 	ld a, d
-	ld [ScriptVar], a
+	ld [hScriptVar], a
 	ret
-; 506b2
 
-.PoisonFaintText: ; 506b2
+.PoisonFaintText
 	text_jump UnknownText_0x1c0acc
-	db "@"
-; 506b7
 
-.PoisonWhiteOutText: ; 506b7
+.PoisonWhiteOutText
 	text_jump UnknownText_0x1c0ada
-	db "@"
-; 506bc
+
+LoadPoisonBGPals:
+	ld a, [rSVBK]
+	push af
+	ld a, $5
+	ld [rSVBK], a
+	ld hl, BGPals
+	ld c, $20
+.loop
+; RGB 31, 21, 28
+	ld a, (palred 31 + palgreen 21 + palblue 28) % $100
+	ld [hli], a
+	ld a, (palred 31 + palgreen 21 + palblue 28) / $100
+	ld [hli], a
+	dec c
+	jr nz, .loop
+	pop af
+	ld [rSVBK], a
+	ld a, $1
+	ld [hCGBPalUpdate], a
+	ld c, 4
+	call DelayFrames
+	jp UpdateTimePals

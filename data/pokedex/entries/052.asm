@@ -1,10 +1,14 @@
-; MeowthPokedexEntry: ; 0x182c08
-	db "SCRATCHCAT@" ; species name
-	dw 104, 90 ; height, width
+	ctxt "Scorpion" ; species name
+	done
+	dw 207, 265 ; height, weight
 
-	db   "It loves things"
-	next "that sparkle. When"
-	next "it sees a shiny"
-	page "object, the gold"
-	next "coin on its head"
-	next "shines too.@"
+	db .page2 - .page1
+.page1
+	ctxt "It lives in arid"
+	next "lands. It buries"
+	next "itself in sand and"
+	done
+.page2
+	ctxt "lies in wait for"
+	next "unsuspecting prey."
+	done

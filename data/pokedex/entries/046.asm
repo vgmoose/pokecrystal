@@ -1,10 +1,15 @@
-; ParasPokedexEntry: ; 0x18297f
-	db "MUSHROOM@" ; species name
-	dw 100, 120 ; height, width
+	ctxt "Mushroom" ; species name
+	done
+	dw 100, 120 ; height, weight
 
-	db   "The tochukaso"
+	db .page2 - .page1
+.page1
+	ctxt "The tochukaso"
 	next "growing on this"
-	next "#MON's back"
-	page "orders it to"
+	next "#mon's back"
+	done
+.page2
+	ctxt "orders it to"
 	next "extract juice from"
-	next "tree trunks.@"
+	next "tree trunks."
+	done

@@ -20,7 +20,7 @@ UnownPuzzle: ; e1190
 	ld hl, UnownPuzzleCursorGFX
 	ld de, VTiles1 tile $60
 	ld bc, 4 tiles
-	call CopyBytes
+	rst CopyBytes
 	ld hl, UnownPuzzleStartCancelLZ
 	ld de, VTiles1 tile $6d
 	call Decompress
@@ -44,11 +44,12 @@ UnownPuzzle: ; e1190
 	ld [wHoldingUnownPuzzlePiece], a
 	ld [wUnownPuzzleCursorPosition], a
 	ld [wUnownPuzzleHeldPiece], a
+	call EnableLCD
 	ld a, $93
 	ld [rLCDC], a
-	call WaitBGMap
-	ld b, SCGB_UNOWN_PUZZLE
-	call GetSGBLayout
+	call ApplyTilemapInVBlank
+	ld b, SCGB_18
+	predef GetSGBLayout
 	ld a, $e4
 	call DmgToCgbBGPals
 	ld a, $24
@@ -84,6 +85,7 @@ UnownPuzzle: ; e1190
 	call ClearBGPalettes
 	call ClearTileMap
 	call ClearSprites
+	call EnableLCD
 	ld a, $e3
 	ld [rLCDC], a
 	ret
@@ -126,7 +128,7 @@ endm
 	initpuzcoord 3,0,                     3,5
 	initpuzcoord 4,0,                     4,5
 	initpuzcoord 5,0,                     5,5
-	                   ; START > CANCEL
+	; START > CANCEL
 ; e127d
 
 PlaceStartCancelBox: ; e127d
@@ -174,27 +176,6 @@ PlaceStartCancelBoxBorder: ; e128d
 ; e12ca
 
 UnownPuzzleJumptable: ; e12ca
-	ld a, [wJumptableIndex]
-	ld e, a
-	ld d, 0
-	ld hl, .Jumptable
-	add hl, de
-	add hl, de
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	jp [hl]
-; e12d9
-
-.Jumptable: ; e12d9
-
-	dw .Function
-; e12db
-
-.Function: ; e12db
-	ld a, [hJoyPressed]
-	and START
-	jp nz, UnownPuzzle_Quit
 	ld a, [hJoyPressed]
 	and A_BUTTON
 	jp nz, UnownPuzzle_A
@@ -297,8 +278,7 @@ UnownPuzzleJumptable: ; e12ca
 	ld de, SFX_MOVE_PUZZLE_PIECE
 
 .play_sfx
-	call PlaySFX
-	ret
+	jp PlaySFX
 ; e1376
 
 UnownPuzzle_A: ; e1376
@@ -314,13 +294,13 @@ UnownPuzzle_A: ; e1376
 	ld [wUnownPuzzleHeldPiece], a
 	call RedrawUnownPuzzlePieces
 	call FillUnoccupiedPuzzleSpace
-	call WaitBGMap
+	call ApplyTilemapInVBlank
 	call WaitSFX
 	ld a, TRUE
 	ld [wHoldingUnownPuzzlePiece], a
 	ret
 
-.TryPlacePiece:
+.TryPlacePiece
 	call UnownPuzzle_CheckCurrentTileOccupancy
 	and a
 	jr nz, UnownPuzzle_InvalidAction
@@ -329,7 +309,7 @@ UnownPuzzle_A: ; e1376
 	ld a, [wUnownPuzzleHeldPiece]
 	ld [hl], a
 	call PlaceUnownPuzzlePieceGFX
-	call WaitBGMap
+	call ApplyTilemapInVBlank
 	xor a
 	ld [wUnownPuzzleHeldPiece], a
 	call RedrawUnownPuzzlePieces
@@ -343,8 +323,7 @@ UnownPuzzle_A: ; e1376
 	call PlaceStartCancelBoxBorder
 	call ClearSprites
 	ld de, SFX_1ST_PLACE
-	call PlaySFX
-	call WaitSFX
+	call PlayWaitSFX
 	call SimpleWaitPressAorB
 	ld a, TRUE
 	ld [wSolvedUnownPuzzle], a
@@ -355,9 +334,7 @@ UnownPuzzle_Quit: ; e13de
 
 UnownPuzzle_InvalidAction: ; e13e4
 	ld de, SFX_WRONG
-	call PlaySFX
-	call WaitSFX
-	ret
+	jp PlayWaitSFX
 ; e13ee
 
 UnownPuzzle_FillBox: ; e13ee
@@ -545,7 +522,7 @@ RedrawUnownPuzzlePieces: ; e14d9
 	ld hl, .OAM_HoldingPiece
 	jr .load
 
-.NoPiece:
+.NoPiece
 	ld hl, .OAM_NotHoldingPiece
 
 .load
@@ -665,8 +642,7 @@ ConvertLoadedPuzzlePieces: ; e1631
 	pop bc
 	dec b
 	jr nz, .loop
-	call UnownPuzzle_AddPuzzlePieceBorders
-	ret
+	jp UnownPuzzle_AddPuzzlePieceBorders
 ; e1654
 
 .EnlargePuzzlePieceTiles: ; e1654
@@ -834,7 +810,7 @@ GFXHeaders: ; e1703
 INCBIN "gfx/unown_puzzle/tile_borders.2bpp"
 
 LoadUnownPuzzlePiecesGFX: ; e17a3
-	ld a, [ScriptVar]
+	ld a, [hScriptVar]
 	and 3
 	ld e, a
 	ld d, 0
@@ -846,15 +822,14 @@ LoadUnownPuzzlePiecesGFX: ; e17a3
 	ld l, a
 	ld de, VTiles2
 	call Decompress
-	call ConvertLoadedPuzzlePieces
-	ret
+	jp ConvertLoadedPuzzlePieces
 ; e17bd
 
 .LZPointers: ; e17bd
-	dw KabutoPuzzleLZ
-	dw OmanytePuzzleLZ
-	dw AerodactylPuzzleLZ
-	dw HoOhPuzzleLZ
+	dw LileepPuzzleLZ
+	dw AanorithPuzzleLZ
+	dw CranidosPuzzleLZ
+	dw ShieldonPuzzleLZ
 ; e17c5
 
 UnownPuzzleCursorGFX: ; e17c5
@@ -863,14 +838,14 @@ INCBIN "gfx/unown_puzzle/cursor.2bpp"
 UnownPuzzleStartCancelLZ: ; e1805
 INCBIN "gfx/unown_puzzle/start_cancel.2bpp.lz"
 
-HoOhPuzzleLZ: ; e18ab
-INCBIN "gfx/unown_puzzle/hooh.2bpp.lz"
+LileepPuzzleLZ: ; e18ab
+INCBIN "gfx/unown_puzzle/lileep.2bpp.lz"
 
-AerodactylPuzzleLZ: ; e19fb
-INCBIN "gfx/unown_puzzle/aerodactyl.2bpp.lz"
+AanorithPuzzleLZ: ; e19fb
+INCBIN "gfx/unown_puzzle/anorith.2bpp.lz"
 
-KabutoPuzzleLZ: ; e1bab
-INCBIN "gfx/unown_puzzle/kabuto.2bpp.lz"
+CranidosPuzzleLZ: ; e1bab
+INCBIN "gfx/unown_puzzle/cranidos.2bpp.lz"
 
-OmanytePuzzleLZ: ; e1c9b
-INCBIN "gfx/unown_puzzle/omanyte.2bpp.lz"
+ShieldonPuzzleLZ: ; e1c9b
+INCBIN "gfx/unown_puzzle/shieldon.2bpp.lz"

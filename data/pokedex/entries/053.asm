@@ -1,10 +1,15 @@
-; PersianPokedexEntry: ; 0x182c78
-	db "CLASSY CAT@" ; species name
-	dw 303, 710 ; height, width
+	ctxt "Scorpion" ; species name
+	done
+	dw 403, 1356 ; height, weight
 
-	db   "Behind its lithe,"
-	next "elegant appearance"
-	next "lies a barbaric"
-	page "side. It will tear"
-	next "apart its prey on"
-	next "a mere whim.@"
+	db .page2 - .page1
+.page1
+	ctxt "It has the power"
+	next "in its clawed arms"
+	next "to make scrap of a"
+	done
+.page2
+	ctxt "car. The tips of"
+	next "its claws release" 
+	next "poison."
+	done

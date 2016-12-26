@@ -1,10 +1,14 @@
-; OctilleryPokedexEntry: ; 0x1d0d42
-	db "JET@" ; species name
-	dw 211, 630 ; height, width
+	ctxt "Mach" ; species name
+	done
+	dw 603, 2094 ; height, weight
 
-	db   "Its instinct is to"
-	next "bury itself in"
-	next "holes. It often"
-	page "steals the nesting"
-	next "holes of others to"
-	next "sleep in them.@"
+	db .page2 - .page1
+.page1
+	ctxt "It flies at speeds"
+	next "equal to a jet"
+	next "fighter plane. It"
+	done
+.page2
+	ctxt "never allows its"
+	next "prey to escape."
+	done

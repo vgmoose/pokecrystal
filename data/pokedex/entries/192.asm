@@ -1,10 +1,15 @@
-; SunfloraPokedexEntry: ; 0x1cdaef
-	db "SUN@" ; species name
-	dw 207, 190 ; height, width
+	ctxt "Mushroom" ; species name
+	done
+	dw 311, 864 ; height, weight
 
-	db   "As the hot season"
-	next "approaches, the"
-	next "petals on this"
-	page "#MON's face"
-	next "become more vivid"
-	next "and lively.@"
+	db .page2 - .page1
+.page1
+	ctxt "Its short arms"
+	next "stretch when it"
+	next "throws punches."
+	done
+.page2
+	ctxt "Its technique is"
+	next "equal to that of"
+	next "pro boxers."
+	done

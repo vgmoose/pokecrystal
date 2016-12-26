@@ -1,7 +1,8 @@
 Music_NewBarkTown: ; eb2d3
-	musicheader 3, 1, Music_NewBarkTown_Ch1
-	musicheader 1, 2, Music_NewBarkTown_Ch2
-	musicheader 1, 3, Music_NewBarkTown_Ch3
+	channelcount 3
+	channel 1, Music_NewBarkTown_Ch1
+	channel 2, Music_NewBarkTown_Ch2
+	channel 3, Music_NewBarkTown_Ch3
 ; eb2dc
 
 	db $3

@@ -1,10 +1,15 @@
-; LedianPokedexEntry: ; 0x1ccfa0
-	db "FIVE STAR@" ; species name
-	dw 407, 780 ; height, width
+	ctxt "Blade" ; species name
+	done
+	dw 503, 1146 ; height, weight
 
-	db   "In the daytime"
-	next "when it gets warm,"
-	next "it curls up inside"
-	page "a big leaf and"
-	next "drifts off into"
-	next "a deep slumber.@"
+	db .page2 - .page1
+.page1
+	ctxt "When trying to"
+	next "protect someone,"
+	next "it extends its"
+	done
+.page2
+	ctxt "elbows as if they"
+	next "were swords and"
+	next "fights savagely."
+	done

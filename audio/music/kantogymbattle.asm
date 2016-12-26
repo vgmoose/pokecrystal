@@ -1,7 +1,8 @@
 Music_KantoGymBattle: ; ec720
-	musicheader 3, 1, Music_KantoGymBattle_Ch1
-	musicheader 1, 2, Music_KantoGymBattle_Ch2
-	musicheader 1, 3, Music_KantoGymBattle_Ch3
+	channelcount 3
+	channel 1, Music_KantoGymBattle_Ch1
+	channel 2, Music_KantoGymBattle_Ch2
+	channel 3, Music_KantoGymBattle_Ch3
 ; ec729
 
 Music_KantoGymBattle_Ch1: ; ec729

@@ -1,7 +1,6 @@
 MAX_ROLLOUT_COUNT EQU 5
 
-
-BattleCommand_CheckCurl: ; 37718
+BattleCommand_CheckCurl:
 ; checkcurl
 
 	ld de, PlayerRolloutCount
@@ -22,10 +21,8 @@ BattleCommand_CheckCurl: ; 37718
 	xor a
 	ld [de], a
 	ret
-; 37734
 
-
-BattleCommand_RolloutPower: ; 37734
+BattleCommand_RolloutPower:
 ; rolloutpower
 
 	ld a, BATTLE_VARS_STATUS
@@ -77,23 +74,11 @@ BattleCommand_RolloutPower: ; 37734
 	ld a, BATTLE_VARS_SUBSTATUS2
 	call GetBattleVar
 	bit SUBSTATUS_CURLED, a
-	jr z, .not_curled
-	inc b
-.not_curled
-.loop
+	jr nz, .curled
 	dec b
-	jr z, .done_damage
-
-	ld hl, CurDamage + 1
-	sla [hl]
-	dec hl
-	rl [hl]
-	jr nc, .loop
-
-	ld a, $ff
-	ld [hli], a
+.curled
+	ld hl, wCurDamageShiftCount
+	ld a, [hl]
+	add a, b
 	ld [hl], a
-
-.done_damage
-	ret
-; 37791
+	jp SetDamageDirtyFlag

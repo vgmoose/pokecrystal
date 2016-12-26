@@ -1,7 +1,8 @@
 Music_TrainerVictory: ; ebeab
-	musicheader 3, 1, Music_TrainerVictory_Ch1
-	musicheader 1, 2, Music_TrainerVictory_Ch2
-	musicheader 1, 3, Music_TrainerVictory_Ch3
+	channelcount 3
+	channel 1, Music_TrainerVictory_Ch1
+	channel 2, Music_TrainerVictory_Ch2
+	channel 3, Music_TrainerVictory_Ch3
 ; ebeb4
 
 Music_TrainerVictory_Ch1: ; ebeb4

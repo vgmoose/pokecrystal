@@ -1,10 +1,15 @@
-; SunkernPokedexEntry: ; 0x1cda87
-	db "SEED@" ; species name
-	dw 100, 40 ; height, width
+	ctxt "Mushroom" ; species name
+	done
+	dw 104, 4 ; height, weight
 
-	db   "It is very weak."
-	next "Its only means of"
-	next "defense is to"
-	page "shake its leaves"
-	next "desperately at its"
-	next "attacker.@"
+	db .page2 - .page1
+.page1
+	ctxt "It spouts poison"
+	next "spores from the"
+	next "top of its head."
+	done
+.page2
+	ctxt "These spores cause"
+	next "pain all over if"
+	next "inhaled."
+	done

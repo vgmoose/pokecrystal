@@ -1,10 +1,15 @@
-; WigglytuffPokedexEntry: ; 0x1826e9
-	db "BALLOON@" ; species name
-	dw 303, 260 ; height, width
+	ctxt "Balloon" ; species name
+	done
+	dw 303, 260 ; height, weight
 
-	db   "The rich, fluffy"
+	db .page2 - .page1
+.page1
+	ctxt "The rich, fluffy"
 	next "fur that covers"
 	next "its body feels so"
-	page "good that anyone"
+	done
+.page2
+	ctxt "good that anyone"
 	next "who feels it can't"
-	next "stop touching it.@"
+	next "stop touching it."
+	done

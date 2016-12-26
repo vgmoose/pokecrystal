@@ -1,10 +1,15 @@
-; ChanseyPokedexEntry: ; 0x1b942e
-	db "EGG@" ; species name
-	dw 307, 760 ; height, width
+	ctxt "Egg" ; species name
+	done
+	dw 307, 760 ; height, weight
 
-	db   "People try to"
+	db .page2 - .page1
+.page1
+	ctxt "People try to"
 	next "catch it for its"
 	next "extremely"
-	page "nutritious eggs,"
+	done
+.page2
+	ctxt "nutritious eggs,"
 	next "but it rarely can"
-	next "be found.@"
+	next "be found."
+	done

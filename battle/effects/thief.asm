@@ -19,13 +19,7 @@ BattleCommand_Thief: ; 37492
 	and a
 	ret z
 
-; Can't steal mail.
-
 	ld [wd265], a
-	ld d, a
-	callba ItemIsMail
-	ret c
-
 	ld a, [EffectFailed]
 	and a
 	ret nz
@@ -50,7 +44,6 @@ BattleCommand_Thief: ; 37492
 	ld [de], a
 	jr .stole
 
-
 .enemy
 
 ; The enemy can't already have an item.
@@ -71,8 +64,6 @@ BattleCommand_Thief: ; 37492
 
 	ld [wd265], a
 	ld d, a
-	callba ItemIsMail
-	ret c
 
 	ld a, [EffectFailed]
 	and a
@@ -91,12 +82,17 @@ BattleCommand_Thief: ; 37492
 	ld [hl], a
 	ld [de], a
 
-
 .stole
 	call GetItemName
+	call GetTargetAbility
+	cp ABILITY_UNBURDEN
+	jr nz, .not_unburden
+	ld a, BATTLE_VARS_SUBSTATUS2_OPP
+	call GetBattleVarAddr
+	set SUBSTATUS_UNBURDEN, [hl]
+.not_unburden
 	ld hl, StoleText
 	jp StdBattleTextBox
-
 
 .playeritem
 	ld a, 1

@@ -1,10 +1,15 @@
-; VaporeonPokedexEntry: ; 0x1cc224
-	db "BUBBLE JET@" ; species name
-	dw 303, 640 ; height, width
+	ctxt "Bubble Jet" ; species name
+	done
+	dw 303, 640 ; height, weight
 
-	db   "As it uses the"
+	db .page2 - .page1
+.page1
+	ctxt "As it uses the"
 	next "fins on the tip"
 	next "of its tail to"
-	page "swim, it blends"
+	done
+.page2
+	ctxt "swim, it blends"
 	next "with the water"
-	next "perfectly.@"
+	next "perfectly."
+	done

@@ -1,10 +1,15 @@
-; WeezingPokedexEntry: ; 0x1b92ec
-	db "POISON GAS@" ; species name
-	dw 311, 210 ; height, width
+	ctxt "Poison Gas" ; species name
+	done
+	dw 311, 210 ; height, weight
 
-	db   "When it inhales"
+	db .page2 - .page1
+.page1
+	ctxt "When it inhales"
 	next "poisonous gases"
 	next "from garbage, its"
-	page "body expands, and"
+	done
+.page2
+	ctxt "body expands, and"
 	next "its insides smell"
-	next "much worse.@"
+	next "much worse."
+	done

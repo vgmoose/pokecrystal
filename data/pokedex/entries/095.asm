@@ -1,10 +1,15 @@
-; OnixPokedexEntry: ; 0x1b8c98
-	db "ROCK SNAKE@" ; species name
-	dw 2810, 4630 ; height, width
+	ctxt "Rock Snake" ; species name
+	done
+	dw 2810, 4630 ; height, weight
 
-	db   "As it digs through"
+	db .page2 - .page1
+.page1
+	ctxt "As it digs through"
 	next "the ground, it"
 	next "absorbs many hard"
-	page "objects. This is"
+	done
+.page2
+	ctxt "objects. This is"
 	next "what makes its"
-	next "body so solid.@"
+	next "body so solid."
+	done

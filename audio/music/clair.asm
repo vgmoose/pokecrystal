@@ -1,8 +1,9 @@
 Music_Clair: ; 1fa8d
-	musicheader 4, 1, Music_Clair_Ch1
-	musicheader 1, 2, Music_Clair_Ch2
-	musicheader 1, 3, Music_Clair_Ch3
-	musicheader 1, 4, Music_Clair_Ch4
+	channelcount 4
+	channel 1, Music_Clair_Ch1
+	channel 2, Music_Clair_Ch2
+	channel 3, Music_Clair_Ch3
+	channel 4, Music_Clair_Ch4
 ; 1fa99
 
 Music_Clair_Ch1: ; 1fa99
@@ -207,9 +208,9 @@ Music_Clair_branch_1fb77: ; 1fb77
 	octave 3
 	note A#, 16
 	note __, 4
-	pitchoffset 0, CC
+	forceoctave $c
 	callchannel Music_Clair_branch_1fba6
-	pitchoffset 0, C_
+	forceoctave $0
 	octave 5
 	note F#, 2
 	note __, 4
@@ -254,7 +255,7 @@ Music_Clair_branch_1fba6: ; 1fba6
 
 Music_Clair_Ch3: ; 1fbb9
 	notetype $c, $14
-	pitchoffset 0, CC
+	forceoctave $c
 	octave 3
 	note C#, 2
 	note __, 4

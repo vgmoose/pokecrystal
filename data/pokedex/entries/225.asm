@@ -1,10 +1,14 @@
-; DelibirdPokedexEntry: ; 0x1d0db1
-	db "DELIVERY@" ; species name
-	dw 211, 350 ; height, width
+	ctxt "Rock Head" ; species name
+	done
+	dw 200, 982 ; height, weight
 
-	db   "It always carries"
-	next "its food with it,"
-	next "wherever it goes."
-	page "If attacked, it"
-	next "throws its food at"
-	next "the opponent.@"
+	db .page2 - .page1
+.page1
+	ctxt "Dreaming of one"
+	next "day flying, it"
+	next "practices by"
+	done
+.page2
+	ctxt "leaping off cliffs"
+	next "every day."
+	done

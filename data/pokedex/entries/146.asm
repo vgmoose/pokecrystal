@@ -1,10 +1,15 @@
-; MoltresPokedexEntry: ; 0x1cc706
-	db "FLAME@" ; species name
-	dw 607, 1320 ; height, width
+	ctxt "Flame" ; species name
+	done
+	dw 607, 1320 ; height, weight
 
-	db   "Legendary bird"
-	next "#MON. It is"
+	db .page2 - .page1
+.page1
+	ctxt "Legendary bird"
+	next "#mon. It is"
 	next "said to migrate"
-	page "from the south"
+	done
+.page2
+	ctxt "from the south"
 	next "along with the"
-	next "spring.@"
+	next "spring."
+	done

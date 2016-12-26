@@ -1,10 +1,15 @@
-; BlastoisePokedexEntry: ; 0x1819f9
-	db "SHELLFISH@" ; species name
-	dw 503, 1890 ; height, width
+	ctxt "Shellfish" ; species name
+	done
+	dw 503, 1890 ; height, weight
 
-	db   "It firmly plants"
+	db .page2 - .page1
+.page1
+	ctxt "It firmly plants"
 	next "its feet on the"
 	next "ground before"
-	page "shooting water"
+	done
+.page2
+	ctxt "shooting water"
 	next "from the jets on"
-	next "its back.@"
+	next "its back."
+	done

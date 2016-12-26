@@ -1,39 +1,41 @@
-HallOfFame:: ; 0x8640e
+HallOfFame::
 	call HallOfFame_FadeOutMusic
-	ld a, [StatusFlags]
+	ld a, [wStatusFlags]
 	push af
 	ld a, 1
-	ld [wGameLogicPaused], a
+	ld [wGameLogicPause], a
 	call DisableSpriteUpdates
 	ld a, SPAWN_LANCE
 	ld [wSpawnAfterChampion], a
 
 	; Enable the Pokégear map to cycle through all of Kanto
-	ld hl, StatusFlags
+	ld hl, wStatusFlags
 	set 6, [hl] ; hall of fame
 
 	callba HallOfFame_InitSaveIfNeeded
 
 	ld hl, wHallOfFameCount
-	ld a, [hl]
-	cp 200
-	jr nc, .ok
 	inc [hl]
+	jr nz, .ok
+	inc hl
+	inc [hl]
+	jr nz, .ok
+	ld a, $ff
+	ld [hld], a
+	ld [hl], a
 .ok
 	callba SaveGameData
 	call GetHallOfFameParty
 	callba AddHallOfFameEntry
 
 	xor a
-	ld [wGameLogicPaused], a
+	ld [wGameLogicPause], a
 	call AnimateHallOfFame
 	pop af
 	ld b, a
-	callba Credits
-	ret
-; 0x86455
+	jpba Credits
 
-RedCredits:: ; 86455
+HallOfFame_FadeOutMusic:
 	ld a, MUSIC_NONE % $100
 	ld [MusicFadeIDLo], a
 	ld a, MUSIC_NONE / $100
@@ -44,51 +46,17 @@ RedCredits:: ; 86455
 	xor a
 	ld [VramState], a
 	ld [hMapAnims], a
-	callba InitDisplayForRedCredits
-	ld c, 8
-	call DelayFrames
-	call DisableSpriteUpdates
-	ld a, SPAWN_RED
-	ld [wSpawnAfterChampion], a
-	ld a, [StatusFlags]
-	ld b, a
-	callba Credits
-	ret
-; 8648e
-
-HallOfFame_FadeOutMusic: ; 8648e
-	ld a, MUSIC_NONE % $100
-	ld [MusicFadeIDLo], a
-	ld a, MUSIC_NONE / $100
-	ld [MusicFadeIDHi], a
-	ld a, 10
-	ld [MusicFade], a
-	callba FadeOutPalettes
-	xor a
-	ld [VramState], a
-	ld [hMapAnims], a
-	callba InitDisplayForHallOfFame
+	callba HallOfFame_SaveTheGame
 	ld c, 100
 	jp DelayFrames
-; 864b4
 
-HallOfFame_PlayMusicDE: ; 864b4
-	push de
-	ld de, MUSIC_NONE
-	call PlayMusic
-	call DelayFrame
-	pop de
-	call PlayMusic
-	ret
-; 864c3
-
-AnimateHallOfFame: ; 864c3
+AnimateHallOfFame:
 	xor a
 	ld [wJumptableIndex], a
 	call LoadHOFTeam
 	jr c, .done
 	ld de, MUSIC_HALL_OF_FAME
-	call HallOfFame_PlayMusicDE
+	call PlayMusic2
 	xor a
 	ld [wcf64], a
 .loop
@@ -97,7 +65,7 @@ AnimateHallOfFame: ; 864c3
 	jr nc, .done
 	ld hl, wHallOfFameTempMon1
 	ld bc, wHallOfFameTempMon1End - wHallOfFameTempMon1
-	call AddNTimes
+	rst AddNTimes
 	ld a, [hl]
 	cp -1
 	jr z, .done
@@ -114,18 +82,17 @@ AnimateHallOfFame: ; 864c3
 	call HOF_AnimatePlayerPic
 	ld a, $4
 	ld [MusicFade], a
-	call RotateThreePalettesRight
+	ld c, 1
+	call FadeToLightestColor
 	ld c, 8
-	call DelayFrames
-	ret
-; 8650c
+	jp DelayFrames
 
-.DisplayNewHallOfFamer: ; 8650c
+.DisplayNewHallOfFamer
 	call DisplayHOFMon
 	ld de, .String_NewHallOfFamer
 	hlcoord 1, 2
-	call PlaceString
-	call WaitBGMap
+	call PlaceText
+	call ApplyTilemapInVBlank
 	decoord 6, 5
 	ld c, $6
 	predef HOF_AnimateFrontpic
@@ -133,23 +100,30 @@ AnimateHallOfFame: ; 864c3
 	call DelayFrames
 	and a
 	ret
-; 8652c
 
-.String_NewHallOfFamer:
-	db "New Hall of Famer!@"
-; 8653f
+.String_NewHallOfFamer
+	ctxt "New Hall of Famer!"
+	done
 
-
-GetHallOfFameParty: ; 8653f
+GetHallOfFameParty:
 	ld hl, OverworldMap
 	ld bc, HOF_LENGTH
 	xor a
 	call ByteFill
+	ld a, [wHallOfFameCount + 1]
+	and a
+	jr nz, .overflow
 	ld a, [wHallOfFameCount]
+	cp 201
+	jr nc, .overflow
+	jr .count_ok
+.overflow
+	ld a, 201
+.count_ok
 	ld de, OverworldMap
 	ld [de], a
 	inc de
-	ld hl, PartySpecies
+	ld hl, wPartySpecies
 	ld c, 0
 .next
 	ld a, [hli]
@@ -166,9 +140,9 @@ GetHallOfFameParty: ; 8653f
 	push bc
 
 	ld a, c
-	ld hl, PartyMons
+	ld hl, wPartyMons
 	ld bc, PARTYMON_STRUCT_LENGTH
-	call AddNTimes
+	rst AddNTimes
 	ld c, l
 	ld b, h
 
@@ -205,11 +179,11 @@ GetHallOfFameParty: ; 8653f
 	pop bc
 	push bc
 	ld a, c
-	ld hl, PartyMonNicknames
+	ld hl, wPartyMonNicknames
 	ld bc, PKMN_NAME_LENGTH
-	call AddNTimes
+	rst AddNTimes
 	ld bc, PKMN_NAME_LENGTH - 1
-	call CopyBytes
+	rst CopyBytes
 
 	pop bc
 	inc c
@@ -225,24 +199,21 @@ GetHallOfFameParty: ; 8653f
 	ld a, $ff
 	ld [de], a
 	ret
-; 865b5
 
-AnimateHOFMonEntrance: ; 865b5
+AnimateHOFMonEntrance:
 	push hl
 	call ClearBGPalettes
-	callba ResetDisplayBetweenHallOfFameMons
+	callba HallOfFame_WipeBGMap
 	pop hl
 	ld a, [hli]
 	ld [TempMonSpecies], a
-	ld [CurPartySpecies], a
+	ld [wCurPartySpecies], a
 	inc hl
 	inc hl
 	ld a, [hli]
 	ld [TempMonDVs], a
 	ld a, [hli]
 	ld [TempMonDVs + 1], a
-	ld hl, TempMonDVs
-	predef GetUnownLetter
 	hlcoord 0, 0
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
 	ld a, " "
@@ -258,11 +229,11 @@ AnimateHOFMonEntrance: ; 865b5
 	ld [hSCY], a
 	ld a, $90
 	ld [hSCX], a
-	call WaitBGMap
+	call ApplyTilemapInVBlank
 	xor a
 	ld [hBGMapMode], a
-	ld b, SCGB_PLAYER_OR_MON_FRONTPIC_PALS
-	call GetSGBLayout
+	ld b, SCGB_1A
+	predef GetSGBLayout
 	call SetPalettes
 	call HOF_SlideBackpic
 	xor a
@@ -273,13 +244,11 @@ AnimateHOFMonEntrance: ; 865b5
 	call ByteFill
 	hlcoord 6, 5
 	call _PrepMonFrontpic
-	call WaitBGMap
+	call ApplyTilemapInVBlank
 	xor a
 	ld [hBGMapMode], a
 	ld [hSCY], a
-	call HOF_SlideFrontpic
-	ret
-; 86635
+	jp HOF_SlideFrontpic
 
 HOF_SlideBackpic:
 .backpicloop
@@ -290,7 +259,6 @@ HOF_SlideBackpic:
 	ld [hSCX], a
 	call DelayFrame
 	jr .backpicloop
-; 86643
 
 HOF_SlideFrontpic:
 .frontpicloop
@@ -302,13 +270,12 @@ HOF_SlideFrontpic:
 	ld [hSCX], a
 	call DelayFrame
 	jr .frontpicloop
-; 86650
 
-_HallOfFamePC: ; 86650
+_HallOfFamePC:
 	call LoadFontsBattleExtra
 	xor a
 	ld [wJumptableIndex], a
-.MasterLoop:
+.MasterLoop
 	call LoadHOFTeam
 	ret c
 	call .DisplayTeam
@@ -317,7 +284,7 @@ _HallOfFamePC: ; 86650
 	inc [hl]
 	jr .MasterLoop
 
-.DisplayTeam:
+.DisplayTeam
 	xor a
 	ld [wcf64], a
 .next
@@ -351,7 +318,7 @@ _HallOfFamePC: ; 86650
 	and a
 	ret
 
-.DisplayMonAndStrings:
+.DisplayMonAndStrings
 ; Print the number of times the player has entered the Hall of Fame.
 ; If that number is above 200, print "HOF Master!" instead.
 	ld a, [wcf64]
@@ -359,7 +326,7 @@ _HallOfFamePC: ; 86650
 	jr nc, .fail
 	ld hl, wHallOfFameTempMon1
 	ld bc, wHallOfFameTempMon1End - wHallOfFameTempMon1
-	call AddNTimes
+	rst AddNTimes
 	ld a, [hl]
 	cp -1
 	jr nz, .okay
@@ -378,8 +345,7 @@ _HallOfFamePC: ; 86650
 	jr c, .print_num_hof
 	ld de, .HOFMaster
 	hlcoord 1, 2
-	call PlaceString
-	hlcoord 13, 2
+	call PlaceText
 	jr .finish
 
 .print_num_hof
@@ -390,14 +356,11 @@ _HallOfFamePC: ; 86650
 	ld de, wHallOfFameTempWinCount
 	lb bc, 1, 3
 	call PrintNum
-	hlcoord 11, 2
 
 .finish
-	ld de, .EmptyString
-	call PlaceString
-	call WaitBGMap
-	ld b, SCGB_PLAYER_OR_MON_FRONTPIC_PALS
-	call GetSGBLayout
+	call ApplyTilemapInVBlank
+	ld b, SCGB_1A
+	predef GetSGBLayout
 	call SetPalettes
 	decoord 6, 5
 	ld c, $6
@@ -405,23 +368,21 @@ _HallOfFamePC: ; 86650
 	and a
 	ret
 
-.EmptyString:
-	db "@"
+.HOFMaster
+	ctxt "    HOF Master!"
+	done
 
-.HOFMaster:
-	db "    HOF Master!@"
+.TimeFamer
+	ctxt "    -Time Famer"
+	done
 
-.TimeFamer:
-	db "    -Time Famer@"
-; 8671c
-
-LoadHOFTeam: ; 8671c
+LoadHOFTeam:
 	ld a, [wJumptableIndex]
 	cp NUM_HOF_TEAMS
 	jr nc, .invalid
 	ld hl, sHallOfFame
 	ld bc, HOF_LENGTH
-	call AddNTimes
+	rst AddNTimes
 	ld a, BANK(sHallOfFame)
 	call GetSRAMBank
 	ld a, [hl]
@@ -429,7 +390,7 @@ LoadHOFTeam: ; 8671c
 	jr z, .absent
 	ld de, wHallOfFameTemp
 	ld bc, HOF_LENGTH
-	call CopyBytes
+	rst CopyBytes
 	call CloseSRAM
 	and a
 	ret
@@ -440,9 +401,8 @@ LoadHOFTeam: ; 8671c
 .invalid
 	scf
 	ret
-; 86748
 
-DisplayHOFMon: ; 86748
+DisplayHOFMon:
 	xor a
 	ld [hBGMapMode], a
 	ld a, [hli]
@@ -457,11 +417,11 @@ DisplayHOFMon: ; 86748
 	ld [TempMonDVs + 1], a
 	ld a, [hli]
 	ld [TempMonLevel], a
-	ld de, StringBuffer2
+	ld de, wStringBuffer2
 	ld bc, PKMN_NAME_LENGTH - 1
-	call CopyBytes
+	rst CopyBytes
 	ld a, "@"
-	ld [StringBuffer2 + 10], a
+	ld [wStringBuffer2 + 10], a
 	hlcoord 0, 0
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
 	ld a, " "
@@ -473,21 +433,19 @@ DisplayHOFMon: ; 86748
 	lb bc, 4, SCREEN_WIDTH - 2
 	call TextBox
 	ld a, [TempMonSpecies]
-	ld [CurPartySpecies], a
+	ld [wCurPartySpecies], a
 	ld [wd265], a
-	ld hl, TempMonDVs
-	predef GetUnownLetter
 	xor a
 	ld [wBoxAlignment], a
 	hlcoord 6, 5
 	call _PrepMonFrontpic
-	ld a, [CurPartySpecies]
+	ld a, [wCurPartySpecies]
 	cp EGG
 	jr z, .print_id_no
 	hlcoord 1, 13
 	ld a, "№"
 	ld [hli], a
-	ld [hl], "·"
+	ld [hl], "."
 	hlcoord 3, 13
 	ld de, wd265
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
@@ -495,8 +453,8 @@ DisplayHOFMon: ; 86748
 	call GetBasePokemonName
 	hlcoord 7, 13
 	call PlaceString
-	ld a, TEMPMON
-	ld [MonType], a
+	ld a, BREEDMON
+	ld [wMonType], a
 	callba GetGender
 	ld a, " "
 	jr c, .got_gender
@@ -510,7 +468,7 @@ DisplayHOFMon: ; 86748
 	hlcoord 8, 14
 	ld a, "/"
 	ld [hli], a
-	ld de, StringBuffer2
+	ld de, wStringBuffer2
 	call PlaceString
 	hlcoord 1, 16
 	call PrintLevel
@@ -525,11 +483,9 @@ DisplayHOFMon: ; 86748
 	hlcoord 10, 16
 	ld de, TempMonID
 	lb bc, PRINTNUM_LEADINGZEROS | 2, 5
-	call PrintNum
-	ret
-; 86810
+	jp PrintNum
 
-HOF_AnimatePlayerPic: ; 86810
+HOF_AnimatePlayerPic:
 	call ClearBGPalettes
 	ld hl, VTiles2 tile $63
 	ld de, FontExtra + 13 tiles
@@ -549,12 +505,12 @@ HOF_AnimatePlayerPic: ; 86810
 	ld [hSCY], a
 	ld a, $90
 	ld [hSCX], a
-	call WaitBGMap
+	call ApplyTilemapInVBlank
 	xor a
 	ld [hBGMapMode], a
-	ld [CurPartySpecies], a
-	ld b, SCGB_PLAYER_OR_MON_FRONTPIC_PALS
-	call GetSGBLayout
+	ld [wCurPartySpecies], a
+	ld b, SCGB_1A
+	predef GetSGBLayout
 	call SetPalettes
 	call HOF_SlideBackpic
 	xor a
@@ -571,7 +527,7 @@ HOF_AnimatePlayerPic: ; 86810
 	predef PlaceGraphic
 	ld a, $c0
 	ld [hSCX], a
-	call WaitBGMap
+	call ApplyTilemapInVBlank
 	xor a
 	ld [hBGMapMode], a
 	ld [hSCY], a
@@ -579,7 +535,7 @@ HOF_AnimatePlayerPic: ; 86810
 	xor a
 	ld [hBGMapMode], a
 	hlcoord 0, 2
-	lb bc, 8, 9
+	lb bc, 8, 10
 	call TextBox
 	hlcoord 0, 12
 	lb bc, 4, 18
@@ -599,22 +555,24 @@ HOF_AnimatePlayerPic: ; 86810
 	call PrintNum
 	hlcoord 1, 8
 	ld de, .PlayTime
-	call PlaceString
-	hlcoord 3, 9
+	call PlaceText
+	hlcoord 1, 9
 	ld de, GameTimeHours
-	lb bc, 2, 3
+	lb bc, 2, 4
 	call PrintNum
 	ld [hl], 99
 	inc hl
 	ld de, GameTimeMinutes
 	lb bc, PRINTNUM_LEADINGZEROS | 1, 2
 	call PrintNum
-	call WaitBGMap
-	callba ProfOaksPCRating
-	ret
-; 868ed
+	ld [hl], 99
+	inc hl
+	ld de, GameTimeSeconds
+	lb bc, PRINTNUM_LEADINGZEROS | 1, 2
+	call PrintNum
+	call ApplyTilemapInVBlank
+	jpba ProfOaksPCRating
 
-.PlayTime:
-	db "PLAY TIME@"
-; 868f7
-
+.PlayTime
+	ctxt "Play time"
+	done

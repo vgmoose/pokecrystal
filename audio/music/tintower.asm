@@ -1,8 +1,9 @@
 Music_TinTower: ; f6811
-	musicheader 4, 1, Music_TinTower_Ch1
-	musicheader 1, 2, Music_TinTower_Ch2
-	musicheader 1, 3, Music_TinTower_Ch3
-	musicheader 1, 4, Music_TinTower_Ch4
+	channelcount 4
+	channel 1, Music_TinTower_Ch1
+	channel 2, Music_TinTower_Ch2
+	channel 3, Music_TinTower_Ch3
+	channel 4, Music_TinTower_Ch4
 ; f681d
 
 Music_TinTower_Ch1: ; f681d

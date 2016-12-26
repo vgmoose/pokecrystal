@@ -1,4 +1,4 @@
-Function6ec1: ; 6ec1
+Function6ec1:
 
 	ld hl, OBJECT_PALETTE
 	add hl, bc
@@ -8,6 +8,7 @@ Function6ec1: ; 6ec1
 	ld hl, OBJECT_FLAGS1
 	add hl, bc
 	bit 4, [hl] ; lost
+	jr nz, .resume
 	push hl
 	push bc
 	call Function6f2c
@@ -55,10 +56,8 @@ Function6ec1: ; 6ec1
 .bit_5
 	and a
 	ret
-; 6f07
 
-
-Function6f07: ; 6f07
+Function6f07:
 	call Function6f5f
 	ret c
 	ld hl, OBJECT_NEXT_MAP_X
@@ -80,9 +79,8 @@ Function6f07: ; 6f07
 	jr z, Function6f3e
 	scf
 	ret
-; 6f2c
 
-Function6f2c: ; 6f2c
+Function6f2c:
 	call Function6f5f
 	ret c
 	ld hl, OBJECT_NEXT_TILE
@@ -93,9 +91,8 @@ Function6f2c: ; 6f2c
 	jr z, Function6f3e
 	scf
 	ret
-; 6f3e
 
-Function6f3e: ; 6f3e
+Function6f3e:
 	ld hl, OBJECT_NEXT_TILE
 	add hl, bc
 	ld a, [hl]
@@ -115,13 +112,11 @@ Function6f3e: ; 6f3e
 	ret z
 	scf
 	ret
-; 6f5b
 
 .data_6f5b
 	db 1 << DOWN, 1 << UP, 1 << RIGHT, 1 << LEFT
-; 6f5f
 
-Function6f5f: ; 6f5f
+Function6f5f:
 	ld hl, OBJECT_STANDING_TILE
 	add hl, bc
 	ld a, [hl]
@@ -140,13 +135,11 @@ Function6f5f: ; 6f5f
 	ret z
 	scf
 	ret
-; 6f7b
 
 .data_6f7b
 	db 1 << UP, 1 << DOWN, 1 << LEFT, 1 << RIGHT
-; 6f7f
 
-Function6f7f: ; 6f7f
+Function6f7f:
 	ld d, a
 	and $f0
 	cp $b0
@@ -166,14 +159,12 @@ Function6f7f: ; 6f7f
 	ld a, [hl]
 	scf
 	ret
-; 6f99
 
 .data_6f99
 	db  8, 4, 1, 2
 	db 10, 6, 9, 5
-; 6fa1
 
-Function6fa1: ; 6fa1
+Function6fa1:
 	ld hl, OBJECT_DIRECTION_WALKING
 	add hl, bc
 	ld a, [hl]
@@ -222,11 +213,8 @@ Function6fa1: ; 6fa1
 .asm_6fd7
 	scf
 	ret
-; 6fd9
 
-
-
-CheckFacingObject:: ; 6fd9
+CheckFacingObject::
 
 	call GetFacingTileCoord
 
@@ -265,62 +253,22 @@ CheckFacingObject:: ; 6fd9
 .standing
 	scf
 	ret
-; 7009
 
-
-WillPersonBumpIntoSomeoneElse: ; 7009
+WillPersonBumpIntoSomeoneElse:
 	ld hl, OBJECT_NEXT_MAP_X
 	add hl, bc
 	ld d, [hl]
 	ld hl, OBJECT_NEXT_MAP_Y
 	add hl, bc
 	ld e, [hl]
-	jr IsNPCAtCoord
-; 7015
+	; fallthrough
 
-Function7015: ; unreferenced
-	ld a, [hMapObjectIndexBuffer]
-	call GetObjectStruct
-	call .CheckWillBeFacingNPC
-	call IsNPCAtCoord
-	ret
-
-.CheckWillBeFacingNPC: ; 7021
-	ld hl, OBJECT_NEXT_MAP_X
-	add hl, bc
-	ld d, [hl]
-	ld hl, OBJECT_NEXT_MAP_Y
-	add hl, bc
-	ld e, [hl]
-	call GetSpriteDirection
-	and a
-	jr z, .down
-	cp OW_UP
-	jr z, .up
-	cp OW_LEFT
-	jr z, .left
-	inc d
-	ret
-
-.down
-	inc e
-	ret
-
-.up
-	dec e
-	ret
-
-.left
-	dec d
-	ret
-; 7041
-
-IsNPCAtCoord: ; 7041
+IsNPCAtCoord:
 	ld bc, ObjectStructs
 	xor a
 .loop
 	ld [hObjectStructIndexBuffer], a
-	call DoesObjectHaveASprite
+	call GetObjectSprite
 	jr z, .next
 
 	ld hl, OBJECT_FLAGS1
@@ -388,9 +336,8 @@ IsNPCAtCoord: ; 7041
 .setcarry
 	scf
 	ret
-; 70a4
 
-HasPersonReachedMovementLimit: ; 70a4
+HasPersonReachedMovementLimit:
 	ld hl, OBJECT_RADIUS
 	add hl, bc
 	ld a, [hl]
@@ -448,9 +395,8 @@ HasPersonReachedMovementLimit: ; 70a4
 .yes
 	scf
 	ret
-; 70ed
 
-IsPersonMovingOffEdgeOfScreen: ; 70ed
+IsPersonMovingOffEdgeOfScreen:
 	ld hl, OBJECT_NEXT_MAP_X
 	add hl, bc
 	ld a, [XCoord]
@@ -479,76 +425,8 @@ IsPersonMovingOffEdgeOfScreen: ; 70ed
 .yes
 	scf
 	ret
-; 7113
 
-Function7113: ; unreferenced
-	ld a, [PlayerStandingMapX]
-	ld d, a
-	ld a, [PlayerStandingMapY]
-	ld e, a
-	ld bc, ObjectStructs
-	xor a
-.loop
-	ld [hObjectStructIndexBuffer], a
-	call DoesObjectHaveASprite
-	jr z, .next
-	ld hl, OBJECT_MOVEMENTTYPE
-	add hl, bc
-	ld a, [hl]
-	cp SPRITEMOVEDATA_SNORLAX
-	jr nz, .not_snorlax
-	call Function7171
-	jr c, .yes
-	jr .next
-
-.not_snorlax
-	ld hl, OBJECT_NEXT_MAP_Y
-	add hl, bc
-	ld a, [hl]
-	cp e
-	jr nz, .check_current_coords
-	ld hl, OBJECT_NEXT_MAP_X
-	add hl, bc
-	ld a, [hl]
-	cp d
-	jr nz, .check_current_coords
-	ld a, [hObjectStructIndexBuffer]
-	cp $0
-	jr z, .next
-	jr .yes
-
-.check_current_coords
-	ld hl, OBJECT_MAP_Y
-	add hl, bc
-	ld a, [hl]
-	cp e
-	jr nz, .next
-	ld hl, OBJECT_MAP_X
-	add hl, bc
-	ld a, [hl]
-	cp d
-	jr nz, .next
-	jr .yes
-
-.next
-	ld hl, OBJECT_STRUCT_LENGTH
-	add hl, bc
-	ld b, h
-	ld c, l
-	ld a, [hObjectStructIndexBuffer]
-	inc a
-	cp NUM_OBJECT_STRUCTS
-	jr nz, .loop
-	xor a
-	ret
-
-.yes
-	scf
-	ret
-; 7171
-
-
-Function7171: ; 7171
+Function7171:
 	ld hl, OBJECT_NEXT_MAP_X
 	add hl, bc
 	ld a, d
@@ -569,4 +447,3 @@ Function7171: ; 7171
 .nope
 	and a
 	ret
-; 718d

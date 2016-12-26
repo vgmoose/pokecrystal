@@ -1,10 +1,15 @@
-; SentretPokedexEntry: ; 0x1ccd6b
-	db "SCOUT@" ; species name
-	dw 207, 130 ; height, width
+	ctxt "Scout" ; species name
+	done
+	dw 207, 130 ; height, weight
 
-	db   "When acting as a"
+	db .page2 - .page1
+.page1
+	ctxt "When acting as a"
 	next "lookout, it warns"
 	next "others of danger"
-	page "by screeching and"
+	done
+.page2
+	ctxt "by screeching and"
 	next "hitting the ground"
-	next "with its tail.@"
+	next "with its tail."
+	done

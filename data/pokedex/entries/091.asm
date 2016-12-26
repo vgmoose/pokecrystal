@@ -1,10 +1,16 @@
-; CloysterPokedexEntry: ; 0x1b8ad9
-	db "BIVALVE@" ; species name
-	dw 411, 2920 ; height, width
+	ctxt "Beckon" ; species name
+	done
+	dw 503, 675 ; height, weight
 
-	db   "Even a missile"
-	next "can't break the"
-	next "spikes it uses to"
-	page "stab opponents."
-	next "They're even hard-"
-	next "er than its shell.@"
+	db .page2 - .page1
+.page1
+	ctxt "Its body is"
+	next "hollow. It is said"
+	next "that those who"
+	done
+.page2
+	ctxt "look into its body"
+	next "are sucked into"
+	next "the void."
+	done
+	

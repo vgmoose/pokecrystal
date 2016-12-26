@@ -1,10 +1,15 @@
-; SwinubPokedexEntry: ; 0x1d0b8d
-	db "PIG@" ; species name
-	dw 104, 140 ; height, width
+	ctxt "Pig" ; species name
+	done
+	dw 104, 140 ; height, weight
 
-	db   "It uses the tip of"
+	db .page2 - .page1
+.page1
+	ctxt "It uses the tip of"
 	next "its nose to dig"
 	next "for food. Its nose"
-	page "is so tough that"
+	done
+.page2
+	ctxt "is so tough that"
 	next "even frozen ground"
-	next "poses no problem.@"
+	next "poses no problem."
+	done

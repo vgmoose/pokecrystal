@@ -2,128 +2,62 @@ SRAM_Begin EQU $a000
 SRAM_End   EQU $c000
 GLOBAL SRAM_Begin, SRAM_End
 
+SECTION "SRAM Bank 0", SRAM [$a000], BANK [0]
+sScratch:: ds $310
 
-SECTION "Scratch", SRAM, BANK [0]
-sScratch::
+sBattleTowerPartyBackup:: ds 2 + PARTY_LENGTH * (PARTYMON_STRUCT_LENGTH + 2 * PKMN_NAME_LENGTH + 1)
 
+sBuildNumber:: ds 2
 
-SECTION "SRAM Bank 0", SRAM [$a600], BANK [0]
-
-; a600
-sPartyMail::
-sPartyMon1Mail::       mailmsg sPartyMon1Mail
-sPartyMon2Mail::       mailmsg sPartyMon2Mail
-sPartyMon3Mail::       mailmsg sPartyMon3Mail
-sPartyMon4Mail::       mailmsg sPartyMon4Mail
-sPartyMon5Mail::       mailmsg sPartyMon5Mail
-sPartyMon6Mail::       mailmsg sPartyMon6Mail
-
-; a71a
-sPartyMailBackup::
-sPartyMon1MailBackup:: mailmsg sPartyMon1MailBackup
-sPartyMon2MailBackup:: mailmsg sPartyMon2MailBackup
-sPartyMon3MailBackup:: mailmsg sPartyMon3MailBackup
-sPartyMon4MailBackup:: mailmsg sPartyMon4MailBackup
-sPartyMon5MailBackup:: mailmsg sPartyMon5MailBackup
-sPartyMon6MailBackup:: mailmsg sPartyMon6MailBackup
-
-; a834
-sMailboxCount:: ds 1
-sMailbox::
-sMailbox1::            mailmsg sMailbox1
-sMailbox2::            mailmsg sMailbox2
-sMailbox3::            mailmsg sMailbox3
-sMailbox4::            mailmsg sMailbox4
-sMailbox5::            mailmsg sMailbox5
-sMailbox6::            mailmsg sMailbox6
-sMailbox7::            mailmsg sMailbox7
-sMailbox8::            mailmsg sMailbox8
-sMailbox9::            mailmsg sMailbox9
-sMailbox10::           mailmsg sMailbox10
-
-; aa0b
-sMailboxCountBackup:: ds 1
-sMailboxBackup::
-sMailbox1Backup::      mailmsg sMailbox1Backup
-sMailbox2Backup::      mailmsg sMailbox2Backup
-sMailbox3Backup::      mailmsg sMailbox3Backup
-sMailbox4Backup::      mailmsg sMailbox4Backup
-sMailbox5Backup::      mailmsg sMailbox5Backup
-sMailbox6Backup::      mailmsg sMailbox6Backup
-sMailbox7Backup::      mailmsg sMailbox7Backup
-sMailbox8Backup::      mailmsg sMailbox8Backup
-sMailbox9Backup::      mailmsg sMailbox9Backup
-sMailbox10Backup::     mailmsg sMailbox10Backup
-
-; abe2
-sMysteryGiftItem:: ds 1
-sMysteryGiftUnlocked:: ds 1
-sBackupMysteryGiftItem:: ds 1
-sNumDailyMysteryGiftPartnerIDs:: ds 1
-sDailyMysteryGiftPartnerIDs:: ds 5 * 2 ; maximum 5 per day, 2 bytes per ID
-sMysteryGiftDecorationsReceived:: flag_array NUM_NON_TROPHY_DECOS
-	ds 4
-sMysteryGiftTimer:: ds 1
-sMysteryGiftTimerStartDay:: ds 1
-	ds 1
-sMysteryGiftTrainerHouseFlag:: ds 1
-sMysteryGiftPartnerName:: ds NAME_LENGTH
-s0_ac09:: ds 1
-sMysteryGiftTrainer:: ds (1 + 1 + NUM_MOVES) * PARTY_LENGTH + 2 ; ac0a
-sBackupMysteryGiftItemEnd::
-
-	ds $30
-
+SECTION "RTC", SRAM [$ac60], BANK [0]
 sRTCStatusFlags:: ds 8
 sLuckyNumberDay:: ds 1
 sLuckyIDNumber:: ds 2
 
 SECTION "Backup Save", SRAM [$b200], BANK [0]
-sBackupOptions:: ds OptionsEnd - Options
+sBackupOptions:: ds OptionsEnd - wOptions
 
-s0_b208:: ds 1 ; loaded with 99, used to check save corruption
+s0_b208:: ds 1
 
-sBackupGameData:: ; b209
+sBackupGameData::
 sBackupPlayerData::  ds wPlayerDataEnd - wPlayerData
 sBackupMapData::     ds wMapDataEnd - wMapData
 sBackupPokemonData:: ds wPokemonDataEnd - wPokemonData
 sBackupGameDataEnd::
 
 ; bd83
-	ds $18a
+	ds $197
 ; bf0d
 
 sBackupChecksum:: ds 2
-s0_bf0f:: ds 1 ; loaded with 0x7f, used to check save corruption
+s0_bf0f:: ds 1
 sStackTop:: ds 2
 
 
-SECTION "Save", SRAM, BANK [1]
+SECTION "SRAM Bank 1", SRAM [$a000], BANK [1]
 
-sOptions:: ds OptionsEnd - Options
+sOptions:: ds OptionsEnd - wOptions
 
 s1_a008:: ds 1 ; loaded with 99, used to check save corruption
 
-sGameData:: ; a009
+sGameData::
 sPlayerData::  ds wPlayerDataEnd - wPlayerData
 sMapData::     ds wMapDataEnd - wMapData
 sPokemonData:: ds wPokemonDataEnd - wPokemonData
 sGameDataEnd::
 
 ; ab83
-	ds $18a
+	ds $197
 ; ad0d
 
 sChecksum::   ds 2
 s1_ad0f::     ds 1 ; loaded with 0x7f, used to check save corruption
 
-SECTION "Active Box", SRAM, BANK [1]
 ; ad10
 	box sBox
 ; b160
 
 	ds $f4
-SECTION "Link Battle Data", SRAM, BANK [1]
 sLinkBattleResults:: ds $c
 
 sLinkBattleStats:: ; b260
@@ -145,7 +79,6 @@ sLinkBattleRecord4:: link_battle_record sLinkBattleRecord4
 sLinkBattleRecord5:: link_battle_record sLinkBattleRecord5
 sLinkBattleStatsEnd::
 
-SECTION "SRAM Hall of Fame", SRAM, BANK [1]
 sHallOfFame:: ; b2c0
 ; temporary until I can find a way to macrofy it
 	hall_of_fame sHallOfFame01
@@ -193,40 +126,28 @@ sHallOfFame:: ; b2c0
 ; endr
 sHallOfFameEnd::
 
-SECTION "SRAM Crystal Data", SRAM, BANK [1]
 sMobileEventIndex:: ds 1 ; be3c
 
-sCrystalData::
-	ds wCrystalDataEnd - wCrystalData
+	ds 7
+
 sMobileEventIndexBackup:: ds 1
 
-SECTION "SRAM Battle Tower", SRAM, BANK [1]
 ; data of the BattleTower must be in SRAM because you can save and leave between battles
 sBattleTowerChallengeState:: ds 1
 ; 0: normal
 ; 2: battle tower
 
-sBattleTower:: ; be46
-sNrOfBeatenBattleTowerTrainers:: ds 1
-sBTChoiceOfLevelGroup:: ds 1
-; The 7 trainers of the BattleTower are saved here, so nobody appears more than once
-sBTTrainers:: ; sbe48
-	ds 7
-s1_be4f:: ds 1
-sBattleTowerReward:: ds 1
-; Pkmn of previous trainer
-sBTPkmnOfTrainers:: ; 0xbe51
-sBTPkmnPrevTrainer1::
-	ds 1
-sBTPkmnPrevTrainer2:: ds 1
-sBTPkmnPrevTrainer3:: ds 1
-; Pkmn of preprevious trainer
-sBTPkmnPrevPrevTrainer1:: ds 1
-sBTPkmnPrevPrevTrainer2:: ds 1
-sBTPkmnPrevPrevTrainer3:: ds 1
+sBattleTower::
+sBT_CurStreak:: ds 1
+sBTChoiceOfLvlGroup:: ds 1
+sBTOpponentIndices:: ds 7
+sBTMonsSelected:: ds 3 * 7
+sBT_OTTrainer:: battle_tower_struct sBT_OT
+sBT_TrainerTextIndex:: ds 2
+sBT_WinStreak:: ds 1
+sBattleTowerEnd::
 
-
-SECTION "Boxes 1-7",  SRAM, BANK [2]
+SECTION "Boxes 1-7", SRAM [$a000], BANK [2]
 	box sBox1
 	box sBox2
 	box sBox3
@@ -235,7 +156,7 @@ SECTION "Boxes 1-7",  SRAM, BANK [2]
 	box sBox6
 	box sBox7
 
-SECTION "Boxes 8-14", SRAM, BANK [3]
+SECTION "Boxes 8-14", SRAM [$a000], BANK [3]
 	box sBox8
 	box sBox9
 	box sBox10

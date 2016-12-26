@@ -1,10 +1,15 @@
-; BlisseyPokedexEntry: ; 0x1d14f7
-	db "HAPPINESS@" ; species name
-	dw 411, 1030 ; height, width
+	ctxt "Happiness" ; species name
+	done
+	dw 411, 1030 ; height, weight
 
-	db   "Biting into one"
+	db .page2 - .page1
+.page1
+	ctxt "Biting into one"
 	next "of the delicious"
-	next "eggs that BLISSEY"
-	page "provides will make"
+	next "eggs that Blissey"
+	done
+.page2
+	ctxt "provides will make"
 	next "everyone around"
-	next "smile with joy.@"
+	next "smile with joy."
+	done

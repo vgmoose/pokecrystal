@@ -1,10 +1,15 @@
-; AriadosPokedexEntry: ; 0x1cd083
-	db "LONG LEG@" ; species name
-	dw 307, 740 ; height, width
+	ctxt "Long Leg" ; species name
+	done
+	dw 307, 740 ; height, weight
 
-	db   "Rather than mak-"
+	db .page2 - .page1
+.page1
+	ctxt "Rather than mak-"
 	next "ing a nest in one"
 	next "specific spot, it"
-	page "wanders in search"
+	done
+.page2
+	ctxt "wanders in search"
 	next "of food after"
-	next "darkness falls.@"
+	next "darkness falls."
+	done

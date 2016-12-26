@@ -1,10 +1,15 @@
-; MetapodPokedexEntry: ; 0x181ace
-	db "COCOON@" ; species name
-	dw 204, 220 ; height, width
+	ctxt "Cocoon" ; species name
+	done
+	dw 204, 220 ; height, weight
 
-	db   "This is its pre-"
+	db .page2 - .page1
+.page1
+	ctxt "This is its pre-"
 	next "evolved form. At"
 	next "this stage, it can"
-	page "only harden, so it"
+	done
+.page2
+	ctxt "only harden, so it"
 	next "remains motionless"
-	next "to avoid attack.@"
+	next "to avoid attack."
+	done

@@ -1,10 +1,15 @@
-; LanturnPokedexEntry: ; 0x1cd1de
-	db "LIGHT@" ; species name
-	dw 311, 500 ; height, width
+	ctxt "Light" ; species name
+	done
+	dw 311, 500 ; height, weight
 
-	db   "This #MON uses"
+	db .page2 - .page1
+.page1
+	ctxt "This #mon uses"
 	next "the bright part of"
 	next "its body, which"
-	page "changed from a"
+	done
+.page2
+	ctxt "changed from a"
 	next "dorsal fin, to"
-	next "lure prey.@"
+	next "lure prey."
+	done

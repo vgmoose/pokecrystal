@@ -1,10 +1,15 @@
-; SnorlaxPokedexEntry: ; 0x1cc5cf
-	db "SLEEPING@" ; species name
-	dw 611, 10140 ; height, width
+	ctxt "Sleeping" ; species name
+	done
+	dw 611, 10140 ; height, weight
 
-	db   "This #MON's"
+	db .page2 - .page1
+.page1
+	ctxt "This #mon's"
 	next "stomach is so"
 	next "strong, even"
-	page "eating moldy or"
+	done
+.page2
+	ctxt "eating moldy or"
 	next "rotten food will"
-	next "not affect it.@"
+	next "not affect it."
+	done

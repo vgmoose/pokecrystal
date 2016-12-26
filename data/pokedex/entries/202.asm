@@ -1,10 +1,15 @@
-; WobbuffetPokedexEntry: ; 0x1d03dd
-	db "PATIENT@" ; species name
-	dw 403, 630 ; height, width
+	ctxt "Cottonbird" ; species name
+	done
+	dw 104, 26 ; height, weight
 
-	db   "In order to con-"
-	next "ceal its black"
-	next "tail, it lives in"
-	page "a dark cave and"
-	next "only moves about"
-	next "at night.@"
+	db .page2 - .page1
+.page1
+	ctxt "Its wings are like"
+	next "cotton tufts. If"
+	next "it perches on"
+	done
+.page2
+	ctxt "someone's head,"
+	next "it looks like a"
+	next "cotton hat."
+	done

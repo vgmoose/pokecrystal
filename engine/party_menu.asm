@@ -1,53 +1,371 @@
-SelectMonFromParty: ; 50000
+SelectMonFromParty:
 	call DisableSpriteUpdates
 	xor a
-	ld [PartyMenuActionText], a
+	ld [wPartyMenuActionText], a
 	call ClearBGPalettes
 	call InitPartyMenuLayout
-	call WaitBGMap
+	call ApplyTilemapInVBlank
 	call SetPalettes
 	call DelayFrame
 	call PartyMenuSelect
-	call ReturnToMapWithSpeechTextbox
+	jp ReturnToMapWithSpeechTextbox
+
+ChooseThreePartyMonsForBattle::
+	call DisableSpriteUpdates
+	xor a
+	ld [hScriptVar], a
+	call ClearBGPalettes
+	call ClearAttrMap
+	call ApplyAttrAndTilemapInVBlank
+.dereg_all
+	xor a
+	ld hl, wTowerArcadePartyCount
+	ld [hli], a
+	dec a
+	ld [hl], a
+	ld a, 10
+	ld [wPartyMenuActionText], a
+	call InitPartyMenuLayout
+	call .Redraw_WaitBGMap
+	jr .handleLoop
+
+.loop
+	call .Redraw
+.handleLoop
+	call PartyMenuSelect
+	jr c, .back
+	call .CheckLegal
+	jr c, .nope_loop
+	ld hl, wSelectedParty
+	ld a, [wCurPartyMon]
+	call IsInSingularArray
+	jr c, .remove_this_mon
+	ld hl, wTowerArcadePartyCount
+	inc [hl]
+	ld a, [hl]
+	cp 3
+	push af
+	add l
+	ld l, a
+	jr nc, .noCarry
+	inc h
+.noCarry
+	ld a, [wCurPartyMon]
+	ld [hli], a
+	ld [hl], $ff
+	pop af
+	jr nz, .loop
+	call .Redraw
+	ld hl, .Text_IsThisOkay
+	call PrintText
+	call YesNoBox
+	jr c, .dereg_all
+	ld a, 1
+	ld [hScriptVar], a
+.done
+	jp ReturnToMapWithSpeechTextbox
+
+.nope_loop
+	ld de, SFX_WRONG
+	call PlayWaitSFX
+	jr .loop
+
+.back
+	ld hl, wTowerArcadePartyCount
+	ld a, [hl]
+	and a
+	jr z, .done
+	dec [hl]
+	add l
+	ld l, a
+	jr nc, .noCarry2
+	inc h
+.noCarry2
+	ld [hl], $ff
+	jr .loop
+
+.remove_this_mon
+	ld a, [wTowerArcadePartyCount]
+	dec a
+	ld [wTowerArcadePartyCount], a
+	ld a, 2
+	sub b
+	ld b, a
+	ld e, l
+	ld d, h
+	inc e
+.copy_back
+	ld a, [de]
+	ld [hli], a
+	inc de
+	dec b
+	jr nz, .copy_back
+	jp .loop
+
+.Text_IsThisOkay:
+	text_jump Text_BattleTowerSelect_IsThisOkay
+
+.Redraw:
+	ld a, 10
+	ld [wPartyMenuActionText], a
+	call RedrawPartyMenu
+.Redraw_WaitBGMap:
+	call ApplyTilemapInVBlank
+	call SetPalettes
+	jp DelayFrame
+
+.CheckLegal:
+	ld a, [MapGroup]
+	cp GROUP_BATTLE_TOWER_ENTRANCE
+	jr z, .BattleTowerLegality
+	cp GROUP_BATTLE_ARCADE_LOBBY
+	ccf
+	ret nz
+	ld a, MON_LEVEL
+	call GetPartyParamLocation
+	ld a, [hl]
+	cp 40
 	ret
-; 5001d
 
+.BattleTowerLegality
+	ld a, [wCurPartySpecies]
+	ld b, a
+	jpba BattleTower_IsCurSpeciesLegal_Far
 
-SelectTradeOrDaycareMon: ; 5001d
+SetBattleTowerParty::
+	; back up the party
+	xor a
+	call GetSRAMBank
+	ld hl, wPartyCount
+	ld de, sBattleTowerPartyBackup
+	ld bc, wPartyMonNicknamesEnd - wPartyCount
+	rst CopyBytes
+
+	; reset the party
+	ld hl, wPartyCount
+	xor a
+	ld [hli], a
+	dec a
+	ld [hl], a
+
+	ld hl, wSelectedParty
+	ld c, 3
+.loop
+	ld a, [hli]
+	ld [wCurPartyMon], a
+	push bc
+	push hl
+
+	; store and increment the party count
+	ld a, [wPartyCount]
+	ld [hMoveMon], a
+	ld c, a
+	inc a
+	ld [wPartyCount], a
+	ld b, 0
+
+	; copy the party list species index
+	ld hl, wPartySpecies
+	add hl, bc
+	ld d, h
+	ld e, l
+	ld hl, sBattleTowerPartyBackup + wPartySpecies - wPartyCount
+	ld a, [wCurPartyMon]
+	ld c, a
+	ld b, 0
+	add hl, bc
+	ld a, [hl]
+	ld [de], a
+	inc de
+	ld a, $ff
+	ld [de], a
+
+	ld hl, wPartyMon1
+	ld a, [hMoveMon]
+	call GetPartyLocation
+	ld d, h
+	ld e, l
+	ld hl, sBattleTowerPartyBackup + wPartyMon1 - wPartyCount
+	ld a, [wCurPartyMon]
+	call GetPartyLocation
+	rst CopyBytes
+
+	ld hl, wPartyMonOT
+	ld a, [hMoveMon]
+	call SkipNames
+	ld d, h
+	ld e, l
+	ld hl, sBattleTowerPartyBackup + wPartyMonOT - wPartyCount
+	ld a, [wCurPartyMon]
+	call SkipNames
+	rst CopyBytes
+
+	ld hl, wPartyMonNicknames
+	ld a, [hMoveMon]
+	call SkipNames
+	ld d, h
+	ld e, l
+	ld hl, sBattleTowerPartyBackup + wPartyMonNicknames - wPartyCount
+	ld a, [wCurPartyMon]
+	call SkipNames
+	rst CopyBytes
+
+	pop hl
+	pop bc
+	dec c
+	jr nz, .loop
+	call CloseSRAM
+
+	ld hl, wBTChoiceOfLvlGroup
+	ld a, BANK(wBTChoiceOfLvlGroup)
+	call GetFarWRAMByte
+	cp 50
+	jr z, .level_cap
+
+	ld hl, PartyMon1Level
+	ld bc, PARTYMON_STRUCT_LENGTH
+	lb de, 3, 50
+.level_loop
+	ld a, [hl]
+	cp e
+	jr c, .level_next
+	ld e, a
+.level_next
+	add hl, bc
+	dec d
+	jr nz, .level_loop
+	ld a, [rSVBK]
+	push af
+	ld a, BANK(wBTChoiceOfLvlGroup)
+	ld [rSVBK], a
+	ld a, e
+	ld [wBTChoiceOfLvlGroup], a
+	pop af
+	ld [rSVBK], a
+	jr .heal
+
+.level_cap
+	ld a, 3
+	ld bc, wPartyMon1
+.level_cap_loop
+	push af
+	call Level50Cap
+	ld hl, PARTYMON_STRUCT_LENGTH
+	add hl, bc
+	ld c, l
+	ld b, h
+	pop af
+	dec a
+	jr nz, .level_cap_loop
+.heal
+	predef_jump HealParty
+
+Level50Cap:
+	ld a, 50
+LevelCap:
+; a is max level
+; bc points to mon struct
+	ld hl, MON_LEVEL
+	add hl, bc
+	cp [hl]
+	ret nc
+	ld [hl], a
+	ld d, a
+	ld a, [bc]
+	ld [wCurSpecies], a
+	call GetBaseData
+	push bc
+	callba CalcExpAtLevel
+	pop bc
+	ld hl, MON_EXP
+	add hl, bc
+	ld a, [hProduct + 1]
+	ld [hli], a
+	ld a, [hProduct + 2]
+	ld [hli], a
+	ld a, [hProduct + 3]
+	ld [hl], a
+	push hl
+	ld hl, MON_MAXHP
+	add hl, bc
+	ld d, h
+	ld e, l
+	pop hl
+	push de
+	push de
+	push bc
+	ld b, 1
+	ld a, 50
+	ld [CurPartyLevel], a
+	predef CalcPkmnStats
+	pop bc
+	pop hl
+	pop de
+	dec de
+	dec de
+	ld a, [hli]
+	ld [de], a
+	inc de
+	ld a, [hli]
+	ld [de], a
+	ret
+
+RestorePartyAfterBattleTower::
+	xor a
+	call GetSRAMBank
+	ld hl, sBattleTowerPartyBackup
+	ld a, [hl]
+	and a
+	jr z, .FailedToRestore
+	cp 7
+	jr nc, .FailedToRestore
+	ld de, wPartyCount
+	ld bc, wPartyMonNicknamesEnd - wPartyCount
+	rst CopyBytes
+	jp CloseSRAM
+
+.FailedToRestore
+	call OpenText
+	ld hl, .Whoops
+	call PrintText
+	call ApplyTilemapInVBlank
+	jr @
+; 24468
+
+.Whoops: ; 24468
+	ctxt "Failed to restore"
+	line "your #mon team."
+	done
+
+SelectTradeOrDaycareMon:
 	ld a, b
-	ld [PartyMenuActionText], a
+	ld [wPartyMenuActionText], a
 	call DisableSpriteUpdates
 	call ClearBGPalettes
 	call InitPartyMenuLayout
-	call WaitBGMap
-	ld b, SCGB_PARTY_MENU
-	call GetSGBLayout
+	call ApplyTilemapInVBlank
+	ld b, SCGB_0A
+	predef GetSGBLayout
 	call SetPalettes
 	call DelayFrame
 	call PartyMenuSelect
-	call ReturnToMapWithSpeechTextbox
-	ret
-; 5003f
+	jp ReturnToMapWithSpeechTextbox
 
-InitPartyMenuLayout: ; 5003f
+InitPartyMenuLayout:
 	call LoadPartyMenuGFX
 	call InitPartyMenuWithCancel
 	call InitPartyMenuGFX
+RedrawPartyMenu:
 	call WritePartyMenuTilemap
-	call PrintPartyMenuText
-	ret
-; 5004f
+	jp PrintPartyMenuText
 
-LoadPartyMenuGFX: ; 5004f
+LoadPartyMenuGFX:
 	call LoadFontsBattleExtra
-	callab InitPartyMenuPalettes ; engine/color.asm
-	callab ClearSpriteAnims2
-	ret
-; 5005f
+	callba InitPartyMenuPalettes
+	jpba ClearSpriteAnims2
 
-
-WritePartyMenuTilemap: ; 0x5005f
-	ld hl, Options
+WritePartyMenuTilemap:
+	ld hl, wOptions
 	ld a, [hl]
 	push af
 	set 4, [hl] ; Disable text delay
@@ -61,19 +379,17 @@ WritePartyMenuTilemap: ; 0x5005f
 .loop
 	ld a, [hli]
 	cp $ff
-	jr z, .end ; 0x5007a $8
+	jr z, .end
 	push hl
-	ld hl, .Jumptable
-	rst JumpTable
+	jumptable .Jumptable
 	pop hl
-	jr .loop ; 0x50082 $f3
+	jr .loop
 .end
 	pop af
-	ld [Options], a
+	ld [wOptions], a
 	ret
-; 0x50089
 
-.Jumptable: ; 50089
+.Jumptable
 	dw PlacePartyNicknames
 	dw PlacePartyHPBar
 	dw PlacePartyMenuHPDigits
@@ -82,12 +398,11 @@ WritePartyMenuTilemap: ; 0x5005f
 	dw PlacePartyMonTMHMCompatibility
 	dw PlacePartyMonEvoStoneCompatibility
 	dw PlacePartyMonGender
-	dw PlacePartyMonMobileBattleSelection
-; 5009b
+	dw PlaceFirstSecondThird
 
-PlacePartyNicknames: ; 5009b
+PlacePartyNicknames:
 	hlcoord 3, 1
-	ld a, [PartyCount]
+	ld a, [wPartyCount]
 	and a
 	jr z, .end
 	ld c, a
@@ -96,7 +411,7 @@ PlacePartyNicknames: ; 5009b
 	push bc
 	push hl
 	push hl
-	ld hl, PartyMonNicknames
+	ld hl, wPartyMonNicknames
 	ld a, b
 	call GetNick
 	pop hl
@@ -113,19 +428,16 @@ PlacePartyNicknames: ; 5009b
 	dec hl
 	dec hl
 	ld de, .CANCEL
-	call PlaceString
-	ret
-; 500c8
+	jp PlaceText
 
-.CANCEL: ; 500c8
-	db "CANCEL@"
-; 500cf
+.CANCEL
+	text "Cancel"
+	done
 
-
-PlacePartyHPBar: ; 500cf
+PlacePartyHPBar:
 	xor a
 	ld [wSGBPals], a
-	ld a, [PartyCount]
+	ld a, [wPartyCount]
 	and a
 	ret z
 	ld c, a
@@ -149,7 +461,7 @@ PlacePartyHPBar: ; 500cf
 	add hl, bc
 	call SetHPPal
 	ld b, SCGB_PARTY_MENU_HP_PALS
-	call GetSGBLayout
+	predef GetSGBLayout
 .skip
 	ld hl, wSGBPals
 	inc [hl]
@@ -160,16 +472,14 @@ PlacePartyHPBar: ; 500cf
 	inc b
 	dec c
 	jr nz, .loop
-	ld b, SCGB_PARTY_MENU
-	call GetSGBLayout
-	ret
-; 50117
+	ld b, SCGB_0A
+	predef_jump GetSGBLayout
 
-PlacePartymonHPBar: ; 50117
+PlacePartymonHPBar:
 	ld a, b
 	ld bc, PARTYMON_STRUCT_LENGTH
 	ld hl, PartyMon1HP
-	call AddNTimes
+	rst AddNTimes
 	ld a, [hli]
 	or [hl]
 	jr nz, .not_fainted
@@ -188,12 +498,10 @@ PlacePartymonHPBar: ; 50117
 	ld d, a
 	ld a, [hli]
 	ld e, a
-	predef ComputeHPBarPixels
-	ret
-; 50138
+	predef_jump ComputeHPBarPixels
 
-PlacePartyMenuHPDigits: ; 50138
-	ld a, [PartyCount]
+PlacePartyMenuHPDigits:
+	ld a, [wPartyCount]
 	and a
 	ret z
 	ld c, a
@@ -208,7 +516,7 @@ PlacePartyMenuHPDigits: ; 50138
 	ld a, b
 	ld bc, PARTYMON_STRUCT_LENGTH
 	ld hl, PartyMon1HP
-	call AddNTimes
+	rst AddNTimes
 	ld e, l
 	ld d, h
 	pop hl
@@ -232,10 +540,9 @@ PlacePartyMenuHPDigits: ; 50138
 	dec c
 	jr nz, .loop
 	ret
-; 50176
 
-PlacePartyMonLevel: ; 50176
-	ld a, [PartyCount]
+PlacePartyMonLevel:
+	ld a, [wPartyCount]
 	and a
 	ret z
 	ld c, a
@@ -250,7 +557,7 @@ PlacePartyMonLevel: ; 50176
 	ld a, b
 	ld bc, PARTYMON_STRUCT_LENGTH
 	ld hl, PartyMon1Level
-	call AddNTimes
+	rst AddNTimes
 	ld e, l
 	ld d, h
 	pop hl
@@ -259,11 +566,8 @@ PlacePartyMonLevel: ; 50176
 	jr nc, .ThreeDigits
 	ld a, "<LV>"
 	ld [hli], a
-	lb bc, PRINTNUM_RIGHTALIGN | 1, 2
-	; jr .okay
-.ThreeDigits:
+.ThreeDigits
 	lb bc, PRINTNUM_RIGHTALIGN | 1, 3
-; .okay
 	call PrintNum
 
 .next
@@ -275,10 +579,9 @@ PlacePartyMonLevel: ; 50176
 	dec c
 	jr nz, .loop
 	ret
-; 501b2
 
-PlacePartyMonStatus: ; 501b2
-	ld a, [PartyCount]
+PlacePartyMonStatus:
+	ld a, [wPartyCount]
 	and a
 	ret z
 	ld c, a
@@ -293,7 +596,7 @@ PlacePartyMonStatus: ; 501b2
 	ld a, b
 	ld bc, PARTYMON_STRUCT_LENGTH
 	ld hl, PartyMon1Status
-	call AddNTimes
+	rst AddNTimes
 	ld e, l
 	ld d, h
 	pop hl
@@ -308,10 +611,9 @@ PlacePartyMonStatus: ; 501b2
 	dec c
 	jr nz, .loop
 	ret
-; 501e0
 
-PlacePartyMonTMHMCompatibility: ; 501e0
-	ld a, [PartyCount]
+PlacePartyMonTMHMCompatibility:
+	ld a, [wPartyCount]
 	and a
 	ret z
 	ld c, a
@@ -323,16 +625,16 @@ PlacePartyMonTMHMCompatibility: ; 501e0
 	call PartyMenuCheckEgg
 	jr z, .next
 	push hl
-	ld hl, PartySpecies
+	ld hl, wPartySpecies
 	ld e, b
 	ld d, 0
 	add hl, de
 	ld a, [hl]
-	ld [CurPartySpecies], a
+	ld [wCurPartySpecies], a
 	predef CanLearnTMHMMove
 	pop hl
 	call .PlaceAbleNotAble
-	call PlaceString
+	call PlaceText
 
 .next
 	pop hl
@@ -343,31 +645,17 @@ PlacePartyMonTMHMCompatibility: ; 501e0
 	dec c
 	jr nz, .loop
 	ret
-; 50215
 
-.PlaceAbleNotAble: ; 50215
+.PlaceAbleNotAble
 	ld a, c
 	and a
-	jr nz, .able
-	ld de, .string_not_able
+	ld de, String_NotAble
+	ret z
+	ld de, String_Able
 	ret
 
-.able
-	ld de, .string_able
-	ret
-; 50221
-
-.string_able ; 50221
-	db "ABLE@"
-; 50226
-
-.string_not_able ; 50226
-	db "NOT ABLE@"
-; 5022f
-
-
-PlacePartyMonEvoStoneCompatibility: ; 5022f
-	ld a, [PartyCount]
+PlacePartyMonEvoStoneCompatibility:
+	ld a, [wPartyCount]
 	and a
 	ret z
 	ld c, a
@@ -380,19 +668,26 @@ PlacePartyMonEvoStoneCompatibility: ; 5022f
 	jr z, .next
 	push hl
 	ld a, b
+	push af
 	ld bc, PARTYMON_STRUCT_LENGTH
 	ld hl, PartyMon1Species
-	call AddNTimes
-	ld a, [hl]
-	dec a
-	ld e, a
+	rst AddNTimes
+	ld e, [hl]
+	ld bc, MON_ITEM
+	add hl, bc
+	ld b, [hl]
+	pop af
+	call .GetGenderAndWriteInC
+
+	dec e
 	ld d, 0
 	ld hl, EvosAttacksPointers
 	add hl, de
 	add hl, de
+
 	call .DetermineCompatibility
 	pop hl
-	call PlaceString
+	call PlaceText
 
 .next
 	pop hl
@@ -403,55 +698,97 @@ PlacePartyMonEvoStoneCompatibility: ; 5022f
 	dec c
 	jr nz, .loop
 	ret
-; 50268
 
-.DetermineCompatibility: ; 50268
-	ld de, StringBuffer1
+.GetGenderAndWriteInC
+	push bc
+	push hl
+	ld b, a
+	ld hl, wCurPartyMon
+	ld a, [hl]
+	push af
+	ld [hl], b
+	xor a
+	ld [wMonType], a
+	predef GetGender
+	ld c, a
+	pop af
+	ld [wCurPartyMon], a
+	ld a, c
+	pop hl
+	pop bc
+	ld c, a
+	ret
+
+.DetermineCompatibility
+	push bc
 	ld a, BANK(EvosAttacksPointers)
-	ld bc, 2
-	call FarCopyBytes
-	ld hl, StringBuffer1
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	ld de, StringBuffer1
+	call GetFarHalfword
+	ld de, wStringBuffer1
+	ld bc, 9
 	ld a, BANK(EvosAttacks)
-	ld bc, $a
 	call FarCopyBytes
-	ld hl, StringBuffer1
+	xor a
+	ld [de], a
+	ld hl, wStringBuffer1
+	pop bc
 .loop2
 	ld a, [hli]
 	and a
 	jr z, .nope
 	inc hl
 	inc hl
+	cp EVOLVE_STAT
+	jr z, .nope ; reasons
 	cp EVOLVE_ITEM
+	jr z, .checkItem
+	cp EVOLVE_ITEM_MALE
+	jr z, .checkItemMale
+	cp EVOLVE_ITEM_FEMALE
+	jr z, .checkItemFemale
+	cp EVOLVE_TRADE
 	jr nz, .loop2
+; trade
+	ld a, b
+	cp EVERSTONE
+	jr z, .loop2
+	jr .checkHeldItem
+.checkItemMale
+	ld a, c
+	dec a
+	jr .goBackToLoop2IfNonZero
+.checkItemFemale
+	ld a, c
+	and a
+.goBackToLoop2IfNonZero
+	jr nz, .loop2
+.checkItem
+	ld a, [wCurItem]
+.checkHeldItem
 	dec hl
 	dec hl
-	ld a, [CurItem]
 	cp [hl]
+	jr z, .able
+	ld a, [hli]
 	inc hl
-	inc hl
+	inc a
 	jr nz, .loop2
-	ld de, .string_able
+.able
+	ld de, String_Able
 	ret
-
 .nope
-	ld de, .string_not_able
+	ld de, String_NotAble
 	ret
-; 502a3
 
-.string_able ; 502a3
-	db "ABLE@"
-; 502a8
-.string_not_able ; 502a8
-	db "NOT ABLE@"
-; 502b1
+String_Able:
+	text "Able"
+	done
 
+String_NotAble:
+	text "Not able"
+	done
 
-PlacePartyMonGender: ; 502b1
-	ld a, [PartyCount]
+PlacePartyMonGender:
+	ld a, [wPartyCount]
 	and a
 	ret z
 	ld c, a
@@ -462,12 +799,12 @@ PlacePartyMonGender: ; 502b1
 	push hl
 	call PartyMenuCheckEgg
 	jr z, .next
-	ld [CurPartySpecies], a
+	ld [wCurPartySpecies], a
 	push hl
 	ld a, b
-	ld [CurPartyMon], a
+	ld [wCurPartyMon], a
 	xor a
-	ld [MonType], a
+	ld [wMonType], a
 	call GetGender
 	ld de, .unknown
 	jr c, .got_gender
@@ -477,7 +814,7 @@ PlacePartyMonGender: ; 502b1
 
 .got_gender
 	pop hl
-	call PlaceString
+	call PlaceText
 
 .next
 	pop hl
@@ -488,121 +825,106 @@ PlacePartyMonGender: ; 502b1
 	dec c
 	jr nz, .loop
 	ret
-; 502ee
 
-.male ; 502ee
-	db "♂…MALE@"
-; 502f5
+.male
+	text "♂…Male"
+	done
 
-.female ; 502f5
-	db "♀…FEMALE@"
-; 502fe
+.female
+	text "♀…Female"
+	done
 
-.unknown ; 502fe
-	db "…UNKNOWN@"
-; 50307
+.unknown
+	text "…Unknown"
+	done
 
-
-PlacePartyMonMobileBattleSelection: ; 50307
-	ld a, [PartyCount]
-	and a
-	ret z
+PlaceFirstSecondThird:
+	ld a, [wBattleTowerLegalPokemonFlags]
+	ld e, a
+	ld a, [wPartyCount]
 	ld c, a
 	ld b, 0
-	hlcoord 12, 1
+	hlcoord 12, 2
 .loop
 	push bc
+	srl e
+	push de
 	push hl
-	ld de, .String_Sanka_Shinai
-	call PlaceString
+	jr nc, .unable
+	ld a, b
+	ld hl, wSelectedParty
+	call IsInSingularArray
+	jr nc, .not_regged
+	ld a, b
+	ld hl, .Strings
+	call GetNthString
+	ld d, h
+	ld e, l
+	jr .print
+
+.not_regged
+	ld de, .NotRegistered
+	jr .print
+
+.unable
+	ld de, .Unable
+.print
 	pop hl
+	call PlaceString ; preserves hl
 	ld de, 2 * SCREEN_WIDTH
 	add hl, de
+	pop de
 	pop bc
 	inc b
 	dec c
 	jr nz, .loop
-	ld a, l
-	ld e, PKMN_NAME_LENGTH
-	sub e
-	ld l, a
-	ld a, h
-	sbc $0
-	ld h, a
-	ld de, .String_Kettei_Yameru
-	call PlaceString
-	ld b, $3
-	ld c, $0
-	ld hl, wd002
-	ld a, [hl]
-.loop2
-	push hl
-	push bc
-	hlcoord 12, 1
-.loop3
-	and a
-	jr z, .done
-	ld de, 2 * SCREEN_WIDTH
-	add hl, de
-	dec a
-	jr .loop3
+	ret
 
-.done
-	ld de, .String_Banme
-	push hl
-	call PlaceString
-	pop hl
-	pop bc
-	push bc
-	push hl
-	ld a, c
-	ld hl, .Strings_1_2_3
-	call GetNthString
-	ld d, h
-	ld e, l
-	pop hl
-	call PlaceString
-	pop bc
-	pop hl
-	inc hl
-	ld a, [hl]
-	inc c
-	dec b
-	ret z
-	jr .loop2
-; 5036b
+.Strings:
+	db "FIRST@"
+	db "SECOND@"
+	db "THIRD@"
+.Unable
+	db "UNABLE@"
+.NotRegistered
+	db "ABLE@"
 
-.String_Banme: ; 5036b
-	db " ばんめ  @" ; Place
-; 50372
-.String_Sanka_Shinai: ; 50372
-	db "さんかしない@" ; Cancel
-; 50379
-.String_Kettei_Yameru: ; 50379
-	db "けってい  やめる@" ; Quit
-; 50383
-.Strings_1_2_3: ; 50383
-	db "1@", "2@", "3@" ; 1st, 2nd, 3rd
-; 50389
-
-
-PartyMenuCheckEgg: ; 50389
-	ld a, PartySpecies % $100
+PartyMenuCheckEgg:
+	ld a, wPartySpecies % $100
 	add b
 	ld e, a
-	ld a, PartySpecies / $100
+	ld a, wPartySpecies / $100
 	adc 0
 	ld d, a
 	ld a, [de]
 	cp EGG
 	ret
-; 50396
 
-GetPartyMenuTilemapPointers: ; 50396
-	ld a, [PartyMenuActionText]
+GetPartyMenuTilemapPointers:
+party_menu_components: MACRO
+rept _NARG
+	db PARTY_TILES_\1
+	shift
+endr
+	db -1
+endm
+
+	const_def
+	const PARTY_TILES_NICKS
+	const PARTY_TILES_HP_BAR
+	const PARTY_TILES_HP_VAL
+	const PARTY_TILES_LEVEL
+	const PARTY_TILES_STATUS
+	const PARTY_TILES_TMHM
+	const PARTY_TILES_STONE
+	const PARTY_TILES_GENDER
+	const PARTY_TILES_TOWER
+
+	ld a, [wPartyMenuActionText]
 	and $f0
-	jr nz, .skip
-	ld a, [PartyMenuActionText]
+	ld hl, .Default
+	ret nz
+	ld a, [wPartyMenuActionText]
 	and $f
 	ld e, a
 	ld d, 0
@@ -614,34 +936,27 @@ GetPartyMenuTilemapPointers: ; 50396
 	ld l, a
 	ret
 
-.skip
-	ld hl, .Default
-	ret
-; 503b2
+.Pointers
+	dw .Default  ; 0
+	dw .Default  ; 1
+	dw .Default  ; 2
+	dw .TMHM     ; 3
+	dw .Default  ; 4
+	dw .EvoStone ; 5
+	dw .Gender   ; 6
+	dw .Gender   ; 7
+	dw .Default  ; 8
+	dw .Default  ; 9
+	dw .Tower    ; a
 
-.Pointers: ; 503b2
-	dw .Default
-	dw .Default
-	dw .Default
-	dw .TMHM
-	dw .Default
-	dw .EvoStone
-	dw .Gender
-	dw .Gender
-	dw .Default
-	dw .Mobile
-; 503c6
+.Default:  party_menu_components NICKS, HP_BAR, HP_VAL, LEVEL, STATUS
+.TMHM:     party_menu_components NICKS, TMHM,           LEVEL, STATUS
+.EvoStone: party_menu_components NICKS, STONE,          LEVEL, STATUS
+.Gender:   party_menu_components NICKS, GENDER,         LEVEL, STATUS
+.Tower:    party_menu_components NICKS, TOWER,          LEVEL, STATUS
 
-.Default: db 0, 1, 2, 3, 4, $ff
-.TMHM: db 0, 5, 3, 4, $ff
-.EvoStone: db 0, 6, 3, 4, $ff
-.Gender: db 0, 7, 3, 4, $ff
-.Mobile: db 0, 8, 3, 4, $ff
-; 503e0
-
-
-InitPartyMenuGFX: ; 503e0
-	ld hl, PartyCount
+InitPartyMenuGFX:
+	ld hl, wPartyCount
 	ld a, [hli]
 	and a
 	ret z
@@ -651,10 +966,8 @@ InitPartyMenuGFX: ; 503e0
 .loop
 	push bc
 	push hl
-	ld hl, LoadMenuMonIcon
-	ld a, BANK(LoadMenuMonIcon)
 	ld e, $0
-	rst FarCall
+	callba LoadPartyIcons
 	ld a, [hObjectStructIndexBuffer]
 	inc a
 	ld [hObjectStructIndexBuffer], a
@@ -662,17 +975,15 @@ InitPartyMenuGFX: ; 503e0
 	pop bc
 	dec c
 	jr nz, .loop
-	callab PlaySpriteAnimations
-	ret
-; 50405
+	jpba PlaySpriteAnimations
 
-InitPartyMenuWithCancel: ; 50405
+InitPartyMenuWithCancel:
 ; with cancel
 	xor a
 	ld [wSwitchMon], a
 	ld de, PartyMenuAttributes
 	call SetMenuAttributes
-	ld a, [PartyCount]
+	ld a, [wPartyCount]
 	inc a
 	ld [w2DMenuNumRows], a ; list length
 	dec a
@@ -692,13 +1003,12 @@ InitPartyMenuWithCancel: ; 50405
 	ld a, A_BUTTON | B_BUTTON
 	ld [wMenuJoypadFilter], a
 	ret
-; 5042d
 
-InitPartyMenuNoCancel: ; 0x5042d
+InitPartyMenuNoCancel:
 ; no cancel
 	ld de, PartyMenuAttributes
 	call SetMenuAttributes
-	ld a, [PartyCount]
+	ld a, [wPartyCount]
 	ld [w2DMenuNumRows], a ; list length
 	ld b, a
 	ld a, [wPartyMenuCursor]
@@ -714,9 +1024,8 @@ InitPartyMenuNoCancel: ; 0x5042d
 	ld a, A_BUTTON | B_BUTTON
 	ld [wMenuJoypadFilter], a
 	ret
-; 5044f (14:444f)
 
-PartyMenuAttributes: ; 5044f
+PartyMenuAttributes:
 ; cursor y
 ; cursor x
 ; num rows
@@ -730,13 +1039,12 @@ PartyMenuAttributes: ; 5044f
 	db $60, $00
 	dn 2, 0
 	db 0
-; 50457
 
-PartyMenuSelect: ; 0x50457
-; sets carry if exitted menu.
-	call StaticMenuJoypad
+PartyMenuSelect:
+; sets carry if exited menu.
+	call DoMenuJoypadLoop
 	call PlaceHollowCursor
-	ld a, [PartyCount]
+	ld a, [wPartyCount]
 	inc a
 	ld b, a
 	ld a, [wMenuCursorY] ; menu selection?
@@ -745,44 +1053,40 @@ PartyMenuSelect: ; 0x50457
 	ld [wPartyMenuCursor], a
 	ld a, [hJoyLast]
 	ld b, a
-	bit B_BUTTON_F, b
-	jr nz, .exitmenu ; B button
+	bit 1, b
+	jr nz, .exitmenu ; B button?
 	ld a, [wMenuCursorY]
 	dec a
-	ld [CurPartyMon], a
+	ld [wCurPartyMon], a
 	ld c, a
 	ld b, $0
-	ld hl, PartySpecies
+	ld hl, wPartySpecies
 	add hl, bc
 	ld a, [hl]
-	ld [CurPartySpecies], a
+	ld [wCurPartySpecies], a
 
 	ld de, SFX_READ_TEXT_2
 	call PlaySFX
-	call WaitSFX
 	and a
 	ret
 
 .exitmenu
 	ld de, SFX_READ_TEXT_2
 	call PlaySFX
-	call WaitSFX
 	scf
 	ret
-; 0x5049a
 
-
-PrintPartyMenuText: ; 5049a
+PrintPartyMenuText:
 	hlcoord 0, 14
 	lb bc, 2, 18
 	call TextBox
-	ld a, [PartyCount]
+	ld a, [wPartyCount]
 	and a
 	jr nz, .haspokemon
-	ld de, YouHaveNoPKMNString
+	ld de, .YouHaveNoPKMNString
 	jr .gotstring
-.haspokemon ; 504ae
-	ld a, [PartyMenuActionText]
+.haspokemon
+	ld a, [wPartyMenuActionText]
 	and $f ; drop high nibble
 	ld hl, PartyMenuStrings
 	ld e, a
@@ -792,62 +1096,74 @@ PrintPartyMenuText: ; 5049a
 	ld a, [hli]
 	ld d, [hl]
 	ld e, a
-.gotstring ; 504be
-	ld a, [Options]
+.gotstring
+	ld a, [wOptions]
 	push af
 	set 4, a ; disable text delay
-	ld [Options], a
+	ld [wOptions], a
 	hlcoord 1, 16 ; Coord
-	call PlaceString
+	call PlaceText
 	pop af
-	ld [Options], a
+	ld [wOptions], a
 	ret
-; 0x504d2
 
-PartyMenuStrings: ; 0x504d2
-	dw ChooseAMonString
-	dw UseOnWhichPKMNString
-	dw WhichPKMNString
-	dw TeachWhichPKMNString
-	dw MoveToWhereString
-	dw UseOnWhichPKMNString
-	dw ChooseAMonString ; Probably used to be ChooseAFemalePKMNString
-	dw ChooseAMonString ; Probably used to be ChooseAMalePKMNString
-	dw ToWhichPKMNString
+.YouHaveNoPKMNString
+	text "You have no <PK><MN>!"
+	done
 
-ChooseAMonString: ; 0x504e4
-	db "Choose a #MON.@"
-UseOnWhichPKMNString: ; 0x504f3
-	db "Use on which <PK><MN>?@"
-WhichPKMNString: ; 0x50504
-	db "Which <PK><MN>?@"
-TeachWhichPKMNString: ; 0x5050e
-	db "Teach which <PK><MN>?@"
-MoveToWhereString: ; 0x5051e
-	db "Move to where?@"
-ChooseAFemalePKMNString: ; 0x5052d  ; UNUSED
-	db "Choose a ♀<PK><MN>.@"
-ChooseAMalePKMNString: ; 0x5053b    ; UNUSED
-	db "Choose a ♂<PK><MN>.@"
-ToWhichPKMNString: ; 0x50549
-	db "To which <PK><MN>?@"
+PartyMenuStrings:
+	dw .ChooseAMonString
+	dw .UseOnWhichPKMNString
+	dw .WhichPKMNString
+	dw .TeachWhichPKMNString
+	dw .MoveToWhereString
+	dw .UseOnWhichPKMNString
+	dw .ChooseAMonString ; Probably used to be ChooseAFemalePKMNString
+	dw .ChooseAMonString ; Probably used to be ChooseAMalePKMNString
+	dw .ToWhichPKMNString
+	dw .SwapItemWhereString
+	dw .ChooseAMonString
 
-YouHaveNoPKMNString: ; 0x50556
-	db "You have no <PK><MN>!@"
+.ChooseAMonString
+	ctxt "Choose a #mon."
+	done
 
+.UseOnWhichPKMNString
+	text "Use on@"
+	text_jump .SpaceWhichPKMNString
 
-PrintPartyMenuActionText: ; 50566
-	ld a, [CurPartyMon]
-	ld hl, PartyMonNicknames
+.WhichPKMNString
+	text "Which <PK><MN>?"
+	done
+
+.TeachWhichPKMNString
+	text "Teach@"
+	text_jump .SpaceWhichPKMNString
+
+.MoveToWhereString
+	ctxt "Move to where?"
+	done
+
+.ToWhichPKMNString
+	text "To@"
+.SpaceWhichPKMNString
+	text " which <PK><MN>?"
+	done
+
+.SwapItemWhereString
+	ctxt "Move item where?"
+	done
+
+PrintPartyMenuActionText:
+	ld a, [wCurPartyMon]
+	ld hl, wPartyMonNicknames
 	call GetNick
-	ld a, [PartyMenuActionText]
+	ld a, [wPartyMenuActionText]
 	and $f
 	ld hl, .MenuActionTexts
-	call .PrintText
-	ret
-; 5057b
+	jp .PrintText
 
-.MenuActionTexts: ; 5057b
+.MenuActionTexts
 	dw .Text_CuredOfPoison
 	dw .Text_BurnWasHealed
 	dw .Text_Defrosted
@@ -858,70 +1174,51 @@ PrintPartyMenuActionText: ; 50566
 	dw .Text_Revitalized
 	dw .Text_GrewToLevel
 	dw .Text_CameToItsSenses
-; 5058f
 
-.Text_RecoveredSomeHP: ; 0x5058f
+.Text_RecoveredSomeHP
 	; recovered @ HP!
 	text_jump UnknownText_0x1bc0a2
-	db "@"
-; 0x50594
 
-.Text_CuredOfPoison: ; 0x50594
+.Text_CuredOfPoison
 	; 's cured of poison.
 	text_jump UnknownText_0x1bc0bb
-	db "@"
-; 0x50599
 
-.Text_RidOfParalysis: ; 0x50599
+.Text_RidOfParalysis
 	; 's rid of paralysis.
 	text_jump UnknownText_0x1bc0d2
-	db "@"
-; 0x5059e
 
-.Text_BurnWasHealed: ; 0x5059e
+.Text_BurnWasHealed
 	; 's burn was healed.
 	text_jump UnknownText_0x1bc0ea
-	db "@"
-; 0x505a3
 
-.Text_Defrosted: ; 0x505a3
+.Text_Defrosted
 	; was defrosted.
 	text_jump UnknownText_0x1bc101
-	db "@"
-; 0x505a8
 
-.Text_WokeUp: ; 0x505a8
+.Text_WokeUp
 	; woke up.
 	text_jump UnknownText_0x1bc115
-	db "@"
-; 0x505ad
 
-.Text_HealthReturned: ; 0x505ad
+.Text_HealthReturned
 	; 's health returned.
 	text_jump UnknownText_0x1bc123
-	db "@"
-; 0x505b2
 
-.Text_Revitalized: ; 0x505b2
+.Text_Revitalized
 	; is revitalized.
 	text_jump UnknownText_0x1bc13a
-	db "@"
-; 0x505b7
 
-.Text_GrewToLevel: ; 0x505b7
+.Text_GrewToLevel
 	; grew to level @ !@ @
-	text_jump UnknownText_0x1bc14f
-	db "@"
-; 0x505bc
+	text_far UnknownText_0x1bc14f
+	start_asm
+	ld de, SFX_DEX_FANFARE_50_79
+	jp Text_PlaySFXAndPrompt
 
-.Text_CameToItsSenses: ; 0x505bc
+.Text_CameToItsSenses
 	; came to its senses.
 	text_jump UnknownText_0x1bc16e
-	db "@"
-; 0x505c1
 
-
-.PrintText: ; 505c1
+.PrintText
 	ld e, a
 	ld d, 0
 	add hl, de
@@ -929,12 +1226,11 @@ PrintPartyMenuActionText: ; 50566
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	ld a, [Options]
+	ld a, [wOptions]
 	push af
 	set NO_TEXT_SCROLL, a
-	ld [Options], a
+	ld [wOptions], a
 	call PrintText
 	pop af
-	ld [Options], a
+	ld [wOptions], a
 	ret
-; 505da

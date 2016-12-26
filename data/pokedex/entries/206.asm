@@ -1,10 +1,15 @@
-; DunsparcePokedexEntry: ; 0x1d0593
-	db "LAND SNAKE@" ; species name
-	dw 411, 310 ; height, width
+	ctxt "Drill" ; species name
+	done
+	dw 710, 6235 ; height, weight
 
-	db   "It hides deep"
-	next "inside caves where"
-	next "no light ever"
-	page "reaches it and"
-	next "remains virtually"
-	next "motionless there.@"
+	db .page2 - .page1
+.page1
+	ctxt "It puts rocks in"
+	next "holes in its palms"
+	next "and uses its"
+	done
+.page2
+	ctxt "muscles to shoot"
+	next "them. Geodude are"
+	next "rarely shot."
+	done

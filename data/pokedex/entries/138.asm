@@ -1,10 +1,15 @@
-; OmanytePokedexEntry: ; 0x1cc3c1
-	db "SPIRAL@" ; species name
-	dw 104, 170 ; height, width
+	ctxt "Monitor" ; species name
+	done
+	dw 601, 2632 ; height, weight
 
-	db   "In prehistoric"
-	next "times, it swam on"
-	next "the sea floor,"
-	page "eating plankton."
-	next "Its fossils are"
-	next "sometimes found.@"
+	db .page2 - .page1
+.page1
+	ctxt "Very protective"
+	next "of Naljo. It does"
+	next "anything necessary"
+	done
+.page2
+	ctxt "to prevent outsid-"
+	next "ers from entering"
+	next "Naljo."
+	done

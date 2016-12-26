@@ -1,10 +1,15 @@
-; CaterpiePokedexEntry: ; 0x181a60
-	db "WORM@" ; species name
-	dw 100, 60 ; height, width
+	ctxt "Worm" ; species name
+	done
+	dw 100, 60 ; height, weight
 
-	db   "It crawls into"
+	db .page2 - .page1
+.page1
+	ctxt "It crawls into"
 	next "foliage where it"
 	next "camouflages itself"
-	page "among leaves that"
+	done
+.page2
+	ctxt "among leaves that"
 	next "are the same color"
-	next "as its body.@"
+	next "as its body."
+	done

@@ -1,10 +1,15 @@
-; CharmeleonPokedexEntry: ; 0x18184a
-	db "FLAME@" ; species name
-	dw 307, 420 ; height, width
+	ctxt "Flame" ; species name
+	done
+	dw 307, 420 ; height, weight
 
-	db   "If it becomes"
+	db .page2 - .page1
+.page1
+	ctxt "If it becomes"
 	next "agitated during"
 	next "battle, it spouts"
-	page "intense flames,"
+	done
+.page2
+	ctxt "intense flames,"
 	next "incinerating its"
-	next "surroundings.@"
+	next "surroundings."
+	done

@@ -1,10 +1,15 @@
-; GeodudePokedexEntry: ; 0x1b83a1
-	db "ROCK@" ; species name
-	dw 104, 440 ; height, width
+	ctxt "Rock" ; species name
+	done
+	dw 104, 440 ; height, weight
 
-	db   "Proud of their"
+	db .page2 - .page1
+.page1
+	ctxt "Proud of their"
 	next "sturdy bodies,"
 	next "they bash against"
-	page "each other in a"
+	done
+.page2
+	ctxt "each other in a"
 	next "contest to prove"
-	next "whose is harder.@"
+	next "whose is harder."
+	done

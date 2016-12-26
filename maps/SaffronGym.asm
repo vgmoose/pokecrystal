@@ -1,346 +1,249 @@
-const_value set 2
-	const SAFFRONGYM_SABRINA
-	const SAFFRONGYM_GRANNY1
-	const SAFFRONGYM_YOUNGSTER1
-	const SAFFRONGYM_GRANNY2
-	const SAFFRONGYM_YOUNGSTER2
-	const SAFFRONGYM_GYM_GUY
-
-SaffronGym_MapScriptHeader:
-.MapTriggers:
+SaffronGym_MapScriptHeader;trigger count
+	db 0
+ ;callback count
 	db 0
 
-.MapCallbacks:
-	db 0
+SaffronGymSignpost:
+	jumptext SaffronGymSignpost_Text
 
-SabrinaScript_0x189c2e:
-	faceplayer
+SaffronGym_Trainer_1:
+	trainer EVENT_SAFFRON_GYM_TRAINER_1, PSYCHIC_T, 6, SaffronGym_Trainer_1_Text_BeforeBattle, SaffronGym_Trainer_1_Text_BattleWon, $0000, .Script
+
+.Script
+	end_if_just_battled
+	jumptextfaceplayer SaffronGym_Trainer_1_Text_AfterBattle
+
+SaffronGym_Trainer_2:
+	trainer EVENT_SAFFRON_GYM_TRAINER_2, MEDIUM, 6, SaffronGym_Trainer_2_Text_BeforeBattle, SaffronGym_Trainer_2_Text_BattleWon, $0000, .Script
+
+.Script
+	end_if_just_battled
+	jumptextfaceplayer SaffronGym_Trainer_2_Text_AfterBattle
+
+SaffronGym_Trainer_3:
+	trainer EVENT_SAFFRON_GYM_TRAINER_3, MEDIUM, 7, SaffronGym_Trainer_3_Text_BeforeBattle, SaffronGym_Trainer_3_Text_BattleWon, $0000, .Script
+
+.Script
+	end_if_just_battled
+	jumptextfaceplayer SaffronGym_Trainer_3_Text_AfterBattle
+
+SaffronGymGuide:
+	jumptextfaceplayer SaffronGymGuide_Text
+
+SaffronGymSabrina:
 	opentext
 	checkflag ENGINE_MARSHBADGE
-	iftrue .FightDone
-	writetext UnknownText_0x189cdf
-	waitbutton
-	closetext
-	winlosstext UnknownText_0x189df4, 0
+	sif true
+		jumptextfaceplayer SaffronGymSabrina_Text_AfterGettingBadge
+	faceplayer
+	writetext SaffronGymSabrina_Text_BeforeBattle
+	winlosstext SaffronGymSabrina_Text_BattleWon, 0
+	setlasttalked 255
+	writecode VAR_BATTLETYPE, BATTLETYPE_NORMAL
 	loadtrainer SABRINA, 1
 	startbattle
 	reloadmapafterbattle
-	setevent EVENT_BEAT_SABRINA
-	setevent EVENT_BEAT_MEDIUM_REBECCA
-	setevent EVENT_BEAT_MEDIUM_DORIS
-	setevent EVENT_BEAT_PSYCHIC_FRANKLIN
-	setevent EVENT_BEAT_PSYCHIC_JARED
+	playmapmusic
 	opentext
-	writetext UnknownText_0x189e95
-	playsound SFX_GET_BADGE
-	waitsfx
-	setflag ENGINE_MARSHBADGE
-	writetext UnknownText_0x189ead
-	waitbutton
-	closetext
-	end
-
-.FightDone:
-	writetext UnknownText_0x189f6c
-	waitbutton
-	closetext
-	end
-
-TrainerMediumRebecca:
-	trainer EVENT_BEAT_MEDIUM_REBECCA, MEDIUM, REBECCA, MediumRebeccaSeenText, MediumRebeccaBeatenText, 0, MediumRebeccaScript
-
-MediumRebeccaScript:
-	end_if_just_battled
-	opentext
-	writetext UnknownText_0x18a034
-	waitbutton
-	closetext
-	end
-
-TrainerPsychicFranklin:
-	trainer EVENT_BEAT_PSYCHIC_FRANKLIN, PSYCHIC_T, FRANKLIN, PsychicFranklinSeenText, PsychicFranklinBeatenText, 0, PsychicFranklinScript
-
-PsychicFranklinScript:
-	end_if_just_battled
-	opentext
-	writetext UnknownText_0x18a0a6
-	waitbutton
-	closetext
-	end
-
-TrainerMediumDoris:
-	trainer EVENT_BEAT_MEDIUM_DORIS, MEDIUM, DORIS, MediumDorisSeenText, MediumDorisBeatenText, 0, MediumDorisScript
-
-MediumDorisScript:
-	end_if_just_battled
-	opentext
-	writetext UnknownText_0x18a136
-	waitbutton
-	closetext
-	end
-
-TrainerPsychicJared:
-	trainer EVENT_BEAT_PSYCHIC_JARED, PSYCHIC_T, JARED, PsychicJaredSeenText, PsychicJaredBeatenText, 0, PsychicJaredScript
-
-PsychicJaredScript:
-	end_if_just_battled
-	opentext
-	writetext UnknownText_0x18a1b3
-	waitbutton
-	closetext
-	end
-
-SaffronGymGuyScript:
 	faceplayer
-	opentext
-	checkevent EVENT_BEAT_SABRINA
-	iftrue .SaffronGymGuyWinScript
-	writetext SaffronGymGuyText
+	writetext SaffronGymSabrina_Text_ReceivedBadge
+	playwaitsfx SFX_TCG2_DIDDLY_5
+	writetext SaffronGymSabrina_Text_BeforeTM
 	waitbutton
-	closetext
-	end
+	givetm 69 + RECEIVED_TM
+	setflag ENGINE_MARSHBADGE
+	jumptext SaffronGymSabrina_Text_AfterTM
 
-.SaffronGymGuyWinScript:
-	writetext SaffronGymGuyWinText
-	waitbutton
-	closetext
-	end
+SaffronGymSignpost_Text:
+	ctxt "Saffron Gym"
 
-SaffronGymStatue:
-	checkflag ENGINE_MARSHBADGE
-	iftrue .Beaten
-	jumpstd gymstatue1
-.Beaten:
-	trainertotext SABRINA, 1, $1
-	jumpstd gymstatue2
-
-UnknownText_0x189cdf:
-	text "SABRINA: I knew"
-	line "you were coming…"
-
-	para "Three years ago I"
-	line "had a vision of"
-	cont "your arrival."
-
-	para "You're after my"
-	line "BADGE."
-
-	para "I don't enjoy bat-"
-	line "tling, but it's my"
-
-	para "duty as a LEADER"
-	line "to confer BADGES"
-
-	para "on anyone who has"
-	line "proven him- or"
-	cont "herself worthy."
-
-	para "Since you wish it,"
-	line "I will show you my"
-	cont "psychic powers!"
+	para "Leader: Sabrina"
 	done
 
-UnknownText_0x189df4:
-	text "SABRINA: Your"
-	line "power…"
-
-	para "It far exceeds"
-	line "what I foresaw…"
-
-	para "Maybe it isn't"
-	line "possible to fully"
-
-	para "predict what the"
-	line "future holds…"
-
-	para "OK, you win. You"
-	line "earned yourself"
-	cont "MARSHBADGE."
+SaffronGym_Trainer_1_Text_BeforeBattle:
+	ctxt "What is the power"
+	line "of your soul?"
 	done
 
-UnknownText_0x189e95:
-	text "<PLAYER> received"
-	line "MARSHBADGE."
+SaffronGym_Trainer_1_Text_BattleWon:
+	ctxt "Such a strong"
+	line "soul!"
 	done
 
-UnknownText_0x189ead:
-	text "SABRINA: MARSH-"
-	line "BADGE draws out"
-
-	para "your subliminal"
-	line "powers…"
-
-	para "Although I failed"
-	line "to accurately pre-"
-	cont "dict your power,"
-	cont "this much I know"
-	cont "to be true."
-
-	para "You will become a"
-	line "celebrated and"
-	cont "beloved CHAMPION!"
+SaffronGym_Trainer_1_Text_AfterBattle:
+	ctxt "Your soul grows"
+	line "stronger."
 	done
 
-UnknownText_0x189f6c:
-	text "SABRINA: Your love"
-	line "for your #MON"
+SaffronGym_Trainer_2_Text_BeforeBattle:
+	ctxt "Evil spirits?"
+
+	para "Begone!"
+	done
+
+SaffronGym_Trainer_2_Text_BattleWon:
+	ctxt "Ayayayayya"
+	done
+
+SaffronGym_Trainer_2_Text_AfterBattle:
+	ctxt "Don't bother me"
+	line "any more, evil"
+	cont "spirit!"
+	done
+
+SaffronGym_Trainer_3_Text_BeforeBattle:
+	ctxt "The power of all"
+	line "those you defeated"
+	cont "comes from me!"
+	done
+
+SaffronGym_Trainer_3_Text_BattleWon:
+	ctxt "Far too strong!"
+	done
+
+SaffronGym_Trainer_3_Text_AfterBattle:
+	ctxt "Tell me your"
+	line "power source!"
+	done
+
+SaffronGymSabrina_Text_AfterGettingBadge:
+	ctxt "Your love for"
+	line "your #mon"
 
 	para "overwhelmed my"
-	line "psychic power…"
+	line "psychic power."
 
-	para "The power of love,"
-	line "I think, is also a"
+	para "The power of love"
+	line "may also be a"
 
 	para "kind of psychic"
-	line "power…"
+	line "power."
 	done
 
-MediumRebeccaSeenText:
-	text "The power of all"
-	line "those you defeated"
-	cont "comes to me!"
+SaffronGymGuide_Text:
+	ctxt "Hey!"
+
+	para "Sabrina made"
+	line "changes to her"
+
+	para "warp system"
+	line "recently, so try"
+	cont "not to get lost!"
 	done
 
-MediumRebeccaBeatenText:
-	text "Strong…"
-	line "Far too strong…"
+SaffronGymSabrina_Text_BeforeBattle:
+	ctxt "I knew you were"
+	line "coming."
+
+	para "I had a vision of"
+	line "your arrival"
+
+	para "several years"
+	line "ago."
+
+	para "It's my duty as a"
+	line "Gym Leader to"
+
+	para "provide badges"
+	line "to anyone who"
+
+	para "has proven him"
+	line "or herself"
+	cont "worthy."
+
+	para "Since you want to"
+	line "battle, I will"
+
+	para "show you the"
+	line "extent of my"
+	cont "psychic abilities."
 	done
 
-UnknownText_0x18a034:
-	text "What is the source"
-	line "of your power?"
+SaffronGymSabrina_Text_BattleWon:
+	ctxt "I was unable to"
+	line "foresee this"
+	cont "amount of power."
+
+	para "You earned the"
+	line "Marsh Badge."
 	done
 
-PsychicFranklinSeenText:
-	text "Psychic power is"
-	line "the power of your"
-	cont "soul."
+SaffronGymSabrina_Text_ReceivedBadge:
+	ctxt "<PLAYER> received"
+	line "Marsh Badge."
 	done
 
-PsychicFranklinBeatenText:
-	text "Your soul has more"
-	line "power than mine!"
+SaffronGymSabrina_Text_BeforeTM:
+	ctxt "Please take this"
+	line "gift as well."
 	done
 
-UnknownText_0x18a0a6:
-	text "You made your soul"
-	line "stronger, not just"
-	cont "your abilities."
+SaffronGymSabrina_Text_AfterTM:
+	ctxt "This TM is"
+	line "Safeguard."
+
+	para "This move prevents"
+	line "your party from"
+
+	para "being affected by"
+	line "common status"
+
+	para "conditions for"
+	line "five turns."
 	done
 
-MediumDorisSeenText:
-	text "Fufufufu…"
-	line "I see it clearly."
-
-	para "I can see into"
-	line "your soul!"
-	done
-
-MediumDorisBeatenText:
-	text "Though I read you,"
-	line "I still lost…"
-	done
-
-UnknownText_0x18a136:
-	text "Darn! I forgot"
-	line "that I predicted I"
-	cont "would lose to you."
-	done
-
-PsychicJaredSeenText:
-	text "The FIGHTING DOJO"
-	line "next door was once"
-	cont "this city's GYM."
-	done
-
-PsychicJaredBeatenText:
-	text "I was no match…"
-	done
-
-UnknownText_0x18a1b3:
-	text "KARATE KING, the"
-	line "master of the"
-
-	para "FIGHTING DOJO, was"
-	line "just destroyed by"
-	cont "SABRINA."
-	done
-
-SaffronGymGuyText:
-	text "Yo, CHAMP in"
-	line "making!"
-
-	para "A trainer as"
-	line "skilled as you"
-
-	para "doesn't need to be"
-	line "told how to deal"
-
-	para "with psychic-type"
-	line "#MON, right?"
-
-	para "I expect great"
-	line "things from you!"
-
-	para "Good luck!"
-	done
-
-SaffronGymGuyWinText:
-	text "That was another"
-	line "fantastic battle!"
-	done
-
-SaffronGym_MapEventHeader:
-	; filler
+SaffronGym_MapEventHeader ;filler
 	db 0, 0
 
-.Warps:
-	db 32
+;warps
+	db 35
+	warp_def $f, $b, 10, SAFFRON_GYM
+	warp_def $3, $1, 16, SAFFRON_GYM
+	warp_def $3, $5, 22, SAFFRON_GYM
+	warp_def $3, $9, 11, SAFFRON_GYM
+	warp_def $3, $b, 17, SAFFRON_GYM
+	warp_def $3, $f, 23, SAFFRON_GYM
+	warp_def $3, $13, 12, SAFFRON_GYM
+	warp_def $5, $1, 18, SAFFRON_GYM
+	warp_def $5, $5, 24, SAFFRON_GYM
+	warp_def $5, $9, 13, SAFFRON_GYM
+	warp_def $5, $b, 19, SAFFRON_GYM
+	warp_def $5, $f, 25, SAFFRON_GYM
+	warp_def $5, $13, 14, SAFFRON_GYM
+	warp_def $9, $1, 20, SAFFRON_GYM
+	warp_def $9, $5, 26, SAFFRON_GYM
+	warp_def $9, $f, 15, SAFFRON_GYM
+	warp_def $9, $13, 21, SAFFRON_GYM
+	warp_def $b, $1, 27, SAFFRON_GYM
+	warp_def $b, $5, 28, SAFFRON_GYM
+	warp_def $b, $f, 6, SAFFRON_GYM
+	warp_def $b, $13, 5, SAFFRON_GYM
+	warp_def $f, $1, 31, SAFFRON_GYM
+	warp_def $f, $5, 4, SAFFRON_GYM
+	warp_def $f, $f, 3, SAFFRON_GYM
+	warp_def $f, $13, 30, SAFFRON_GYM
+	warp_def $11, $1, 2, SAFFRON_GYM
+	warp_def $11, $5, 1, SAFFRON_GYM
+	warp_def $11, $f, 29, SAFFRON_GYM
+	warp_def $11, $13, 7, SAFFRON_GYM
+	warp_def $9, $b, 1, SAFFRON_GYM
 	warp_def $11, $8, 2, SAFFRON_CITY
 	warp_def $11, $9, 2, SAFFRON_CITY
-	warp_def $f, $b, 18, SAFFRON_GYM
-	warp_def $f, $13, 19, SAFFRON_GYM
-	warp_def $b, $13, 20, SAFFRON_GYM
-	warp_def $b, $1, 21, SAFFRON_GYM
-	warp_def $3, $5, 22, SAFFRON_GYM
-	warp_def $5, $b, 23, SAFFRON_GYM
-	warp_def $f, $1, 24, SAFFRON_GYM
-	warp_def $3, $13, 25, SAFFRON_GYM
-	warp_def $11, $f, 26, SAFFRON_GYM
-	warp_def $11, $5, 27, SAFFRON_GYM
-	warp_def $9, $5, 28, SAFFRON_GYM
-	warp_def $3, $9, 29, SAFFRON_GYM
-	warp_def $9, $f, 30, SAFFRON_GYM
-	warp_def $5, $f, 31, SAFFRON_GYM
-	warp_def $5, $1, 32, SAFFRON_GYM
-	warp_def $11, $13, 3, SAFFRON_GYM
-	warp_def $9, $13, 4, SAFFRON_GYM
-	warp_def $9, $1, 5, SAFFRON_GYM
-	warp_def $5, $5, 6, SAFFRON_GYM
-	warp_def $3, $b, 7, SAFFRON_GYM
-	warp_def $11, $1, 8, SAFFRON_GYM
-	warp_def $5, $13, 9, SAFFRON_GYM
-	warp_def $f, $f, 10, SAFFRON_GYM
-	warp_def $f, $5, 11, SAFFRON_GYM
-	warp_def $b, $5, 12, SAFFRON_GYM
-	warp_def $5, $9, 13, SAFFRON_GYM
-	warp_def $b, $f, 14, SAFFRON_GYM
-	warp_def $3, $f, 15, SAFFRON_GYM
-	warp_def $3, $1, 16, SAFFRON_GYM
-	warp_def $9, $b, 17, SAFFRON_GYM
+	warp_def $0, $2, 33, SAFFRON_GYM
+	warp_def $0, $1, 1, SAFFRON_GYM
+	warp_def $0, $0, 1, SAFFRON_GYM
 
-.XYTriggers:
+	;xy triggers
 	db 0
 
-.Signposts:
+	;signposts
 	db 1
-	signpost 15, 8, SIGNPOST_READ, SaffronGymStatue
+	signpost 15, 8, SIGNPOST_READ, SaffronGymSignpost
 
-.PersonEvents:
-	db 6
-	person_event SPRITE_SABRINA, 8, 9, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, (1 << 3) | PAL_OW_RED, PERSONTYPE_SCRIPT, 0, SabrinaScript_0x189c2e, -1
-	person_event SPRITE_GRANNY, 16, 17, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, (1 << 3) | PAL_OW_BROWN, PERSONTYPE_TRAINER, 3, TrainerMediumRebecca, -1
-	person_event SPRITE_YOUNGSTER, 16, 3, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, (1 << 3) | PAL_OW_BLUE, PERSONTYPE_TRAINER, 3, TrainerPsychicFranklin, -1
-	person_event SPRITE_GRANNY, 4, 3, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, (1 << 3) | PAL_OW_BROWN, PERSONTYPE_TRAINER, 2, TrainerMediumDoris, -1
-	person_event SPRITE_YOUNGSTER, 4, 17, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, (1 << 3) | PAL_OW_BLUE, PERSONTYPE_TRAINER, 2, TrainerPsychicJared, -1
-	person_event SPRITE_GYM_GUY, 14, 9, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, (1 << 3) | PAL_OW_BLUE, PERSONTYPE_SCRIPT, 0, SaffronGymGuyScript, -1
+	;people-events
+	db 5
+	person_event SPRITE_YOUNGSTER, 4, 10, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_OW_RED, 2, 2, SaffronGym_Trainer_1, -1
+	person_event SPRITE_GRANNY, 10, 3, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_OW_RED, 2, 2, SaffronGym_Trainer_2, -1
+	person_event SPRITE_GRANNY, 10, 17, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_OW_RED, 2, 2, SaffronGym_Trainer_3, -1
+	person_event SPRITE_SABRINA, 8, 9, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_OW_RED, 0, 0, SaffronGymSabrina, -1
+	person_event SPRITE_GYM_GUY, 14, 9, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_OW_RED, 0, 0, SaffronGymGuide, -1

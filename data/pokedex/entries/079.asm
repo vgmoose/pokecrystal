@@ -1,10 +1,15 @@
-; SlowpokePokedexEntry: ; 0x1b85d3
-	db "DOPEY@" ; species name
-	dw 311, 790 ; height, width
+	ctxt "Dopey" ; species name
+	done
+	dw 311, 790 ; height, weight
 
-	db   "It is always so"
+	db .page2 - .page1
+.page1
+	ctxt "It is always so"
 	next "absent-minded that"
 	next "it won't react,"
-	page "even if its"
+	done
+.page2
+	ctxt "even if its"
 	next "flavorful tail is"
-	next "bitten.@"
+	next "bitten."
+	done

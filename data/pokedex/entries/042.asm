@@ -1,10 +1,15 @@
-; GolbatPokedexEntry: ; 0x1827c4
-	db "BAT@" ; species name
-	dw 503, 1210 ; height, width
+	ctxt "Bat" ; species name
+	done
+	dw 503, 1210 ; height, weight
 
-	db   "When it plunges"
+	db .page2 - .page1
+.page1
+	ctxt "When it plunges"
 	next "its fangs into its"
 	next "prey, it instantly"
-	page "draws and gulps"
+	done
+.page2
+	ctxt "draws and gulps"
 	next "down more than ten"
-	next "ounces of blood.@"
+	next "ounces of blood."
+	done

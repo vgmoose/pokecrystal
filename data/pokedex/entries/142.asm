@@ -1,10 +1,14 @@
-; AerodactylPokedexEntry: ; 0x1cc576
-	db "FOSSIL@" ; species name
-	dw 511, 1300 ; height, width
+	ctxt "Plate" ; species name
+	done
+	dw 411, 1504 ; height, weight
 
-	db   "In prehistoric"
-	next "times, this"
-	next "#MON flew"
-	page "freely and"
-	next "fearlessly through"
-	next "the skies.@"
+	db .page2 - .page1
+.page1
+	ctxt "It went ashore"
+	next "after evolving."
+	next "Its entire body is"
+	done
+.page2
+	ctxt "clad in a sturdy"
+	next "armor."
+	done

@@ -1,74 +1,151 @@
-Script_BattleWhiteout:: ; 0x124c1
+Script_BattleWhiteout::
 	callasm BattleBGMap
 	jump Script_Whiteout
-; 0x124c8
 
-Script_OverworldWhiteout:: ; 0x124c8
+Script_OverworldWhiteout::
 	refreshscreen $0
 	callasm OverworldBGMap
-
-Script_Whiteout: ; 0x124ce
+	loadvar wWhiteOutFlags, 0
+Script_Whiteout:
+	checkflag ENGINE_POKEMON_MODE
+	iftrue .skipWhiteOutText
 	writetext .WhitedOutText
 	waitbutton
+
+.skipWhiteOutText
+	special Special_FadeOutMusic
 	special FadeOutPalettes
 	pause 40
 	special HealParty
-	checkflag ENGINE_BUG_CONTEST_TIMER
-	iftrue .bug_contest
-	callasm HalveMoney
 	callasm GetWhiteoutSpawn
-	farscall Script_AbortBugContest
-	special WarpToSpawnPoint
+	special ClearSafariZoneFlag
 	newloadmap MAPSETUP_WARP
 	end_all
 
-.bug_contest
-	jumpstd bugcontestresultswarp
-; 0x124f5
+.WhitedOutText
+	; is out of useable #mon!  whited out!
+	text_far UnknownText_0x1c0a4e
+	start_asm
+	ld a, [rSVBK]
+	push af
+	ld a, BANK(wSoundStackSize)
+	ld [rSVBK], a
+	xor a
+	ld [wSoundStackSize], a
+	pop af
+	ld [rSVBK], a
+	call Gen6Payout
+	ld hl, wWhiteOutFlags
+	ld a, [hl]
+	ld [hl], 0
+	bit 0, a
+	jr z, .wild_panic
+	ld hl, .PaidToWinnerText
+	jr .okay
 
-.WhitedOutText: ; 0x124f5
-	; is out of useable #MON!  whited out!
-	text_jump UnknownText_0x1c0a4e
-	db "@"
-; 0x124fa
+.wild_panic
+	ld hl, .PanickedAndDroppedText
+.okay
+	call PrintText
+	ld hl, .FinishWhiteOutText
+	ret
 
-OverworldBGMap: ; 124fa
+.PaidToWinnerText
+	text_jump PaidToWinnerText
+
+.PanickedAndDroppedText
+	text_jump PanickedAndDroppedText
+
+.FinishWhiteOutText
+	text_jump FinishWhiteOutText
+
+OverworldBGMap:
+	ld c, 1
+	call FadeOutPals
 	call ClearPalettes
 	call ClearScreen
-	call WaitBGMap2
-	call HideSprites
-	call RotateThreePalettesLeft
-	ret
-; 1250a
+	call ApplyAttrAndTilemapInVBlank
+	jp HideSprites
 
-BattleBGMap: ; 1250a
+BattleBGMap:
 	ld b, SCGB_BATTLE_GRAYSCALE
-	call GetSGBLayout
-	call SetPalettes
-	ret
-; 12513
+	predef GetSGBLayout
+	jp SetPalettes
 
-HalveMoney: ; 12513
+Gen6Payout:
+	ld hl, Badges
+	ld b, 2
+	call CountSetBits
+	cp 8
+	jr c, .less_than_8_badges
+	ld a, 120
+	jr .got_base
 
-; Empty function...
-	callba MobileFn_1060c7
+.less_than_8_badges
+	ld hl, .Payouts
+	add l
+	ld l, a
+	jr nc, .okay
+	inc h
+.okay
+	ld a, [hl]
+.got_base
+	ld [hMultiplier], a
+	ld hl, PartyMon1Level
+	ld a, [wPartyCount]
+	ld e, a
+	ld d, 1
+	jr .loop
 
-; Halve the player's money.
+.next
+	ld bc, PARTYMON_STRUCT_LENGTH
+	add hl, bc
+.loop
+	ld a, [hl]
+	cp d
+	jr c, .skip
+	ld d, a
+.skip
+	dec e
+	jr nz, .next
+	ld a, d
+	ld [hMultiplicand + 2], a
+	xor a
+	ld [hMultiplicand + 1], a
+	ld [hMultiplicand], a
+	predef Multiply
+	ld a, [hProduct + 1]
+	ld [hMoneyTemp], a
+	ld a, [hProduct + 2]
+	ld [hMoneyTemp + 1], a
+	ld a, [hProduct + 3]
+	ld [hMoneyTemp + 2], a
+	ld bc, hMoneyTemp
+	ld de, Money
+	callba CompareMoney
+	jr c, .zero_out
+	ld bc, hMoneyTemp
+	ld de, Money
+	jpba TakeMoney
+
+.zero_out
 	ld hl, Money
+	ld a, [hli]
+	ld [hMoneyTemp], a
+	ld a, [hli]
+	ld [hMoneyTemp + 1], a
 	ld a, [hl]
-	srl a
-	ld [hli], a
-	ld a, [hl]
-	rra
-	ld [hli], a
-	ld a, [hl]
-	rra
+	ld [hMoneyTemp + 2], a
+	xor a
+	ld [hld], a
+	ld [hld], a
 	ld [hl], a
 	ret
-; 12527
 
+.Payouts:
+	db 8, 16, 24, 36, 64, 80, 100, 120
 
-GetWhiteoutSpawn: ; 12527
+GetWhiteoutSpawn:
 	ld a, [wLastSpawnMapGroup]
 	ld d, a
 	ld a, [wLastSpawnMapNumber]
@@ -81,4 +158,3 @@ GetWhiteoutSpawn: ; 12527
 .yes
 	ld [wd001], a
 	ret
-; 1253d

@@ -1,8 +1,9 @@
 Music_SSAqua: ; ead99
-	musicheader 4, 1, Music_SSAqua_Ch1
-	musicheader 1, 2, Music_SSAqua_Ch2
-	musicheader 1, 3, Music_SSAqua_Ch3
-	musicheader 1, 4, Music_SSAqua_Ch4
+	channelcount 4
+	channel 1, Music_SSAqua_Ch1
+	channel 2, Music_SSAqua_Ch2
+	channel 3, Music_SSAqua_Ch3
+	channel 4, Music_SSAqua_Ch4
 ; eada5
 
 Music_SSAqua_Ch1: ; eada5
@@ -276,9 +277,9 @@ Music_SSAqua_branch_eaed5: ; eaed5
 	octave 4
 	note C#, 1
 	note E_, 1
-	pitchoffset 0, CC
+	forceoctave $c
 	callchannel Music_SSAqua_branch_eafe0
-	pitchoffset 0, C_
+	forceoctave $0
 	octave 3
 	note B_, 1
 	note __, 1

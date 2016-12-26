@@ -1,48 +1,48 @@
-TrainerClassAttributes: ; 3959c
+TrainerClassAttributes:
 
-; Falkner
+; Josiah
 	db 0, 0 ; items
 	db 25 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Whitney
+; Brooklyn
 	db 0, 0 ; items
 	db 25 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Bugsy
+; Rinji
 	db 0, 0 ; items
 	db 25 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Morty
+; Edison
 	db 0, 0 ; items
 	db 25 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Pryce
+; Ayaka
 	db HYPER_POTION, 0 ; items
 	db 25 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Jasmine
+; Cadence
 	db HYPER_POTION, 0 ; items
 	db 25 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Chuck
+; Andre
 	db FULL_HEAL, 0 ; items
 	db 25 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Clair
+; Bruce
 	db FULL_HEAL, HYPER_POTION ; items
 	db 25 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
@@ -54,37 +54,37 @@ TrainerClassAttributes: ; 3959c
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Pokemon Prof
-	db 0, 0 ; items
-	db 25 ; base reward
-	dw AI_BASIC + AI_AGGRESSIVE + AI_STATUS
-	dw CONTEXT_USE + SWITCH_SOMETIMES
-
-; Will
+; Mura
 	db MAX_POTION, 0 ; items
 	db 25 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Cal
-	db 0, 0 ; items
-	db 25 ; base reward
-	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
-	dw CONTEXT_USE + SWITCH_SOMETIMES
-
-; Bruno
+; Yuki
 	db MAX_POTION, 0 ; items
 	db 25 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Karen
+; Koji
+	db FULL_HEAL, HYPER_POTION ; items
+	db 25 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Daichi
 	db FULL_HEAL, MAX_POTION ; items
 	db 25 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Koga
+; DelinquentF
+	db 0, 0 ; items
+	db 17 ; base reward
+	dw AI_BASIC + AI_OFFENSIVE + AI_CAUTIOUS + AI_STATUS
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Sora
 	db FULL_HEAL, FULL_RESTORE ; items
 	db 25 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
@@ -96,21 +96,9 @@ TrainerClassAttributes: ; 3959c
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Brock
-	db HYPER_POTION, 0 ; items
-	db 25 ; base reward
-	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
-	dw CONTEXT_USE + SWITCH_SOMETIMES
-
-; Misty
-	db FULL_HEAL, 0 ; items
-	db 25 ; base reward
-	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
-	dw CONTEXT_USE + SWITCH_SOMETIMES
-
-; Lt Surge
-	db HYPER_POTION, 0 ; items
-	db 25 ; base reward
+; Patroller
+	db 0, 0 ; items
+	db 18 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
@@ -118,12 +106,6 @@ TrainerClassAttributes: ; 3959c
 	db 0, 0 ; items
 	db 25 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_TYPES + AI_STATUS + AI_RISKY
-	dw CONTEXT_USE + SWITCH_SOMETIMES
-
-; Erika
-	db HYPER_POTION, 0 ; items
-	db 25 ; base reward
-	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
 ; Youngster
@@ -150,11 +132,11 @@ TrainerClassAttributes: ; 3959c
 	dw AI_BASIC + AI_CAUTIOUS + AI_STATUS
 	dw CONTEXT_USE + SWITCH_OFTEN
 
-; Janine
-	db DIRE_HIT, 0 ; items
-	db 25 ; base reward
-	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
-	dw CONTEXT_USE + SWITCH_SOMETIMES
+; Cheerleader
+	db 0, 0 ; items
+	db 5 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_CAUTIOUS + AI_STATUS
+	dw CONTEXT_USE + SWITCH_OFTEN
 
 ; Cooltrainerm
 	db 0, 0 ; items
@@ -180,7 +162,7 @@ TrainerClassAttributes: ; 3959c
 	dw AI_BASIC + AI_SETUP + AI_OFFENSIVE + AI_AGGRESSIVE + AI_STATUS
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Gruntm
+; Gruntf
 	db 0, 0 ; items
 	db 10 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_TYPES + AI_OPPORTUNIST + AI_CAUTIOUS + AI_STATUS + AI_RISKY
@@ -204,7 +186,7 @@ TrainerClassAttributes: ; 3959c
 	dw AI_BASIC + AI_OPPORTUNIST + AI_AGGRESSIVE + AI_STATUS
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Sabrina
+; Sheryl
 	db HYPER_POTION, 0 ; items
 	db 25 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
@@ -224,13 +206,13 @@ TrainerClassAttributes: ; 3959c
 
 ; Swimmerm
 	db 0, 0 ; items
-	db 2 ; base reward
+	db 3 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_TYPES + AI_OFFENSIVE + AI_STATUS
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
 ; Swimmerf
 	db 0, 0 ; items
-	db 5 ; base reward
+	db 3 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_TYPES + AI_CAUTIOUS + AI_STATUS
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
@@ -270,7 +252,7 @@ TrainerClassAttributes: ; 3959c
 	dw AI_BASIC + AI_TYPES + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Blaine
+; Joe
 	db MAX_POTION, FULL_HEAL ; items
 	db 25 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
@@ -300,12 +282,6 @@ TrainerClassAttributes: ; 3959c
 	dw AI_BASIC + AI_OFFENSIVE + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Executivem
-	db 0, 0 ; items
-	db 18 ; base reward
-	dw AI_BASIC + AI_SETUP + AI_TYPES + AI_SMART + AI_OPPORTUNIST + AI_CAUTIOUS + AI_STATUS + AI_RISKY
-	dw CONTEXT_USE + SWITCH_SOMETIMES
-
 ; Psychic T
 	db 0, 0 ; items
 	db 8 ; base reward
@@ -322,12 +298,6 @@ TrainerClassAttributes: ; 3959c
 	db 0, 0 ; items
 	db 5 ; base reward
 	dw AI_BASIC + AI_CAUTIOUS + AI_STATUS
-	dw CONTEXT_USE + SWITCH_SOMETIMES
-
-; Executivef
-	db 0, 0 ; items
-	db 18 ; base reward
-	dw AI_BASIC + AI_SETUP + AI_TYPES + AI_SMART + AI_OPPORTUNIST + AI_CAUTIOUS + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
 ; Sage
@@ -354,10 +324,10 @@ TrainerClassAttributes: ; 3959c
 	dw AI_BASIC + AI_TYPES + AI_SMART + AI_STATUS
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Kimono Girl
+; DelinquentM
 	db 0, 0 ; items
-	db 18 ; base reward
-	dw AI_BASIC + AI_TYPES + AI_OPPORTUNIST + AI_CAUTIOUS + AI_STATUS
+	db 17 ; base reward
+	dw AI_BASIC + AI_OFFENSIVE + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
 ; Twins
@@ -390,16 +360,116 @@ TrainerClassAttributes: ; 3959c
 	dw AI_BASIC + AI_TYPES + AI_OPPORTUNIST + AI_STATUS
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Gruntf
+; Miner
 	db 0, 0 ; items
-	db 10 ; base reward
-	dw AI_BASIC + AI_TYPES + AI_OPPORTUNIST + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	db 11 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_STATUS
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; Mysticalman
+; Karpman
+	db FULL_HEAL, HYPER_POTION ; items
+	db 25 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Arcade PC
+	db 0, 0 ;items
+	db 0 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_TYPES + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Lily
+	db FULL_HEAL, HYPER_POTION ; items
+	db 25 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Lois
+	db FULL_HEAL, HYPER_POTION ; items
+	db 25 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Sparky
+	db FULL_HEAL, HYPER_POTION ; items
+	db 25 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Gold
 	db 0, 0 ; items
 	db 25 ; base reward
 	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
 	dw CONTEXT_USE + SWITCH_SOMETIMES
 
-; 39771
+; Giovanni
+	db FULL_HEAL, HYPER_POTION ; items
+	db 25 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Ernest
+	db FULL_HEAL, HYPER_POTION ; items
+	db 25 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Kris
+	db FULL_RESTORE, FULL_RESTORE ; items
+	db 25 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Kimono Girl
+	db 0, 0 ; items
+	db 18 ; base reward
+	dw AI_BASIC + AI_TYPES + AI_OPPORTUNIST + AI_CAUTIOUS + AI_STATUS
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Bugsy
+	db FULL_HEAL, HYPER_POTION ; items
+	db 25 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Whitney
+	db FULL_HEAL, HYPER_POTION ; items
+	db 25 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Sabrina
+	db FULL_HEAL, HYPER_POTION ; items
+	db 25 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Candela
+	db 0, 0 ; items
+	db 25 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Blanche
+	db 0, 0 ; items
+	db 25 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Spark
+	db 0, 0 ; items
+	db 25 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; Brown
+	db 0, 0 ; items
+	db 25 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_SMART + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS + AI_RISKY
+	dw CONTEXT_USE + SWITCH_SOMETIMES
+
+; GuitaristF
+	db 0, 0 ; items
+	db 8 ; base reward
+	dw AI_BASIC + AI_SETUP + AI_AGGRESSIVE + AI_CAUTIOUS + AI_STATUS
+	dw CONTEXT_USE + SWITCH_SOMETIMES

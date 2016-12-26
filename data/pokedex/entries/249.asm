@@ -1,10 +1,15 @@
-; LugiaPokedexEntry: ; 0x1d17e9
-	db "DIVING@" ; species name
-	dw 1701, 4760 ; height, width
+	ctxt "Diving" ; species name
+	done
+	dw 1701, 4760 ; height, weight
 
-	db   "It has an incred-"
+	db .page2 - .page1
+.page1
+	ctxt "It has an incred-"
 	next "ible ability to"
 	next "calm raging sto-"
-	page "rms. It is said"
-	next "that LUGIA appears"
-	next "when storms start.@"
+	done
+.page2
+	ctxt "rms. It is said"
+	next "that Lugia appears"
+	next "when storms start."
+	done

@@ -1,10 +1,15 @@
-; FearowPokedexEntry: ; 0x181f64
-	db "BEAK@" ; species name
-	dw 311, 840 ; height, width
+	ctxt "Beak" ; species name
+	done
+	dw 311, 840 ; height, weight
 
-	db   "It uses its long"
+	db .page2 - .page1
+.page1
+	ctxt "It uses its long"
 	next "beak to attack. It"
 	next "has a surprisingly"
-	page "long reach, so it"
+	done
+.page2
+	ctxt "long reach, so it"
 	next "must be treated"
-	next "with caution.@"
+	next "with caution."
+	done

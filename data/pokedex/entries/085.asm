@@ -1,10 +1,15 @@
-; DodrioPokedexEntry: ; 0x1b884a
-	db "TRIPLEBIRD@" ; species name
-	dw 511, 1880 ; height, width
+	ctxt "Blimp" ; species name
+	done
+	dw 311, 331 ; height, weight
 
-	db   "An enemy that"
-	next "takes its eyes off"
-	next "any of the three"
-	page "heads--even for a"
-	next "second--will get"
-	next "pecked severely.@"
+	db .page2 - .page1
+.page1
+	ctxt "It carries people"
+	next "and #mon when"
+	next "it flies. But"
+	done
+.page2
+	ctxt "since it only"
+	next "drifts, it can"
+	next "end up anywhere."
+	done

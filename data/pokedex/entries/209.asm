@@ -1,10 +1,15 @@
-; SnubbullPokedexEntry: ; 0x1d06e0
-	db "FAIRY@" ; species name
-	dw 200, 170 ; height, width
+	ctxt "Scorpion" ; species name
+	done
+	dw 607, 937 ; height, weight
 
-	db   "In truth, it is a"
-	next "cowardly #MON."
-	next "It growls eagerly"
-	page "in order to hide"
-	next "its fear from its"
-	next "opponent.@"
+	db .page2 - .page1
+.page1
+	ctxt "It dances silently"
+	next "through the sky."
+	next "When it approaches"
+	done
+.page2
+	ctxt "prey, it can land" 
+	next "a critical hit in"
+	next "an instant."
+	done

@@ -1,10 +1,15 @@
-; ParasectPokedexEntry: ; 0x1829e2
-	db "MUSHROOM@" ; species name
-	dw 303, 650 ; height, width
+	ctxt "Mushroom" ; species name
+	done
+	dw 303, 650 ; height, weight
 
-	db   "When nothing's"
+	db .page2 - .page1
+.page1
+	ctxt "When nothing's"
 	next "left to extract"
 	next "from the bug, the"
-	page "mushrooms on its"
+	done
+.page2
+	ctxt "mushrooms on its"
 	next "back leave spores"
-	next "on the bug's egg.@"
+	next "on the bug's egg."
+	done

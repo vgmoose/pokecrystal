@@ -1,10 +1,15 @@
-; MareepPokedexEntry: ; 0x1cd551
-	db "WOOL@" ; species name
-	dw 200, 170 ; height, width
+	ctxt "Wool" ; species name
+	done
+	dw 200, 170 ; height, weight
 
-	db   "It stores lots of"
+	db .page2 - .page1
+.page1
+	ctxt "It stores lots of"
 	next "air in its soft"
 	next "fur, allowing it"
-	page "to stay cool in"
+	done
+.page2
+	ctxt "to stay cool in"
 	next "summer and warm"
-	next "in winter.@"
+	next "in winter."
+	done

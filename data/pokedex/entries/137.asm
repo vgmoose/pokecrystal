@@ -1,10 +1,15 @@
-; PorygonPokedexEntry: ; 0x1cc353
-	db "VIRTUAL@" ; species name
-	dw 207, 800 ; height, width
+	ctxt "Virtual" ; species name
+	done
+	dw 207, 800 ; height, weight
 
-	db   "An artificial"
-	next "#MON created"
+	db .page2 - .page1
+.page1
+	ctxt "An artificial"
+	next "#mon created"
 	next "due to extensive"
-	page "research, it can"
+	done
+.page2
+	ctxt "research, it can"
 	next "perform only what"
-	next "is in its program.@"
+	next "is in its program."
+	done

@@ -1,10 +1,15 @@
-; FarfetchDPokedexEntry: ; 0x1b876c
-	db "WILD DUCK@" ; species name
-	dw 207, 330 ; height, width
+	ctxt "Magnet Area" ; species name
+	done
+	dw 311, 3968 ; height, weight
 
-	db   "In order to pre-"
-	next "vent their"
-	next "extinction, more"
-	page "people have made"
-	next "an effort to breed"
-	next "these #MON.@"
+	db .page2 - .page1
+.page1
+	ctxt "It evolved from"
+	next "exposure to a"
+	next "special magnetic"
+	done
+.page2
+	ctxt "field. Three units"
+	next "generate magne-"
+	next "tism."
+	done

@@ -1,13 +1,12 @@
-
 ResetClock_GetWraparoundTime: ; 20000 (8:4000)
 	push hl
 	dec a
-	ld e, a
-	ld d, 0
-	ld hl, .WrapAroundTimes
-rept 4
+	ld l, a
+	ld h, 0
+	add hl, hl
+	add hl, hl
+	ld de, .WrapAroundTimes
 	add hl, de
-endr
 	ld e, [hl]
 	inc hl
 	ld d, [hl]
@@ -20,21 +19,22 @@ endr
 ; 20015 (8:4015)
 
 .WrapAroundTimes: ; 20015
-	dw Buffer4
-	db 7, 4
+clock_reset_data: macro
+	dw \1 ; address
+	db \2 ; max value
+	db \3 ; x coord
+	endm
 
-	dw Buffer5
-	db 24, 12
-
-	dw Buffer6
-	db 60, 15
+	clock_reset_data wClockResetWeekday,  7,  4
+	clock_reset_data wClockResetHours,   24, 12
+	clock_reset_data wClockResetMinutes, 60, 15
 ; 20021
 
 RestartClock: ; 20021 (8:4021)
 ; If we're here, we had an RTC overflow.
 	ld hl, .Text_ClockTimeMayBeWrong
 	call PrintText
-	ld hl, Options
+	ld hl, wOptions
 	ld a, [hl]
 	push af
 	set NO_TEXT_SCROLL, [hl]
@@ -45,7 +45,7 @@ RestartClock: ; 20021 (8:4021)
 	call .SetClock
 	call ExitMenu
 	pop bc
-	ld hl, Options
+	ld hl, wOptions
 	ld [hl], b
 	ld c, a
 	ret
@@ -54,28 +54,26 @@ RestartClock: ; 20021 (8:4021)
 .Text_ClockTimeMayBeWrong: ; 0x20047
 	; The clock's time may be wrong. Please reset the time.
 	text_jump UnknownText_0x1c40e6
-	db "@"
 ; 0x2004c
 
 .Text_SetWithControlPad: ; 0x2004c
 	; Set with the Control Pad. Confirm: A Button Cancel:  B Button
 	text_jump UnknownText_0x1c411c
-	db "@"
 ; 0x20051
 
 .SetClock: ; 20051 (8:4051)
 	ld a, 1
-	ld [Buffer1], a ; which digit
-	ld [Buffer2], a ; wd1eb (aliases: MovementType)
+	ld [wClockResetCurrentField], a ; which digit
+	ld [wClockResetPreviousField], a
 	ld a, 8
-	ld [Buffer3], a
+	ld [wClockResetYCoord], a
 	call UpdateTime
 	call GetWeekday
-	ld [Buffer4], a
+	ld [wClockResetWeekday], a
 	ld a, [hHours]
-	ld [Buffer5], a
+	ld [wClockResetHours], a
 	ld a, [hMinutes]
-	ld [Buffer6], a
+	ld [wClockResetMinutes], a
 
 .loop
 	call .joy_loop
@@ -87,14 +85,14 @@ RestartClock: ; 20021 (8:4021)
 	call PrintText
 	call YesNoBox
 	jr c, .cancel
-	ld a, [Buffer4]
-	ld [StringBuffer2], a
-	ld a, [Buffer5]
-	ld [StringBuffer2 + 1], a
-	ld a, [Buffer6]
-	ld [StringBuffer2 + 2], a
+	ld a, [wClockResetWeekday]
+	ld [wStringBuffer2], a
+	ld a, [wClockResetHours]
+	ld [wStringBuffer2 + 1], a
+	ld a, [wClockResetMinutes]
+	ld [wStringBuffer2 + 2], a
 	xor a
-	ld [StringBuffer2 + 3], a
+	ld [wStringBuffer2 + 3], a
 	call InitTime
 	call .PrintTime
 	ld hl, .Text_ClockReset
@@ -111,32 +109,30 @@ RestartClock: ; 20021 (8:4021)
 .Text_IsThisOK: ; 0x200b0
 	; Is this OK?
 	text_jump UnknownText_0x1c415b
-	db "@"
 ; 0x200b5
 
 .Text_ClockReset: ; 0x200b5
 	; The clock has been reset.
 	text_jump UnknownText_0x1c4168
-	db "@"
 ; 0x200ba
 
 .joy_loop
-	call JoyTextDelay_ForcehJoyDown
+	call GetJoypadForQuantitySelectionMenus
 	ld c, a
 	push af
 	call .PrintTime
 	pop af
-	bit 0, a
+	bit A_BUTTON_F, a
 	jr nz, .press_A
-	bit 1, a
+	bit B_BUTTON_F, a
 	jr nz, .press_B
-	bit 6, a
+	bit D_UP_F, a
 	jr nz, .pressed_up
-	bit 7, a
+	bit D_DOWN_F, a
 	jr nz, .pressed_down
-	bit 5, a
+	bit D_LEFT_F, a
 	jr nz, .pressed_left
-	bit 4, a
+	bit D_RIGHT_F, a
 	jr nz, .pressed_right
 	jr .joy_loop
 
@@ -151,7 +147,7 @@ RestartClock: ; 20021 (8:4021)
 	ret
 
 .pressed_up
-	ld a, [Buffer1] ; wd1ea (aliases: MagikarpLength)
+	ld a, [wClockResetCurrentField]
 	call ResetClock_GetWraparoundTime
 	ld a, [de]
 	inc a
@@ -163,7 +159,7 @@ RestartClock: ; 20021 (8:4021)
 	jr .done_scroll
 
 .pressed_down
-	ld a, [Buffer1] ; wd1ea (aliases: MagikarpLength)
+	ld a, [wClockResetCurrentField]
 	call ResetClock_GetWraparoundTime
 	ld a, [de]
 	dec a
@@ -176,14 +172,14 @@ RestartClock: ; 20021 (8:4021)
 	jr .done_scroll
 
 .pressed_left
-	ld hl, Buffer1 ; wd1ea (aliases: MagikarpLength)
+	ld hl, wClockResetCurrentField
 	dec [hl]
 	jr nz, .done_scroll
 	ld [hl], $3
 	jr .done_scroll
 
 .pressed_right
-	ld hl, Buffer1 ; wd1ea (aliases: MagikarpLength)
+	ld hl, wClockResetCurrentField
 	inc [hl]
 	ld a, [hl]
 	cp $4
@@ -196,41 +192,33 @@ RestartClock: ; 20021 (8:4021)
 
 .PrintTime: ; 2011f (8:411f)
 	hlcoord 0, 5
-	ld b, 5
-	ld c, 18
+	lb bc, 5, 18
 	call TextBox
 	decoord 1, 8
-	ld a, [Buffer4]
+	ld a, [wClockResetWeekday]
 	ld b, a
 	callba PrintDayOfWeek
-	ld a, [Buffer5]
+	ld a, [wClockResetHours]
 	ld b, a
-	ld a, [Buffer6]
+	ld a, [wClockResetMinutes]
 	ld c, a
 	decoord 11, 8
 	callba PrintHoursMins
-	ld a, [Buffer2] ; wd1eb (aliases: MovementType)
+	ld a, [wClockResetPreviousField]
 	lb de, " ", " "
 	call .PlaceChars
-	ld a, [Buffer1] ; wd1ea (aliases: MagikarpLength)
+	ld a, [wClockResetCurrentField]
 	lb de, "▲", "▼"
 	call .PlaceChars
-	ld a, [Buffer1] ; wd1ea (aliases: MagikarpLength)
-	ld [Buffer2], a ; wd1eb (aliases: MovementType)
+	ld a, [wClockResetCurrentField]
+	ld [wClockResetPreviousField], a
 	ret
 ; 20160 (8:4160)
-
-.unreferenced ; 20160
-	ld a, [Buffer3]
-	ld b, a
-	call Coord2Tile
-	ret
-; 20168
 
 .PlaceChars: ; 20168 (8:4168)
 	push de
 	call ResetClock_GetWraparoundTime
-	ld a, [Buffer3]
+	ld a, [wClockResetYCoord]
 	dec a
 	ld b, a
 	call Coord2Tile
@@ -241,11 +229,3 @@ RestartClock: ; 20021 (8:4021)
 	ld [hl], e
 	ret
 ; 2017c (8:417c)
-
-String_2017c: ; 2017c
-	db "じ@" ; HR
-; 2017e
-
-String_2017e: ; 2017e
-	db "ふん@" ; MIN
-; 20181

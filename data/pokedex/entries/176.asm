@@ -1,10 +1,15 @@
-; TogeticPokedexEntry: ; 0x1cd402
-	db "HAPPINESS@" ; species name
-	dw 200, 70 ; height, width
+	ctxt "Happiness" ; species name
+	done
+	dw 200, 70 ; height, weight
 
-	db   "Although it does"
+	db .page2 - .page1
+.page1
+	ctxt "Although it does"
 	next "not flap its wings"
 	next "very much, it can"
-	page "stay up in the air"
+	done
+.page2
+	ctxt "stay up in the air"
 	next "as it tags along"
-	next "after its trainer.@"
+	next "after its trainer."
+	done

@@ -1,10 +1,15 @@
-; NidokingPokedexEntry: ; 0x182463
-	db "DRILL@" ; species name
-	dw 407, 1370 ; height, width
+	ctxt "Snow Land" ; species name
+	done
+	dw 403, 586 ; height, weight
 
-	db   "It uses its thick"
-	next "arms, legs and"
-	next "tail to attack"
-	page "forcefully. Melee"
-	next "combat is its"
-	next "specialty.@"
+	db .page2 - .page1
+.page1
+	ctxt "It freezes prey by"
+	next "blowing its -58"
+	next "degree F breath."
+	done
+.page2
+	ctxt "It is said to then"
+	next "secretly display"
+	next "its prey."
+	done

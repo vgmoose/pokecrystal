@@ -1,10 +1,15 @@
-; HoOhPokedexEntry: ; 0x1d185d
-	db "RAINBOW@" ; species name
-	dw 1206, 4390 ; height, width
+	ctxt "Rainbow" ; species name
+	done
+	dw 1206, 4390 ; height, weight
 
-	db   "It will reveal"
+	db .page2 - .page1
+.page1
+	ctxt "It will reveal"
 	next "itself before a"
 	next "pure-hearted"
-	page "trainer by shining"
+	done
+.page2
+	ctxt "trainer by shining"
 	next "its bright rain-"
-	next "bow-colored wings.@"
+	next "bow-colored wings."
+	done

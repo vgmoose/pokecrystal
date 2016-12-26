@@ -1,10 +1,15 @@
-; IgglybuffPokedexEntry: ; 0x1cd32c
-	db "BALLOON@" ; species name
-	dw 100, 20 ; height, width
+	ctxt "Balloon" ; species name
+	done
+	dw 100, 20 ; height, weight
 
-	db   "Instead of walking"
+	db .page2 - .page1
+.page1
+	ctxt "Instead of walking"
 	next "with its short"
 	next "legs, it moves"
-	page "around by bouncing"
+	done
+.page2
+	ctxt "around by bouncing"
 	next "on its soft,"
-	next "tender body.@"
+	next "tender body."
+	done

@@ -1,5 +1,5 @@
 Music_Printer: ; f07fd
-	musicheader 1, 3, Music_Printer_Ch3
+	channel 3, Music_Printer_Ch3
 ; f0800
 
 Music_Printer_Ch3: ; f0800

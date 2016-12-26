@@ -1,10 +1,15 @@
-; QwilfishPokedexEntry: ; 0x1d07b1
-	db "BALLOON@" ; species name
-	dw 108, 90 ; height, width
+	ctxt "Tender" ; species name
+	done
+	dw 2004, 3571 ; height, weight
 
-	db   "When faced with a"
-	next "larger opponent,"
-	next "it swallows as"
-	page "much water as it"
-	next "can to match the"
-	next "opponent's size.@"
+	db .page2 - .page1
+.page1
+	ctxt "It is the world's"
+	next "most beautiful"
+	next "#mon. There are"
+	done
+.page2
+	ctxt "many works of"
+	next "art featuring"
+	next "Milotic."
+	done

@@ -1,10 +1,15 @@
-; MagmarPokedexEntry: ; 0x1b9994
-	db "SPITFIRE@" ; species name
-	dw 403, 980 ; height, width
+	ctxt "Spitfire" ; species name
+	done
+	dw 403, 980 ; height, weight
 
-	db   "It moves more"
+	db .page2 - .page1
+.page1
+	ctxt "It moves more"
 	next "frequently in hot"
 	next "areas. It can heal"
-	page "itself by dipping"
+	done
+.page2
+	ctxt "itself by dipping"
 	next "its wound into"
-	next "lava.@"
+	next "lava."
+	done

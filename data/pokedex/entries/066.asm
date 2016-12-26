@@ -1,10 +1,15 @@
-; MachopPokedexEntry: ; 0x1b8065
-	db "SUPERPOWER@" ; species name
-	dw 207, 430 ; height, width
+	ctxt "Superpower" ; species name
+	done
+	dw 207, 430 ; height, weight
 
-	db   "It trains by"
+	db .page2 - .page1
+.page1
+	ctxt "It trains by"
 	next "lifting rocks in"
 	next "the mountains. It"
-	page "can even pick up a"
-	next "GRAVELER with"
-	next "ease.@"
+	done
+.page2
+	ctxt "can even pick up a"
+	next "Graveler with"
+	next "ease."
+	done

@@ -1,22 +1,22 @@
-
-; MonType: ; cf5f
+; wMonType: ; cf5f
 PARTYMON   EQU 0
 OTPARTYMON EQU 1
 BOXMON     EQU 2
-TEMPMON   EQU 3
+BREEDMON   EQU 3
 WILDMON    EQU 4
 
-; Options: ; cfcc
+; wOptions: ; cfcc
 FAST_TEXT      EQU 0
 MED_TEXT       EQU 1
 SLOW_TEXT      EQU 2
-NO_TEXT_SCROLL EQU 4
 ; bits
+TURNING_SPEED  EQU 3
+NO_TEXT_SCROLL EQU 4
 STEREO         EQU 5
 BATTLE_SHIFT   EQU 6
 BATTLE_SCENE   EQU 7
 
-; Options2:
+; wOptions2:
 MENU_ACCOUNT EQU 0
 
 ; GBPrinter:
@@ -98,8 +98,18 @@ DAYCARE_WITHDRAW EQU 2
 DAYCARE_DEPOSIT EQU 3
 
 ; wCurrentDexMode
+	; const_def
+	; const DEXMODE_NEW
+	; const DEXMODE_OLD
+	; const DEXMODE_ABC
+
+TREASURE_BAG_CAPACITY EQU 10
+
 	const_def
-	const DEXMODE_NEW
-	const DEXMODE_OLD
-	const DEXMODE_ABC
-	const DEXMODE_UNOWN
+	const BGMODE_NORMAL
+	const BGMODE_TILES_ADDR    ; copy TileMap to [hBGMapAddress]
+	const BGMODE_ATTR_ADDR     ; copy AttrMap to [hBGMapAddress]
+	const BGMODE_TILES_BGMAP1  ; copy TileMap to vBGMap1
+	const BGMODE_ATTR_BGMAP1   ; copy AttrMap to vBGMap1
+	const BGMODE_SOURCE_BGMAP0 ; copy current half of TileMap to vBGMap0
+	const BGMODE_SOURCE_BGMAP1 ; copy current half of TileMap to vBGMap1

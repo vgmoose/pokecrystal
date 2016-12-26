@@ -1,7 +1,8 @@
 Music_RivalBattle: ; e974f
-	musicheader 3, 1, Music_RivalBattle_Ch1
-	musicheader 1, 2, Music_RivalBattle_Ch2
-	musicheader 1, 3, Music_RivalBattle_Ch3
+	channelcount 3
+	channel 1, Music_RivalBattle_Ch1
+	channel 2, Music_RivalBattle_Ch2
+	channel 3, Music_RivalBattle_Ch3
 ; e9758
 
 Music_RivalBattle_Ch1: ; e9758

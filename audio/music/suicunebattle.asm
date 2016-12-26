@@ -1,7 +1,8 @@
 Music_SuicuneBattle: ; 178b81
-	musicheader 3, 1, Music_SuicuneBattle_Ch1
-	musicheader 1, 2, Music_SuicuneBattle_Ch2
-	musicheader 1, 3, Music_SuicuneBattle_Ch3
+	channelcount 3
+	channel 1, Music_SuicuneBattle_Ch1
+	channel 2, Music_SuicuneBattle_Ch2
+	channel 3, Music_SuicuneBattle_Ch3
 ; 178b8a
 
 Music_SuicuneBattle_Ch1: ; 178b8a

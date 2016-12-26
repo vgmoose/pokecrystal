@@ -1,62 +1,50 @@
-_PrintNum:: ; c4c7
+_PrintNum::
 ; Print c digits of the b-byte value from de to hl.
 ; Allows 2 to 7 digits. For 1-digit numbers, add
 ; the value to char "0" instead of calling PrintNum.
 ; Some extra flags can be given in bits 5-7 of b.
-; Bit 5: money if set (unless left-aligned without leading zeros)
-; Bit 6: right-aligned if set
+; Bit 5: money if set
+; Bit 6: left-aligned if set
 ; Bit 7: print leading zeros if set
 
 	push bc
 
 	bit 5, b
-	jr z, .main
+	jr z, .skipMoney
 	bit 7, b
-	jr nz, .moneyflag
+	jr nz, .moneyFlag
 	bit 6, b
-	jr z, .main
+	jr z, .skipMoney
 
-.moneyflag ; 101xxxxx or 011xxxxx
+.moneyFlag
 	ld a, "¥"
 	ld [hli], a
 	res 5, b ; 100xxxxx or 010xxxxx
 
-.main
+.skipMoney
 	xor a
 	ld [hPrintNum1], a
 	ld [hPrintNum2], a
 	ld [hPrintNum3], a
 	ld a, b
 	and $f
-	cp 1
+	dec a
 	jr z, .byte
-	cp 2
+	dec a
 	jr z, .word
 ; maximum 3 bytes
 .long
 	ld a, [de]
 	ld [hPrintNum2], a
 	inc de
-	ld a, [de]
-	ld [hPrintNum3], a
-	inc de
-	ld a, [de]
-	ld [hPrintNum4], a
-	jr .start
-
 .word
 	ld a, [de]
 	ld [hPrintNum3], a
 	inc de
-	ld a, [de]
-	ld [hPrintNum4], a
-	jr .start
-
 .byte
 	ld a, [de]
 	ld [hPrintNum4], a
 
-.start
 	push de
 
 	ld d, b
@@ -68,18 +56,18 @@ _PrintNum:: ; c4c7
 	and $f
 	ld b, a
 	ld c, 0
-	cp 2
+	sub 2
 	jr z, .two
-	cp 3
+	dec a
 	jr z, .three
-	cp 4
+	dec a
 	jr z, .four
-	cp 5
+	dec a
 	jr z, .five
-	cp 6
+	dec a
 	jr z, .six
 
-.seven
+; seven
 	ld a, 1000000 / $10000 % $100
 	ld [hPrintNum5], a
 	ld a, 1000000 / $100 % $100
@@ -138,12 +126,13 @@ _PrintNum:: ; c4c7
 
 	ld c, 0
 	ld a, [hPrintNum4]
+	jr .handleLoop1
 .mod_10
-	cp 10
-	jr c, .modded_10
 	sub 10
 	inc c
-	jr .mod_10
+.handleLoop1
+	cp 10
+	jr nc, .mod_10
 .modded_10
 
 	ld b, a
@@ -178,7 +167,7 @@ _PrintNum:: ; c4c7
 	pop bc
 	ret
 
-.PrintYen: ; c5ba
+.PrintYen
 	push af
 	ld a, [hPrintNum1]
 	and a
@@ -193,7 +182,7 @@ _PrintNum:: ; c4c7
 	pop af
 	ret
 
-.PrintDigit: ; c5cb (3:45cb)
+.PrintDigit
 	dec e
 	jr nz, .ok
 	ld a, "0"
@@ -216,7 +205,7 @@ _PrintNum:: ; c4c7
 	cp b
 	jr nc, .skip2
 	ld a, [hPrintNum2]
-	or 0
+	and a
 	jr z, .skip3
 	dec a
 	ld [hPrintNum2], a
@@ -248,6 +237,7 @@ _PrintNum:: ; c4c7
 	ld [hPrintNum4], a
 	inc c
 	jr .loop
+
 .skip6
 	ld a, [hPrintNum9]
 	ld [hPrintNum3], a
@@ -275,17 +265,17 @@ _PrintNum:: ; c4c7
 	dec e
 	ret nz
 	inc hl
-	ld [hl], "·"
+	ld [hl], "."
 	ret
 
-.PrintLeadingZero: ; c644
+.PrintLeadingZero
 ; prints a leading zero unless they are turned off in the flags
 	bit 7, d ; print leading zeroes?
 	ret z
 	ld [hl], "0"
 	ret
 
-.AdvancePointer: ; c64a
+.AdvancePointer
 ; increments the pointer unless leading zeroes are not being printed,
 ; the number is left-aligned, and no nonzero digits have been printed yet
 	bit 7, d ; print leading zeroes?

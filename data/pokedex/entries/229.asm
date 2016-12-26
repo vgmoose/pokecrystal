@@ -1,10 +1,15 @@
-; HoundoomPokedexEntry: ; 0x1d0f66
-	db "DARK@" ; species name
-	dw 407, 770 ; height, width
+	ctxt "Dark" ; species name
+	done
+	dw 407, 770 ; height, weight
 
-	db   "The pungent-"
+	db .page2 - .page1
+.page1
+	ctxt "The pungent-"
 	next "smelling flame"
 	next "that shoots from"
-	page "its mouth results"
+	done
+.page2
+	ctxt "its mouth results"
 	next "from toxins burn-"
-	next "ing in its body.@"
+	next "ing in its body."
+	done

@@ -1,10 +1,14 @@
-; HeracrossPokedexEntry: ; 0x1d0907
-	db "SINGLEHORN@" ; species name
-	dw 411, 1190 ; height, width
+	ctxt "Aura" ; species name
+	done
+	dw 311, 1190 ; height, weight
 
-	db   "With its Herculean"
-	next "powers, it can"
-	next "easily throw arou-"
-	page "nd an object that"
-	next "is 100 times its"
-	next "own weight.@"
+	db .page2 - .page1
+.page1
+	ctxt "It has the ability"
+	next "to sense the Auras"
+	next "of all things."
+	done
+.page2
+	ctxt "It understands"
+	next "human speech."
+	done

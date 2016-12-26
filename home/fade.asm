@@ -1,138 +1,148 @@
 ; Functions to fade the screen in and out.
 
+FadeBGToLightestColor::
+	ld de, BGPals
+	ld h, d
+	ld l, e
+	ld b, %1
+	jr FadeInPals
 
-Function48c:: ; 48c
-; XXX
-; TimeOfDayFade
-	ld a, [TimeOfDayPal]
-	ld b, a
-	ld hl, IncGradGBPalTable_11
-	ld a, l
-	sub b
-	ld l, a
-	jr nc, .okay
-	dec h
+FadeBGToDarkestColor::
+	ld de, BGPals + 6
+	ld hl, BGPals
+	ld b, %1
+	jr FadeInPals
 
-.okay
-	ld a, [hli]
-	ld [rBGP], a
-	ld a, [hli]
-	ld [rOBP0], a
-	ld a, [hli]
-	ld [rOBP1], a
+FadeOBJToWhite::
+	ld hl, OBPals
+	ld de, WhitePal
+	ld b, %10
+	jr FadeInPals
+
+;FadeOBJToLightestColor::
+;	ld de, OBPals
+;	ld h, d
+;	ld l, e
+;	ld b, %10
+;	jr FadeInPals
+
+FadeOBJToDarkestColor::
+	ld de, OBPals + 6
+	ld hl, OBPals
+	ld b, %10
+	jr FadeInPals
+
+FadeToLightestColor:: ; 4dd
+	ld de, BGPals
+	ld h, d
+	ld l, e
+	jr FadeBothPalsCommon
+
+FadeToDarkestColor:: ; 4b6
+	ld de, BGPals + 6
+	ld hl, BGPals
+	jr FadeBothPalsCommon
+
+FadeToWhite::
+	ld de, WhitePal
+	ld hl, BGPals
+FadeBothPalsCommon:
+	ld b, %11
+	
+FadeInPals::
+; Smoothly fade in pals to the colour offset at hl
+; lower 7 bits of c = delay time per frame
+; if bit 7 is set, delay every c counts
+	ld a, [rSVBK]
+	push af
+	ld a, BANK(BGPals)
+	ld [rSVBK], a
+	ld a, c
+	ld [hBuffer], a
+	ld a, b
+	ld b, 0
+	push hl
+	ld hl, BGPalsBuffer2
+	rra
+	push af
+	call c, .CopyPalColourToBuffer
+	pop af
+	rra
+	call c, .CopyPalColourToBuffer
+	pop hl
+	ld a, [hBuffer]
+	ld c, a
+	ld de, BGPalsBuffer2
+	callba RelativeFade
+	pop af
+	ld [rSVBK], a
 	ret
-; 4a3
 
-
-RotateFourPalettesRight:: ; 4a3
-	ld a, [hCGB]
-	and a
-	jr z, .dmg
-	ld hl, IncGradGBPalTable_00
-	ld b, 4
-	jr RotatePalettesRight
-
-.dmg
-	ld hl, IncGradGBPalTable_08
-	ld b, 4
-	jr RotatePalettesRight
-; 4b6
-
-RotateThreePalettesRight:: ; 4b6
-	ld a, [hCGB]
-	and a
-	jr z, .dmg
-	ld hl, IncGradGBPalTable_05
-	ld b, 3
-	jr RotatePalettesRight
-
-.dmg
-	ld hl, IncGradGBPalTable_13
-	ld b, 3
-RotatePalettesRight:: ; 4c7
-; Rotate palettes to the right and fill with loaded colors from the left
-; If we're already at the leftmost color, fill with the leftmost color
+.CopyPalColourToBuffer:
 	push de
-	ld a, [hli]
-	call DmgToCgbBGPals
-	ld a, [hli]
+	ld a, [de]
+	inc de
+	ld c, a
+	ld a, [de]
 	ld e, a
-	ld a, [hli]
-	ld d, a
-	call DmgToCgbObjPals
-	ld c, 8
-	call DelayFrames
+	ld d, c
+	
+	ld a, 8 * 4
+	ld c, a
+	add b
+	ld b, a
+.loop
+	ld a, d
+	ld [hli], a
+	ld a, e
+	res 7, a
+	ld [hli], a
+	dec c
+	jr nz, .loop
 	pop de
-	dec b
-	jr nz, RotatePalettesRight
+	bit 7, d
+	jr z, .nextPal
+	ld a, 8 palettes
+	add e
+	ld e, a
+	ret nc
+	inc d
 	ret
-; 4dd
+.nextPal
+	inc de
+	inc de
+	ret
 
-RotateFourPalettesLeft:: ; 4dd
-	ld a, [hCGB]
-	and a
-	jr z, .dmg
-	ld hl, IncGradGBPalTable_04 - 1
-	ld b, 4
-	jr RotatePalettesLeft
+FadeOutBGPals::
+	ld b, 8 * 4
+	ld hl, BGPals
+	ld de, UnknBGPals
+	jr FadeOutPals_Common
 
-.dmg
-	ld hl, IncGradGBPalTable_12 - 1
-	ld b, 4
-	jr RotatePalettesLeft
-; 4f0
+FadeOutOBJPals::
+	ld b, 8 * 4
+	ld hl, OBPals
+	ld de, UnknOBPals
+	jr FadeOutPals_Common
 
-RotateThreePalettesLeft:: ; 4f0
-	ld a, [hCGB]
-	and a
-	jr z, .dmg
-	ld hl, IncGradGBPalTable_07 - 1
-	ld b, 3
-	jr RotatePalettesLeft
+FadeOutPals::
+	ld b, 16 * 4
+	ld hl, BGPals
+	ld de, UnknBGPals
 
-.dmg
-	ld hl, IncGradGBPalTable_15 - 1
-	ld b, 3
-RotatePalettesLeft:: ; 501
+FadeOutPals_Common::
 ; Rotate palettes to the left and fill with loaded colors from the right
 ; If we're already at the rightmost color, fill with the rightmost color
-	push de
-	ld a, [hld]
-	ld d, a
-	ld a, [hld]
-	ld e, a
-	call DmgToCgbObjPals
-	ld a, [hld]
-	call DmgToCgbBGPals
-	ld c, 8
-	call DelayFrames
-	pop de
-	dec b
-	jr nz, RotatePalettesLeft
+	ld a, [rSVBK]
+	push af
+	ld a, BANK(UnknBGPals)
+	ld [rSVBK], a
+	callba RelativeFade
+	pop af
+	ld [rSVBK], a
 	ret
 ; 517
 
-
-; 517
-IncGradGBPalTable_00:: db %11111111, %11111111, %11111111
-IncGradGBPalTable_01:: db %11111110, %11111110, %11111110
-IncGradGBPalTable_02:: db %11111001, %11111001, %11111001
-IncGradGBPalTable_03:: db %11100100, %11100100, %11100100
-
-IncGradGBPalTable_04:: db %11100100, %11100100, %11100100
-IncGradGBPalTable_05:: db %10010000, %10010000, %10010000
-IncGradGBPalTable_06:: db %01000000, %01000000, %01000000
-
-IncGradGBPalTable_07:: db %00000000, %00000000, %00000000
-;                           bgp       obp1       obp2
-IncGradGBPalTable_08:: db %11111111, %11111111, %11111111
-IncGradGBPalTable_09:: db %11111110, %11111110, %11111000
-IncGradGBPalTable_10:: db %11111001, %11100100, %11100100
-IncGradGBPalTable_11:: db %11100100, %11010000, %11100000
-
-IncGradGBPalTable_12:: db %11100100, %11010000, %11100000
-IncGradGBPalTable_13:: db %10010000, %10000000, %10010000
-IncGradGBPalTable_14:: db %01000000, %01000000, %01000000
-
-IncGradGBPalTable_15:: db %00000000, %00000000, %00000000
-; 547
+WhitePal:
+	RGB 31, 31, 31
+	RGB 31, 31, 31

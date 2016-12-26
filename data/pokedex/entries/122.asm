@@ -1,10 +1,15 @@
-; MrMimePokedexEntry: ; 0x1b97ea
-	db "BARRIER@" ; species name
-	dw 403, 1200 ; height, width
+	ctxt "Carefree" ; species name
+	done
+	dw 411, 1213 ; height, weight
 
-	db   "It uses the"
-	next "mysterious"
-	next "power it has in"
-	page "its fingers to"
-	next "solidify air into"
-	next "an invisible wall.@"
+	db .page2 - .page1
+.page1
+	ctxt "The rhythm of"
+	next "bright, festive"
+	next "music activates"
+	done
+.page2
+	ctxt "Ludicolo's cells,"
+	next "making it more"
+	next "powerful."
+	done

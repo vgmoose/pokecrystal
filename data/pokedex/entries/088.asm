@@ -1,10 +1,14 @@
-; GrimerPokedexEntry: ; 0x1b89a2
-	db "SLUDGE@" ; species name
-	dw 211, 660 ; height, width
+	ctxt "Puppet" ; species name
+	done
+	dw 200, 51 ; height, weight
 
-	db   "When two of these"
-	next "#MON's bodies"
-	next "are combined"
-	page "together, new"
-	next "poisons are"
-	next "created.@"
+	db .page2 - .page1
+.page1
+	ctxt "It feeds on the"
+	next "dark emotions of"
+	next "sadness and hatred"
+	done
+.page2
+	ctxt "which make it grow"
+	next "steadily stronger."
+	done

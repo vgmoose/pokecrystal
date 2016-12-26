@@ -1,10 +1,15 @@
-; HoothootPokedexEntry: ; 0x1cce58
-	db "OWL@" ; species name
-	dw 204, 470 ; height, width
+	ctxt "Feeling" ; species name
+	done
+	dw 104, 146 ; height, weight
 
-	db   "It begins to hoot"
-	next "at the same time"
-	next "every day. Some"
-	page "trainers use them"
-	next "in place of"
-	next "clocks.@"
+	db .page2 - .page1
+.page1
+	ctxt "The horns on its"
+	next "head provide a"
+	next "strong power that"
+	done
+.page2
+	ctxt "enables it to"
+	next "sense people's"
+	next "emotions."
+	done

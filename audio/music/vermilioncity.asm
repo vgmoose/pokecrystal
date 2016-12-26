@@ -1,7 +1,8 @@
 Music_VermilionCity: ; eb676
-	musicheader 3, 1, Music_VermilionCity_Ch1
-	musicheader 1, 2, Music_VermilionCity_Ch2
-	musicheader 1, 3, Music_VermilionCity_Ch3
+	channelcount 3
+	channel 1, Music_VermilionCity_Ch1
+	channel 2, Music_VermilionCity_Ch2
+	channel 3, Music_VermilionCity_Ch3
 ; eb67f
 
 	db $3

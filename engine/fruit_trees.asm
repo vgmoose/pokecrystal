@@ -9,8 +9,7 @@ FruitTreeScript:: ; 44000
 	callasm CheckFruitTree
 	iffalse .fruit
 	writetext NothingHereText
-	waitbutton
-	jump .end
+	endtext
 
 .fruit
 	writetext HeyItsFruitText
@@ -18,20 +17,17 @@ FruitTreeScript:: ; 44000
 	giveitem ITEM_FROM_MEM
 	iffalse .packisfull
 	buttonsound
+	callasm GiveItemCheckPluralBuffer3
 	writetext ObtainedFruitText
 	callasm PickedFruitTree
-	specialsound
+	playwaitsfx SFX_ITEM
 	itemnotify
-	jump .end
+	endtext
 
 .packisfull
 	buttonsound
 	writetext FruitPackIsFullText
-	waitbutton
-
-.end
-	closetext
-	end
+	endtext
 ; 44041
 
 GetCurTreeFruit: ; 44041
@@ -50,18 +46,28 @@ TryResetFruitTrees: ; 4404c
 ; 44055
 
 CheckFruitTree: ; 44055
-	ld b, 2
+	ld b, CHECK_FLAG
 	call GetFruitTreeFlag
 	ld a, c
-	ld [ScriptVar], a
+	ld [hScriptVar], a
 	ret
 ; 4405f
 
 PickedFruitTree: ; 4405f
-	callba MobileFn_10609b ; empty function
-	ld b, 1
-	jp GetFruitTreeFlag
-; 4406a
+	ld b, SET_FLAG
+
+GetFruitTreeFlag: ; 44078
+	push hl
+	push de
+	ld a, [CurFruitTree]
+	dec a
+	ld c, a
+	ld hl, FruitTreeFlags
+	predef FlagAction
+	pop de
+	pop hl
+	ret
+; 4408a
 
 ResetFruitTrees: ; 4406a
 	xor a
@@ -74,20 +80,6 @@ ResetFruitTrees: ; 4406a
 	set 4, [hl]
 	ret
 ; 44078
-
-GetFruitTreeFlag: ; 44078
-	push hl
-	push de
-	ld a, [CurFruitTree]
-	dec a
-	ld e, a
-	ld d, 0
-	ld hl, FruitTreeFlags
-	call FlagAction
-	pop de
-	pop hl
-	ret
-; 4408a
 
 GetFruitTreeItem: ; 4408a
 	push hl
@@ -103,59 +95,56 @@ GetFruitTreeItem: ; 4408a
 ; 44097
 
 FruitTreeItems: ; 44097
-	db BERRY
-	db BERRY
-	db BERRY
-	db BERRY
-	db PSNCUREBERRY
-	db PSNCUREBERRY
-	db BITTER_BERRY
-	db BITTER_BERRY
-	db PRZCUREBERRY
-	db PRZCUREBERRY
-	db MYSTERYBERRY
-	db MYSTERYBERRY
-	db ICE_BERRY
-	db ICE_BERRY
-	db MINT_BERRY
-	db BURNT_BERRY
 	db RED_APRICORN
 	db BLU_APRICORN
-	db BLK_APRICORN
-	db WHT_APRICORN
-	db PNK_APRICORN
-	db GRN_APRICORN
 	db YLW_APRICORN
-	db BERRY
-	db PSNCUREBERRY
-	db BITTER_BERRY
-	db PRZCUREBERRY
-	db ICE_BERRY
-	db MINT_BERRY
-	db BURNT_BERRY
+	db GRN_APRICORN
+	db WHT_APRICORN
+	db BLK_APRICORN
+	db PNK_APRICORN
+	db ORNGAPRICORN
+	db ORNGAPRICORN
+	db ORNGAPRICORN
+	db CYANAPRICORN
+	db CYANAPRICORN
+	db GREYAPRICORN
+	db PRPLAPRICORN
+
+	db ORAN_BERRY
+	db PECHA_BERRY
+	db ORAN_BERRY
+	db CHERI_BERRY
+	db ORAN_BERRY
+	db ASPEAR_BERRY
+	db ORAN_BERRY
+	db RAWST_BERRY
+	db ORAN_BERRY
+	db PERSIM_BERRY
+	db ORAN_BERRY
+	db CHESTO_BERRY
+	db SITRUS_BERRY
+	db LUM_BERRY
+	db SITRUS_BERRY
+	db LEPPA_BERRY
+
 ; 440b5
 
 FruitBearingTreeText: ; 440b5
 	text_jump _FruitBearingTreeText
-	db "@"
 ; 440ba
 
 HeyItsFruitText: ; 440ba
 	text_jump _HeyItsFruitText
-	db "@"
 ; 440bf
 
 ObtainedFruitText: ; 440bf
 	text_jump _ObtainedFruitText
-	db "@"
 ; 440c4
 
 FruitPackIsFullText: ; 440c4
 	text_jump _FruitPackIsFullText
-	db "@"
 ; 440c9
 
 NothingHereText: ; 440c9
 	text_jump _NothingHereText
-	db "@"
 ; 440ce

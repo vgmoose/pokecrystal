@@ -1,6 +1,6 @@
-Reset:: ; 150
+Reset::
 	di
-	call MapSetup_Sound_Off
+	call TurnSoundOff
 	xor a
 	ld [hMapAnims], a
 	call ClearPalettes
@@ -10,36 +10,31 @@ Reset:: ; 150
 	ld [rIE], a
 	ei
 
+	; disable joypad
 	ld hl, wcfbe
 	set 7, [hl]
 
 	ld c, 32
 	call DelayFrames
 
-	jr Init
-; 16e
+	jr Init_NoDI
 
-
-_Start:: ; 16e
+_Start::
 	cp $11
+	ld a, $1
 	jr z, .cgb
 	xor a
-	jr .load
-
 .cgb
-	ld a, $1
-
-.load
 	ld [hCGB], a
 	ld a, $1
 	ld [hFFEA], a
-; 17d
+	; fallthrough
 
-
-Init:: ; 17d
-
+Init::
 	di
+	; fallthrough
 
+Init_NoDI:
 	xor a
 	ld [rIF], a
 	ld [rIE], a
@@ -69,15 +64,14 @@ Init:: ; 17d
 	ld [rLCDC], a
 
 ; Clear WRAM bank 0
-	ld hl, wc000
-	ld bc, wd000 - wc000
-.ByteFill:
-	ld [hl], 0
-	inc hl
-	dec bc
-	ld a, b
-	or c
-	jr nz, .ByteFill
+	ld hl, $c000
+	ld bc, $d000 - $c000
+.byteFill
+	ld [hli], a
+	dec c
+	jr nz, .byteFill
+	dec b
+	jr nz, .byteFill
 
 	ld sp, Stack
 
@@ -96,17 +90,26 @@ Init:: ; 17d
 	ld [hCGB], a
 
 	call ClearWRAM
-	ld a, 1
-	ld [rSVBK], a
 	call ClearVRAM
 	call ClearSprites
-	call ClearsScratch
 
+	; load the current build number to WRAM, in a place that should not be modified, ever
+	ld hl, wBuildNumberCheck
+	ld a, BUILD_NUMBER >> 8
+	ld [hli], a
+	ld [hl], BUILD_NUMBER & $ff
 
-	ld a, BANK(LoadPushOAM)
-	rst Bankswitch
+	; initialize RNG state. For now, we'll just pick a number.
+	ld hl, wRNGState
+	ld a, $12
+	ld [hli], a
+	ld a, $34
+	ld [hli], a
+	ld a, $56
+	ld [hli], a
+	ld [hl], $78
 
-	call LoadPushOAM
+	callba LoadPushOAM
 
 	xor a
 	ld [hMapAnims], a
@@ -139,8 +142,6 @@ Init:: ; 17d
 	ld a, -1
 	ld [hLinkPlayerNumber], a
 
-	callba InitCGBPals
-
 	ld a, VBGMap1 / $100
 	ld [hBGMapAddress + 1], a
 	xor a ; VBGMap1 % $100
@@ -154,28 +155,25 @@ Init:: ; 17d
 
 	ld a, [hCGB]
 	and a
-	jr z, .no_double_speed
-	call NormalSpeed
-.no_double_speed
+	call nz, DoubleSpeed
 
 	xor a
 	ld [rIF], a
-	ld a, %1111 ; VBlank, LCDStat, Timer, Serial interrupts
+	ld a, 1 << VBLANK | 1 << SERIAL ; VBlank, LCDStat, Timer, Serial interrupts
 	ld [rIE], a
+	call LoadLCDCode
 	ei
 
 	call DelayFrame
 
-	predef InitSGBBorder ; SGB init
-
-	call MapSetup_Sound_Off
+	call TurnSoundOff
 	xor a
 	ld [wMapMusic], a
+	ld a, BANK(GameInit)
+	rst Bankswitch
 	jp GameInit
-; 245
 
-
-ClearVRAM:: ; 245
+ClearVRAM::
 ; Wipe VRAM banks 0 and 1
 
 	ld a, 1
@@ -186,40 +184,20 @@ ClearVRAM:: ; 245
 	ld [rVBK], a
 .clear
 	ld hl, VTiles0
-	ld bc, $2000
+	ld bc, SRAM_Begin - VTiles0
 	xor a
-	call ByteFill
-	ret
-; 25a
+	jp ByteFill
 
-ClearWRAM:: ; 25a
+ClearWRAM::
 ; Wipe swappable WRAM banks (1-7)
-; Assumes CGB or AGB
-
-	ld a, 1
-.bank_loop
-	push af
+	ld d, 7 ; count backwards from bank 7
+.loop
+	ld a, d
 	ld [rSVBK], a
 	xor a
 	ld hl, $d000
 	ld bc, $1000
 	call ByteFill
-	pop af
-	inc a
-	cp 8
-	jr nc, .bank_loop ; Should be jr c
+	dec d
+	jr nz, .loop
 	ret
-; 270
-
-ClearsScratch:: ; 270
-; Wipe the first 32 bytes of sScratch
-
-	ld a, BANK(sScratch)
-	call GetSRAMBank
-	ld hl, sScratch
-	ld bc, $20
-	xor a
-	call ByteFill
-	call CloseSRAM
-	ret
-; 283

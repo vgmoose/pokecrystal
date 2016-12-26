@@ -1,10 +1,15 @@
-; NinetalesPokedexEntry: ; 0x18260c
-	db "FOX@" ; species name
-	dw 307, 440 ; height, width
+	ctxt "Fox" ; species name
+	done
+	dw 307, 440 ; height, weight
 
-	db   "It is said to live"
+	db .page2 - .page1
+.page1
+	ctxt "It is said to live"
 	next "a thousand years,"
 	next "and each of its"
-	page "tails is loaded"
+	done
+.page2
+	ctxt "tails is loaded"
 	next "with supernatural"
-	next "powers.@"
+	next "powers."
+	done

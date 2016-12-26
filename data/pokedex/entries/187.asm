@@ -1,10 +1,15 @@
-; HoppipPokedexEntry: ; 0x1cd8b5
-	db "COTTONWEED@" ; species name
-	dw 104, 10 ; height, width
+	ctxt "Ball Whale" ; species name
+	done
+	dw 607, 2866 ; height, weight
 
-	db   "It can be carried"
-	next "away on even the"
-	next "gentlest breeze."
-	page "It may even float"
-	next "all the way to the"
-	next "next town.@"
+	db .page2 - .page1
+.page1
+	ctxt "On sunny days, it"
+	next "lands on beaches"
+	next "to bounce like a"
+	done
+.page2
+	ctxt "ball and play. It"
+	next "spouts water from"
+	next "its nose."
+	done

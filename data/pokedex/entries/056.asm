@@ -1,10 +1,16 @@
-; MankeyPokedexEntry: ; 0x182dbd
-	db "PIG MONKEY@" ; species name
-	dw 108, 620 ; height, width
+	ctxt "Shield" ; species name
+	done
+	dw 108, 1257 ; height, weight
 
-	db   "It lives in groups"
-	next "in the treetops."
-	next "If it loses sight"
-	page "of its group, it"
-	next "becomes infuriated"
-	next "by its loneliness.@"
+	db .page2 - .page1
+.page1
+	ctxt "A #mon that"
+	next "lived in jungles"
+	next "around 100 million"
+	done
+.page2
+	ctxt "years ago. Its"
+	next "facial hide is"
+	next "extremely hard."
+	done
+	

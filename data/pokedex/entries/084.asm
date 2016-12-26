@@ -1,10 +1,15 @@
-; DoduoPokedexEntry: ; 0x1b87d7
-	db "TWIN BIRD@" ; species name
-	dw 407, 860 ; height, width
+	ctxt "Balloon" ; species name
+	done
+	dw 104, 26 ; height, weight
 
-	db   "It lives on a"
-	next "grassy plain where"
-	next "it can see a long"
-	page "way. If it sees an"
-	next "enemy, it runs"
-	next "away at 60 mph.@"
+	db .page2 - .page1
+.page1
+	ctxt "A #mon formed"
+	next "by the spirits of"
+	next "people and"
+	done
+.page2
+	ctxt "#mon. It loves"
+	next "damp, humid"
+	next "seasons."
+	done

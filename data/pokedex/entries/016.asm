@@ -1,10 +1,15 @@
-; PidgeyPokedexEntry: ; 0x181cfa
-	db "TINY BIRD@" ; species name
-	dw 100, 40 ; height, width
+	ctxt "Tiny Bird" ; species name
+	done
+	dw 100, 40 ; height, weight
 
-	db   "It rapidly flaps"
+	db .page2 - .page1
+.page1
+	ctxt "It rapidly flaps"
 	next "its wings in the"
 	next "grass, stirring up"
-	page "a dust cloud that"
+	done
+.page2
+	ctxt "a dust cloud that"
 	next "drives insect prey"
-	next "out into the open.@"
+	next "out into the open."
+	done

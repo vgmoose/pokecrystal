@@ -9,21 +9,19 @@ INCLUDE "macros/move_effect.asm"
 INCLUDE "macros/move_anim.asm"
 INCLUDE "macros/movement.asm"
 INCLUDE "macros/map.asm"
-INCLUDE "macros/pic.asm"
 INCLUDE "macros/predef.asm"
 INCLUDE "macros/rst.asm"
-INCLUDE "macros/mobile.asm"
 INCLUDE "macros/trainer.asm"
 INCLUDE "macros/trade_anim.asm"
 INCLUDE "macros/pals.asm"
+INCLUDE "macros/flag.asm"
+INCLUDE "macros/lz.asm"
 
 RGB: MACRO
 	dw ((\3) << 10) + ((\2) << 5) + (\1)
 	ENDM
 
-
 percent EQUS "* $ff / 100"
-
 
 dwb: MACRO
 	dw \1
@@ -48,6 +46,11 @@ dbww: MACRO
 dbwww: MACRO
 	db \1
 	dw \2, \3, \4
+	ENDM
+
+dbnn: MACRO
+	db \1
+	db ((\2) & $f) << 4 + ((\3) & $f)
 	ENDM
 
 dn: MACRO
@@ -98,6 +101,14 @@ lb: MACRO ; r, hi, lo
 
 ln: MACRO ; r, hi, lo
 	ld \1, (\2 & $f) << 4 + (\3 & $f)
+	ENDM
+
+exchange: MACRO ; 16-bit reg, exchanges its 8-bit components
+	push \1
+	push \1
+	inc sp
+	pop \1
+	inc sp
 	ENDM
 
 bccoord equs "coord bc,"
@@ -257,9 +268,9 @@ debgcoord EQUS "bgcoord de,"
 bcbgcoord EQUS "bgcoord bc,"
 bgrows EQUS "* $20"
 
-palred EQUS "$0001 *"
+palred EQUS "$0400 *"
 palgreen EQUS "$0020 *"
-palblue EQUS "$0400 *"
+palblue EQUS "$0001 *"
 
 dsprite: MACRO
 ; conditional segment is there because not every instance of
@@ -271,46 +282,88 @@ else
 endc
 endm
 
-jumptable: MACRO
-	ld a, [\2]
-	ld e, a
-	ld d, 0
-	ld hl, \1
-	add hl, de
-	add hl, de
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	jp [hl]
-endm
+inc_octave: MACRO
+	db $e7
+	ENDM
 
-maskbits: macro
-; returns to x
-; usage in rejection sampling
-; .loop
-; 	call Random
-; 	maskbits 30
-; 	and x
-; 	cp 30
-; 	jr nc, .loop
+dec_octave: MACRO
+	db $e8
+	ENDM
 
-x = 1
-rept 8
-IF \1 > x
-x = (x + 1) * 2 +- 1
-ENDC
-endr
-endm
+notetype0: MACRO
+	db $f6, \1
+	ENDM
 
-homecall: MACRO
-	ld a, [hROMBank]
-	push af
-	ld a, BANK(\1)
-	rst Bankswitch
+notetype1: MACRO
+	db $f7, \1
+	ENDM
 
-	call \1
+notetype2: MACRO
+	db $f8, \1
+	ENDM
 
-	pop af
-	rst Bankswitch
+add_name: MACRO
+.name\@
+	db .name\@end - .name\@
+	db \1
+.name\@end
 ENDM
 
+assert: MACRO
+	if !(\1)
+		if _NARG > 1
+			fail \2
+		else
+			fail "Assertion failed: \1"
+		endc
+	endc
+ENDM
+
+jr_abs EQUS "db $18, -1 - @ + "
+
+type_matchup: MACRO
+x = 0
+y = 0
+rept _NARG
+x = x + (\1 << y)
+y = (y + 2) & $7
+if y == 0
+	db x
+x = 0
+endc
+	shift
+endr
+if y != 0
+	db x
+endc
+ENDM
+
+list_item: MACRO
+.__item\1
+if (_NARG > 1)
+	db .__item\2 - .__item\1
+endc
+ENDM
+
+current_list_item = 0
+
+next_list_item: MACRO
+next_list_item_index = current_list_item + 1
+	list_item {current_list_item}, {next_list_item_index}
+current_list_item = next_list_item_index
+ENDM
+
+end_list_items: MACRO
+	list_item {current_list_item}
+current_list_item = 0
+ENDM
+
+debug_mode_flag: MACRO
+	; This macro sets the carry flag depending on whether debug mode is on or off.
+	; It takes up one byte either way, preventing address shifts between modes.
+	if DEF(DEBUG_MODE)
+		scf
+	else
+		and a
+	endc
+ENDM

@@ -1,10 +1,15 @@
-; PidgeottoPokedexEntry: ; 0x181d75
-	db "BIRD@" ; species name
-	dw 307, 660 ; height, width
+	ctxt "Bird" ; species name
+	done
+	dw 307, 660 ; height, weight
 
-	db   "It slowly flies in"
+	db .page2 - .page1
+.page1
+	ctxt "It slowly flies in"
 	next "a circular pat-"
 	next "tern, all the"
-	page "while keeping a"
+	done
+.page2
+	ctxt "while keeping a"
 	next "sharp lookout for"
-	next "prey.@"
+	next "prey."
+	done

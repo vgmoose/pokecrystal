@@ -1,10 +1,15 @@
-; WartortlePokedexEntry: ; 0x181993
-	db "TURTLE@" ; species name
-	dw 303, 500 ; height, width
+	ctxt "Turtle" ; species name
+	done
+	dw 303, 500 ; height, weight
 
-	db   "Its long, furry"
+	db .page2 - .page1
+.page1
+	ctxt "Its long, furry"
 	next "tail is a symbol"
 	next "of longevity,"
-	page "making it quite"
+	done
+.page2
+	ctxt "making it quite"
 	next "popular among"
-	next "older people.@"
+	next "older people."
+	done

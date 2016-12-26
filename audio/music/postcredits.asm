@@ -1,6 +1,7 @@
 Music_PostCredits: ; cfd9e
-	musicheader 2, 1, Music_PostCredits_Ch1
-	musicheader 1, 2, Music_PostCredits_Ch2
+	channelcount 2
+	channel 1, Music_PostCredits_Ch1
+	channel 2, Music_PostCredits_Ch2
 ; cfda4
 
 	db $2
@@ -8,7 +9,7 @@ Music_PostCredits: ; cfd9e
 Music_PostCredits_Ch1: ; cfda5
 	tempo 271
 	volume $77
-	pitchoffset 0, D#
+	forceoctave $3
 	dutycycle $2
 	notetype $c, $93
 	note __, 8
@@ -133,7 +134,7 @@ Music_PostCredits_branch_cfdb2: ; cfdb2
 ; cfe48
 
 Music_PostCredits_Ch2: ; cfe48
-	pitchoffset 0, D#
+	forceoctave $3
 	dutycycle $2
 	notetype $c, $a3
 	octave 5

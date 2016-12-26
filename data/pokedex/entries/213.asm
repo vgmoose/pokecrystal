@@ -1,10 +1,15 @@
-; ShucklePokedexEntry: ; 0x1d088e
-	db "MOLD@" ; species name
-	dw 200, 450 ; height, width
+	ctxt "Emanation" ; species name
+	done
+	dw 204, 7 ; height, weight
 
-	db   "The fluid secreted"
-	next "by its toes carves"
-	next "holes in rocks for"
-	page "nesting and can be"
-	next "mixed with BERRIES"
-	next "to make a drink.@"
+	db .page2 - .page1
+.page1
+	ctxt "Its body is little"
+	next "yet powerful. It"
+	next "can crest three"
+	done
+.page2
+	ctxt "mountains and"
+	next "cross two canyons"
+	next "in one night."
+	done

@@ -1,10 +1,15 @@
-; ZapdosPokedexEntry: ; 0x1cc697
-	db "ELECTRIC@" ; species name
-	dw 503, 1160 ; height, width
+	ctxt "Electric" ; species name
+	done
+	dw 503, 1160 ; height, weight
 
-	db   "Legendary bird"
-	next "#MON. They say"
+	db .page2 - .page1
+.page1
+	ctxt "Legendary bird"
+	next "#mon. They say"
 	next "lightning caused"
-	page "by the flapping of"
+	done
+.page2
+	ctxt "by the flapping of"
 	next "its wings causes"
-	next "summer storms.@"
+	next "summer storms."
+	done

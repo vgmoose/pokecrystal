@@ -1,10 +1,15 @@
-; VenusaurPokedexEntry: ; 0x181773
-	db "SEED@" ; species name
-	dw 607, 2210 ; height, width
+	ctxt "Seed" ; species name
+	done
+	dw 607, 2210 ; height, weight
 
-	db   "As it warms it-"
+	db .page2 - .page1
+.page1
+	ctxt "As it warms it-"
 	next "self and absorbs"
 	next "the sunlight, its"
-	page "flower petals"
+	done
+.page2
+	ctxt "flower petals"
 	next "release a pleasant"
-	next "fragrance.@"
+	next "fragrance."
+	done

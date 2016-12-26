@@ -2,8 +2,8 @@ BattleCommand_PerishSong: ; 376c2
 ; perishsong
 
 
-	ld hl, PlayerSubStatus1
-	ld de, EnemySubStatus1
+	ld hl, wPlayerSubStatus1
+	ld de, wEnemySubStatus1
 	bit SUBSTATUS_PERISH, [hl]
 	jr z, .ok
 

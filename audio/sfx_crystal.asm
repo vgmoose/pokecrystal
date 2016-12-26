@@ -1,5 +1,5 @@
 Sfx_IntroUnown1: ; 17982d
-	musicheader 1, 5, Sfx_IntroUnown1_Ch5
+	channel 5, Sfx_IntroUnown1_Ch5
 ; 179830
 
 Sfx_IntroUnown1_Ch5: ; 179830
@@ -11,7 +11,7 @@ Sfx_IntroUnown1_Ch5: ; 179830
 ; 17983e
 
 Sfx_IntroUnown2: ; 17983e
-	musicheader 1, 6, Sfx_IntroUnown2_Ch6
+	channel 6, Sfx_IntroUnown2_Ch6
 ; 179841
 
 Sfx_IntroUnown2_Ch6: ; 179841
@@ -23,7 +23,7 @@ Sfx_IntroUnown2_Ch6: ; 179841
 ; 17984f
 
 Sfx_IntroUnown3: ; 17984f
-	musicheader 1, 7, Sfx_IntroUnown3_Ch7
+	channel 7, Sfx_IntroUnown3_Ch7
 ; 179852
 
 Sfx_IntroUnown3_Ch7: ; 179852
@@ -38,7 +38,7 @@ Sfx_IntroUnown3_Ch7: ; 179852
 ; 17986e
 
 Sfx_DittoPopUp: ; 17986e
-	musicheader 1, 5, Sfx_DittoPopUp_Ch5
+	channel 5, Sfx_DittoPopUp_Ch5
 ; 179871
 
 Sfx_DittoPopUp_Ch5: ; 179871
@@ -53,7 +53,7 @@ Sfx_DittoPopUp_Ch5: ; 179871
 ; 179888
 
 Sfx_DittoTransform: ; 179888
-	musicheader 1, 5, Sfx_DittoTransform_Ch5
+	channel 5, Sfx_DittoTransform_Ch5
 ; 17988b
 
 Sfx_DittoTransform_Ch5: ; 17988b
@@ -67,7 +67,7 @@ Sfx_DittoTransform_Ch5: ; 17988b
 ; 1798a0
 
 Sfx_IntroSuicune1: ; 1798a0
-	musicheader 1, 8, Sfx_IntroSuicune1_Ch8
+	channel 8, Sfx_IntroSuicune1_Ch8
 ; 1798a3
 
 Sfx_IntroSuicune1_Ch8: ; 1798a3
@@ -77,7 +77,7 @@ Sfx_IntroSuicune1_Ch8: ; 1798a3
 ; 1798aa
 
 Sfx_IntroPichu: ; 1798aa
-	musicheader 1, 5, Sfx_IntroPichu_Ch5
+	channel 5, Sfx_IntroPichu_Ch5
 ; 1798ad
 
 Sfx_IntroPichu_Ch5: ; 1798ad
@@ -91,7 +91,7 @@ Sfx_IntroPichu_Ch5: ; 1798ad
 ; 1798c0
 
 Sfx_IntroSuicune2: ; 1798c0
-	musicheader 1, 8, Sfx_IntroSuicune2_Ch8
+	channel 8, Sfx_IntroSuicune2_Ch8
 ; 1798c3
 
 Sfx_IntroSuicune2_Ch8: ; 1798c3
@@ -115,7 +115,7 @@ Sfx_IntroSuicune2_Ch8: ; 1798c3
 ; 1798f4
 
 Sfx_IntroSuicune3: ; 1798f4
-	musicheader 1, 8, Sfx_IntroSuicune3_Ch8
+	channel 8, Sfx_IntroSuicune3_Ch8
 ; 1798f7
 
 Sfx_IntroSuicune3_Ch8: ; 1798f7
@@ -128,7 +128,7 @@ Sfx_IntroSuicune3_Ch8: ; 1798f7
 ; 179907
 
 Sfx_DittoBounce: ; 179907
-	musicheader 1, 5, Sfx_DittoBounce_Ch5
+	channel 5, Sfx_DittoBounce_Ch5
 ; 17990a
 
 Sfx_DittoBounce_Ch5: ; 17990a
@@ -142,7 +142,7 @@ Sfx_DittoBounce_Ch5: ; 17990a
 ; 17991d
 
 Sfx_IntroSuicune4: ; 17991d
-	musicheader 1, 8, Sfx_IntroSuicune4_Ch8
+	channel 8, Sfx_IntroSuicune4_Ch8
 ; 179920
 
 Sfx_IntroSuicune4_Ch8: ; 179920
@@ -161,7 +161,7 @@ Sfx_IntroSuicune4_Ch8: ; 179920
 ; 179942
 
 Sfx_GameFreakPresents: ; 179942
-	musicheader 1, 5, Sfx_GameFreakPresents_Ch5
+	channel 5, Sfx_GameFreakPresents_Ch5
 ; 179945
 
 Sfx_GameFreakPresents_Ch5: ; 179945
@@ -169,7 +169,7 @@ Sfx_GameFreakPresents_Ch5: ; 179945
 	dutycycle $2
 	notetype $2, $b1
 	soundinput $ff
-	pitchoffset 1, A#
+	forceoctave $1a
 	octave 5
 	note C_, 2
 	note E_, 2
@@ -188,13 +188,13 @@ Sfx_GameFreakPresents_Ch5: ; 179945
 ; 179961
 
 Sfx_Tingle: ; 179961
-	musicheader 1, 5, Sfx_Tingle_Ch5
+	channel 5, Sfx_Tingle_Ch5
 ; 179964
 
 Sfx_Tingle_Ch5: ; 179964
 	togglesfx
 	dutycycle $1
-	pitchoffset 0, B_
+	forceoctave $b
 	notetype $1, $b1
 Sfx_Tingle_branch_17996c: ; 17996c
 	octave 5
@@ -212,7 +212,7 @@ Sfx_Tingle_branch_17996c: ; 17996c
 ; 17997c
 
 Sfx_TwoPcBeeps: ; 17997c
-	musicheader 1, 5, Sfx_TwoPcBeeps_Ch5
+	channel 5, Sfx_TwoPcBeeps_Ch5
 ; 17997f
 
 Sfx_TwoPcBeeps_Ch5: ; 17997f
@@ -225,16 +225,17 @@ Sfx_TwoPcBeeps_Ch5: ; 17997f
 ; 179992
 
 Sfx_4NoteDitty: ; 179992
-	musicheader 3, 5, Sfx_4NoteDitty_Ch5
-	musicheader 1, 6, Sfx_4NoteDitty_Ch6
-	musicheader 1, 7, Sfx_4NoteDitty_Ch7
+	channelcount 3
+	channel 5, Sfx_4NoteDitty_Ch5
+	channel 6, Sfx_4NoteDitty_Ch6
+	channel 7, Sfx_4NoteDitty_Ch7
 ; 17999b
 
 Sfx_4NoteDitty_Ch5: ; 17999b
 	togglesfx
 	dutycycle $2
 	notetype $2, $e8
-	pitchoffset 0, D_
+	forceoctave $2
 	octave 4
 	note C_, 2
 	intensity $48
@@ -273,13 +274,13 @@ Sfx_4NoteDitty_Ch7: ; 1799c4
 ; 1799cb
 
 Sfx_Twinkle: ; 1799cb
-	musicheader 1, 5, Sfx_Twinkle_Ch5
+	channel 5, Sfx_Twinkle_Ch5
 ; 1799ce
 
 Sfx_Twinkle_Ch5: ; 1799ce
 	togglesfx
 	dutycycle $0
-	pitchoffset 0, D_
+	forceoctave $2
 	notetype $2, $e1
 	octave 3
 	note G_, 2

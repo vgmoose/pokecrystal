@@ -1,10 +1,15 @@
-; MukPokedexEntry: ; 0x1b89fc
-	db "SLUDGE@" ; species name
-	dw 311, 660 ; height, width
+	ctxt "Marionette" ; species name
+	done
+	dw 307, 276 ; height, weight
 
-	db   "As it moves, a"
-	next "very strong poison"
-	next "leaks from it,"
-	page "making the ground"
-	next "there barren for"
-	next "three years.@"
+	db .page2 - .page1
+.page1
+	ctxt "A doll that became"
+	next "a #mon over its"
+	next "grudge from being"
+	done
+.page2
+	ctxt "junked. It seeks"
+	next "the child that"
+	next "disowned it."
+	done

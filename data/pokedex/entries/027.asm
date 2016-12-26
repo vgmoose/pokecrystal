@@ -1,10 +1,15 @@
-; SandshrewPokedexEntry: ; 0x182184
-	db "MOUSE@" ; species name
-	dw 200, 260 ; height, width
+	ctxt "Flash" ; species name
+	done
+	dw 108, 209 ; height, weight
 
-	db   "It prefers dry,"
-	next "sandy places"
-	next "because it uses"
-	page "the sand to"
-	next "protect itself"
-	next "when threatened.@"
+	db .page2 - .page1
+.page1
+	ctxt "The extension and"
+	next "contraction of its"
+	next "muscles generates"
+	done
+.page2
+	ctxt "electricity. It"
+	next "glows when in"
+	next "trouble."
+	done

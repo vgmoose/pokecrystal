@@ -1,10 +1,15 @@
-; TotodilePokedexEntry: ; 0x1ccc14
-	db "BIG JAW@" ; species name
-	dw 200, 210 ; height, width
+	ctxt "Big Jaw" ; species name
+	done
+	dw 200, 210 ; height, weight
 
-	db   "This rough critter"
+	db .page2 - .page1
+.page1
+	ctxt "This rough critter"
 	next "chomps at any"
 	next "moving object it"
-	page "sees. Turning your"
+	done
+.page2
+	ctxt "sees. Turning your"
 	next "back on it is not"
-	next "recommended.@"
+	next "recommended."
+	done

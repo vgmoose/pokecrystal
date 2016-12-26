@@ -1,10 +1,15 @@
-; HitmonleePokedexEntry: ; 0x1b913f
-	db "KICKING@" ; species name
-	dw 411, 1100 ; height, width
+	ctxt "Kicking" ; species name
+	done
+	dw 411, 1100 ; height, weight
 
-	db   "It is also called"
+	db .page2 - .page1
+.page1
+	ctxt "It is also called"
 	next "the Kick Master."
 	next "It uses its"
-	page "elastic legs to"
+	done
+.page2
+	ctxt "elastic legs to"
 	next "execute every"
-	next "known kick.@"
+	next "known kick."
+	done

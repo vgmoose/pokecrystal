@@ -1,10 +1,15 @@
-; MachampPokedexEntry: ; 0x1b8133
-	db "SUPERPOWER@" ; species name
-	dw 503, 2870 ; height, width
+	ctxt "Superpower" ; species name
+	done
+	dw 503, 2870 ; height, weight
 
-	db   "With four arms"
+	db .page2 - .page1
+.page1
+	ctxt "With four arms"
 	next "that react more"
 	next "quickly than it"
-	page "can think, it can"
+	done
+.page2
+	ctxt "can think, it can"
 	next "execute many"
-	next "punches at once.@"
+	next "punches at once."
+	done

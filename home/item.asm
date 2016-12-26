@@ -1,9 +1,7 @@
-DoItemEffect:: ; 2f3f
-	callba _DoItemEffect
-	ret
-; 2f46
+DoItemEffect::
+	jpba _DoItemEffect
 
-CheckTossableItem:: ; 2f46
+CheckTossableItem::
 	push hl
 	push de
 	push bc
@@ -12,64 +10,52 @@ CheckTossableItem:: ; 2f46
 	pop de
 	pop hl
 	ret
-; 2f53
 
-TossItem:: ; 2f53
+TossItem::
 	push hl
 	push de
 	push bc
-	ld a, [hROMBank]
-	push af
-	ld a, BANK(_TossItem)
-	rst Bankswitch
-
-	call _TossItem
-
-	pop bc
-	ld a, b
-	rst Bankswitch
+	callba _TossItem
 	pop bc
 	pop de
 	pop hl
 	ret
-; 2f66
 
-ReceiveItem:: ; 2f66
-	push bc
-	ld a, [hROMBank]
-	push af
-	ld a, BANK(_ReceiveItem)
-	rst Bankswitch
-	push hl
-	push de
-
-	call _ReceiveItem
-
-	pop de
-	pop hl
-	pop bc
-	ld a, b
-	rst Bankswitch
-	pop bc
-	ret
-; 2f79
-
-CheckItem:: ; 2f79
+ReceiveItem::
 	push hl
 	push de
 	push bc
-	ld a, [hROMBank]
-	push af
-	ld a, BANK(_CheckItem)
-	rst Bankswitch
-
-	call _CheckItem
-
-	pop bc
-	ld a, b
-	rst Bankswitch
+	callba _ReceiveItem
 	pop bc
 	pop de
 	pop hl
 	ret
-; 2f8c
+
+CheckItem::
+	push hl
+	push de
+	push bc
+	callba _CheckItem
+	pop bc
+	pop de
+	pop hl
+	ret
+
+GetItemPocket::
+	; in: a: item
+	; out: a: pocket
+	inc a
+	ret z
+	dec a
+	ret z
+	anonbankpush ItemAttributes
+
+	push hl
+	push bc
+	ld hl, ItemAttributes + ITEMATTR_POCKET - NUM_ITEMATTRS
+	ld bc, NUM_ITEMATTRS
+	rst AddNTimes
+	ld a, [hl]
+	pop bc
+	pop hl
+	ret

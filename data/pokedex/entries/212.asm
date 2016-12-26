@@ -1,10 +1,15 @@
-; ScizorPokedexEntry: ; 0x1d0821
-	db "SCISSORS@" ; species name
-	dw 511, 2600 ; height, width
+	ctxt "Scissors" ; species name
+	done
+	dw 511, 2600 ; height, weight
 
-	db   "This #MON's"
+	db .page2 - .page1
+.page1
+	ctxt "This #mon's"
 	next "pincers, which"
 	next "contain steel, can"
-	page "crush any hard"
+	done
+.page2
+	ctxt "crush any hard"
 	next "object it gets a"
-	next "hold of into bits.@"
+	next "hold of into bits."
+	done

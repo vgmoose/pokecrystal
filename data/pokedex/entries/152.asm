@@ -1,10 +1,15 @@
-; ChikoritaPokedexEntry: ; 0x1cc988
-	db "LEAF@" ; species name
-	dw 211, 140 ; height, width
+	ctxt "Leaf" ; species name
+	done
+	dw 211, 140 ; height, weight
 
-	db   "It loves to bask"
+	db .page2 - .page1
+.page1
+	ctxt "It loves to bask"
 	next "in the sunlight."
 	next "It uses the leaf"
-	page "on its head to"
+	done
+.page2
+	ctxt "on its head to"
 	next "seek out warm"
-	next "places.@"
+	next "places."
+	done

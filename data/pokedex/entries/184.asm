@@ -1,10 +1,15 @@
-; AzumarillPokedexEntry: ; 0x1cd771
-	db "AQUARABBIT@" ; species name
-	dw 207, 630 ; height, width
+	ctxt "Aquarabbit" ; species name
+	done
+	dw 207, 630 ; height, weight
 
-	db   "The bubble-like"
+	db .page2 - .page1
+.page1
+	ctxt "The bubble-like"
 	next "pattern on its"
 	next "stomach helps it"
-	page "camouflage itself"
+	done
+.page2
+	ctxt "camouflage itself"
 	next "when it's in the"
-	next "water.@"
+	next "water."
+	done

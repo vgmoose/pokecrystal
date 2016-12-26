@@ -1,10 +1,15 @@
-; CelebiPokedexEntry: ; 0x1d18cc
-	db "TIMETRAVEL@" ; species name
-	dw 200, 110 ; height, width
+	ctxt "Glitchbird" ; species name
+	done
+	dw 501, 1032 ; height, weight
 
-	db   "Revered as a"
-	next "guardian of the"
-	next "forest, CELEBI"
-	page "appears wherever"
-	next "beautiful forests"
-	next "exist.@"
+	db .page2 - .page1
+.page1
+	ctxt "A lost bird that"
+	next "creates illusions"
+	next "to protect itself."
+	done
+.page2
+	ctxt "Has only been seen"
+	next "during unusual"
+	next "circumstances."
+	done

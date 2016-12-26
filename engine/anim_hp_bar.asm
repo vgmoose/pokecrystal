@@ -1,61 +1,24 @@
 _AnimateHPBar: ; d627
-	call .IsMaximumMoreThan48Pixels
-	jr c, .MoreThan48Pixels
 	call .ComputePixels
-.ShortAnimLoop:
+.loop
 	push bc
 	push hl
-	call ShortAnim_UpdateVariables
+	call HPBarAnim_UpdateVariables
 	pop hl
 	pop bc
 	push af
 	push bc
 	push hl
-	call ShortHPBarAnim_UpdateTiles
+	call HPBarAnim_UpdateTiles
 	call HPBarAnim_BGMapUpdate
 	pop hl
 	pop bc
 	pop af
-	jr nc, .ShortAnimLoop
-	ret
-
-.MoreThan48Pixels:
-	call .ComputePixels
-.LongAnimLoop:
-	push bc
-	push hl
-	call LongAnim_UpdateVariables
-	pop hl
-	pop bc
-	ret c
-	push af
-	push bc
-	push hl
-	call LongHPBarAnim_UpdateTiles
-	call HPBarAnim_BGMapUpdate
-	pop hl
-	pop bc
-	pop af
-	jr nc, .LongAnimLoop
+	jr nc, .loop
 	ret
 ; d65f
 
-.IsMaximumMoreThan48Pixels: ; d65f
-	ld a, [wCurHPAnimMaxHP + 1]
-	and a
-	jr nz, .player
-	ld a, [wCurHPAnimMaxHP]
-	cp 6 * 8
-	jr nc, .player
-	and a
-	ret
-
-.player
-	scf
-	ret
-; d670
-
-.ComputePixels: ; d670
+.ComputePixels ; d670
 	push hl
 	ld hl, wCurHPAnimMaxHP
 	ld a, [hli]
@@ -100,28 +63,28 @@ _AnimateHPBar: ; d627
 	ld a, d
 	sbc b
 	ld d, a
-	jr c, .negative
+	jr c, .Damage
 	ld a, [wCurHPAnimOldHP]
 	ld [wCurHPAnimLowHP], a
 	ld a, [wCurHPAnimNewHP]
 	ld [wCurHPAnimHighHP], a
-	ld bc, 1
-	jr .got_direction
+	ld c, 1
+	jr .Okay
 
-.negative
+.Damage
 	ld a, [wCurHPAnimOldHP]
 	ld [wCurHPAnimHighHP], a
 	ld a, [wCurHPAnimNewHP]
 	ld [wCurHPAnimLowHP], a
 	ld a, e
-	xor $ff
+	cpl
 	inc a
 	ld e, a
 	ld a, d
-	xor $ff
+	cpl
 	ld d, a
-	ld bc, -1
-.got_direction
+	ld c, 0
+.Okay
 	ld a, d
 	ld [wCurHPAnimDeltaHP], a
 	ld a, e
@@ -129,106 +92,63 @@ _AnimateHPBar: ; d627
 	ret
 ; d6e2
 
-ShortAnim_UpdateVariables: ; d6e2
+HPBarAnim_UpdateVariables: ; d6f5
 	ld hl, wCurHPBarPixels
-	ld a, [wNewHPBarPixels]
-	cp [hl]
-	jr nz, .not_finished
-	scf
-	ret
-
-.not_finished
 	ld a, c
-	add [hl]
-	ld [hl], a
-	call ShortHPBar_CalcPixelFrame
 	and a
-	ret
-; d6f5
-
-LongAnim_UpdateVariables: ; d6f5
-.loop
-	ld hl, wCurHPAnimOldHP
+	jr nz, .inc
 	ld a, [hli]
-	ld e, a
-	ld a, [hli]
-	ld d, a
-	ld a, e
+	dec a
 	cp [hl]
-	jr nz, .next
-	inc hl
-	ld a, d
-	cp [hl]
-	jr nz, .next
-	scf
-	ret
+	jr c, .animdone
+	jr z, .animdone
+	jr .incdecdone
 
-.next
-	ld l, e
-	ld h, d
-	add hl, bc
-	ld a, l
-	ld [wCurHPAnimOldHP], a
-	ld a, h
+.inc
+	ld a, [hli]
+	inc a
+	cp [hl]
+	jr nc, .animdone
+.incdecdone
+	dec hl
+	ld [hl], a
+; wCurHPAnimOldHP = a * wCurHPAnimMaxHP / 96
+	ld [hMultiplier], a
+	xor a
+	ld [hMultiplicand], a
+	ld a, [wCurHPAnimMaxHP + 1]
+	ld [hMultiplicand + 1], a
+	ld a, [wCurHPAnimMaxHP]
+	ld [hMultiplicand + 2], a
+	predef Multiply
+	ld a, 96
+	ld [hDivisor], a
+	ld b, 4
+	predef Divide
+	ld a, [hQuotient + 1]
 	ld [wCurHPAnimOldHP + 1], a
-	push hl
-	push de
-	push bc
-	ld hl, wCurHPAnimMaxHP
-	ld a, [hli]
-	ld e, a
-	ld a, [hli]
-	ld d, a
-	ld a, [hli]
-	ld c, a
-	ld a, [hli]
-	ld b, a
-	; This routine is buggy. The result from ComputeHPBarPixels is stored
-	; in e. However, the pop de opcode deletes this result before it is even
-	; used. The game then proceeds as though it never deleted that output.
-	; To fix, uncomment the line below.
-	call ComputeHPBarPixels
-	; ld a, e
-	pop bc
-	pop de
-	pop hl
-	ld a, e ; Comment or delete this line to fix the above bug.
-	ld hl, wCurHPBarPixels
-	cp [hl]
-	jr z, .loop
+	ld a, [hQuotient + 2]
+	ld [wCurHPAnimOldHP], a
+	xor a ; clear carry flag
+	ret
+
+.animdone
+	ld a, [hld]
 	ld [hl], a
-	and a
+	ld hl, wCurHPAnimNewHP
+	ld a, [hli]
+	ld [wCurHPAnimOldHP], a
+	ld a, [hl]
+	ld [wCurHPAnimOldHP + 1], a
+	scf
 	ret
 ; d730
 
-ShortHPBarAnim_UpdateTiles: ; d730
+HPBarAnim_UpdateTiles: ; d749
 	call HPBarAnim_UpdateHPRemaining
-	ld d, $6
-	ld a, [wWhichHPBar]
-	and $1
-	ld b, a
 	ld a, [wCurHPBarPixels]
-	ld e, a
 	ld c, a
-	push de
-	call HPBarAnim_RedrawHPBar
-	pop de
-	call HPBarAnim_PaletteUpdate
-	ret
-; d749
-
-LongHPBarAnim_UpdateTiles: ; d749
-	call HPBarAnim_UpdateHPRemaining
-	ld a, [wCurHPAnimOldHP]
-	ld c, a
-	ld a, [wCurHPAnimOldHP + 1]
-	ld b, a
-	ld a, [wCurHPAnimMaxHP]
 	ld e, a
-	ld a, [wCurHPAnimMaxHP + 1]
-	ld d, a
-	call ComputeHPBarPixels
-	ld c, e
 	ld d, $6
 	ld a, [wWhichHPBar]
 	and $1
@@ -236,23 +156,20 @@ LongHPBarAnim_UpdateTiles: ; d749
 	push de
 	call HPBarAnim_RedrawHPBar
 	pop de
-	call HPBarAnim_PaletteUpdate
-	ret
+	jp HPBarAnim_PaletteUpdate
 ; d771
 
 HPBarAnim_RedrawHPBar: ; d771
 	ld a, [wWhichHPBar]
 	cp $2
 	jr nz, .skip
-	ld a, 2 * SCREEN_WIDTH
+	ld a, SCREEN_WIDTH * 2
 	add l
 	ld l, a
-	ld a, 0
-	adc h
-	ld h, a
+	jr nc, .skip
+	inc h
 .skip
-	call DrawBattleHPBar
-	ret
+	jp DrawBattleHPBar
 ; d784
 
 HPBarAnim_UpdateHPRemaining: ; d784
@@ -260,13 +177,13 @@ HPBarAnim_UpdateHPRemaining: ; d784
 	and a
 	ret z
 	cp $1
-	jr z, .load_15
-	ld de, SCREEN_WIDTH + 2
-	jr .loaded_de
+	jr z, .battlemon
+	ld de, $16
+	jr .update_hp_number
 
-.load_15
-	ld de, SCREEN_WIDTH + 1
-.loaded_de
+.battlemon
+	ld de, $15
+.update_hp_number
 	push hl
 	add hl, de
 	ld a, " "
@@ -275,10 +192,10 @@ HPBarAnim_UpdateHPRemaining: ; d784
 	ld [hld], a
 	dec hl
 	ld a, [wCurHPAnimOldHP]
-	ld [StringBuffer2 + 1], a
+	ld [wStringBuffer2 + 1], a
 	ld a, [wCurHPAnimOldHP + 1]
-	ld [StringBuffer2], a
-	ld de, StringBuffer2
+	ld [wStringBuffer2], a
+	ld de, wStringBuffer2
 	lb bc, 2, 3
 	call PrintNum
 	pop hl
@@ -286,146 +203,93 @@ HPBarAnim_UpdateHPRemaining: ; d784
 ; d7b4
 
 HPBarAnim_PaletteUpdate: ; d7b4
-	ld a, [hCGB]
-	and a
-	ret z
 	ld hl, wCurHPAnimPal
 	call SetHPPal
-	ld a, [wCurHPAnimPal]
-	ld c, a
-	callba ApplyHPBarPals
-	ret
+	ld c, d
+	jpba ApplyHPBarPals
 ; d7c9
 
 HPBarAnim_BGMapUpdate: ; d7c9
-	ld a, [hCGB]
-	and a
-	jr nz, .cgb
-	call DelayFrame
-	call DelayFrame
-	ret
-
-.cgb
 	ld a, [wWhichHPBar]
 	and a
-	jr z, .load_0
+	jr z, .enemy_hp_bar
 	cp $1
-	jr z, .load_1
-	ld a, [CurPartyMon]
-	cp $3
-	jr nc, .bottom_half_of_screen
-	ld c, $0
-	jr .got_third
-
-.bottom_half_of_screen
-	ld c, $1
-.got_third
-	push af
-	cp $2
-	jr z, .skip_delay
-	cp $5
-	jr z, .skip_delay
-	ld a, $2
-	ld [hBGMapMode], a
-	ld a, c
-	ld [hBGMapThird], a
-	call DelayFrame
-.skip_delay
+	jr z, .player_hp_bar
+	xor a
+	ld [hCGBPalUpdate], a
 	ld a, $1
+	ld b, a
 	ld [hBGMapMode], a
-	ld a, c
-	ld [hBGMapThird], a
-	call DelayFrame
-	pop af
-	cp $2
-	jr z, .two_frames
-	cp $5
-	jr z, .two_frames
-	ret
 
-.two_frames
-	inc c
-	ld a, $2
-	ld [hBGMapMode], a
+	ld a, [wCurPartyMon]
+	ld c, a
+	cp 4
+	jr nc, .lowerHalf
+	dec b
+.lowerHalf
+	ld a, b
+	ld [hBGMapHalf], a
 	ld a, c
-	ld [hBGMapThird], a
-	call DelayFrame
-	ld a, $1
-	ld [hBGMapMode], a
-	ld a, c
-	ld [hBGMapThird], a
-	call DelayFrame
-	ret
+	ld hl, VBGMap0 + $4d
+	ld bc, BG_MAP_WIDTH * 2
+	rst AddNTimes
+	ld a, [wCurHPAnimPal]
+	inc a
+	ld b, a
+	di
+	ld a, 1
+	ld [rVBK], a
+.waitnohb1
+	ld a, [rSTAT]
+	and 3
+	jr z, .waitnohb1
+.waithbl1
+	ld a, [rSTAT]
+	and 3
+	jr nz, .waithbl1
+	ld a, b
+	rept 6
+	ld [hli], a
+	endr
+	xor a
+	ld [rVBK], a
+	ei
+	jp DelayFrame
 
-.load_0
-	ld c, $0
+.enemy_hp_bar
+	lb bc, $94, $0
+	ld hl, BGPals + 2 palettes + 4
 	jr .finish
 
-.load_1
-	ld c, $1
+.player_hp_bar
+	lb bc, $9c, $1
+	ld hl, BGPals + 3 palettes + 4
 .finish
-	call DelayFrame
-	ld a, c
-	ld [hBGMapThird], a
-	call DelayFrame
-	ret
-; d839
-
-ShortHPBar_CalcPixelFrame: ; d839
-	ld a, [wCurHPAnimMaxHP]
-	ld c, a
-	ld b, 0
-	ld hl, 0
-	ld a, [wCurHPBarPixels]
-	cp 6 * 8
-	jr nc, .return_max
-	and a
-	jr z, .return_zero
-	call AddNTimes
-	ld b, 0
-.loop
-	ld a, l
-	sub 6 * 8
-	ld l, a
-	ld a, h
-	sbc $0
-	ld h, a
-	jr c, .done
-	inc b
-	jr .loop
-
-.done
-	push bc
-	ld bc, $80
-	add hl, bc
-	pop bc
-	ld a, l
-	sub 6 * 8
-	ld l, a
-	ld a, h
-	sbc $0
-	ld h, a
-	jr c, .no_carry
-	inc b
-.no_carry
-	ld a, [wCurHPAnimLowHP]
-	cp b
-	jr nc, .finish
-	ld a, [wCurHPAnimHighHP]
-	cp b
-	jr c, .finish
-	ld a, b
-.finish
-	ld [wCurHPAnimOldHP], a
-	ret
-
-.return_zero
 	xor a
-	ld [wCurHPAnimOldHP], a
-	ret
-
-.return_max
-	ld a, [wCurHPAnimMaxHP]
-	ld [wCurHPAnimOldHP], a
-	ret
-; d88c
+	ld [hCGBPalUpdate], a
+	ld a, c
+	ld [hBGMapHalf], a
+	ld a, [rSVBK]
+	push af
+	ld a, $5
+	ld [rSVBK], a
+	di
+.waitnohb3
+	ld a, [rSTAT]
+	and 3
+	jr z, .waitnohb3
+.waithb3
+	ld a, [rSTAT]
+	and 3
+	jr nz, .waithb3
+	ld a, b
+	ld [rBGPI], a
+	ld a, [hli]
+	ld [rBGPD], a
+	ld a, [hl]
+	ld [rBGPD], a
+	ei
+	pop af
+	ld [rSVBK], a
+	jp DelayFrame
+; d839

@@ -1,10 +1,15 @@
-; WeedlePokedexEntry: ; 0x181bb4
-	db "HAIRY BUG@" ; species name
-	dw 100, 70 ; height, width
+	ctxt "Bell" ; species name
+	done
+	dw 008, 13 ; height, weight
 
-	db   "The barb on top of"
-	next "its head secretes"
-	next "a strong poison."
-	page "It uses this toxic"
-	next "barb to protect"
-	next "itself.@"
+	db .page2 - .page1
+.page1
+	ctxt "It emits cries by"
+	next "agitating an orb" 
+	next "in its throat."
+	done
+.page2
+	ctxt "Each time it hops,"
+	next "it makes a ringing" 
+	next "sound."
+	done

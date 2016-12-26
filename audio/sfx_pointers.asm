@@ -209,4 +209,10 @@
 	dba Sfx_TwoPcBeeps
 	dba Sfx_4NoteDitty
 	dba Sfx_Twinkle
+
+; Prism adds the following SFX:
+
+	dba SFX_TCG2Diddly5
+	dba SFX_PinballEvolutionFanfareHeader
+	dba Music_HealPokemon
 ; e94e9

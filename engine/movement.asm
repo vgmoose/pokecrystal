@@ -55,8 +55,8 @@ MovementPointers: ; 5075
 	dw Movement_fast_jump_step_up     ; 35
 	dw Movement_fast_jump_step_left   ; 36
 	dw Movement_fast_jump_step_right  ; 37
-	dw Movement_remove_sliding        ; 38
-	dw Movement_set_sliding           ; 39
+	dw Movement_38                    ; 38
+	dw Movement_39                    ; 39
 	dw Movement_remove_fixed_facing   ; 3a
 	dw Movement_fix_facing            ; 3b
 	dw Movement_show_person           ; 3c
@@ -85,10 +85,15 @@ MovementPointers: ; 5075
 	dw Movement_hide_emote            ; 53
 	dw Movement_show_emote            ; 54
 	dw Movement_step_shake            ; 55
-	dw Movement_tree_shake            ; 56
+	dw Movement_56                    ; 56
 	dw Movement_rock_smash            ; 57
 	dw Movement_return_dig            ; 58
 	dw Movement_skyfall_top           ; 59
+	dw Movement_run_step_down
+	dw Movement_run_step_up
+	dw Movement_run_step_left
+	dw Movement_run_step_right
+	dw Movement_field_move
 ; 5129
 
 
@@ -188,14 +193,29 @@ Movement_rock_smash: ; 5196
 ; 51ab
 
 Movement_fish_cast_rod: ; 51ab
+	ld hl, OBJECT_STEP_DURATION
+	add hl, bc
+	ld [hl], 80
 	ld hl, OBJECT_ACTION
 	add hl, bc
 	ld [hl], PERSON_ACTION_FISHING
 	ld hl, OBJECT_STEP_TYPE
 	add hl, bc
-	ld [hl], STEP_TYPE_SLEEP
+	ld [hl], STEP_TYPE_FISHING
 	ret
 ; 51b8
+
+Movement_field_move:
+	ld hl, OBJECT_STEP_DURATION
+	add hl, bc
+	ld [hl], 24
+	ld hl, OBJECT_ACTION
+	add hl, bc
+	ld [hl], PERSON_ACTION_FIELD_MOVE
+	ld hl, OBJECT_STEP_TYPE
+	add hl, bc
+	ld [hl], STEP_TYPE_FISHING
+	ret
 
 Movement_step_loop: ; 51b8
 	ld hl, OBJECT_MOVEMENT_BYTE_INDEX
@@ -325,7 +345,13 @@ Movement_step_sleep_common: ; 5247
 
 	ld hl, OBJECT_ACTION
 	add hl, bc
-	ld [hl], PERSON_ACTION_STAND
+	ld a, [ScriptFlags2]
+	bit 0, a
+	ld a, PERSON_ACTION_STAND
+	jr z, .load
+	ld a, PERSON_ACTION_FISHING
+.load
+	ld [hl], a
 
 	ld hl, OBJECT_DIRECTION_WALKING
 	add hl, bc
@@ -353,7 +379,7 @@ Movement_step_bump: ; 525f
 	ret
 ; 5279
 
-Movement_tree_shake: ; 5279
+Movement_56: ; 5279
 	ld a, 24
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
@@ -373,14 +399,14 @@ Movement_tree_shake: ; 5279
 	ret
 ; 5293
 
-Movement_remove_sliding: ; 5293
+Movement_38: ; 5293
 	ld hl, OBJECT_FLAGS1
 	add hl, bc
 	res SLIDING, [hl]
 	jp ContinueReadingMovement
 ; 529c
 
-Movement_set_sliding: ; 529c
+Movement_39: ; 529c
 	ld hl, OBJECT_FLAGS1
 	add hl, bc
 	set SLIDING, [hl]
@@ -467,64 +493,95 @@ TurnHead: ; 52ee
 
 Movement_slow_step_down: ; 5300
 	ld a, STEP_SLOW << 2 | DOWN
+	ld d, PERSON_ACTION_STEP
 	jp NormalStep
 ; 5305
 
 Movement_slow_step_up: ; 5305
 	ld a, STEP_SLOW << 2 | UP
+	ld d, PERSON_ACTION_STEP
 	jp NormalStep
 ; 530a
 
 Movement_slow_step_left: ; 530a
 	ld a, STEP_SLOW << 2 | LEFT
+	ld d, PERSON_ACTION_STEP
 	jp NormalStep
 ; 530f
 
 Movement_slow_step_right: ; 530f
 	ld a, STEP_SLOW << 2 | RIGHT
+	ld d, PERSON_ACTION_STEP
 	jp NormalStep
 ; 5314
 
 Movement_step_down: ; 5314
 	ld a, STEP_WALK << 2 | DOWN
+	ld d, PERSON_ACTION_STEP
 	jp NormalStep
 ; 5319
 
 Movement_step_up: ; 5319
 	ld a, STEP_WALK << 2 | UP
+	ld d, PERSON_ACTION_STEP
 	jp NormalStep
 ; 531e
 
 Movement_step_left: ; 531e
 	ld a, STEP_WALK << 2 | LEFT
+	ld d, PERSON_ACTION_STEP
 	jp NormalStep
 ; 5323
 
 Movement_step_right: ; 5323
 	ld a, STEP_WALK << 2 | RIGHT
+	ld d, PERSON_ACTION_STEP
 	jp NormalStep
 ; 5328
 
 Movement_big_step_down: ; 5328
 	ld a, STEP_BIKE << 2 | DOWN
+	ld d, PERSON_ACTION_STEP
 	jp NormalStep
 ; 532d
 
 Movement_big_step_up: ; 532d
 	ld a, STEP_BIKE << 2 | UP
+	ld d, PERSON_ACTION_STEP
 	jp NormalStep
 ; 5332
 
 Movement_big_step_left: ; 5332
 	ld a, STEP_BIKE << 2 | LEFT
+	ld d, PERSON_ACTION_STEP
 	jp NormalStep
 ; 5337
 
 Movement_big_step_right: ; 5337
 	ld a, STEP_BIKE << 2 | RIGHT
+	ld d, PERSON_ACTION_STEP
 	jp NormalStep
 ; 533c
 
+Movement_run_step_down:
+	ld a, $3 << 2 | DOWN  ; STEP_RUN
+	ld d, PERSON_ACTION_RUN
+	jp NormalStep
+
+Movement_run_step_up:
+	ld a, $3 << 2 | UP    ; STEP_RUN
+	ld d, PERSON_ACTION_RUN
+	jp NormalStep
+
+Movement_run_step_left:
+	ld a, $3 << 2 | LEFT  ; STEP_RUN
+	ld d, PERSON_ACTION_RUN
+	jp NormalStep
+
+Movement_run_step_right:
+	ld a, $3 << 2 | RIGHT ; STEP_RUN
+	ld d, PERSON_ACTION_RUN
+	jp NormalStep
 
 Movement_turn_away_down: ; 533c
 	ld a, STEP_SLOW << 2 | DOWN
@@ -628,22 +685,22 @@ Movement_slide_step_right: ; 539b
 ; 53a0
 
 Movement_fast_slide_step_down: ; 53a0
-	ld a, STEP_BIKE << 2 | DOWN
+	ld a, 3 << 2 | DOWN
 	jp SlideStep
 ; 53a5
 
 Movement_fast_slide_step_up: ; 53a5
-	ld a, STEP_BIKE << 2 | UP
+	ld a, 3 << 2 | UP
 	jp SlideStep
 ; 53aa
 
 Movement_fast_slide_step_left: ; 53aa
-	ld a, STEP_BIKE << 2 | LEFT
+	ld a, 3 << 2 | LEFT
 	jp SlideStep
 ; 53af
 
 Movement_fast_slide_step_right: ; 53af
-	ld a, STEP_BIKE << 2 | RIGHT
+	ld a, 3 << 2 | RIGHT
 	jp SlideStep
 ; 53b4
 
@@ -741,11 +798,13 @@ TurnStep: ; 5400
 ; 5412
 
 NormalStep: ; 5412
+	push de
 	call InitStep
 	call UpdateTallGrassFlags
 	ld hl, OBJECT_ACTION
 	add hl, bc
-	ld [hl], PERSON_ACTION_STEP
+	pop de
+	ld [hl], d
 
 	ld hl, OBJECT_NEXT_TILE
 	add hl, bc
@@ -754,7 +813,12 @@ NormalStep: ; 5412
 	jr z, .shake_grass
 
 	call CheckGrassTile
-	jr c, .skip_grass
+	jr nc, .shake_grass
+	ld a, d
+	cp $8
+	jr nz, .skip_grass
+	call DeepSnow
+	jr .skip_grass
 
 .shake_grass
 	call ShakeGrass

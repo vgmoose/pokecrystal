@@ -1,8 +1,9 @@
 Music_MobileAdapter: ; 1fc87
-	musicheader 4, 1, Music_MobileAdapter_Ch1
-	musicheader 1, 2, Music_MobileAdapter_Ch2
-	musicheader 1, 3, Music_MobileAdapter_Ch3
-	musicheader 1, 4, Music_MobileAdapter_Ch4
+	channelcount 4
+	channel 1, Music_MobileAdapter_Ch1
+	channel 2, Music_MobileAdapter_Ch2
+	channel 3, Music_MobileAdapter_Ch3
+	channel 4, Music_MobileAdapter_Ch4
 ; 1fc93
 
 Music_MobileAdapter_Ch1: ; 1fc93

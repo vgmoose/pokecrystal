@@ -1,7 +1,8 @@
 Music_LookOfficer: ; ed82d
-	musicheader 3, 1, Music_LookOfficer_Ch1
-	musicheader 1, 2, Music_LookOfficer_Ch2
-	musicheader 1, 3, Music_LookOfficer_Ch3
+	channelcount 3
+	channel 1, Music_LookOfficer_Ch1
+	channel 2, Music_LookOfficer_Ch2
+	channel 3, Music_LookOfficer_Ch3
 ; ed836
 
 Music_LookOfficer_Ch1: ; ed836
@@ -73,9 +74,9 @@ Music_LookOfficer_branch_ed882: ; ed882
 	note E_, 2
 	note G#, 2
 	loopchannel 2, Music_LookOfficer_branch_ed882
-	pitchoffset 0, C#
+	forceoctave $1
 	callchannel Music_LookOfficer_branch_ed89e
-	pitchoffset 0, C_
+	forceoctave $0
 	callchannel Music_LookOfficer_branch_ed89e
 	loopchannel 0, Music_LookOfficer_branch_ed882
 ; ed89e

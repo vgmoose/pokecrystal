@@ -1,51 +1,42 @@
-LinkCommsBorderGFX:
-INCBIN "gfx/unknown/16cfc1.2bpp"
-; 16d421
+LinkCommsBorderGFX: INCBIN "gfx/unknown/16cfc1.2bpp"
 
-__LoadTradeScreenBorder: ; 16d421
+_LoadTradeScreenBorder:
 	ld de, LinkCommsBorderGFX
 	ld hl, VTiles2
 	lb bc, BANK(LinkCommsBorderGFX), 70
-	call Get2bpp
-	ret
-; 16d42e
+	jp Get2bpp
 
-Function16d42e: ; 16d42e
+Function16d42e:
 	ld hl, Tilemap_16d465
 	decoord 0, 0
 	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
-	call CopyBytes
+	rst CopyBytes
 	ret
-; 16d43b
 
-Function16d43b: ; 16d43b
+Function16d43b:
 	call LoadStandardMenuDataHeader
 	call ClearBGPalettes
 	call ClearTileMap
 	call ClearSprites
-	callba __LoadTradeScreenBorder ; useless to farcall
-	callba Function16d42e ; useless to farcall
-	ld b, SCGB_DIPLOMA
-	call GetSGBLayout
+	call _LoadTradeScreenBorder
+	call Function16d42e
+	ld b, SCGB_SCROLLINGMENU
+	predef GetSGBLayout
 	call SetPalettes
-	call WaitBGMap
+	call ApplyTilemapInVBlank
 	call JoyWaitAorB
-	call Call_ExitMenu
-	ret
-; 16d465
+	jp ExitMenu
 
-Tilemap_16d465:
-INCBIN "gfx/unknown/16d465.tilemap"
+Tilemap_16d465: INCBIN "gfx/unknown/16d465.tilemap"
 
-Tilemap_16d5cd:
-INCBIN "gfx/unknown/16d5cd.tilemap"
+Tilemap_16d5cd: INCBIN "gfx/unknown/16d5cd.tilemap"
 
-Tilemap_16d5f5:
-INCBIN "gfx/unknown/16d5f5.tilemap"
+Tilemap_16d5f5: INCBIN "gfx/unknown/16d5f5.tilemap"
 
-_LinkTextbox: ; 16d61d
+LinkTextBox:
 	ld h, d
 	ld l, e
+Predef_LinkTextbox:
 	push bc
 	push hl
 	call .draw_border
@@ -73,9 +64,8 @@ _LinkTextbox: ; 16d61d
 	dec b
 	jr nz, .row
 	ret
-; 16d640
 
-.draw_border ; 16d640
+.draw_border
 	push hl
 	ld a, $30
 	ld [hli], a
@@ -105,103 +95,73 @@ _LinkTextbox: ; 16d61d
 	call .fill_row
 	ld [hl], $37
 	ret
-; 16d66d
 
-.fill_row ; 16d66d
+.fill_row
 	ld d, c
 .loop4
 	ld [hli], a
 	dec d
 	jr nz, .loop4
 	ret
-; 16d673
 
-InitTradeSpeciesList: ; 16d673
+InitTradeSpeciesList:
 	call _LoadTradeScreenBorder
 	call Function16d6ae
 	callba InitMG_Mobile_LinkTradePalMap
 	callba PlaceTradePartnerNamesAndParty
 	hlcoord 10, 17
 	ld de, .CANCEL
-	call PlaceString
-	ret
-; 16d68f
+	jp PlaceText
 
-.CANCEL: ; 16d68f
-	db "CANCEL@"
-; 16d696
+.CANCEL
+	text "Cancel"
+	done
 
-_LoadTradeScreenBorder: ; 16d696
-	call __LoadTradeScreenBorder
-	ret
-; 16d69a
-
-
-LinkComms_LoadPleaseWaitTextboxBorderGFX: ; 16d69a
+LinkComms_LoadPleaseWaitTextboxBorderGFX:
 	ld de, LinkCommsBorderGFX + $30 tiles
 	ld hl, VTiles2 tile $76
 	lb bc, BANK(LinkCommsBorderGFX), 8
-	call Get2bpp
-	ret
-; 16d6a7
+	jp Get2bpp
 
-LoadTradeRoomBGPals_: ; 16d6a7
-	callba LoadTradeRoomBGPals
-	ret
-; 16d6ae
-
-Function16d6ae: ; 16d6ae
+Function16d6ae:
 	call Function16d42e
 	ld hl, Tilemap_16d5cd
 	decoord 0, 0
 	ld bc, 2 * SCREEN_WIDTH
-	call CopyBytes
+	rst CopyBytes
 	ld hl, Tilemap_16d5f5
 	decoord 0, 16
 	ld bc, 2 * SCREEN_WIDTH
-	call CopyBytes
+	rst CopyBytes
 	ret
-; 16d6ca
 
-LinkTextbox: ; 16d6ca
-	call _LinkTextbox
-	ret
-; 16d6ce
-
-Function16d6ce: ; 16d6ce
+Function16d6ce:
 	call LoadStandardMenuDataHeader
 	call Function16d6e1
-	callba WaitLinkTransfer
-	call Call_ExitMenu
-	call WaitBGMap2
-	ret
-; 16d6e1
+	callba Function87d
+	call ExitMenu
+	jp ApplyAttrAndTilemapInVBlank
 
-Function16d6e1: ; 16d6e1
+Function16d6e1:
 	hlcoord 4, 10
-	ld b, 1
-	ld c, 10
+	lb bc, 1, 10
 	predef Predef_LinkTextbox
 	hlcoord 5, 11
 	ld de, .Waiting
-	call PlaceString
-	call WaitBGMap
-	call WaitBGMap2
+	call PlaceText
+	call ApplyTilemapInVBlank
+	call ApplyAttrAndTilemapInVBlank
 	ld c, 50
 	jp DelayFrames
-; 16d701
 
-.Waiting: ; 16d701
-	db "WAITING..!@"
-; 16d70c
+.Waiting
+	text "WAITING..!"
+	done
 
-LinkTradeMenu: ; 16d70c
+LinkTradeMenu:
 	call .MenuAction
-	call .GetJoypad
-	ret
-; 16d713
 
-.GetJoypad: ; 16d713
+.GetJoypad
 	push bc
 	push af
 	ld a, [hJoyLast]
@@ -216,9 +176,8 @@ LinkTradeMenu: ; 16d70c
 	pop bc
 	ld d, a
 	ret
-; 16d725
 
-.MenuAction: ; 16d725
+.MenuAction
 	ld hl, w2DMenuFlags2
 	res 7, [hl]
 	ld a, [hBGMapMode]
@@ -232,28 +191,25 @@ LinkTradeMenu: ; 16d70c
 	call .UpdateCursor
 	call .UpdateBGMapAndOAM
 	call .loop2
-	jr nc, .done
+	ret nc
 	callba _2DMenuInterpretJoypad
-	jr c, .done
+	ret c
 	ld a, [w2DMenuFlags1]
 	bit 7, a
-	jr nz, .done
+	ret nz
 	call .GetJoypad
 	ld b, a
 	ld a, [wMenuJoypadFilter]
 	and b
 	jr z, .loop
-
-.done
 	ret
-; 16d759
 
-.UpdateBGMapAndOAM: ; 16d759
+.UpdateBGMapAndOAM
 	ld a, [hOAMUpdate]
 	push af
 	ld a, $1
 	ld [hOAMUpdate], a
-	call WaitBGMap
+	call ApplyTilemapInVBlank
 	pop af
 	ld [hOAMUpdate], a
 	xor a
@@ -269,9 +225,8 @@ LinkTradeMenu: ; 16d70c
 	jr z, .loop2
 	and a
 	ret
-; 16d77a
 
-.UpdateCursor: ; 16d77a
+.UpdateCursor
 	ld hl, wCursorCurrentTile
 	ld a, [hli]
 	ld h, [hl]
@@ -311,7 +266,7 @@ LinkTradeMenu: ; 16d70c
 
 .skip
 	ld c, SCREEN_WIDTH
-	call AddNTimes
+	rst AddNTimes
 	ld a, [w2DMenuCursorOffsets]
 	and $f
 	ld c, a
@@ -346,9 +301,8 @@ LinkTradeMenu: ; 16d70c
 	ld a, h
 	ld [wCursorCurrentTile + 1], a
 	ret
-; 16d7e7
 
-.TryAnims: ; 16d7e7
+.TryAnims
 	ld a, [w2DMenuFlags1]
 	bit 6, a
 	jr z, .skip_anims
@@ -356,8 +310,5 @@ LinkTradeMenu: ; 16d70c
 .skip_anims
 	call JoyTextDelay
 	call .GetJoypad
-	and a
-	ret z
-	scf
+	add a, -1 ; set carry if nonzero
 	ret
-; 16d7fe

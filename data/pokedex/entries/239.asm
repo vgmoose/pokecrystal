@@ -1,10 +1,15 @@
-; ElekidPokedexEntry: ; 0x1d1398
-	db "ELECTRIC@" ; species name
-	dw 200, 520 ; height, width
+	ctxt "Electric" ; species name
+	done
+	dw 200, 520 ; height, weight
 
-	db   "It loves violent"
+	db .page2 - .page1
+.page1
+	ctxt "It loves violent"
 	next "thunder. The space"
 	next "between its horns"
-	page "flickers bluish-"
+	done
+.page2
+	ctxt "flickers bluish-"
 	next "white when it is"
-	next "charging energy.@"
+	next "charging energy."
+	done

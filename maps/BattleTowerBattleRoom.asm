@@ -1,163 +1,260 @@
-const_value set 2
-	const BATTLETOWERBATTLEROOM_YOUNGSTER
-	const BATTLETOWERBATTLEROOM_RECEPTIONIST
+const_value SET 2
+	const BATTLE_TOWER_BATTLE_ROOM_OPPONENT
+	const BATTLE_TOWER_BATTLE_ROOM_RECEPTIONIST
 
 BattleTowerBattleRoom_MapScriptHeader:
-.MapTriggers:
+; triggers
 	db 2
+	maptrigger .Trigger0
+	maptrigger .Trigger1
 
-	; triggers
-	dw .EnterBattleRoom, 0
-	dw .DummyTrigger, 0
+; callbacks
+	db 1
+	dbw MAPCALLBACK_NEWMAP, .Callback
 
-.MapCallbacks:
-	db 0
-
-.EnterBattleRoom: ; 0x9f419
-	disappear BATTLETOWERBATTLEROOM_YOUNGSTER
-	priorityjump Script_BattleRoom
-	dotrigger $1
-.DummyTrigger:
+.Trigger0:
 	end
 
-Script_BattleRoom: ; 0x9f421
-	applymovement PLAYER, MovementData_BattleTowerBattleRoomPlayerWalksIn
-; beat all 7 opponents in a row
-Script_BattleRoomLoop: ; 0x9f425
-	writebyte BATTLETOWERBATTLEROOM_YOUNGSTER
-	special Function_LoadOpponentTrainerAndPokemonsWithOTSprite
-	appear BATTLETOWERBATTLEROOM_YOUNGSTER
-	warpsound
-	waitsfx
-	applymovement BATTLETOWERBATTLEROOM_YOUNGSTER, MovementData_BattleTowerBattleRoomOpponentWalksIn
+.Trigger1:
+	priorityjump .Script
+	end
+
+.Callback:
+	disappear BATTLE_TOWER_BATTLE_ROOM_OPPONENT
+	return
+
+.Script:
+	dotrigger 0
+	applymovement PLAYER, BattleTowerMovement_PlayerWalksUpToBattlePosition
+	callasm BattleTower_LoadChallengeData
+	iftrue .notFirstBattle
+	; spriteface PLAYER, LEFT
+	; applymovement BATTLE_TOWER_BATTLE_ROOM_RECEPTIONIST, BattleTowerMovement_NurseWalksToYou
+	; opentext
+	; jump .backToNextBattleMenu
+.loop
+	callasm BattleTower_LoadCurrentTeam
+	playsound SFX_ENTER_DOOR
+	appear BATTLE_TOWER_BATTLE_ROOM_OPPONENT
+	applymovement BATTLE_TOWER_BATTLE_ROOM_OPPONENT, BattleTowerMovement_OpponentWalksIn
 	opentext
 	battletowertext 1
-	buttonsound
+	waitbutton
 	closetext
-	special BattleTowerBattle ; calls predef startbattle
-	special FadeOutPalettes
+	domaptrigger BATTLE_TOWER_ENTRANCE, 1
+	setlasttalked $3
+	callasm StartBattleTowerBattle
 	reloadmap
-	if_not_equal $0, Script_FailedBattleTowerChallenge
-	copybytetovar wNrOfBeatenBattleTowerTrainers ; wcf64
-	if_equal BATTLETOWER_NROFTRAINERS, Script_BeatenAllTrainers
-	applymovement BATTLETOWERBATTLEROOM_YOUNGSTER, MovementData_BattleTowerBattleRoomOpponentWalksOut
-	warpsound
-	disappear BATTLETOWERBATTLEROOM_YOUNGSTER
-	applymovement BATTLETOWERBATTLEROOM_RECEPTIONIST, MovementData_BattleTowerBattleRoomReceptionistWalksToPlayer
-	applymovement PLAYER, MovementData_BattleTowerBattleRoomPlayerTurnsToFaceReceptionist
-	opentext
-	writetext Text_YourPkmnWillBeHealedToFullHealth
-	waitbutton
-	closetext
-	playmusic MUSIC_HEAL
-	special FadeOutPalettes
-	special LoadMapPalettes
-	pause 60
-	special FadeInPalettes
-	special RestartMapMusic
-	opentext
-	writetext Text_NextUpOpponentNo
-	yesorno
-	iffalse Script_DontBattleNextOpponent
-Script_ContinueAndBattleNextOpponent: ; 0x9f477
-	closetext
-	applymovement PLAYER, MovementData_BattleTowerBattleRoomPlayerTurnsToFaceNextOpponent
-	applymovement BATTLETOWERBATTLEROOM_RECEPTIONIST, MovementData_BattleTowerBattleRoomReceptionistWalksAway
-	jump Script_BattleRoomLoop
+	iftrue .exit_failure
+	applymovement BATTLE_TOWER_BATTLE_ROOM_OPPONENT, BattleTowerMovement_OpponentWalksOut
+	playsound SFX_EXIT_BUILDING
+	disappear BATTLE_TOWER_BATTLE_ROOM_OPPONENT
+	callasm BattleTower_SaveChallengeData
+	callasm BattleTower_CheckFought7Trainers
+	iffalse .exit_victorious
+	writebyte 0
 
-Script_DontBattleNextOpponent: ; 0x9f483
-	writetext Text_SaveAndEndTheSession
-	yesorno
-	iffalse Script_DontSaveAndEndTheSession
-	writebyte BATTLETOWERACTION_SAVELEVELGROUP ; save level group
-	special BattleTowerAction
-	writebyte BATTLETOWERACTION_SAVEOPTIONS ; choose reward
-	special BattleTowerAction
-	writebyte BATTLETOWERACTION_SAVE_AND_QUIT ; quicksave
-	special BattleTowerAction
-	playsound SFX_SAVE
-	waitsfx
-	special FadeOutPalettes
-	special Reset
-Script_DontSaveAndEndTheSession: ; 0x9f4a3
-	writetext Text_CancelYourBattleRoomChallenge
-	yesorno
-	iffalse Script_ContinueAndBattleNextOpponent
-	writebyte BATTLETOWERACTION_CHALLENGECANCELED
-	special BattleTowerAction
-	writebyte BATTLETOWERACTION_06
-	special BattleTowerAction
-	closetext
-	special FadeOutPalettes
-	warpfacing UP, BATTLE_TOWER_1F, $7, $7
+.notFirstBattle
+	spriteface PLAYER, LEFT
+	applymovement BATTLE_TOWER_BATTLE_ROOM_RECEPTIONIST, BattleTowerMovement_NurseWalksToYou
 	opentext
-	jump Script_BattleTowerHopeToServeYouAgain
+	iftrue .backToNextBattleMenu
+	writetext BattleTowerText_HealParty
+	special HealParty
+	playwaitsfx SFX_HEAL_POKEMON
+.backToNextBattleMenu
+	writetext BattleTowerText_AskNextBattle
+.loop_ask
+	loadmenudata BattleTowerBeforeMatchMenuDataHeader
+	verticalmenu
+	closewindow
+	anonjumptable
+	dw .loop_ask
+	dw .close_text
+	dw .quicksave
+	dw .close_text_exit_failure
 
-Script_FailedBattleTowerChallenge:
-	pause 60
-	special Special_BattleTowerFade
-	warpfacing UP, BATTLE_TOWER_1F, $7, $7
-	writebyte BATTLETOWERACTION_CHALLENGECANCELED
-	special BattleTowerAction
-	opentext
-	writetext Text_ThanksForVisiting
-	waitbutton
+.close_text
 	closetext
+	spriteface PLAYER, RIGHT
+	applymovement BATTLE_TOWER_BATTLE_ROOM_RECEPTIONIST, BattleTowerMovement_NurseWalksAway
+	jump .loop
+
+.close_text_exit_failure
+	writetext BattleTowerText_WouldYouLikeToRetireFromThisChallenge
+	yesorno
+	iffalse .backToNextBattleMenu
+	closetext
+.exit_failure
+	domaptrigger BATTLE_TOWER_ENTRANCE, 4
+	jump .return_to_entrance
+
+.exit_victorious
+	domaptrigger BATTLE_TOWER_ENTRANCE, 3
+.return_to_entrance
+	pause 20
+	warpfacing UP, BATTLE_TOWER_ENTRANCE, 3, 5
 	end
 
-Script_BeatenAllTrainers: ; 0x9f4d9
-	pause 60
-	special Special_BattleTowerFade
-	warpfacing UP, BATTLE_TOWER_1F, $7, $7
-Script_BeatenAllTrainers2:
-	opentext
-	writetext Text_CongratulationsYouveBeatenAllTheTrainers
-	jump Script_GivePlayerHisPrize
+.quicksave
+	writetext BattleTowerText_AskQuickSave
+	yesorno
+	iffalse .backToNextBattleMenu
+	writetext BattleTower_SavingPleaseWaitText
+	domaptrigger BATTLE_TOWER_ENTRANCE, 1
+	writebyte 2
+	scriptstartasm
 
-UnreferencedScript_0x9f4eb:
-	writebyte BATTLETOWERACTION_CHALLENGECANCELED
-	special BattleTowerAction
-	opentext
-	writetext Text_TooMuchTimeElapsedNoRegister
-	waitbutton
-	closetext
-	end
+.BattleTowerReset
+	call SetBattleTowerChallengeState
+	callba BattleTower_SaveChallengeData
+	ld a, $3
+	ld [wSpawnAfterChampion], a
+	callba SaveGameData
+	ld de, SFX_SAVE
+	call PlaySFX
+	ld c, 1
+	call FadeToDarkestColor
+	ld a, $1
+	ld [hCGBPalUpdate], a
+	call DelayFrame
+	call WaitSFX
+	jp Reset
 
-UnreferencedScript_0x9f4f7:
-	writebyte BATTLETOWERACTION_CHALLENGECANCELED
-	special BattleTowerAction
-	writebyte BATTLETOWERACTION_06
-	special BattleTowerAction
-	opentext
-	writetext Text_ThanksForVisiting
-	writetext Text_WeHopeToServeYouAgain
-	waitbutton
-	closetext
-	end
+BattleTowerBeforeMatchMenuDataHeader:
+	db $40 ; flags
+	db 00, 00 ; start coords
+	db 07, 11 ; end coords
+	dw .MenuData2
+	db 1 ; default option
 
+.MenuData2: ; 17d297
+	db %10000001 ; flags
+	db 3
+	db "Continue@"
+	db "Rest@"
+	db "Retire@"
 
-Text_ReturnedAfterSave_Mobile:
-	text "You'll be returned"
-	line "after you SAVE."
+BattleTowerMovement_PlayerWalksUpToBattlePosition:
+	step_up
+	step_up
+	step_up
+	turn_head_right
+	step_end
+
+BattleTowerMovement_OpponentWalksIn:
+	step_down
+	step_down
+	step_down
+	step_down
+	turn_head_left
+	step_end
+
+BattleTowerMovement_OpponentWalksOut:
+	step_up
+	step_up
+	step_up
+	step_up
+	step_end
+
+BattleTowerMovement_NurseWalksToYou:
+	step_right
+	step_end
+
+BattleTowerMovement_NurseWalksAway:
+	step_left
+	turn_head_right
+	step_end
+
+BattleTowerText_HealParty:
+	ctxt "We will now heal"
+	line "your #mon."
 	done
 
+BattleTowerText_AskNextBattle:
+	start_asm
+	ld a, [rSVBK]
+	push af
+	ld a, BANK(wBT_WinStreak)
+	ld [rSVBK], a
+	ld a, [wBT_WinStreak]
+	ld h, a
+	pop af
+	ld [rSVBK], a
+	ld a, h
+	ld hl, .NormalOpponent
+	cp 20
+	jr z, .Tycoon
+	cp 48
+	ret nz
+.Tycoon
+	ld hl, .TycoonText
+	ret
 
-BattleTowerBattleRoom_MapEventHeader:
-	; filler
-	db 0, 0
+.NormalOpponent:
+	ctxt "Opponent no. @"
+	start_asm
+	ld a, [rSVBK]
+	push af
+	ld a, BANK(wBT_CurStreak)
+	ld [rSVBK], a
+	ld a, [wBT_CurStreak]
+	add "1"
+	ld [bc], a
+	pop af
+	ld [rSVBK], a
+	call JoyTextDelay
+	ld hl, .continue_text
+	ret
 
-.Warps:
-	db 2
-	warp_def $7, $3, 4, BATTLE_TOWER_HALLWAY
-	warp_def $7, $4, 4, BATTLE_TOWER_HALLWAY
+.continue_text
+	ctxt ""
+	line "is up next."
 
-.XYTriggers:
-	db 0
+	para "Are you ready?"
+	done
 
-.Signposts:
-	db 0
+.TycoonText:
+	ctxt "Congratulations on"
+	line "winning thus far!"
 
-.PersonEvents:
-	db 2
-	person_event SPRITE_YOUNGSTER, 0, 4, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, PERSONTYPE_SCRIPT, 0, ObjectEvent, EVENT_BATTLE_TOWER_BATTLE_ROOM_YOUNGSTER
-	person_event SPRITE_RECEPTIONIST, 6, 1, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, PERSONTYPE_SCRIPT, 0, ObjectEvent, -1
+	para "I've just been in-"
+	line "formed that our"
+
+	para "esteemed Tower"
+	line "Tycoon seeks an"
+	cont "audience with you."
+
+	para "Are you ready to"
+	line "accept their chal-"
+	cont "lenge?"
+	done
+
+BattleTowerText_AskQuickSave:
+	ctxt "Would you like to"
+	line "save and rest?"
+	done
+
+BattleTowerText_WouldYouLikeToRetireFromThisChallenge:
+	ctxt "Do you wish to"
+	line "retire from this"
+	cont "challenge?"
+	done
+
+BattleTower_SavingPleaseWaitText:
+	ctxt "Saving..."
+	done
+
+BattleTowerBattleRoom_MapEventHeader:: db 0, 0
+
+.Warps: db 2
+	warp_def 7, 3, 2, BATTLE_TOWER_HALLWAY
+	warp_def 7, 4, 2, BATTLE_TOWER_HALLWAY
+
+.CoordEvents: db 0
+
+.BGEvents: db 0
+
+.ObjectEvents: db 2
+	person_event SPRITE_YOUNGSTER, 0, 4, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, 0, 0, ObjectEvent, EVENT_BATTLE_TOWER_TRAINER
+	person_event SPRITE_RECEPTIONIST, 4, 1, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_OW_BLUE, 0, 0, ObjectEvent, -1

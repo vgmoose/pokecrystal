@@ -1,8 +1,9 @@
 Music_LookMysticalMan: ; 17843b
-	musicheader 4, 1, Music_LookMysticalMan_Ch1
-	musicheader 1, 2, Music_LookMysticalMan_Ch2
-	musicheader 1, 3, Music_LookMysticalMan_Ch3
-	musicheader 1, 4, Music_LookMysticalMan_Ch4
+	channelcount 4
+	channel 1, Music_LookMysticalMan_Ch1
+	channel 2, Music_LookMysticalMan_Ch2
+	channel 3, Music_LookMysticalMan_Ch3
+	channel 4, Music_LookMysticalMan_Ch4
 ; 178447
 
 Music_LookMysticalMan_Ch1: ; 178447

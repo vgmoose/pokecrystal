@@ -1,11 +1,11 @@
-Music_BattleTowerLobby: ; 17948b
-	musicheader 4, 1, Music_BattleTowerLobby_Ch1
-	musicheader 1, 2, Music_BattleTowerLobby_Ch2
-	musicheader 1, 3, Music_BattleTowerLobby_Ch3
-	musicheader 1, 4, Music_BattleTowerLobby_Ch4
-; 179497
+Music_BattleTowerLobby:
+	channelcount 4
+	channel 1, Music_BattleTowerLobby_Ch1
+	channel 2, Music_BattleTowerLobby_Ch2
+	channel 3, Music_BattleTowerLobby_Ch3
+	channel 4, Music_BattleTowerLobby_Ch4
 
-Music_BattleTowerLobby_Ch1: ; 179497
+Music_BattleTowerLobby_Ch1:
 	tempo 152
 	volume $77
 	dutycycle $3
@@ -13,7 +13,7 @@ Music_BattleTowerLobby_Ch1: ; 179497
 	vibrato $8, $22
 	stereopanning $f0
 	notetype $c, $72
-Music_BattleTowerLobby_branch_1794a9: ; 1794a9
+.loop
 	notetype $c, $72
 	octave 3
 	note G#, 2
@@ -115,15 +115,14 @@ Music_BattleTowerLobby_branch_1794a9: ; 1794a9
 	notetype $c, $75
 	octave 2
 	note B_, 4
-	loopchannel 0, Music_BattleTowerLobby_branch_1794a9
-; 17953a
+	loopchannel 0, .loop
 
-Music_BattleTowerLobby_Ch2: ; 17953a
+Music_BattleTowerLobby_Ch2:
 	dutycycle $2
 	vibrato $10, $34
 	stereopanning $f
 	notetype $c, $82
-Music_BattleTowerLobby_branch_179544: ; 179544
+.loop
 	notetype $c, $82
 	octave 4
 	note E_, 2
@@ -200,12 +199,11 @@ Music_BattleTowerLobby_branch_179544: ; 179544
 	note B_, 1
 	octave 4
 	note D#, 1
-	loopchannel 0, Music_BattleTowerLobby_branch_179544
-; 1795ae
+	loopchannel 0, .loop
 
-Music_BattleTowerLobby_Ch3: ; 1795ae
+Music_BattleTowerLobby_Ch3:
 	notetype $c, $11
-Music_BattleTowerLobby_branch_1795b1: ; 1795b1
+.loop
 	octave 2
 	note B_, 2
 	octave 3
@@ -297,17 +295,15 @@ Music_BattleTowerLobby_branch_1795b1: ; 1795b1
 	note E_, 2
 	note D#, 2
 	note F#, 2
-	loopchannel 0, Music_BattleTowerLobby_branch_1795b1
-; 179610
+	loopchannel 0, .loop
 
-Music_BattleTowerLobby_Ch4: ; 179610
+Music_BattleTowerLobby_Ch4:
 	togglenoise $0
-Music_BattleTowerLobby_branch_179612: ; 179612
+.loop
 	notetype $c
 	note __, 2
 	note F_, 4
 	note F_, 4
 	note F_, 2
 	note F_, 4
-	loopchannel 0, Music_BattleTowerLobby_branch_179612
-; 17961d
+	loopchannel 0, .loop

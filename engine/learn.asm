@@ -1,18 +1,18 @@
-LearnMove: ; 6508
+LearnMove:
 	call LoadTileMapToTempTileMap
-	ld a, [CurPartyMon]
-	ld hl, PartyMonNicknames
+	ld a, [wCurPartyMon]
+	ld hl, wPartyMonNicknames
 	call GetNick
-	ld hl, StringBuffer1
+	ld hl, wStringBuffer1
 	ld de, wMonOrItemNameBuffer
 	ld bc, PKMN_NAME_LENGTH
-	call CopyBytes
+	rst CopyBytes
 
 .loop
 	ld hl, PartyMon1Moves
 	ld bc, PARTYMON_STRUCT_LENGTH
-	ld a, [CurPartyMon]
-	call AddNTimes
+	ld a, [wCurPartyMon]
+	rst AddNTimes
 	ld d, h
 	ld e, l
 	ld b, NUM_MOVES
@@ -51,6 +51,8 @@ LearnMove: ; 6508
 .not_disabled
 
 	call GetMoveName
+	ld a, 3
+	ld [wcf64], a
 	ld hl, Text_1_2_and_Poof ; 1, 2 and…
 	call PrintText
 	pop de
@@ -67,25 +69,30 @@ LearnMove: ; 6508
 	dec a
 	ld hl, Moves + MOVE_PP
 	ld bc, MOVE_LENGTH
-	call AddNTimes
+	rst AddNTimes
 	ld a, BANK(Moves)
 	call GetFarByte
 	pop de
 	pop hl
-
 	ld [hl], a
+	
+	ld hl, wMovesObtained
+	ld a, [wPutativeTMHMMove]
+	ld c, a
+	ld b, SET_FLAG
+	predef FlagAction
 
 	ld a, [wBattleMode]
 	and a
 	jp z, .learned
 
-	ld a, [CurPartyMon]
+	ld a, [wCurPartyMon]
 	ld b, a
 	ld a, [CurBattleMon]
 	cp b
 	jp nz, .learned
 
-	ld a, [PlayerSubStatus5]
+	ld a, [wPlayerSubStatus5]
 	bit SUBSTATUS_TRANSFORMED, a
 	jp nz, .learned
 
@@ -93,12 +100,12 @@ LearnMove: ; 6508
 	ld l, e
 	ld de, BattleMonMoves
 	ld bc, NUM_MOVES
-	call CopyBytes
+	rst CopyBytes
 	ld bc, PartyMon1PP - (PartyMon1Moves + NUM_MOVES)
 	add hl, bc
 	ld de, BattleMonPP
 	ld bc, NUM_MOVES
-	call CopyBytes
+	rst CopyBytes
 	jp .learned
 
 .cancel
@@ -117,9 +124,8 @@ LearnMove: ; 6508
 	call PrintText
 	ld b, 1
 	ret
-; 65d3
 
-ForgetMove: ; 65d3
+ForgetMove:
 	push hl
 	ld hl, Text_TryingToLearn
 	call PrintText
@@ -131,19 +137,20 @@ ForgetMove: ; 65d3
 	push hl
 	ld de, wListMoves_MoveIndicesBuffer
 	ld bc, NUM_MOVES
-	call CopyBytes
+	rst CopyBytes
 	pop hl
 .loop
 	push hl
 	ld hl, Text_ForgetWhich
 	call PrintText
-	hlcoord 5, 2
-	ld b, NUM_MOVES * 2
-	ld c, MOVE_NAME_LENGTH
-	call TextBox
+	ld hl, .MenuDataHeader
+	call LoadMenuDataHeader
+	call MenuBox
+	call UpdateSprites
+	call ApplyTilemap
 	hlcoord 5 + 2, 2 + 2
 	ld a, SCREEN_WIDTH * 2
-	ld [Buffer1], a
+	ld [wListMoves_Spacing], a
 	predef ListMoves
 	; wMenuData3
 	ld a, $4
@@ -165,9 +172,9 @@ ForgetMove: ; 65d3
 	ld [w2DMenuFlags2], a
 	ld a, $20
 	ld [w2DMenuCursorOffsets], a
-	call StaticMenuJoypad
+	call DoMenuJoypadLoop
 	push af
-	call Call_LoadTempTileMapToTileMap
+	call ExitMenu
 	pop af
 	pop hl
 	bit 1, a
@@ -195,62 +202,82 @@ ForgetMove: ; 65d3
 	ld hl, Text_CantForgetHM
 	call PrintText
 	pop hl
-	jr .loop
+	jp .loop
 
 .cancel
 	scf
 	ret
-; 666b
 
-Text_LearnedMove: ; 666b
+.MenuDataHeader
+	db $40
+	db 02, 05
+	db 12, 19
+	dw 0
+	db 1
+
+Text_LearnedMove:
 ; <MON> learned <MOVE>!
-	text_jump UnknownText_0x1c5660
-	db "@"
-; 6670
+	text_far UnknownText_0x1c5660
+	start_asm
+	ld de, SFX_DEX_FANFARE_50_79
+	jp Text_PlaySFXAndPrompt
 
-Text_ForgetWhich: ; 6670
+Text_ForgetWhich:
 ; Which move should be forgotten?
 	text_jump UnknownText_0x1c5678
-	db "@"
 ; 6675
 
-Text_StopLearning: ; 6675
+Text_StopLearning:
 ; Stop learning <MOVE>?
 	text_jump UnknownText_0x1c5699
-	db "@"
 ; 667a
 
-Text_DidNotLearn: ; 667a
+Text_DidNotLearn:
 ; <MON> did not learn <MOVE>.
 	text_jump UnknownText_0x1c56af
-	db "@"
 ; 667f
 
-Text_TryingToLearn: ; 667f
+Text_TryingToLearn:
 ; <MON> is trying to learn <MOVE>. But <MON> can't learn more than
 ; four moves. Delete an older move to make room for <MOVE>?
 	text_jump UnknownText_0x1c56c9
-	db "@"
-; 6684
 
-Text_1_2_and_Poof: ; 6684
-	text_jump UnknownText_0x1c5740 ; 1, 2 and…
+Text_1_2_and_Poof:
+	text_far UnknownText_0x1c5740 ; 1, 2 and…
 	start_asm
+	jr .function
+
+.more_dots
+	push bc
+	ld c, 16
+	call DelayFrames
+	pop bc
+	ld hl, .dots
+	ret
+
+.dots
+	text "…@"
+	start_asm
+.function
+	ld a, [wcf64]
+	dec a
+	ld [wcf64], a
+	jr nz, .more_dots
 	push de
+	push bc
+	ld c, 32
+	call DelayFrames
+	pop bc
 	ld de, SFX_SWITCH_POKEMON
 	call PlaySFX
 	pop de
 	ld hl, .PoofForgot
 	ret
 
-.PoofForgot:
+.PoofForgot
 ; Poof! <MON> forgot <MOVE>. And…
 	text_jump UnknownText_0x1c574e
-	db "@"
-; 669a
 
-Text_CantForgetHM: ; 669a
+Text_CantForgetHM:
 ; HM moves can't be forgotten now.
 	text_jump UnknownText_0x1c5772
-	db "@"
-; 669f

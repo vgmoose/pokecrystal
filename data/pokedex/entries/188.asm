@@ -1,10 +1,14 @@
-; SkiploomPokedexEntry: ; 0x1cd928
-	db "COTTONWEED@" ; species name
-	dw 200, 20 ; height, width
+	ctxt "Float Whale" ; species name
+	done
+	dw 4707, 8774 ; height, weight
 
-	db   "As soon as it"
-	next "rains, it closes"
-	next "its flower and"
-	page "hides in the shade"
-	next "of a tree to avoid"
-	next "getting wet.@"
+	db .page2 - .page1
+.page1
+	ctxt "It is the largest"
+	next "of all identified"
+	next "#mon. They"
+	done
+.page2
+	ctxt "jump as a pack to" 
+	next "herd their prey."
+	done

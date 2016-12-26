@@ -1,10 +1,15 @@
-; LaprasPokedexEntry: ; 0x1cc0cd
-	db "TRANSPORT@" ; species name
-	dw 802, 4850 ; height, width
+	ctxt "Disaster" ; species name
+	done
+	dw 311, 1036 ; height, weight
 
-	db   "This gentle"
-	next "#MON loves to"
-	next "give people rides"
-	page "and provides a ve-"
-	next "ry comfortable way"
-	next "to get around.@"
+	db .page2 - .page1
+.page1
+	ctxt "It senses coming"
+	next "disasters and"
+	next "appears before"
+	done
+.page2
+	ctxt "people only to"
+	next "warn them of"
+	next "impending danger."
+	done

@@ -1,6 +1,9 @@
 	const_def
+	const PHYSICAL ; 00
+	const SPECIAL  ; 40
+	const STATUS   ; 80
 
-PHYSICAL EQU const_value
+	const_def
 	const NORMAL
 	const FIGHTING
 	const FLYING
@@ -11,21 +14,20 @@ PHYSICAL EQU const_value
 	const BUG
 	const GHOST
 	const STEEL
+	const FAIRY_T
+	const GAS
+	const TYPE_12
+	const SOUND
+	const TRI_T
+	const PRISM_T
 
 UNUSED_TYPES EQU const_value
-	const TYPE_10
-	const TYPE_11
-	const TYPE_12
-	const TYPE_13
-	const TYPE_14
-	const TYPE_15
 	const TYPE_16
 	const TYPE_17
 	const TYPE_18
 	const CURSE_T
 UNUSED_TYPES_END EQU const_value
 
-SPECIAL EQU const_value
 	const FIRE
 	const WATER
 	const GRASS
@@ -36,3 +38,15 @@ SPECIAL EQU const_value
 	const DARK
 
 TYPES_END EQU const_value
+
+IF (TYPES_END % 4) != 0
+MATCHUP_TABLE_WIDTH EQU (TYPES_END >> 2) + 1
+ELSE
+MATCHUP_TABLE_WIDTH EQU (TYPES_END >> 2)
+ENDC
+
+	const_def
+	const IMM
+	const NVE
+	const NTL
+	const SE_

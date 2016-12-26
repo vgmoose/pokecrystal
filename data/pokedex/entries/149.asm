@@ -1,10 +1,15 @@
-; DragonitePokedexEntry: ; 0x1cc843
-	db "DRAGON@" ; species name
-	dw 703, 4630 ; height, width
+	ctxt "Iron Leg" ; species name
+	done
+	dw 503, 12125 ; height, weight
 
-	db   "It is said that"
-	next "somewhere in the"
-	next "ocean lies an"
-	page "island where these"
-	next "gather. Only they"
-	next "live there.@"
+	db .page2 - .page1
+.page1
+	ctxt "It folds its four"
+	next "legs when flying."
+	next "Its four brains"
+	done
+.page2
+	ctxt "are said to be"
+	next "superior to a"
+	next "supercomputer."
+	done

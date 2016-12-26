@@ -1,4 +1,80 @@
-_ReceiveItem:: ; d1d5
+Mart_UpdateItemDescription::
+	hlcoord 6, 1
+	ld a, " "
+	ld [hli], a
+	ld [hli], a
+	ld [hli], a
+	ld [hl], a
+	ld a, [wMenuSelection]
+	cp $FF
+	jp z, SpeechTextBox
+	ld [wCurItem], a
+	call CheckItemPocket
+	ld a, [wItemAttributeParamBuffer]
+	dec a
+	jumptable
+	dw .Item
+	dw .KeyItem
+	dw .Ball
+
+.Ball
+	ld hl, NumBalls
+	jr .CountItem
+.Item
+	ld hl, NumItems
+.CountItem
+	ld a, [wCurItem]
+	ld b, a
+	ld de, 0
+	inc hl
+.loop
+	ld a, [hli]
+	cp $ff
+	jr z, .done
+	cp b
+	jr nz, .next
+	ld a, [hl]
+	add e
+	ld e, a
+	jr nc, .next
+	inc d
+.next
+	inc hl
+	jr .loop
+
+.KeyItem
+	call CheckKeyItems
+	ld de, 0
+	jr nc, .done
+	inc e
+.done
+	ld hl, wAmountOfCurItem
+	ld a, d
+	ld [hli], a
+	ld [hl], e
+	ld de, wAmountOfCurItem
+	hlcoord 6, 1
+	lb bc, 2, 4
+	call PrintNum
+	jpba UpdateItemDescription
+
+_ReceiveItem::
+	call .ReceiveItem
+	ret nc
+	ld a, [wCurItem]
+	inc a
+	ret z
+	dec a
+	ret z
+	dec a
+	ld c, a
+	ld b, SET_FLAG
+	ld hl, wItemsObtained
+	predef_jump FlagAction
+
+.ReceiveItem:
+	CheckEngine ENGINE_USE_TREASURE_BAG
+	jr nz, .pokemonOnlyMode
 	call DoesHLEqualNumItems
 	jp nz, PutItemInPocket
 	push hl
@@ -6,39 +82,45 @@ _ReceiveItem:: ; d1d5
 	pop de
 	ld a, [wItemAttributeParamBuffer]
 	dec a
-	ld hl, .Pockets
-	rst JumpTable
-	ret
+	jumptable
 
-.Pockets: ; d1e9
+.Pockets
 	dw .Item
-	dw .KeyItem
+	dw ReceiveKeyItem
 	dw .Ball
-	dw .TMHM
 
-.Item: ; d1f1
+.Item
 	ld h, d
 	ld l, e
 	jp PutItemInPocket
 
-.KeyItem: ; d1f6
-	ld h, d
-	ld l, e
-	jp ReceiveKeyItem
-
-.Ball: ; d1fb
+.Ball
 	ld hl, NumBalls
 	jp PutItemInPocket
 
-.TMHM: ; d201
-	ld h, d
-	ld l, e
-	ld a, [CurItem]
-	ld c, a
-	call GetTMHMNumber
-	jp ReceiveTMHM
+.pokemonOnlyMode
+	ld hl, wTreasureBagCount
+	ld c, [hl]
+	ld a, [wItemQuantityChangeBuffer]
+	ld d, a
+	add c
+	cp TREASURE_BAG_CAPACITY + 1
+	ret nc
+	ld [hli], a
+	ld b, 0
+	add hl, bc
+	ld a, [wCurItem]
+.writeMultipleItemsLoop
+	ld [hli], a
+	dec d
+	jr nz, .writeMultipleItemsLoop
+	ld [hl], $ff
+	scf
+	ret
 
-_TossItem:: ; d20d
+_TossItem::
+	CheckEngine ENGINE_USE_TREASURE_BAG
+	jr nz, .pokemonOnlyMode
 	call DoesHLEqualNumItems
 	jr nz, .remove
 	push hl
@@ -46,41 +128,59 @@ _TossItem:: ; d20d
 	pop de
 	ld a, [wItemAttributeParamBuffer]
 	dec a
-	ld hl, .Pockets
-	rst JumpTable
-	ret
+	jumptable
 
-.Pockets:
+.Pockets
 	dw .Item
-	dw .KeyItem
+	dw TossKeyItem
 	dw .Ball
-	dw .TMHM
 
-.Ball: ; d228
+.Ball
 	ld hl, NumBalls
 	jp RemoveItemFromPocket
 
-.TMHM: ; d22e
-	ld h, d
-	ld l, e
-	ld a, [CurItem]
-	ld c, a
-	call GetTMHMNumber
-	jp TossTMHM
-
-.KeyItem: ; d23a
-	ld h, d
-	ld l, e
-	jp TossKeyItem
-
-.Item: ; d23f
+.Item
 	ld h, d
 	ld l, e
 
 .remove
 	jp RemoveItemFromPocket
 
-_CheckItem:: ; d244
+.pokemonOnlyMode:
+	call CheckItem_Pokeonly
+	ret nc
+
+	ld hl, wTreasureBag
+	ld a, [wItemQuantityChangeBuffer]
+	ld c, a
+	ld a, [wCurItem]
+	ld b, a
+.removeMultipleItemsLoop
+	ld a, [hli]
+	cp b
+	jr nz, .removeMultipleItemsLoop
+	push hl
+	ld d, h
+	ld e, l
+	dec de
+.shiftItemsLoop
+	ld a, [hli]
+	ld [de], a
+	inc de
+	inc a
+	jr nz, .shiftItemsLoop
+	ld hl, wTreasureBagCount
+	dec [hl]
+	pop hl
+	dec hl
+	dec c
+	jr nz, .removeMultipleItemsLoop
+	scf
+	ret
+
+_CheckItem::
+	CheckEngine ENGINE_USE_TREASURE_BAG
+	jr nz, CheckItem_Pokeonly
 	call DoesHLEqualNumItems
 	jr nz, .nope
 	push hl
@@ -88,41 +188,45 @@ _CheckItem:: ; d244
 	pop de
 	ld a, [wItemAttributeParamBuffer]
 	dec a
-	ld hl, .Pockets
-	rst JumpTable
-	ret
+	jumptable
 
-.Pockets:
+.Pockets
 	dw .Item
-	dw .KeyItem
+	dw CheckKeyItems
 	dw .Ball
-	dw .TMHM
 
-.Ball: ; d25f
+.Ball
 	ld hl, NumBalls
 	jp CheckTheItem
 
-.TMHM: ; d265
+.Item
 	ld h, d
 	ld l, e
-	ld a, [CurItem]
-	ld c, a
-	call GetTMHMNumber
-	jp CheckTMHM
-
-.KeyItem: ; d271
-	ld h, d
-	ld l, e
-	jp CheckKeyItems
-
-.Item: ; d276
-	ld h, d
-	ld l, e
-
 .nope
 	jp CheckTheItem
 
-DoesHLEqualNumItems: ; d27b
+CheckItem_Pokeonly:
+	ld a, [wCurItem]
+	ld b, a
+	ld a, [wItemQuantityChangeBuffer]
+	ld c, a
+	ld hl, wTreasureBag
+.loop
+	ld a, [hli]
+	cp b
+	jr z, .foundItem
+	inc a
+	jr nz, .loop
+	and a
+	ret
+
+.foundItem
+	dec c
+	jr nz, .loop
+	scf
+	ret
+
+DoesHLEqualNumItems:
 	ld a, l
 	cp NumItems % $100
 	ret nz
@@ -130,7 +234,7 @@ DoesHLEqualNumItems: ; d27b
 	cp NumItems / $100
 	ret
 
-GetPocketCapacity: ; d283
+GetPocketCapacity:
 	ld c, MAX_ITEMS
 	ld a, e
 	cp NumItems % $100
@@ -152,11 +256,11 @@ GetPocketCapacity: ; d283
 	ld c, MAX_BALLS
 	ret
 
-PutItemInPocket: ; d29c
+PutItemInPocket:
 	ld d, h
 	ld e, l
 	inc hl
-	ld a, [CurItem]
+	ld a, [wCurItem]
 	ld c, a
 	ld b, 0
 .loop
@@ -189,7 +293,7 @@ PutItemInPocket: ; d29c
 .ok
 	ld h, d
 	ld l, e
-	ld a, [CurItem]
+	ld a, [wCurItem]
 	ld c, a
 	ld a, [wItemQuantityChangeBuffer]
 	ld [wItemQuantityBuffer], a
@@ -215,7 +319,7 @@ PutItemInPocket: ; d29c
 
 .terminator2
 	dec hl
-	ld a, [CurItem]
+	ld a, [wCurItem]
 	ld [hli], a
 	ld a, [wItemQuantityBuffer]
 	ld [hli], a
@@ -228,19 +332,19 @@ PutItemInPocket: ; d29c
 	scf
 	ret
 
-RemoveItemFromPocket: ; d2ff
+RemoveItemFromPocket:
 	ld d, h
 	ld e, l
 	ld a, [hli]
 	ld c, a
-	ld a, [CurItemQuantity]
+	ld a, [wCurItemQuantity]
 	cp c
 	jr nc, .ok ; memory
 	ld c, a
 	ld b, $0
 	add hl, bc
 	add hl, bc
-	ld a, [CurItem]
+	ld a, [wCurItem]
 	cp [hl]
 	inc hl
 	jr z, .skip
@@ -249,7 +353,7 @@ RemoveItemFromPocket: ; d2ff
 	inc hl
 
 .ok
-	ld a, [CurItem]
+	ld a, [wCurItem]
 	ld b, a
 .loop
 	ld a, [hli]
@@ -293,8 +397,8 @@ RemoveItemFromPocket: ; d2ff
 	and a
 	ret
 
-CheckTheItem: ; d349
-	ld a, [CurItem]
+CheckTheItem:
+	ld a, [wCurItem]
 	ld c, a
 .loop
 	inc hl
@@ -310,7 +414,7 @@ CheckTheItem: ; d349
 	and a
 	ret
 
-ReceiveKeyItem: ; d35a
+ReceiveKeyItem:
 	ld hl, NumKeyItems
 	ld a, [hli]
 	cp MAX_KEY_ITEMS
@@ -318,7 +422,7 @@ ReceiveKeyItem: ; d35a
 	ld c, a
 	ld b, 0
 	add hl, bc
-	ld a, [CurItem]
+	ld a, [wCurItem]
 	ld [hli], a
 	ld [hl], -1
 	ld hl, NumKeyItems
@@ -330,8 +434,8 @@ ReceiveKeyItem: ; d35a
 	and a
 	ret
 
-TossKeyItem: ; d374
-	ld a, [wd107]
+TossKeyItem:
+	ld a, [wCurItemQuantity]
 	ld e, a
 	ld d, 0
 	ld hl, NumKeyItems
@@ -360,9 +464,9 @@ TossKeyItem: ; d374
 	scf
 	ret
 
-.Toss: ; d396
+.Toss
 	ld hl, NumKeyItems
-	ld a, [CurItem]
+	ld a, [wCurItem]
 	ld c, a
 .loop3
 	inc hl
@@ -381,8 +485,8 @@ TossKeyItem: ; d374
 	scf
 	ret
 
-CheckKeyItems: ; d3b1
-	ld a, [CurItem]
+CheckKeyItems:
+	ld a, [wCurItem]
 	ld c, a
 	ld hl, KeyItems
 .loop
@@ -398,104 +502,22 @@ CheckKeyItems: ; d3b1
 	scf
 	ret
 
-ReceiveTMHM: ; d3c4
+ReceiveTMHM:
 	dec c
-	ld b, 0
+	push bc
+	ld b, CHECK_FLAG
 	ld hl, TMsHMs
-	add hl, bc
-	ld a, [wItemQuantityChangeBuffer]
-	add [hl]
-	cp 100
-	jr nc, .toomany
-	ld [hl], a
+	predef FlagAction
+	pop bc
+	ret nz
+	ld b, SET_FLAG
+	ld hl, TMsHMs
+	predef FlagAction
 	scf
 	ret
 
-.toomany
-	and a
-	ret
-
-TossTMHM: ; d3d8
-	dec c
-	ld b, 0
-	ld hl, TMsHMs
-	add hl, bc
-	ld a, [wItemQuantityChangeBuffer]
-	ld b, a
-	ld a, [hl]
-	sub b
-	jr c, .nope
-	ld [hl], a
-	ld [wItemQuantityBuffer], a
-	jr nz, .yup
-	ld a, [wTMHMPocketScrollPosition]
-	and a
-	jr z, .yup
-	dec a
-	ld [wTMHMPocketScrollPosition], a
-
-.yup
-	scf
-	ret
-
-.nope
-	and a
-	ret
-
-CheckTMHM: ; d3fb
-	dec c
-	ld b, $0
-	ld hl, TMsHMs
-	add hl, bc
-	ld a, [hl]
-	and a
-	ret z
-	scf
-	ret
-
-GetTMHMNumber:: ; d407
-; Return the number of a TM/HM by item id c.
-
-	ld a, c
-
-; Skip any dummy items.
-	cp ITEM_C3 ; TM04-05
-	jr c, .done
-	cp ITEM_DC ; TM28-29
-	jr c, .skip
-
-	dec a
-.skip
-	dec a
-.done
-	sub TM01
-	inc a
-	ld c, a
-	ret
-
-GetNumberedTMHM: ; d417
-; Return the item id of a TM/HM by number c.
-
-	ld a, c
-
-; Skip any gaps.
-	cp ITEM_C3 - (TM01 - 1)
-	jr c, .done
-	cp ITEM_DC - (TM01 - 1) - 1
-	jr c, .skip_one
-
-.skip_two
-	inc a
-.skip_one
-	inc a
-.done
-	add TM01
-	dec a
-	ld c, a
-	ret
-
-_CheckTossableItem:: ; d427
-; Return 1 in wItemAttributeParamBuffer and carry if CurItem can't be removed from the bag.
+_CheckTossableItem::
+; Return 1 in wItemAttributeParamBuffer and carry if wCurItem can't be removed from the bag.
 	ld a, ITEMATTR_PERMISSIONS
 	call GetItemAttr
 	bit 7, a
@@ -503,8 +525,8 @@ _CheckTossableItem:: ; d427
 	and a
 	ret
 
-CheckSelectableItem: ; d432
-; Return 1 in wItemAttributeParamBuffer and carry if CurItem can't be selected.
+CheckSelectableItem:
+; Return 1 in wItemAttributeParamBuffer and carry if wCurItem can't be selected.
 	ld a, ITEMATTR_PERMISSIONS
 	call GetItemAttr
 	bit 6, a
@@ -512,24 +534,24 @@ CheckSelectableItem: ; d432
 	and a
 	ret
 
-CheckItemPocket:: ; d43d
-; Return the pocket for CurItem in wItemAttributeParamBuffer.
+CheckItemPocket::
+; Return the pocket for wCurItem in wItemAttributeParamBuffer.
 	ld a, ITEMATTR_POCKET
 	call GetItemAttr
 	and $f
 	ld [wItemAttributeParamBuffer], a
 	ret
 
-CheckItemContext: ; d448
-; Return the context for CurItem in wItemAttributeParamBuffer.
+CheckItemContext:
+; Return the context for wCurItem in wItemAttributeParamBuffer.
 	ld a, ITEMATTR_HELP
 	call GetItemAttr
 	and $f
 	ld [wItemAttributeParamBuffer], a
 	ret
 
-CheckItemMenu: ; d453
-; Return the menu for CurItem in wItemAttributeParamBuffer.
+CheckItemMenu:
+; Return the menu for wCurItem in wItemAttributeParamBuffer.
 	ld a, ITEMATTR_HELP
 	call GetItemAttr
 	swap a
@@ -537,8 +559,8 @@ CheckItemMenu: ; d453
 	ld [wItemAttributeParamBuffer], a
 	ret
 
-GetItemAttr: ; d460
-; Get attribute a of CurItem.
+GetItemAttr:
+; Get attribute a of wCurItem.
 
 	push hl
 	push bc
@@ -551,11 +573,11 @@ GetItemAttr: ; d460
 	xor a
 	ld [wItemAttributeParamBuffer], a
 
-	ld a, [CurItem]
+	ld a, [wCurItem]
 	dec a
 	ld c, a
 	ld a, NUM_ITEMATTRS
-	call AddNTimes
+	rst AddNTimes
 	ld a, BANK(ItemAttributes)
 	call GetFarByte
 
@@ -563,14 +585,14 @@ GetItemAttr: ; d460
 	pop hl
 	ret
 
-ItemAttr_ReturnCarry: ; d47f
+ItemAttr_ReturnCarry:
 	ld a, 1
 	ld [wItemAttributeParamBuffer], a
 	scf
 	ret
 
-GetItemPrice: ; d486
-; Return the price of CurItem in de.
+GetItemPrice:
+; Return the price of wCurItem in de.
 	push hl
 	push bc
 	ld a, ITEMATTR_PRICE

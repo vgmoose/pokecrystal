@@ -1,9 +1,9 @@
-RTC:: ; 46f
+RTC::
 ; update time and time-sensitive palettes
 
-; rtc enabled?
+; RTC enabled?
 	ld a, [wSpriteUpdatesEnabled]
-	cp 0
+	and a
 	ret z
 
 	call UpdateTime
@@ -14,11 +14,4 @@ RTC:: ; 46f
 	ret z
 
 TimeOfDayPals:: ; 47e
-	callab _TimeOfDayPals
-	ret
-; 485
-
-UpdateTimePals:: ; 485
-	callab _UpdateTimePals
-	ret
-; 48c
+	jpba _TimeOfDayPals

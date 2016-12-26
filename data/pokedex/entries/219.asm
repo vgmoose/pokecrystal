@@ -1,10 +1,15 @@
-; MagcargoPokedexEntry: ; 0x1d0b21
-	db "LAVA@" ; species name
-	dw 207, 1210 ; height, width
+	ctxt "Lava" ; species name
+	done
+	dw 207, 1210 ; height, weight
 
-	db   "Its body is as hot"
+	db .page2 - .page1
+.page1
+	ctxt "Its body is as hot"
 	next "as lava and is"
 	next "always billowing."
-	page "Flames will"
+	done
+.page2
+	ctxt "Flames will"
 	next "occasionally burst"
-	next "from its shell.@"
+	next "from its shell."
+	done

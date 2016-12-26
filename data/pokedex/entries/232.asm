@@ -1,10 +1,15 @@
-; DonphanPokedexEntry: ; 0x1d10ac
-	db "ARMOR@" ; species name
-	dw 307, 2650 ; height, width
+	ctxt "Armor" ; species name
+	done
+	dw 307, 2650 ; height, weight
 
-	db   "Because this"
-	next "#MON's skin is"
+	db .page2 - .page1
+.page1
+	ctxt "Because this"
+	next "#mon's skin is"
 	next "so tough, a normal"
-	page "attack won't even"
+	done
+.page2
+	ctxt "attack won't even"
 	next "leave a scratch on"
-	next "it.@"
+	next "it."
+	done

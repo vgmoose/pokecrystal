@@ -1,4 +1,4 @@
-ResetGameTime:: ; 208a
+ResetGameTime::
 	xor a
 	ld [GameTimeCap], a
 	ld [GameTimeHours], a
@@ -7,33 +7,35 @@ ResetGameTime:: ; 208a
 	ld [GameTimeSeconds], a
 	ld [GameTimeFrames], a
 	ret
-; 209e
 
-
-GameTimer:: ; 209e
-
-	nop
-
+GameTimer:
+	ld c, (wTextDelayFrames - wGenericDelay) + 1
+	ld hl, wGenericDelay
+.delayCountersLoop
+; handle delay counters
+	ld a, [hl]
+	and a
+	jr z, .noDelay
+	dec [hl]
+.noDelay
+	inc hl
+	dec c
+	jr nz, .delayCountersLoop
 	ld a, [rSVBK]
 	push af
-	ld a, 1
-	ld [rSVBK], a
-
 	call UpdateGameTimer
-
+	call UpdateStopwatches
 	pop af
 	ld [rSVBK], a
 	ret
-; 20ad
 
-
-UpdateGameTimer:: ; 20ad
+UpdateGameTimer::
 ; Increment the game timer by one frame.
-; The game timer is capped at 999:59:59.00.
+; The game timer is capped at 9999:59:59.00.
 
 
 ; Don't update if game logic is paused.
-	ld a, [wGameLogicPaused]
+	ld a, [wGameLogicPause]
 	and a
 	ret nz
 
@@ -42,90 +44,58 @@ UpdateGameTimer:: ; 20ad
 	bit 0, [hl]
 	ret z
 
+	ld a, BANK(GameTimeCap)
+	ld [rSVBK], a
+
 ; Is the timer already capped?
 	ld hl, GameTimeCap
 	bit 0, [hl]
 	ret nz
-
+	ld a, 60
+	ld b, a
 
 ; +1 frame
 	ld hl, GameTimeFrames
-	ld a, [hl]
-	inc a
-
-	cp 60 ; frames/second
-	jr nc, .second
-
-	ld [hl], a
-	ret
-
-
-.second
-	xor a
-	ld [hl], a
-
+	inc [hl]
+	sub [hl]
+	ret nz
+	ld [hld], a
 ; +1 second
-	ld hl, GameTimeSeconds
-	ld a, [hl]
-	inc a
-
-	cp 60 ; seconds/minute
-	jr nc, .minute
-
-	ld [hl], a
-	ret
-
-
-.minute
-	xor a
-	ld [hl], a
-
+	ld a, b
+	inc [hl]
+	sub [hl]
+	ret nz
+	ld [hld], a
 ; +1 minute
-	ld hl, GameTimeMinutes
-	ld a, [hl]
-	inc a
+	ld a, b
+	inc [hl]
+	sub [hl]
+	ret nz
+	ld [hld], a
+; +1 hour
+	ld a, [hld]
+	ld d, [hl]
+	ld e, a
+	inc de
+; Cap the timer after 10000 hours.
+	ld a, d
+	cp 10000 >> 8
+	jr c, .ok
 
-	cp 60 ; minutes/hour
-	jr nc, .hour
-
-	ld [hl], a
+	ld a, e
+	cp 10000 & $ff
+	jr nc, .maxIGT
+.ok
+	ld a, d
+	ld [hli], a
+	ld [hl], e
 	ret
 
-
-.hour
-	xor a
-	ld [hl], a
-
-; +1 hour
-	ld a, [GameTimeHours]
-	ld h, a
-	ld a, [GameTimeHours + 1]
-	ld l, a
-	inc hl
-
-
-; Cap the timer after 1000 hours.
-	ld a, h
-	cp 1000 / $100
-	jr c, .ok
-
-	ld a, l
-	cp 1000 % $100
-	jr c, .ok
-
+.maxIGT
 	ld hl, GameTimeCap
 	set 0, [hl]
 
-	ld a, 59 ; 999:59:59.00
+	ld a, b ; 9999:59:59.00
 	ld [GameTimeMinutes], a
 	ld [GameTimeSeconds], a
 	ret
-
-
-.ok
-	ld a, h
-	ld [GameTimeHours], a
-	ld a, l
-	ld [GameTimeHours + 1], a
-	ret
-; 210f

@@ -1,10 +1,15 @@
-; SteelixPokedexEntry: ; 0x1d067c
-	db "IRON SNAKE@" ; species name
-	dw 3002, 8820 ; height, width
+	ctxt "Iron Snake" ; species name
+	done
+	dw 3002, 8820 ; height, weight
 
-	db   "The many small"
+	db .page2 - .page1
+.page1
+	ctxt "The many small"
 	next "metal particles"
 	next "that cover this"
-	page "#MON's body"
+	done
+.page2
+	ctxt "#mon's body"
 	next "reflect bright"
-	next "light well.@"
+	next "light well."
+	done

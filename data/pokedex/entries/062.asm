@@ -1,10 +1,15 @@
-; PoliwrathPokedexEntry: ; 0x183066
-	db "TADPOLE@" ; species name
-	dw 403, 1190 ; height, width
+	ctxt "Tadpole" ; species name
+	done
+	dw 403, 1190 ; height, weight
 
-	db   "It can use its"
+	db .page2 - .page1
+.page1
+	ctxt "It can use its"
 	next "well-developed"
 	next "arms and legs to"
-	page "run on the surface"
+	done
+.page2
+	ctxt "run on the surface"
 	next "of the water for a"
-	next "split second.@"
+	next "split second."
+	done

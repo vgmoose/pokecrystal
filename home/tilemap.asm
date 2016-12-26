@@ -1,19 +1,24 @@
-PushWindow:: ; 1c00
-	callab _PushWindow
+DelayFrameIfNotPassed:
+	ld a, [wGenericDelay]
+	and a
+	call nz, DelayFrame
+	ld a, $1
+	ld [wGenericDelay], a
 	ret
-; 1c07
 
-ExitMenu:: ; 0x1c07
+PushWindow::
+	jpba _PushWindow
+
+ExitMenu::
 	push af
-	callab _ExitMenu
+	callba _ExitMenu
 	pop af
 	ret
 
-InitVerticalMenuCursor:: ; 0x1c10
-	callab _InitVerticalMenuCursor
-	ret
+InitVerticalMenuCursor::
+	jpba _InitVerticalMenuCursor
 
-CloseWindow:: ; 0x1c17
+CloseWindow::
 	push af
 	call ExitMenu
 	call ApplyTilemap
@@ -21,18 +26,13 @@ CloseWindow:: ; 0x1c17
 	pop af
 	ret
 
-RestoreTileBackup:: ; 0x1c23
-	call MenuBoxCoord2Tile
+RestoreTileBackup::
+	call PushWindow_MenuBoxCoordToTile
 	call .copy
-	call MenuBoxCoord2Attr
-	call .copy
-	ret
-; 0x1c30
-
-.copy ; 0x1c30
-	call GetMenuBoxDims
-	inc b
-	inc c
+	call PushWindow_MenuBoxCoordToAttr
+	
+.copy
+	call GetTileBackupMenuBoxDims
 
 .row
 	push bc
@@ -43,18 +43,31 @@ RestoreTileBackup:: ; 0x1c23
 	ld [hli], a
 	dec de
 	dec c
-	jr nz, .col ; 0x1c3b $fa
+	jr nz, .col
 
 	pop hl
 	ld bc, SCREEN_WIDTH
 	add hl, bc
 	pop bc
 	dec b
-	jr nz, .row ; 0x1c44 $ef
-
+	jr nz, .row
 	ret
 
-PopWindow:: ; 0x1c47
+GetTileBackupMenuBoxDims:
+	call GetMenuBoxDims
+	ld a, [wMenuFlags]
+	bit 1, a
+	jr z, .offsetOfOne
+	inc b
+	inc b
+	inc c
+	inc c
+.offsetOfOne
+	inc b
+	inc c
+	ret
+
+PopWindow::
 	ld b, $10
 	ld de, wMenuFlags
 .loop
@@ -62,10 +75,10 @@ PopWindow:: ; 0x1c47
 	ld [de], a
 	inc de
 	dec b
-	jr nz, .loop ; 0x1c50 $fa
+	jr nz, .loop
 	ret
 
-GetMenuBoxDims:: ; 0x1c53
+GetMenuBoxDims::
 	ld a, [wMenuBorderTopCoord] ; top
 	ld b, a
 	ld a, [wMenuBorderBottomCoord] ; bottom
@@ -77,9 +90,8 @@ GetMenuBoxDims:: ; 0x1c53
 	sub c
 	ld c, a
 	ret
-; 0x1c66
 
-CopyMenuData2:: ; 1c66
+CopyMenuData2::
 	push hl
 	push de
 	push bc
@@ -90,15 +102,14 @@ CopyMenuData2:: ; 1c66
 	ld l, a
 	ld de, wMenuData2Flags
 	ld bc, wMenuData2End - wMenuData2Flags
-	call CopyBytes
+	rst CopyBytes
 	pop af
 	pop bc
 	pop de
 	pop hl
 	ret
-; 1c7e
 
-GetWindowStackTop:: ; 1c7e
+GetWindowStackTop::
 	ld hl, wWindowStackPointer
 	ld a, [hli]
 	ld h, [hl]
@@ -108,9 +119,8 @@ GetWindowStackTop:: ; 1c7e
 	ld h, [hl]
 	ld l, a
 	ret
-; 1c89
 
-PlaceVerticalMenuItems:: ; 1c89
+PlaceVerticalMenuItems::
 	call CopyMenuData2
 	ld hl, wMenuData2Pointer
 	ld e, [hl]
@@ -143,17 +153,15 @@ PlaceVerticalMenuItems:: ; 1c89
 	ld b, $0
 	add hl, bc
 	jp PlaceString
-; 1cbb
 
-MenuBox:: ; 1cbb
+MenuBox::
 	call MenuBoxCoord2Tile
 	call GetMenuBoxDims
 	dec b
 	dec c
 	jp TextBox
-; 1cc6
 
-GetMenuTextStartCoord:: ; 1cc6
+GetMenuTextStartCoord::
 	ld a, [wMenuBorderTopCoord]
 	ld b, a
 	inc b
@@ -165,93 +173,87 @@ GetMenuTextStartCoord:: ; 1cc6
 	bit 6, a
 	jr nz, .bit_6_set
 	inc b
-
 .bit_6_set
 ; bit 7: if set, leave extra room on the left
 	ld a, [wMenuData2Flags]
 	bit 7, a
-	jr z, .bit_7_clear
+	ret z
 	inc c
-
-.bit_7_clear
 	ret
-; 1ce1
 
-ClearMenuBoxInterior:: ; 1ce1
+ClearMenuBoxInterior::
 	call MenuBoxCoord2Tile
 	ld bc, SCREEN_WIDTH + 1
 	add hl, bc
 	call GetMenuBoxDims
 	dec b
 	dec c
-	call ClearBox
-	ret
-; 1cf1
+	jp ClearBox
 
-ClearWholeMenuBox:: ; 1cf1
+ClearWholeMenuBox::
 	call MenuBoxCoord2Tile
 	call GetMenuBoxDims
 	inc c
 	inc b
-	call ClearBox
+	jp ClearBox
+
+PushWindow_MenuBoxCoordToTile:
+	coord bc, 0, 0
+	jr PushWindow_MenuBoxCoordToAbsolute
+	
+PushWindow_MenuBoxCoordToAttr:
+	coord bc, 0, 0, AttrMap
+
+; fallthrough
+PushWindow_MenuBoxCoordToAbsolute:
+	push bc
+	call LoadMenuBoxCoords
+	ld a, [wMenuFlags]
+	bit 1, a
+	jr z, .noDec
+	dec b
+	dec c
+.noDec
+	call Coord2Absolute
+	pop bc
+	add hl, bc
 	ret
-; 1cfd
 
+MenuBoxCoord2Tile::
+	call LoadMenuBoxCoords
+	; fallthrough
 
-MenuBoxCoord2Tile:: ; 1cfd
-	ld a, [wMenuBorderLeftCoord]
-	ld c, a
-	ld a, [wMenuBorderTopCoord]
-	ld b, a
-; 1d05
-
-
-Coord2Tile:: ; 1d05
+Coord2Tile::
 ; Return the address of TileMap(c, b) in hl.
-	xor a
-	ld h, a
-	ld l, b
-	ld a, c
-	ld b, h
-	ld c, l
-	add hl, hl
-	add hl, hl
-	add hl, bc
-	add hl, hl
-	add hl, hl
-	ld c, a
-	xor a
-	ld b, a
-	add hl, bc
+	call Coord2Absolute
 	bccoord 0, 0
 	add hl, bc
 	ret
-; 1d19
 
-MenuBoxCoord2Attr:: ; 1d19
+LoadMenuBoxCoords:
 	ld a, [wMenuBorderLeftCoord]
 	ld c, a
 	ld a, [wMenuBorderTopCoord]
 	ld b, a
+	ret
 
-Coord2Attr:: ; 1d21
+MenuBoxCoord2Attr::
+	call LoadMenuBoxCoords
+	; fallthrough
+
+Coord2Attr:
 ; Return the address of AttrMap(c, b) in hl.
-	xor a
-	ld h, a
-	ld l, b
-	ld a, c
-	ld b, h
-	ld c, l
-	add hl, hl
-	add hl, hl
-	add hl, bc
-	add hl, hl
-	add hl, hl
-	ld c, a
-	xor a
-	ld b, a
-	add hl, bc
+	call Coord2Absolute
 	bccoord 0, 0, AttrMap
 	add hl, bc
 	ret
-; 1d35
+
+Coord2Absolute:
+; Returns the address of (c, b) as a linear tile value in hl.
+	ld l, c
+	ld h, 0
+	ld c, b
+	ld b, h
+	ld a, SCREEN_WIDTH
+	rst AddNTimes
+	ret

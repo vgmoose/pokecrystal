@@ -1,10 +1,15 @@
-; HitmontopPokedexEntry: ; 0x1d12c0
-	db "HANDSTAND@" ; species name
-	dw 407, 1060 ; height, width
+	ctxt "Handstand" ; species name
+	done
+	dw 407, 1060 ; height, weight
 
-	db   "After doing a"
+	db .page2 - .page1
+.page1
+	ctxt "After doing a"
 	next "handstand to"
 	next "throw off the"
-	page "opponent's timing,"
+	done
+.page2
+	ctxt "opponent's timing,"
 	next "it presents its"
-	next "fancy kick moves.@"
+	next "fancy kick moves."
+	done

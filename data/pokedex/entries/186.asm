@@ -1,10 +1,15 @@
-; PolitoedPokedexEntry: ; 0x1cd84b
-	db "FROG@" ; species name
-	dw 307, 750 ; height, width
+	ctxt "Eruption" ; species name
+	done
+	dw 603, 4850 ; height, weight
 
-	db   "When it expands"
-	next "its throat to"
-	next "croak out a tune,"
-	page "nearby POLIWAG and"
-	next "POLIWHIRL gather"
-	next "immediately.@"
+	db .page2 - .page1
+.page1
+	ctxt "It has volcanoes"
+	next "on its back. If"
+	next "magma builds up in"
+	done
+.page2
+	ctxt "its body, it"
+	next "shudders, then"
+	next "erupts violently."
+	done

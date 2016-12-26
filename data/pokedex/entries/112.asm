@@ -1,10 +1,15 @@
-; RhydonPokedexEntry: ; 0x1b93c5
-	db "DRILL@" ; species name
-	dw 603, 2650 ; height, width
+	ctxt "Drill" ; species name
+	done
+	dw 603, 2650 ; height, weight
 
-	db   "By lightly spin-"
+	db .page2 - .page1
+.page1
+	ctxt "By lightly spin-"
 	next "ning its drill-"
 	next "like horn, it can"
-	page "easily shatter"
+	done
+.page2
+	ctxt "easily shatter"
 	next "even a diamond in"
-	next "the rough.@"
+	next "the rough."
+	done

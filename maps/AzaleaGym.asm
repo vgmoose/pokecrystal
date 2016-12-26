@@ -1,389 +1,283 @@
-const_value set 2
-	const AZALEAGYM_BUGSY
-	const AZALEAGYM_BUG_CATCHER1
-	const AZALEAGYM_BUG_CATCHER2
-	const AZALEAGYM_BUG_CATCHER3
-	const AZALEAGYM_TWIN1
-	const AZALEAGYM_TWIN2
-	const AZALEAGYM_GYM_GUY
-
-AzaleaGym_MapScriptHeader:
-.MapTriggers:
+AzaleaGym_MapScriptHeader;trigger count
+	db 0
+ ;callback count
 	db 0
 
-.MapCallbacks:
-	db 0
+AzaleaGymSignpost1:
+	jumptext AzaleaGymSignpost1_Text_324316
 
-BugsyScript:
+AzaleaGymSignpost2:
+	jumptext AzaleaGymSignpost1_Text_324316
+
+AzaleaGym_Item_1:
+	db IRON, 1
+
+AzaleaGym_Trainer_1:
+	trainer EVENT_AZALEA_GYM_TRAINER_1, LASS, 4, AzaleaGym_Trainer_1_Text_32434e, AzaleaGym_Trainer_1_Text_324384, $0000, .Script
+
+.Script:
+	end_if_just_battled
+	jumptext AzaleaGym_Trainer_1_Script_Text_324397
+
+AzaleaGym_Trainer_2:
+	trainer EVENT_AZALEA_GYM_TRAINER_2, BUG_CATCHER, 8, AzaleaGym_Trainer_2_Text_324566, AzaleaGym_Trainer_2_Text_32459b, $0000, .Script
+
+.Script:
+	end_if_just_battled
+	jumptext AzaleaGym_Trainer_2_Script_Text_3245c0
+
+AzaleaGym_Trainer_3:
+	trainer EVENT_AZALEA_GYM_TRAINER_3, BUG_CATCHER, 7, AzaleaGym_Trainer_3_Text_324446, AzaleaGym_Trainer_3_Text_324477, $0000, .Script
+
+.Script:
+	end_if_just_battled
+	jumptext AzaleaGym_Trainer_3_Script_Text_324499
+
+AzaleaGym_Trainer_4:
+	trainer EVENT_AZALEA_GYM_TRAINER_4, LASS, 5, AzaleaGym_Trainer_4_Text_3243db, AzaleaGym_Trainer_4_Text_324407, $0000, .Script
+
+.Script:
+	end_if_just_battled
+	jumptext AzaleaGym_Trainer_4_Script_Text_32441a
+
+AzaleaGymNPC1:
 	faceplayer
 	opentext
-	checkevent EVENT_BEAT_BUGSY
-	iftrue .FightDone
-	writetext BugsyText_INeverLose
-	waitbutton
-	closetext
-	winlosstext BugsyText_ResearchIncomplete, 0
+	checkflag ENGINE_HIVEBADGE
+	iffalse AzaleaGym_324600
+	jumptext AzaleaGymNPC1_Text_324632
+
+AzaleaGym_Trainer_5:
+	trainer EVENT_AZALEA_GYM_TRAINER_5, BUG_CATCHER, 9, AzaleaGym_Trainer_5_Text_3244d9, AzaleaGym_Trainer_5_Text_324516, $0000, .Script
+
+.Script:
+	end_if_just_battled
+	jumptext AzaleaGym_Trainer_5_Script_Text_324520
+
+AzaleaGymNPC2:
+	jumptextfaceplayer AzaleaGymNPC2_Text_32429b
+
+AzaleaGym_324600:
+	writetext AzaleaGym_324600_Text_32467c
+	winlosstext AzaleaGym_324600Text_324711, 0
+	setlasttalked 255
+	writecode VAR_BATTLETYPE, BATTLETYPE_NORMAL
 	loadtrainer BUGSY, 1
 	startbattle
 	reloadmapafterbattle
-	setevent EVENT_BEAT_BUGSY
+	playmapmusic
 	opentext
-	writetext Text_ReceivedHiveBadge
-	playsound SFX_GET_BADGE
-	waitsfx
+	writetext AzaleaGym_324600_Text_32477b
+	playwaitsfx SFX_TCG2_DIDDLY_5
 	setflag ENGINE_HIVEBADGE
-	checkcode VAR_BADGES
-	scall AzaleaGymTriggerRockets
-.FightDone:
-	checkevent EVENT_GOT_TM49_FURY_CUTTER
-	iftrue .GotFuryCutter
-	setevent EVENT_BEAT_TWINS_AMY_AND_MAY
-	setevent EVENT_BEAT_BUG_CATCHER_BENNY
-	setevent EVENT_BEAT_BUG_CATCHER_AL
-	setevent EVENT_BEAT_BUG_CATCHER_JOSH
-	writetext BugsyText_HiveBadgeSpeech
-	buttonsound
-	verbosegiveitem TM_FURY_CUTTER
-	iffalse .NoRoomForFuryCutter
-	setevent EVENT_GOT_TM49_FURY_CUTTER
-	writetext BugsyText_FuryCutterSpeech
+	playmusic MUSIC_GYM
+	writetext AzaleaGym_324600_Text_324793
 	waitbutton
-	closetext
-	end
-
-.GotFuryCutter:
-	writetext BugsyText_BugMonsAreDeep
-	waitbutton
-.NoRoomForFuryCutter:
-	closetext
-	end
-
-AzaleaGymTriggerRockets:
-	if_equal 7, .RadioTowerRockets
-	if_equal 6, .GoldenrodRockets
-	end
-
-.GoldenrodRockets:
-	jumpstd goldenrodrockets
-
-.RadioTowerRockets:
-	jumpstd radiotowerrockets
-
-TrainerTwinsAmyandmay1:
-	trainer EVENT_BEAT_TWINS_AMY_AND_MAY, TWINS, AMYANDMAY1, TwinsAmyandmay1SeenText, TwinsAmyandmay1BeatenText, 0, .AfterScript
-
-.AfterScript:
-	end_if_just_battled
+	givetm 87 + RECEIVED_TM
 	opentext
-	writetext TwinsAmyandmay1AfterBattleText
-	waitbutton
-	closetext
-	end
+	writetext AzaleaGym_324600_Text_3247c3
+	setflag ENGINE_HIVEBADGE
+	endtext
 
-TrainerTwinsAmyandmay2:
-	trainer EVENT_BEAT_TWINS_AMY_AND_MAY, TWINS, AMYANDMAY2, TwinsAmyandmay2SeenText, TwinsAmyandmay2BeatenText, 0, .AfterScript
+AzaleaGymSignpost1_Text_324316:
+	ctxt "Azalea Town"
+	line "#mon Gym"
 
-.AfterScript:
-	end_if_just_battled
-	opentext
-	writetext TwinsAmyandmay2AfterBattleText
-	waitbutton
-	closetext
-	end
-
-TrainerBug_catcherbenny:
-	trainer EVENT_BEAT_BUG_CATCHER_BENNY, BUG_CATCHER, BUG_CATCHER_BENNY, Bug_catcherbennySeenText, Bug_catcherbennyBeatenText, 0, .AfterScript
-
-.AfterScript:
-	end_if_just_battled
-	opentext
-	writetext Bug_catcherbennyAfterBattleText
-	waitbutton
-	closetext
-	end
-
-TrainerBug_catcherAl:
-	trainer EVENT_BEAT_BUG_CATCHER_AL, BUG_CATCHER, AL, Bug_catcherAlSeenText, Bug_catcherAlBeatenText, 0, .AfterScript
-
-.AfterScript:
-	end_if_just_battled
-	opentext
-	writetext Bug_catcherAlAfterBattleText
-	waitbutton
-	closetext
-	end
-
-TrainerBug_catcherJosh:
-	trainer EVENT_BEAT_BUG_CATCHER_JOSH, BUG_CATCHER, JOSH, Bug_catcherJoshSeenText, Bug_catcherJoshBeatenText, 0, .AfterScript
-
-.AfterScript:
-	end_if_just_battled
-	opentext
-	writetext Bug_catcherJoshAfterBattleText
-	waitbutton
-	closetext
-	end
-
-AzaleaGymGuyScript:
-	faceplayer
-	checkevent EVENT_BEAT_BUGSY
-	iftrue .AzaleaGymGuyWinScript
-	opentext
-	writetext AzaleaGymGuyText
-	waitbutton
-	closetext
-	end
-
-.AzaleaGymGuyWinScript:
-	opentext
-	writetext AzaleaGymGuyWinText
-	waitbutton
-	closetext
-	end
-
-AzaleaGymStatue:
-	checkflag ENGINE_HIVEBADGE
-	iftrue .Beaten
-	jumpstd gymstatue1
-.Beaten:
-	trainertotext BUGSY, 1, $1
-	jumpstd gymstatue2
-
-BugsyText_INeverLose:
-	text "I'm BUGSY!"
-	line "I never lose when"
-
-	para "it comes to bug"
-	line "#MON."
-
-	para "My research is"
-	line "going to make me"
-
-	para "the authority on"
-	line "bug #MON!"
-
-	para "Let me demonstrate"
-	line "what I've learned"
-	cont "from my studies."
+	para "Leader: Bugsy"
 	done
 
-BugsyText_ResearchIncomplete:
-	text "Whoa, amazing!"
-	line "You're an expert"
-	cont "on #MON!"
-
-	para "My research isn't"
-	line "complete yet."
-
-	para "OK, you win. Take"
-	line "this BADGE."
+AzaleaGym_Trainer_1_Text_32434e:
+	ctxt "There's no way we're"
+	line "letting you battle"
+	cont "the leader!"
 	done
 
-Text_ReceivedHiveBadge:
-	text "<PLAYER> received"
-	line "HIVEBADGE."
+AzaleaGym_Trainer_1_Text_324384:
+	ctxt "Oh my goodness<...>"
 	done
 
-BugsyText_HiveBadgeSpeech:
-	text "Do you know the"
-	line "benefits of HIVE-"
-	cont "BADGE?"
+AzaleaGym_Trainer_1_Script_Text_324397:
+	ctxt "You really built a"
+	line "strong team."
 
-	para "If you have it,"
-	line "#MON up to L30"
-
-	para "will obey you,"
-	line "even traded ones."
-
-	para "#MON that know"
-	line "CUT will be able"
-
-	para "to use it outside"
-	line "of battle too."
-
-	para "Here, I also want"
-	line "you to have this."
+	para "I admire that."
 	done
 
-BugsyText_FuryCutterSpeech:
-	text "TM49 contains"
-	line "FURY CUTTER."
+AzaleaGym_Trainer_2_Text_324566:
+	ctxt "Bug #mon evolve"
+	line "young."
 
-	para "If you don't miss,"
-	line "it gets stronger"
-	cont "every turn."
-
-	para "The longer your"
-	line "battle goes, the"
-	cont "better it gets."
-
-	para "Isn't that great?"
-	line "I discovered it!"
+	para "So they get"
+	line "stronger faster."
 	done
 
-BugsyText_BugMonsAreDeep:
-	text "Bug #MON are"
-	line "deep. There are"
+AzaleaGym_Trainer_2_Text_32459b:
+	ctxt "However, just"
+	line "evolving isn't"
+	cont "enough!"
+	done
 
-	para "many mysteries to"
+AzaleaGym_Trainer_2_Script_Text_3245c0:
+	ctxt "I guess I'd better"
+	line "train a bit more!"
+	done
+
+AzaleaGym_Trainer_3_Text_324446:
+	ctxt "Bug #mon are"
+	line "rad!"
+
+	para "Here's the proof"
+	line "coming at ya!"
+	done
+
+AzaleaGym_Trainer_3_Text_324477:
+	ctxt "Well you're tough"
+	line "that's for sure."
+	done
+
+AzaleaGym_Trainer_3_Script_Text_324499:
+	ctxt "I met a cool girl"
+	line "who loves bug"
+	cont "#mon."
+	done
+
+AzaleaGym_Trainer_4_Text_3243db:
+	ctxt "Wait!"
+
+	para "Don't rush to"
+	line "Bugsy, battle us"
+	cont "first!"
+	done
+
+AzaleaGym_Trainer_4_Text_324407:
+	ctxt "Oh my goodness<...>"
+	done
+
+AzaleaGym_Trainer_4_Script_Text_32441a:
+	ctxt "I'm ashamed of my"
+	line "loss."
+	done
+
+AzaleaGymNPC1_Text_324632:
+	ctxt "Bug #mon are"
+	line "deep."
+
+	para "There's an"
+	line "endless amount"
+
+	para "of mysteries to"
 	line "be explored."
-
-	para "Study your favor-"
-	line "ites thoroughly."
 	done
 
-Bug_catcherbennySeenText:
-	text "Bug #MON evolve"
-	line "young. So they get"
+AzaleaGym_Trainer_5_Text_3244d9:
+	ctxt "I grew up with my"
+	line "#mon."
 
-	para "stronger that much"
-	line "faster."
+	para "I couldn't imagine"
+	line "it any other way."
 	done
 
-Bug_catcherbennyBeatenText:
-	text "Just evolving"
-	line "isn't enough!"
+AzaleaGym_Trainer_5_Text_324516:
+	ctxt "Urrgggh!"
 	done
 
-Bug_catcherbennyAfterBattleText:
-	text "#MON become"
-	line "stronger if they"
-	cont "evolve. Really!"
+AzaleaGym_Trainer_5_Script_Text_324520:
+	ctxt "All we can do is"
+	line "grow and get"
+
+	para "better, as a"
+	line "team."
 	done
 
-Bug_catcherAlSeenText:
-	text "Bug #MON are"
-	line "cool and tough!"
+AzaleaGymNPC2_Text_32429b:
+	ctxt "Yo challenger!"
 
-	para "I'll prove it to"
-	line "you!"
+	para "Bugsy's knowledge"
+	line "of insect #mon"
+	cont "is enormous!"
+
+	para "Try taking them"
+	line "down with fire and"
+	cont "flying #mon!"
 	done
 
-Bug_catcherAlBeatenText:
-	text "You proved how"
-	line "tough you are…"
+AzaleaGym_324600_Text_32467c:
+	ctxt "I'm Bugsy."
+
+	para "I never lose when"
+	line "it comes to bug"
+	cont "#mon!"
+
+	para "You can consider"
+	line "me the authority"
+	cont "on bug #mon!"
+
+	para "I've learned a"
+	line "lot over the"
+
+	para "years, let me"
+	line "show you."
 	done
 
-Bug_catcherAlAfterBattleText:
-	text "They're so cool,"
-	line "but most girls"
+AzaleaGym_324600Text_324711:
+	ctxt "You are amazing!"
 
-	para "don't like bug"
-	line "#MON."
+	para "There will always"
+	line "be something new"
 
-	para "I don't know why…"
+	para "to learn about"
+	line "bug #mon!"
+
+	para "Please take the"
+	line "Hive Badge!"
 	done
 
-Bug_catcherJoshSeenText:
-	text "You saved all the"
-	line "SLOWPOKE? Whew,"
-	cont "you're mighty!"
-
-	para "But my grown-up"
-	line "#MON are pretty"
-	cont "tough too!"
+AzaleaGym_324600_Text_32477b:
+	ctxt "<PLAYER> received"
+	line "Hive Badge."
 	done
 
-Bug_catcherJoshBeatenText:
-	text "Urrgggh!"
+AzaleaGym_324600_Text_324793:
+	ctxt "Please take this"
+	line "gift as well,"
+	cont "you deserve it."
 	done
 
-Bug_catcherJoshAfterBattleText:
-	text "I guess I should"
-	line "teach them better"
-	cont "moves…"
+AzaleaGym_324600_Text_3247c3:
+	ctxt "This bug TM works"
+	line "for all #mon"
+	cont "with horns."
+
+	para "That way, even"
+	line "more #mon can"
+
+	para "harness the"
+	line "power of bugs!"
 	done
 
-TwinsAmyandmay1SeenText:
-	text "AMY: Hi! Are you"
-	line "challenging the"
-	cont "LEADER? No way!"
-	done
-
-TwinsAmyandmay1BeatenText:
-	text "AMY & MAY: Oh,"
-	line "double goodness!"
-	done
-
-TwinsAmyandmay1AfterBattleText:
-	text "AMY: You're"
-	line "really strong!"
-	done
-
-TwinsAmyandmay2SeenText:
-	text "MAY: You want to"
-	line "see the LEADER?"
-	cont "We come first!"
-	done
-
-TwinsAmyandmay2BeatenText:
-	text "AMY & MAY: Oh,"
-	line "double goodness!"
-	done
-
-TwinsAmyandmay2AfterBattleText:
-	text "MAY: Our bug #-"
-	line "MON lost! Oh, what"
-	cont "a shame."
-	done
-
-AzaleaGymGuyText:
-	text "Yo, challenger!"
-
-	para "BUGSY's young, but"
-	line "his knowledge of"
-
-	para "bug #MON is for"
-	line "real."
-
-	para "It's going to be"
-	line "tough without my"
-	cont "advice."
-
-	para "Let's see… Bug"
-	line "#MON don't like"
-	cont "fire."
-
-	para "Flying-type moves"
-	line "are super-effec-"
-	cont "tive too."
-	done
-
-AzaleaGymGuyWinText:
-	text "Well done! That"
-	line "was a great clash"
-
-	para "of talented young"
-	line "trainers."
-
-	para "With people like"
-	line "you, the future of"
-	cont "#MON is bright!"
-	done
-
-AzaleaGym_MapEventHeader:
-	; filler
+AzaleaGym_MapEventHeader ;filler
 	db 0, 0
 
-.Warps:
+;warps
 	db 2
-	warp_def $f, $4, 5, AZALEA_TOWN
-	warp_def $f, $5, 5, AZALEA_TOWN
+	warp_def $f, $4, 4, AZALEA_TOWN
+	warp_def $f, $5, 4, AZALEA_TOWN
 
-.XYTriggers:
+	;xy triggers
 	db 0
 
-.Signposts:
+	;signposts
 	db 2
-	signpost 13, 3, SIGNPOST_READ, AzaleaGymStatue
-	signpost 13, 6, SIGNPOST_READ, AzaleaGymStatue
+	signpost 13, 3, SIGNPOST_READ, AzaleaGymSignpost1
+	signpost 13, 6, SIGNPOST_READ, AzaleaGymSignpost2
 
-.PersonEvents:
-	db 7
-	person_event SPRITE_BUGSY, 7, 5, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, (1 << 3) | PAL_OW_GREEN, PERSONTYPE_SCRIPT, 0, BugsyScript, -1
-	person_event SPRITE_BUG_CATCHER, 3, 5, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, (1 << 3) | PAL_OW_BROWN, PERSONTYPE_TRAINER, 2, TrainerBug_catcherbenny, -1
-	person_event SPRITE_BUG_CATCHER, 8, 8, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, (1 << 3) | PAL_OW_BROWN, PERSONTYPE_TRAINER, 3, TrainerBug_catcherAl, -1
-	person_event SPRITE_BUG_CATCHER, 2, 0, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, (1 << 3) | PAL_OW_BROWN, PERSONTYPE_TRAINER, 3, TrainerBug_catcherJosh, -1
-	person_event SPRITE_TWIN, 10, 4, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, (1 << 3) | PAL_OW_RED, PERSONTYPE_TRAINER, 1, TrainerTwinsAmyandmay1, -1
-	person_event SPRITE_TWIN, 10, 5, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, (1 << 3) | PAL_OW_RED, PERSONTYPE_TRAINER, 1, TrainerTwinsAmyandmay2, -1
-	person_event SPRITE_GYM_GUY, 13, 7, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, (1 << 3) | PAL_OW_RED, PERSONTYPE_SCRIPT, 0, AzaleaGymGuyScript, -1
+	;people-events
+	db 8
+	person_event SPRITE_P0, -3, -3, SPRITEMOVEDATA_ITEM_TREE, 0, 0, -1, -1, PAL_OW_RED, 1, 1, AzaleaGym_Item_1, EVENT_AZALEA_GYM_ITEM_1
+	person_event SPRITE_LASS, 10, 4, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_OW_RED, 2, 1, AzaleaGym_Trainer_1, -1
+	person_event SPRITE_BUG_CATCHER, 3, 5, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_OW_BLUE, 2, 1, AzaleaGym_Trainer_2, -1
+	person_event SPRITE_BUG_CATCHER, 2, 8, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_OW_BLUE, 2, 1, AzaleaGym_Trainer_3, -1
+	person_event SPRITE_LASS, 10, 5, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_OW_RED, 2, 1, AzaleaGym_Trainer_4, -1
+	person_event SPRITE_BUGSY, 7, 5, SPRITEMOVEDATA_WANDER, 0, 0, -1, -1, PAL_OW_GREEN, 0, 0, AzaleaGymNPC1, -1
+	person_event SPRITE_BUG_CATCHER, 8, 1, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_OW_BLUE, 2, 3, AzaleaGym_Trainer_5, -1
+	person_event SPRITE_GYM_GUY, 13, 7, SPRITEMOVEDATA_00, 0, 0, -1, -1, 0, 0, 0, AzaleaGymNPC2, -1

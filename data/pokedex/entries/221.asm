@@ -1,10 +1,15 @@
-; PiloswinePokedexEntry: ; 0x1d0c01
-	db "SWINE@" ; species name
-	dw 307, 1230 ; height, width
+	ctxt "Swine" ; species name
+	done
+	dw 307, 1230 ; height, weight
 
-	db   "Although its legs"
+	db .page2 - .page1
+.page1
+	ctxt "Although its legs"
 	next "are short, its"
 	next "rugged hooves"
-	page "prevent it from"
+	done
+.page2
+	ctxt "prevent it from"
 	next "slipping, even on"
-	next "icy ground.@"
+	next "icy ground."
+	done

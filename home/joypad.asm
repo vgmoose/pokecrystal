@@ -1,21 +1,12 @@
-JoypadInt:: ; 92e
-; Replaced by Joypad, called from VBlank instead of the useless
-; joypad interrupt.
-
-; This is a placeholder in case the interrupt is somehow enabled.
-	reti
-; 92f
-
-ClearJoypad:: ; 92f
+ClearJoypad::
 	xor a
 ; Pressed this frame (delta)
 	ld [hJoyPressed], a
 ; Currently pressed
 	ld [hJoyDown], a
 	ret
-; 935
 
-Joypad:: ; 935
+Joypad::
 ; Read the joypad register and translate it to something more
 ; workable for use in-game. There are 8 buttons, so we can use
 ; one byte to contain all player input.
@@ -33,7 +24,7 @@ Joypad:: ; 935
 	ret nz
 
 ; If we're saving, input is disabled.
-	ld a, [wGameLogicPaused]
+	ld a, [wGameLogicPause]
 	and a
 	ret nz
 
@@ -102,11 +93,24 @@ endr
 	cp  A_BUTTON | B_BUTTON | SELECT | START
 	jp z, Reset
 
+; Or update input counters:
+	ld a, [hJoypadPressed]
+	ld hl, wAButtonCount
+	ld b, a
+	ld c, 8
+.loop
+	srl b
+	rept 4
+		ld a, [hl]
+		adc 0
+		ld [hli], a
+	endr		
+	dec c
+	jr nz, .loop
+
 	ret
-; 984
 
-
-GetJoypad:: ; 984
+GetJoypad::
 ; Update mirror joypad input from hJoypadDown (real input)
 
 ; hJoyReleased: released this frame (delta)
@@ -122,16 +126,15 @@ GetJoypad:: ; 984
 ;     6 UP
 ;     7 DOWN
 
-	push af
 	push hl
 	push de
 	push bc
-
+	push af
 ; The player input can be automated using an input stream.
 ; See more below.
 	ld a, [InputType]
-	cp a, AUTO_INPUT
-	jr z, .auto
+	inc a
+	jr z, .auto	
 
 ; To get deltas, take this and last frame's input.
 	ld a, [hJoypadDown] ; real input
@@ -151,18 +154,13 @@ GetJoypad:: ; 984
 	ld [hJoyPressed], a
 
 ; It looks like the collective presses got commented out here.
-	ld c, a
+;	ld c, a
 
 ; Currently pressed:
 	ld a, b
 	ld [hJoyDown], a ; frame input
-
-.quit
-	pop bc
-	pop de
-	pop hl
-	pop af
-	ret
+.done
+	jp PopOffRegsAndReturn
 
 .auto
 ; Use a predetermined input stream (used in the catching tutorial).
@@ -171,71 +169,50 @@ GetJoypad:: ; 984
 ; A value of $ff will immediately end the stream.
 
 ; Read from the input stream.
-	ld a, [hROMBank]
-	push af
-	ld a, [AutoInputBank]
-	rst Bankswitch
 
+	ld a, [AutoInputLength]
+	and a
+	jr z, .updateauto
+	dec a
+	ld [AutoInputLength], a
+	jr .done
+.updateauto
+	ld hl, .done
+	push hl
+	ld a, [AutoInputBank]
+	call StackCallInBankA
+
+.Function:
 	ld hl, AutoInputAddress
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
 
-; We only update when the input duration has expired.
-	ld a, [AutoInputLength]
-	and a
-	jr z, .updateauto
-
-; Until then, don't change anything.
-	dec a
-	ld [AutoInputLength], a
-	pop af
-	rst Bankswitch
-	jr .quit
-
-
-.updateauto
-; An input of $ff will end the stream.
 	ld a, [hli]
-	cp a, -1
-	jr z, .stopauto
+	cp $ff
+	jr z, .stopAuto
 	ld b, a
 
-; A duration of $ff will end the stream indefinitely.
 	ld a, [hli]
 	ld [AutoInputLength], a
-	cp a, -1
-	jr nz, .next
-
-; The current input is overwritten.
-	dec hl
-	dec hl
-	ld b, NO_INPUT
-	jr .finishauto
-
-.next
-; On to the next input...
+	inc a
+	jr z, .noInput
 	ld a, l
 	ld [AutoInputAddress], a
 	ld a, h
 	ld [AutoInputAddress+1], a
-	jr .finishauto
-
-.stopauto
+	jr .finishAuto
+.stopAuto
 	call StopAutoInput
+.noInput
 	ld b, NO_INPUT
-
-.finishauto
-	pop af
-	rst Bankswitch
+.finishAuto
 	ld a, b
 	ld [hJoyPressed], a ; pressed
 	ld [hJoyDown], a ; input
-	jr .quit
-; 9ee
+	ret
 
-
-StartAutoInput:: ; 9ee
+StartAutoInput::
 ; Start reading automated input stream at a:hl.
 
 	ld [AutoInputBank], a
@@ -247,18 +224,15 @@ StartAutoInput:: ; 9ee
 	xor a
 	ld [AutoInputLength], a
 ; Reset input mirrors.
-	xor a
 	ld [hJoyPressed], a ; pressed this frame
 	ld [hJoyReleased], a ; released this frame
 	ld [hJoyDown], a ; currently pressed
 
-	ld a, AUTO_INPUT
+	dec a
 	ld [InputType], a
 	ret
-; a0a
 
-
-StopAutoInput:: ; a0a
+StopAutoInput::
 ; Clear variables related to automated input.
 	xor a
 	ld [AutoInputBank], a
@@ -268,227 +242,165 @@ StopAutoInput:: ; a0a
 ; Back to normal input.
 	ld [InputType], a
 	ret
-; a1b
 
-
-JoyTitleScreenInput:: ; a1b
-.loop
-
-	call DelayFrame
-
-	push bc
+JoyTitleScreenInput::
 	call JoyTextDelay
-	pop bc
 
 	ld a, [hJoyDown]
 	cp D_UP | SELECT | B_BUTTON
-	jr z, .keycombo
-
+	jr z, .keyCombo
 	ld a, [hJoyLast]
 	and START | A_BUTTON
-	jr nz, .keycombo
+	jr nz, .keyCombo
 
+	call DelayFrame
 	dec c
-	jr nz, .loop
-
+	jr nz, JoyTitleScreenInput
+; a key combo wasn't pressed
 	and a
 	ret
-
-.keycombo
+.keyCombo
 	scf
 	ret
-; a36
 
-
-JoyWaitAorB:: ; a36
-.loop
-	call DelayFrame
+JoyWaitAorB::
 	call GetJoypad
 	ld a, [hJoyPressed]
 	and A_BUTTON | B_BUTTON
 	ret nz
 	call RTC
-	jr .loop
-; a46
+	call DelayFrame
+	jr JoyWaitAorB
 
-WaitButton:: ; a46
+Script_waitbutton::
+; script command 0x54
+WaitButton::
 	ld a, [hOAMUpdate]
 	push af
 	ld a, 1
 	ld [hOAMUpdate], a
-	call WaitBGMap
+	call ApplyTilemapInVBlank
 	call JoyWaitAorB
 	pop af
 	ld [hOAMUpdate], a
 	ret
-; a57
 
-JoyTextDelay:: ; a57
+Script_endtext::
+; will crash if not called in BANK 25
+	ld a, [hOAMUpdate]
+	push af
+	ld a, 1
+	ld [hOAMUpdate], a
+	call ApplyTilemapInVBlank
+	jr .handleLoop
+
+.loop
+	call RTC
+	call DelayFrame
+.handleLoop
+	call GetJoypad
+	ld a, [hJoyPressed]
+	and A_BUTTON | B_BUTTON | D_PAD
+	jr z, .loop
+	pop af
+	ld [hOAMUpdate], a
+	call Script_closetext
+	jp Script_end
+
+JoyTextDelay::
 	call GetJoypad
 	ld a, [hInMenu]
 	and a
 	ld a, [hJoyPressed]
-	jr z, .ok
+	jr z, .inMenu
 	ld a, [hJoyDown]
-.ok
+.inMenu
 	ld [hJoyLast], a
 	ld a, [hJoyPressed]
 	and a
-	jr z, .checkframedelay
+	jr z, .checkFrameDelay
 	ld a, 15
-	ld [TextDelayFrames], a
+	ld [wTextDelayFrames], a
 	ret
 
-.checkframedelay
-	ld a, [TextDelayFrames]
+.checkFrameDelay
+	ld a, [wTextDelayFrames]
 	and a
-	jr z, .restartframedelay
+	jr z, .restartFrameDelay
 	xor a
 	ld [hJoyLast], a
 	ret
 
-.restartframedelay
+.restartFrameDelay
 	ld a, 5
-	ld [TextDelayFrames], a
+	ld [wTextDelayFrames], a
 	ret
-; a80
 
-WaitPressAorB_BlinkCursor:: ; a80
-	ld a, [hMapObjectIndexBuffer]
-	push af
-	ld a, [hObjectStructIndexBuffer]
-	push af
-	xor a
-	ld [hMapObjectIndexBuffer], a
-	ld a, 6
-	ld [hObjectStructIndexBuffer], a
-
-.loop
-	push hl
-	hlcoord 18, 17
+WaitPressAorB_BlinkCursor::
 	call BlinkCursor
-	pop hl
+	call CheckIfAOrBPressed
+	ret nz
+	call DelayFrame
+	jr WaitPressAorB_BlinkCursor
 
+SimpleWaitPressAorB::
+	call CheckIfAOrBPressed
+	ret nz
+	call DelayFrame
+	jr SimpleWaitPressAorB
+
+CheckIfAOrBPressed:
 	call JoyTextDelay
 	ld a, [hJoyLast]
 	and A_BUTTON | B_BUTTON
-	jr z, .loop
-
-	pop af
-	ld [hObjectStructIndexBuffer], a
-	pop af
-	ld [hMapObjectIndexBuffer], a
 	ret
-; aa5
 
-SimpleWaitPressAorB:: ; aa5
-.loop
-	call JoyTextDelay
-	ld a, [hJoyLast]
-	and A_BUTTON | B_BUTTON
-	jr z, .loop
-	ret
-; aaf
-
-ButtonSound:: ; aaf
+ButtonSound::
 	ld a, [wLinkMode]
 	and a
-	jr nz, .link
-	call .wait_input
+	jr nz, .linkMode
+	call .doInputLoop
 	push de
 	ld de, SFX_READ_TEXT_2
 	call PlaySFX
 	pop de
 	ret
 
-.link
+.linkMode
 	ld c, 65
 	jp DelayFrames
-; ac6
 
-.wait_input ; ac6
+.doInputLoop
 	ld a, [hOAMUpdate]
 	push af
 	ld a, $1
 	ld [hOAMUpdate], a
 	ld a, [InputType]
-	or a
-	jr z, .input_wait_loop
+	and a
+	jr z, .inputWaitLoop
 	callba _DudeAutoInput_A
 
-.input_wait_loop
-	call .blink_cursor
-	call JoyTextDelay
-	ld a, [hJoyPressed]
-	and A_BUTTON | B_BUTTON
-	jr nz, .received_input
+.inputWaitLoop
+	call BlinkCursor
+	call CheckIfAOrBPressed
+	jr nz, .receivedInput
 	call RTC
 	ld a, $1
 	ld [hBGMapMode], a
 	call DelayFrame
-	jr .input_wait_loop
+	jr .inputWaitLoop
 
-.received_input
+.receivedInput
 	pop af
 	ld [hOAMUpdate], a
 	ret
-; af5
 
-.blink_cursor ; af5
+BlinkCursor:
 	ld a, [hVBlankCounter]
-	and %00010000 ; bit 4, a
-	jr z, .cursor_off
+	bit 4, a ; change cursor state every 16 frames
 	ld a, "▼"
-	jr .load_cursor_state
-
-.cursor_off
-	ld a, [TileMap + 17 + 17 * SCREEN_WIDTH]
-
-.load_cursor_state
-	ld [TileMap + 18 + 17 * SCREEN_WIDTH], a
+	jr nz, .cursorOn
+	lda_coord 17, 17
+.cursorOn
+	ldcoord_a 18, 17
 	ret
-; b06
-
-BlinkCursor:: ; b06
-	push bc
-	ld a, [hl]
-	ld b, a
-	ld a, "▼"
-	cp b
-	pop bc
-	jr nz, .place_arrow
-	ld a, [hMapObjectIndexBuffer]
-	dec a
-	ld [hMapObjectIndexBuffer], a
-	ret nz
-	ld a, [hObjectStructIndexBuffer]
-	dec a
-	ld [hObjectStructIndexBuffer], a
-	ret nz
-	ld a, "─"
-	ld [hl], a
-	ld a, -1
-	ld [hMapObjectIndexBuffer], a
-	ld a, 6
-	ld [hObjectStructIndexBuffer], a
-	ret
-
-.place_arrow
-	ld a, [hMapObjectIndexBuffer]
-	and a
-	ret z
-	dec a
-	ld [hMapObjectIndexBuffer], a
-	ret nz
-	dec a
-	ld [hMapObjectIndexBuffer], a
-	ld a, [hObjectStructIndexBuffer]
-	dec a
-	ld [hObjectStructIndexBuffer], a
-	ret nz
-	ld a, 6
-	ld [hObjectStructIndexBuffer], a
-	ld a, "▼"
-	ld [hl], a
-	ret
-; b40

@@ -1,3 +1,8 @@
-[submodule "extras"]
-	path = extras
-	url = git://github.com/pret/pokemon-reverse-engineering-tools.git
+[submodule "crowdmap"]
+	path = crowdmap
+	url = https://github.com/yenatch/crowdmap
+	branch = prism
+[submodule "bsp"]
+	path = utils/bsp
+	url = https://github.com/aaaaaa123456789/bsp
+	branch = master

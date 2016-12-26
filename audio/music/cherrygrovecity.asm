@@ -1,8 +1,9 @@
 Music_CherrygroveCity: ; f5b03
-	musicheader 4, 1, Music_CherrygroveCity_Ch1
-	musicheader 1, 2, Music_CherrygroveCity_Ch2
-	musicheader 1, 3, Music_CherrygroveCity_Ch3
-	musicheader 1, 4, Music_CherrygroveCity_Ch4
+	channelcount 4
+	channel 1, Music_CherrygroveCity_Ch1
+	channel 2, Music_CherrygroveCity_Ch2
+	channel 3, Music_CherrygroveCity_Ch3
+	channel 4, Music_CherrygroveCity_Ch4
 ; f5b0f
 
 Music_CherrygroveCity_Ch1: ; f5b0f

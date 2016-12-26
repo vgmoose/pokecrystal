@@ -1,10 +1,15 @@
-; OddishPokedexEntry: ; 0x182836
-	db "WEED@" ; species name
-	dw 108, 120 ; height, width
+	ctxt "Iron Armor" ; species name
+	done
+	dw 104, 1323 ; height, weight
 
-	db   "During the day, it"
-	next "stays in the cold"
-	next "underground to"
-	page "avoid the sun."
-	next "It grows by bath-"
-	next "ing in moonlight.@"
+	db .page2 - .page1
+.page1
+	ctxt "It usually lives"
+	next "deep in mountains."
+	next "However, hunger"
+	done
+.page2
+	ctxt "may drive it to"
+	next "eat railroad"
+	next "tracks and cars."
+	done

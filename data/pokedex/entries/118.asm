@@ -1,10 +1,15 @@
-; GoldeenPokedexEntry: ; 0x1b9626
-	db "GOLDFISH@" ; species name
-	dw 200, 330 ; height, width
+	ctxt "Goldfish" ; species name
+	done
+	dw 200, 330 ; height, weight
 
-	db   "During spawning"
+	db .page2 - .page1
+.page1
+	ctxt "During spawning"
 	next "season, they swim"
 	next "gracefully in the"
-	page "water, searching"
+	done
+.page2
+	ctxt "water, searching"
 	next "for their perfect"
-	next "mate.@"
+	next "mate."
+	done

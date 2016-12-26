@@ -1,10 +1,15 @@
-; MachokePokedexEntry: ; 0x1b80cb
-	db "SUPERPOWER@" ; species name
-	dw 411, 1550 ; height, width
+	ctxt "Superpower" ; species name
+	done
+	dw 411, 1550 ; height, weight
 
-	db   "This tough #MON"
+	db .page2 - .page1
+.page1
+	ctxt "This tough #mon"
 	next "always stays in"
 	next "the zone. Its"
-	page "muscles become"
+	done
+.page2
+	ctxt "muscles become"
 	next "thicker after"
-	next "every battle.@"
+	next "every battle."
+	done

@@ -1,10 +1,15 @@
-; CharizardPokedexEntry: ; 0x1818b3
-	db "FLAME@" ; species name
-	dw 507, 2000 ; height, width
+	ctxt "Flame" ; species name
+	done
+	dw 507, 2000 ; height, weight
 
-	db   "It uses its wings"
+	db .page2 - .page1
+.page1
+	ctxt "It uses its wings"
 	next "to fly high. The"
 	next "temperature of its"
-	page "fire increases as"
+	done
+.page2
+	ctxt "fire increases as"
 	next "it gains exper-"
-	next "ience in battle.@"
+	next "ience in battle."
+	done

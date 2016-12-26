@@ -1,10 +1,15 @@
-; RaticatePokedexEntry: ; 0x181ea3
-	db "RAT@" ; species name
-	dw 204, 410 ; height, width
+	ctxt "Swallow" ; species name
+	done
+	dw 204, 437 ; height, weight
 
-	db   "The webs on its"
-	next "hind legs enable"
-	next "it to cross"
-	page "rivers. It search-"
-	next "es wide areas for"
-	next "food.@"
+	db .page2 - .page1
+.page1
+	ctxt "It dives at a"
+	next "steep angle as"
+	next "soon as it spots"
+	done
+.page2
+	ctxt "its prey. It"
+	next "catches its prey"
+	next "with sharp claws."
+	done

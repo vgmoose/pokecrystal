@@ -1,10 +1,14 @@
-; SkarmoryPokedexEntry: ; 0x1d0e8c
-	db "ARMOR BIRD@" ; species name
-	dw 507, 1110 ; height, width
+	ctxt "Dragon" ; species name
+	done
+	dw 411, 2262 ; height, weight
 
-	db   "The feathers that"
-	next "it sheds are very"
-	next "sharp. It is said"
-	page "that people once"
-	next "used the feathers"
-	next "as swords.@"
+	db .page2 - .page1
+.page1
+	ctxt "It's uncontrollable"
+	next "if enraged. It"
+	next "breaks everything"
+	done
+.page2
+	ctxt "with shredding"
+	next "claws and fire."
+	done

@@ -1,10 +1,14 @@
-; NidoranFPokedexEntry: ; 0x18224b
-	db "POISON PIN@" ; species name
-	dw 104, 150 ; height, width
+	ctxt "Gleam Eyes" ; species name
+	done
+	dw 407, 926 ; height, weight
 
-	db   "Small and very"
-	next "docile, it pro-"
-	next "tects itself with"
-	page "its small, poison-"
-	next "ous horn when"
-	next "attacked.@"
+	db .page2 - .page1
+.page1
+	ctxt "It can see clearly"
+	next "through walls to"
+	next "track down its"
+	done
+.page2
+	ctxt "prey and seek its"
+	next "lost young."
+	done

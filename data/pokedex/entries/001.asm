@@ -1,10 +1,15 @@
-; BulbasaurPokedexEntry: ; 0x181695
-	db "SEED@" ; species name
-	dw 204, 150 ; height, width
+	ctxt "Seed" ; species name
+	done
+	dw 204, 150 ; height, weight
 
-	db   "While it is young,"
+	db .page2 - .page1
+.page1
+	ctxt "While it is young,"
 	next "it uses the"
 	next "nutrients that are"
-	page "stored in the"
+	done
+.page2
+	ctxt "stored in the"
 	next "seeds on its back"
-	next "in order to grow.@"
+	next "in order to grow."
+	done

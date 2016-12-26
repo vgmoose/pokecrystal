@@ -1,10 +1,15 @@
-; UnownPokedexEntry: ; 0x1d0373
-	db "SYMBOL@" ; species name
-	dw 108, 110 ; height, width
+	ctxt "Magical" ; species name
+	done
+	dw 211, 97 ; height, weight
 
-	db   "Because different"
-	next "types of UNOWN"
-	next "exist, it is said"
-	page "that they must"
-	next "have a variety of"
-	next "abilities.@"
+	db .page2 - .page1
+.page1
+	ctxt "Its cries sound"
+	next "like incantations"
+	next "to torment the"
+	done
+.page2
+	ctxt "foe. It appears"
+	next "where you least"
+	next "expect it."
+	done

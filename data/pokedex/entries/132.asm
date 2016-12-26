@@ -1,10 +1,15 @@
-; DittoPokedexEntry: ; 0x1cc13c
-	db "TRANSFORM@" ; species name
-	dw 100, 90 ; height, width
+	ctxt "Transform" ; species name
+	done
+	dw 100, 90 ; height, weight
 
-	db   "When it encount-"
-	next "ers another DITTO,"
+	db .page2 - .page1
+.page1
+	ctxt "When it encount-"
+	next "ers another Ditto,"
 	next "it will move"
-	page "faster than normal"
+	done
+.page2
+	ctxt "faster than normal"
 	next "to duplicate that"
-	next "opponent exactly.@"
+	next "opponent exactly."
+	done

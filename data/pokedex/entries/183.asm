@@ -1,10 +1,15 @@
-; MarillPokedexEntry: ; 0x1cd705
-	db "AQUAMOUSE@" ; species name
-	dw 104, 190 ; height, width
+	ctxt "Aquamouse" ; species name
+	done
+	dw 104, 190 ; height, weight
 
-	db   "The fur on its"
+	db .page2 - .page1
+.page1
+	ctxt "The fur on its"
 	next "body naturally"
 	next "repels water. It"
-	page "can stay dry, even"
+	done
+.page2
+	ctxt "can stay dry, even"
 	next "when it plays in"
-	next "the water.@"
+	next "the water."
+	done

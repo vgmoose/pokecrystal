@@ -1,10 +1,15 @@
-; SandslashPokedexEntry: ; 0x1821e7
-	db "MOUSE@" ; species name
-	dw 303, 650 ; height, width
+	ctxt "Spark" ; species name
+	done
+	dw 211, 672 ; height, weight
 
-	db   "Adept at climbing"
-	next "trees, it rolls"
-	next "into a spiny ball,"
-	page "then attacks its"
-	next "enemies from"
-	next "above.@"
+	db .page2 - .page1
+.page1
+	ctxt "Strong electricity"
+	next "courses through"
+	next "the tips of its"
+	done
+.page2
+	ctxt "sharp claws. A"
+	next "light scratch can"
+	next "faint the foe."
+	done

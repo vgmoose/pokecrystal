@@ -14,13 +14,25 @@ noise: macro
 	db \4 ; frequency
 	endm
 
-musicheader: macro
-	; number of tracks, track idx, address
-	dbw ((\1 - 1) << 6) + (\2 - 1), \3
+channelcount: macro
+nchannels = \1 - 1
+endm
+
+channel: macro
+	dn (nchannels << 2), \1 - 1
+	dw \2
+nchannels = 0
 	endm
 
 cry_header: macro
-	dw \1, \2, \3
+IF _NARG == 3
+	db \1
+	dw \2, \3
+ELSE
+	db $ff
+	dba \2 ; bank/address
+	db \1 - 1 ; species (padding)
+ENDC
 	endm
 
 	enum_start $d8
@@ -37,10 +49,10 @@ notetype: macro
 	endc
 	endm
 
-	enum pitchoffset_cmd
-pitchoffset: macro
-	db pitchoffset_cmd
-	dn \1, \2 - 1 ; octave, key
+	enum forceoctave_cmd
+forceoctave: macro
+	db forceoctave_cmd
+	db \1 ; octave
 	endm
 
 	enum tempo_cmd
@@ -82,7 +94,7 @@ togglesfx: macro
 slidepitchto: macro
 	db slidepitchto_cmd
 	db \1 - 1 ; duration
-	dn \2, \3 ; octave, pitch
+	dn \2, \3 - 1 ; octave, pitch
 	endm
 
 	enum vibrato_cmd
@@ -101,7 +113,9 @@ unknownmusic0xe2: macro
 	enum togglenoise_cmd
 togglenoise: macro
 	db togglenoise_cmd
+	if _NARG > 0
 	db \1 ; id
+	endc
 	endm
 
 	enum panning_cmd
@@ -180,44 +194,52 @@ sfxtogglenoise: macro
 	db \1 ; id
 	endm
 
-	enum music0xf1_cmd
-music0xf1: macro
-	db music0xf1_cmd
+	enum customwave_cmd
+customwave: macro
+	db customwave_cmd
+	dd \1
+	dd \2
+	dd \3
+	dd \4
 	endm
 
-	enum music0xf2_cmd
-music0xf2: macro
-	db music0xf2_cmd
+	enum arp_cmd
+arp: macro
+	db arp_cmd
+	dn \1, \2
 	endm
 
-	enum music0xf3_cmd
-music0xf3: macro
-	db music0xf3_cmd
+	enum portaup_cmd
+portaup: macro
+	db portaup_cmd
+	db \1
 	endm
 
-	enum music0xf4_cmd
-music0xf4: macro
-	db music0xf4_cmd
+	enum portadown_cmd
+portadown: macro
+	db portadown_cmd
+	db \1
 	endm
 
-	enum music0xf5_cmd
-music0xf5: macro
-	db music0xf5_cmd
+	enum toneporta_cmd
+toneporta: macro
+	db toneporta_cmd
+	db \1
 	endm
 
-	enum music0xf6_cmd
-music0xf6: macro
-	db music0xf6_cmd
+	enum unknownmusic0xf6_cmd
+unknownmusic0xf6: macro
+	db unknownmusic0xf6_cmd
 	endm
 
-	enum music0xf7_cmd
-music0xf7: macro
-	db music0xf7_cmd
+	enum unknownmusic0xf7_cmd
+unknownmusic0xf7: macro
+	db unknownmusic0xf7_cmd
 	endm
 
-	enum music0xf8_cmd
-music0xf8: macro
-	db music0xf8_cmd
+	enum unknownmusic0xf8_cmd
+unknownmusic0xf8: macro
+	db unknownmusic0xf8_cmd
 	endm
 
 	enum unknownmusic0xf9_cmd

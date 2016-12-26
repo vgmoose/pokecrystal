@@ -1,10 +1,15 @@
-; SpearowPokedexEntry: ; 0x181f03
-	db "TINY BIRD@" ; species name
-	dw 100, 40 ; height, width
+	ctxt "Tiny Bird" ; species name
+	done
+	dw 100, 40 ; height, weight
 
-	db   "To protect its"
+	db .page2 - .page1
+.page1
+	ctxt "To protect its"
 	next "territory, it"
 	next "flies around"
-	page "ceaselessly,"
+	done
+.page2
+	ctxt "ceaselessly,"
 	next "making high-"
-	next "pitched cries.@"
+	next "pitched cries."
+	done

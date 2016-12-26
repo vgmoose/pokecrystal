@@ -3,6 +3,9 @@ BattleCommand_Attract: ; 377ce
 	ld a, [AttackMissed]
 	and a
 	jr nz, .failed
+	call GetTargetAbility
+	cp ABILITY_OBLIVIOUS
+	jr z, .failed
 	call CheckOppositeGender
 	jr c, .failed
 	call CheckHiddenOpponent
@@ -17,9 +20,16 @@ BattleCommand_Attract: ; 377ce
 
 ; 'fell in love!'
 	ld hl, FellInLoveText
+	ld a, [wMoveIsAnAbility]
+	and a
+	jp z, StdBattleTextBox
+	ld hl, CuteCharmText
 	jp StdBattleTextBox
 
 .failed
+	ld a, [wMoveIsAnAbility]
+	and a
+	ret nz
 	jp FailAttract
 ; 377f5
 
@@ -28,12 +38,12 @@ CheckOppositeGender: ; 377f5
 	ld a, MON_SPECIES
 	call BattlePartyAttr
 	ld a, [hl]
-	ld [CurPartySpecies], a
+	ld [wCurPartySpecies], a
 
 	ld a, [CurBattleMon]
-	ld [CurPartyMon], a
+	ld [wCurPartyMon], a
 	xor a
-	ld [MonType], a
+	ld [wMonType], a
 
 	callba GetGender
 	jr c, .genderless_samegender
@@ -45,9 +55,9 @@ CheckOppositeGender: ; 377f5
 .got_gender
 	push bc
 	ld a, [TempEnemyMonSpecies]
-	ld [CurPartySpecies], a
+	ld [wCurPartySpecies], a
 	ld hl, EnemyMonDVs
-	ld a, [EnemySubStatus5]
+	ld a, [wEnemySubStatus5]
 	bit SUBSTATUS_TRANSFORMED, a
 	jr z, .not_transformed
 	ld hl, wEnemyBackupDVs
@@ -56,8 +66,8 @@ CheckOppositeGender: ; 377f5
 	ld [TempMonDVs], a
 	ld a, [hl]
 	ld [TempMonDVs + 1], a
-	ld a, 3
-	ld [MonType], a
+	ld a, 3 ; tempmon
+	ld [wMonType], a
 	callba GetGender
 	pop bc
 	jr c, .genderless_samegender

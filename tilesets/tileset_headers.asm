@@ -44,3 +44,21 @@ Tileset01::
 	tileset Tileset34
 	tileset Tileset35
 	tileset Tileset36
+	tileset Tileset37
+	tileset Tileset38
+	tileset Tileset39
+	tileset Tileset40
+	tileset Tileset41
+	tileset Tileset42
+	tileset Tileset43
+	tileset Tileset44
+	tileset Tileset45
+	tileset Tileset46
+	tileset Tileset47
+	tileset Tileset48
+	tileset Tileset49
+	tileset Tileset50
+	tileset Tileset51
+	tileset Tileset52
+	tileset Tileset53
+	

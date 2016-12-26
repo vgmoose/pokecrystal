@@ -1,44 +1,18 @@
-SelectMenu:: ; 13327
-
-	call CheckRegisteredItem
-	jr c, .NotRegistered
-	jp UseRegisteredItem
-
-.NotRegistered:
-	call OpenText
-	ld b, BANK(ItemMayBeRegisteredText)
-	ld hl, ItemMayBeRegisteredText
-	call MapTextbox
-	call WaitButton
-	jp CloseText
-; 13340
-
-
-ItemMayBeRegisteredText: ; 13340
-	text_jump UnknownText_0x1c1cf3
-	db "@"
-; 13345
-
-
-CheckRegisteredItem: ; 13345
-
+CheckRegisteredItem::
 	ld a, [WhichRegisteredItem]
 	and a
 	jr z, .NoRegisteredItem
 	and REGISTERED_POCKET
 	rlca
 	rlca
-	ld hl, .Pockets
-	rst JumpTable
-	ret
+	jumptable
 
-.Pockets:
+.Pockets
 	dw .CheckItem
 	dw .CheckBall
 	dw .CheckKeyItem
-	dw .CheckTMHM
 
-.CheckItem:
+.CheckItem
 	ld hl, NumItems
 	call .CheckRegisteredNo
 	jr c, .NoRegisteredItem
@@ -52,18 +26,17 @@ CheckRegisteredItem: ; 13345
 	and a
 	ret
 
-.CheckKeyItem:
+.CheckKeyItem
 	ld a, [RegisteredItem]
 	ld hl, KeyItems
-	ld de, 1
-	call IsInArray
+	call IsInSingularArray
 	jr nc, .NoRegisteredItem
 	ld a, [RegisteredItem]
-	ld [CurItem], a
+	ld [wCurItem], a
 	and a
 	ret
 
-.CheckBall:
+.CheckBall
 	ld hl, NumBalls
 	call .CheckRegisteredNo
 	jr nc, .NoRegisteredItem
@@ -73,60 +46,48 @@ CheckRegisteredItem: ; 13345
 	add hl, de
 	add hl, de
 	call .IsSameItem
-	jr c, .NoRegisteredItem
-	ret
-
-.CheckTMHM:
-	jr .NoRegisteredItem
-
-.NoRegisteredItem:
+	ret nc
+.NoRegisteredItem
 	xor a
 	ld [WhichRegisteredItem], a
 	ld [RegisteredItem], a
 	scf
 	ret
-; 133a6
 
-
-.CheckRegisteredNo: ; 133a6
+.CheckRegisteredNo
 	ld a, [WhichRegisteredItem]
 	and REGISTERED_NUMBER
 	dec a
 	cp [hl]
 	jr nc, .NotEnoughItems
-	ld [wd107], a
+	ld [wCurItemQuantity], a
 	and a
 	ret
 
-.NotEnoughItems:
+.NotEnoughItems
 	scf
 	ret
-; 133b6
 
-
-.IsSameItem: ; 133b6
+.IsSameItem
 	ld a, [RegisteredItem]
 	cp [hl]
 	jr nz, .NotSameItem
-	ld [CurItem], a
+	ld [wCurItem], a
 	and a
 	ret
 
-.NotSameItem:
+.NotSameItem
 	scf
 	ret
-; 133c3
 
-
-UseRegisteredItem: ; 133c3
+SelectMenu::
+UseRegisteredItem:
 
 	callba CheckItemMenu
 	ld a, [wItemAttributeParamBuffer]
-	ld hl, .SwitchTo
-	rst JumpTable
-	ret
+	jumptable
 
-.SwitchTo:
+.SwitchTo
 	dw .CantUse
 	dw .NoFunction
 	dw .NoFunction
@@ -134,25 +95,16 @@ UseRegisteredItem: ; 133c3
 	dw .Current
 	dw .Party
 	dw .Overworld
-; 133df
 
-.NoFunction: ; 133df
-	call OpenText
-	call CantUseItem
-	call CloseText
-	and a
-	ret
-; 133ea
-
-.Current: ; 133ea
+.Current
 	call OpenText
 	call DoItemEffect
 	call CloseText
 	and a
+.NoFunction
 	ret
-; 133f5
 
-.Party: ; 133f5
+.Party
 	call RefreshScreen
 	call FadeToMenu
 	call DoItemEffect
@@ -160,9 +112,8 @@ UseRegisteredItem: ; 133c3
 	call CloseText
 	and a
 	ret
-; 13406
 
-.Overworld: ; 13406
+.Overworld
 	call RefreshScreen
 	ld a, 1
 	ld [wUsingItemWithSelect], a
@@ -176,14 +127,11 @@ UseRegisteredItem: ; 133c3
 	ld a, HMENURETURN_SCRIPT
 	ld [hMenuReturn], a
 	ret
-; 13422
 
-.CantUse: ; 13422
+.CantUse
 	call RefreshScreen
 
 ._cantuse
-	call CantUseItem
 	call CloseText
 	and a
 	ret
-; 1342d

@@ -1,8829 +1,4597 @@
 Trainers:
+JosiahGroup:
+	; JosiahGroup 1
+	db "Josiah@"
 
-; All trainers follow a basic structure:
-	; Name
-		; String in format "TEXT@"
-	; Type
-		; 0: Level, species
-		; 1: Level, species, moves
-		; 2: Level, species, item
-		; 3: Level, species, item, moves
-	; Party
-		; Up to six monsters following the data type
-	; $ff
+	db 1
 
-
-FalknerGroup:
-; ================================
-; ================
-
-	; FALKNER (1)
-	db "FALKNER@"
-	db 1 ; moves
-
-	; party
-
-	db 7, PIDGEY
-		db TACKLE
-		db MUD_SLAP
-		db 0
-		db 0
-
-	db 9, PIDGEOTTO
-		db TACKLE
-		db MUD_SLAP
-		db GUST
-		db 0
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-WhitneyGroup:
-; ================================
-; ================
-
-	; WHITNEY (1)
-	db "WHITNEY@"
-	db 1 ; moves
-
-	; party
-
-	db 18, CLEFAIRY
-		db DOUBLESLAP
-		db MIMIC
-		db ENCORE
-		db METRONOME
-
-	db 20, MILTANK
-		db ROLLOUT
-		db ATTRACT
-		db STOMP
-		db MILK_DRINK
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-BugsyGroup:
-; ================================
-; ================
-
-	; BUGSY (1)
-	db "BUGSY@"
-	db 1 ; moves
-
-	; party
-
-	db 14, METAPOD
-		db TACKLE
-		db STRING_SHOT
-		db HARDEN
-		db 0
-
-	db 14, KAKUNA
-		db POISON_STING
-		db STRING_SHOT
-		db HARDEN
-		db 0
-
-	db 16, SCYTHER
-		db QUICK_ATTACK
-		db LEER
-		db FURY_CUTTER
-		db 0
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-MortyGroup:
-; ================================
-; ================
-
-	; MORTY (1)
-	db "MORTY@"
-	db 1 ; moves
-
-	; party
-
-	db 21, GASTLY
-		db LICK
-		db SPITE
-		db MEAN_LOOK
-		db CURSE
-
-	db 21, HAUNTER
-		db HYPNOSIS
-		db MIMIC
-		db CURSE
-		db NIGHT_SHADE
-
-	db 25, GENGAR
-		db HYPNOSIS
-		db SHADOW_BALL
-		db MEAN_LOOK
-		db DREAM_EATER
-
-	db 23, HAUNTER
-		db SPITE
-		db MEAN_LOOK
-		db MIMIC
-		db NIGHT_SHADE
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-PryceGroup:
-; ================================
-; ================
-
-	; PRYCE (1)
-	db "PRYCE@"
-	db 1 ; moves
-
-	; party
-
-	db 27, SEEL
-		db HEADBUTT
-		db ICY_WIND
-		db AURORA_BEAM
-		db REST
-
-	db 29, DEWGONG
-		db HEADBUTT
-		db ICY_WIND
-		db AURORA_BEAM
-		db REST
-
-	db 31, PILOSWINE
-		db ICY_WIND
-		db FURY_ATTACK
-		db MIST
-		db BLIZZARD
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-JasmineGroup:
-; ================================
-; ================
-
-	; JASMINE (1)
-	db "JASMINE@"
-	db 1 ; moves
-
-	; party
-
-	db 30, MAGNEMITE
-		db THUNDERBOLT
-		db SUPERSONIC
-		db SONICBOOM
-		db THUNDER_WAVE
-
-	db 30, MAGNEMITE
-		db THUNDERBOLT
-		db SUPERSONIC
-		db SONICBOOM
-		db THUNDER_WAVE
-
-	db 35, STEELIX
-		db SCREECH
+	db 10, CHARMANDER
+		db EMBER
+		db SCRATCH
 		db SUNNY_DAY
+		db METAL_CLAW
+
+	db 12, SLUGMA
+		db EMBER
 		db ROCK_THROW
+		db SUNNY_DAY
+		db SMOG
+
+	db -1
+
+	; JosiahGroup 2
+	db "Josiah@"
+
+	db 1
+
+	db 48, CHARIZARD
+		db FLAMETHROWER
+		db SLASH
+		db SUNNY_DAY
+		db METAL_CLAW
+
+	db 50, MAGCARGO
+		db FLAMETHROWER
+		db ROCK_SLIDE
+		db SUNNY_DAY
+		db MUSTARD_GAS
+
+	db -1
+
+BrooklynGroup:
+	; BrooklynGroup 1
+	db "Brooklyn@"
+
+	db 1
+
+	db 21, JIGGLYPUFF
+		db POUND
+		db DOUBLESLAP
+		db SING
+		db DEFENSE_CURL
+
+	db 22, MARILL
+		db BUBBLEBEAM
+		db TAIL_WHIP
+		db DEFENSE_CURL
 		db IRON_TAIL
 
-	db $ff ; end
-
-; ================
-; ================================
-
-
-ChuckGroup:
-; ================================
-; ================
-
-	; CHUCK (1)
-	db "CHUCK@"
-	db 1 ; moves
-
-	; party
-
-	db 27, PRIMEAPE
-		db LEER
-		db RAGE
-		db KARATE_CHOP
-		db FURY_SWIPES
-
-	db 30, POLIWRATH
-		db HYPNOSIS
-		db MIND_READER
-		db SURF
-		db DYNAMICPUNCH
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-ClairGroup:
-; ================================
-; ================
-
-	; CLAIR (1)
-	db "CLAIR@"
-	db 1 ; moves
-
-	; party
-
-	db 37, DRAGONAIR
-		db THUNDER_WAVE
-		db SURF
-		db SLAM
-		db DRAGONBREATH
-
-	db 37, DRAGONAIR
-		db THUNDER_WAVE
-		db THUNDERBOLT
-		db SLAM
-		db DRAGONBREATH
-
-	db 37, DRAGONAIR
-		db THUNDER_WAVE
-		db ICE_BEAM
-		db SLAM
-		db DRAGONBREATH
-
-	db 40, KINGDRA
-		db SMOKESCREEN
-		db SURF
-		db HYPER_BEAM
-		db DRAGONBREATH
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-Rival1Group:
-; ================================
-; ================
-
-	; RIVAL1 (1)
-	db "?@"
-	db 0 ; normal
-
-	; party
-	db 5, CHIKORITA
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL1 (2)
-	db "?@"
-	db 0 ; normal
-
-	; party
-	db 5, CYNDAQUIL
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL1 (3)
-	db "?@"
-	db 0 ; normal
-
-	; party
-	db 5, TOTODILE
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL1 (4)
-	db "?@"
-	db 0 ; normal
-
-	; party
-	db 12, GASTLY
-	db 14, ZUBAT
-	db 16, BAYLEEF
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL1 (5)
-	db "?@"
-	db 0 ; normal
-
-	; party
-	db 12, GASTLY
-	db 14, ZUBAT
-	db 16, QUILAVA
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL1 (6)
-	db "?@"
-	db 0 ; normal
-
-	; party
-	db 12, GASTLY
-	db 14, ZUBAT
-	db 16, CROCONAW
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL1 (7)
-	db "?@"
-	db 1 ; moves
-
-	; party
-
-	db 20, HAUNTER
-		db LICK
-		db SPITE
-		db MEAN_LOOK
-		db CURSE
-
-	db 18, MAGNEMITE
-		db TACKLE
-		db THUNDERSHOCK
-		db SUPERSONIC
-		db SONICBOOM
-
-	db 20, ZUBAT
-		db LEECH_LIFE
-		db SUPERSONIC
-		db BITE
-		db CONFUSE_RAY
-
-	db 22, BAYLEEF
-		db GROWL
-		db REFLECT
-		db RAZOR_LEAF
-		db POISONPOWDER
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL1 (8)
-	db "?@"
-	db 1 ; moves
-
-	; party
-
-	db 20, HAUNTER
-		db LICK
-		db SPITE
-		db MEAN_LOOK
-		db CURSE
-
-	db 18, MAGNEMITE
-		db TACKLE
-		db THUNDERSHOCK
-		db SUPERSONIC
-		db SONICBOOM
-
-	db 20, ZUBAT
-		db LEECH_LIFE
-		db SUPERSONIC
-		db BITE
-		db CONFUSE_RAY
-
-	db 22, QUILAVA
-		db LEER
-		db SMOKESCREEN
-		db EMBER
-		db QUICK_ATTACK
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL1 (9)
-	db "?@"
-	db 1 ; moves
-
-	; party
-
-	db 20, HAUNTER
-		db LICK
-		db SPITE
-		db MEAN_LOOK
-		db CURSE
-
-	db 18, MAGNEMITE
-		db TACKLE
-		db THUNDERSHOCK
-		db SUPERSONIC
-		db SONICBOOM
-
-	db 20, ZUBAT
-		db LEECH_LIFE
-		db SUPERSONIC
-		db BITE
-		db CONFUSE_RAY
-
-	db 22, CROCONAW
-		db LEER
-		db RAGE
-		db WATER_GUN
-		db BITE
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL1 (10)
-	db "?@"
-	db 1 ; moves
-
-	; party
-
-	db 30, GOLBAT
-		db LEECH_LIFE
-		db BITE
-		db CONFUSE_RAY
-		db WING_ATTACK
-
-	db 28, MAGNEMITE
-		db TACKLE
-		db THUNDERSHOCK
-		db SONICBOOM
-		db THUNDER_WAVE
-
-	db 30, HAUNTER
-		db LICK
-		db MEAN_LOOK
-		db CURSE
-		db SHADOW_BALL
-
-	db 32, SNEASEL
-		db LEER
-		db QUICK_ATTACK
-		db SCREECH
-		db FAINT_ATTACK
-
-	db 32, MEGANIUM
-		db REFLECT
-		db RAZOR_LEAF
-		db POISONPOWDER
-		db BODY_SLAM
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL1 (11)
-	db "?@"
-	db 1 ; moves
-
-	; party
-
-	db 30, GOLBAT
-		db LEECH_LIFE
-		db BITE
-		db CONFUSE_RAY
-		db WING_ATTACK
-
-	db 28, MAGNEMITE
-		db TACKLE
-		db THUNDERSHOCK
-		db SONICBOOM
-		db THUNDER_WAVE
-
-	db 30, HAUNTER
-		db LICK
-		db MEAN_LOOK
-		db CURSE
-		db SHADOW_BALL
-
-	db 32, SNEASEL
-		db LEER
-		db QUICK_ATTACK
-		db SCREECH
-		db FAINT_ATTACK
-
-	db 32, QUILAVA
-		db SMOKESCREEN
-		db EMBER
-		db QUICK_ATTACK
-		db FLAME_WHEEL
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL1 (12)
-	db "?@"
-	db 1 ; moves
-
-	; party
-
-	db 30, GOLBAT
-		db LEECH_LIFE
-		db BITE
-		db CONFUSE_RAY
-		db WING_ATTACK
-
-	db 28, MAGNEMITE
-		db TACKLE
-		db THUNDERSHOCK
-		db SONICBOOM
-		db THUNDER_WAVE
-
-	db 30, HAUNTER
-		db LICK
-		db MEAN_LOOK
-		db CURSE
-		db SHADOW_BALL
-
-	db 32, SNEASEL
-		db LEER
-		db QUICK_ATTACK
-		db SCREECH
-		db FAINT_ATTACK
-
-	db 32, FERALIGATR
-		db RAGE
-		db WATER_GUN
-		db BITE
-		db SCARY_FACE
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL1 (13)
-	db "?@"
-	db 1 ; moves
-
-	; party
-
-	db 34, SNEASEL
-		db QUICK_ATTACK
-		db SCREECH
-		db FAINT_ATTACK
-		db FURY_CUTTER
-
-	db 36, GOLBAT
-		db LEECH_LIFE
-		db BITE
-		db CONFUSE_RAY
-		db WING_ATTACK
-
-	db 35, MAGNETON
-		db THUNDERSHOCK
-		db SONICBOOM
-		db THUNDER_WAVE
-		db SWIFT
-
-	db 35, HAUNTER
-		db MEAN_LOOK
-		db CURSE
-		db SHADOW_BALL
-		db CONFUSE_RAY
-
-	db 35, KADABRA
-		db DISABLE
-		db PSYBEAM
-		db RECOVER
-		db FUTURE_SIGHT
-
-	db 38, MEGANIUM
-		db REFLECT
-		db RAZOR_LEAF
-		db POISONPOWDER
-		db BODY_SLAM
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL1 (14)
-	db "?@"
-	db 1 ; moves
-
-	; party
-
-	db 34, SNEASEL
-		db QUICK_ATTACK
-		db SCREECH
-		db FAINT_ATTACK
-		db FURY_CUTTER
-
-	db 36, GOLBAT
-		db LEECH_LIFE
-		db BITE
-		db CONFUSE_RAY
-		db WING_ATTACK
-
-	db 35, MAGNETON
-		db THUNDERSHOCK
-		db SONICBOOM
-		db THUNDER_WAVE
-		db SWIFT
-
-	db 35, HAUNTER
-		db MEAN_LOOK
-		db CURSE
-		db SHADOW_BALL
-		db CONFUSE_RAY
-
-	db 35, KADABRA
-		db DISABLE
-		db PSYBEAM
-		db RECOVER
-		db FUTURE_SIGHT
-
-	db 38, TYPHLOSION
-		db SMOKESCREEN
-		db EMBER
-		db QUICK_ATTACK
-		db FLAME_WHEEL
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL1 (15)
-	db "?@"
-	db 1 ; moves
-
-	; party
-
-	db 34, SNEASEL
-		db QUICK_ATTACK
-		db SCREECH
-		db FAINT_ATTACK
-		db FURY_CUTTER
-
-	db 36, GOLBAT
-		db LEECH_LIFE
-		db BITE
-		db CONFUSE_RAY
-		db WING_ATTACK
-
-	db 34, MAGNETON
-		db THUNDERSHOCK
-		db SONICBOOM
-		db THUNDER_WAVE
-		db SWIFT
-
-	db 35, HAUNTER
-		db MEAN_LOOK
-		db CURSE
-		db SHADOW_BALL
-		db CONFUSE_RAY
-
-	db 35, KADABRA
-		db DISABLE
-		db PSYBEAM
-		db RECOVER
-		db FUTURE_SIGHT
-
-	db 38, FERALIGATR
-		db RAGE
-		db WATER_GUN
-		db SCARY_FACE
-		db SLASH
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-PokemonProfGroup:
-; ================================
-; ================
-; ================================
-
-
-WillGroup:
-; ================================
-; ================
-
-	; WILL (1)
-	db "WILL@"
-	db 1 ; moves
-
-	; party
-
-	db 40, XATU
-		db QUICK_ATTACK
-		db FUTURE_SIGHT
-		db CONFUSE_RAY
-		db PSYCHIC_M
-
-	db 41, JYNX
+	db 24, WIGGLYTUFF
+		db POUND
 		db DOUBLESLAP
-		db LOVELY_KISS
-		db ICE_PUNCH
-		db PSYCHIC_M
-
-	db 41, EXEGGUTOR
-		db REFLECT
-		db LEECH_SEED
-		db EGG_BOMB
-		db PSYCHIC_M
-
-	db 41, SLOWBRO
-		db CURSE
-		db AMNESIA
-		db BODY_SLAM
-		db PSYCHIC_M
-
-	db 42, XATU
-		db QUICK_ATTACK
-		db FUTURE_SIGHT
-		db CONFUSE_RAY
-		db PSYCHIC_M
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-PKMNTrainerGroup:
-; ================================
-; ================
-
-	; CAL (1)
-	db "CAL@"
-	db 0 ; normal
-
-	; party
-	db 10, CHIKORITA
-	db 10, CYNDAQUIL
-	db 10, TOTODILE
-
-	db $ff ; end
-
-; ================
-
-	; CAL (2)
-	db "CAL@"
-	db 0 ; normal
-
-	; party
-	db 30, BAYLEEF
-	db 30, QUILAVA
-	db 30, CROCONAW
-
-	db $ff ; end
-
-; ================
-
-	; CAL (3)
-	db "CAL@"
-	db 0 ; normal
-
-	; party
-	db 50, MEGANIUM
-	db 50, TYPHLOSION
-	db 50, FERALIGATR
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-BrunoGroup:
-; ================================
-; ================
-
-	; BRUNO (1)
-	db "BRUNO@"
-	db 1 ; moves
-
-	; party
-
-	db 42, HITMONTOP
-		db PURSUIT
-		db QUICK_ATTACK
-		db DIG
-		db DETECT
-
-	db 42, HITMONLEE
-		db SWAGGER
-		db DOUBLE_KICK
-		db HI_JUMP_KICK
-		db FORESIGHT
-
-	db 42, HITMONCHAN
-		db THUNDERPUNCH
-		db ICE_PUNCH
-		db FIRE_PUNCH
-		db MACH_PUNCH
-
-	db 43, ONIX
-		db BIND
-		db EARTHQUAKE
-		db SANDSTORM
-		db ROCK_SLIDE
-
-	db 46, MACHAMP
-		db ROCK_SLIDE
-		db FORESIGHT
-		db VITAL_THROW
-		db CROSS_CHOP
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-KarenGroup:
-; ================================
-; ================
-
-	; KAREN (1)
-	db "KAREN@"
-	db 1 ; moves
-
-	; party
-
-	db 42, UMBREON
-		db SAND_ATTACK
-		db CONFUSE_RAY
-		db FAINT_ATTACK
-		db MEAN_LOOK
-
-	db 42, VILEPLUME
-		db STUN_SPORE
-		db ACID
-		db MOONLIGHT
-		db PETAL_DANCE
-
-	db 45, GENGAR
-		db LICK
-		db SPITE
-		db CURSE
-		db DESTINY_BOND
-
-	db 44, MURKROW
-		db QUICK_ATTACK
-		db WHIRLWIND
-		db PURSUIT
-		db FAINT_ATTACK
-
-	db 47, HOUNDOOM
-		db ROAR
-		db PURSUIT
-		db FLAMETHROWER
-		db CRUNCH
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-KogaGroup:
-; ================================
-; ================
-
-	; KOGA (1)
-	db "KOGA@"
-	db 1 ; moves
-
-	; party
-
-	db 40, ARIADOS
-		db DOUBLE_TEAM
-		db SPIDER_WEB
-		db BATON_PASS
-		db GIGA_DRAIN
-
-	db 41, VENOMOTH
-		db SUPERSONIC
-		db GUST
-		db PSYCHIC_M
-		db TOXIC
-
-	db 43, FORRETRESS
-		db PROTECT
-		db SWIFT
-		db EXPLOSION
-		db SPIKES
-
-	db 42, MUK
-		db MINIMIZE
-		db ACID_ARMOR
-		db SLUDGE_BOMB
-		db TOXIC
-
-	db 44, CROBAT
-		db DOUBLE_TEAM
-		db QUICK_ATTACK
-		db WING_ATTACK
-		db TOXIC
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-ChampionGroup:
-; ================================
-; ================
-
-	; CHAMPION (1)
-	db "LANCE@"
-	db 1 ; moves
-
-	; party
-
-	db 44, GYARADOS
-		db FLAIL
-		db RAIN_DANCE
-		db SURF
-		db HYPER_BEAM
-
-	db 47, DRAGONITE
-		db THUNDER_WAVE
-		db TWISTER
-		db THUNDER
-		db HYPER_BEAM
-
-	db 47, DRAGONITE
-		db THUNDER_WAVE
-		db TWISTER
-		db BLIZZARD
-		db HYPER_BEAM
-
-	db 46, AERODACTYL
-		db WING_ATTACK
-		db ANCIENTPOWER
-		db ROCK_SLIDE
-		db HYPER_BEAM
-
-	db 46, CHARIZARD
-		db FLAMETHROWER
-		db WING_ATTACK
-		db SLASH
-		db HYPER_BEAM
-
-	db 50, DRAGONITE
-		db FIRE_BLAST
-		db SAFEGUARD
-		db OUTRAGE
-		db HYPER_BEAM
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-BrockGroup:
-; ================================
-; ================
-
-	; BROCK (1)
-	db "BROCK@"
-	db 1 ; moves
-
-	; party
-
-	db 41, GRAVELER
 		db DEFENSE_CURL
-		db ROCK_SLIDE
 		db ROLLOUT
-		db EARTHQUAKE
 
-	db 41, RHYHORN
-		db FURY_ATTACK
-		db SCARY_FACE
-		db EARTHQUAKE
-		db HORN_DRILL
+	db -1
 
-	db 42, OMASTAR
-		db BITE
-		db SURF
-		db PROTECT
-		db SPIKE_CANNON
+RinjiGroup:
+	; RinjiGroup 1
+	db "Rinji@"
 
-	db 44, ONIX
-		db BIND
-		db ROCK_SLIDE
-		db BIDE
-		db SANDSTORM
+	db 1
 
-	db 42, KABUTOPS
-		db SLASH
-		db SURF
-		db ENDURE
-		db GIGA_DRAIN
+	db 17, LOMBRE
+		db LICK
+		db WATER_GUN
+		db ABSORB
+		db GROWL
 
-	db $ff ; end
-
-; ================
-; ================================
-
-
-MistyGroup:
-; ================================
-; ================
-
-	; MISTY (1)
-	db "MISTY@"
-	db 1 ; moves
-
-	; party
-
-	db 42, GOLDUCK
-		db SURF
-		db DISABLE
-		db PSYCH_UP
-		db PSYCHIC_M
-
-	db 42, QUAGSIRE
-		db SURF
-		db AMNESIA
-		db EARTHQUAKE
-		db RAIN_DANCE
-
-	db 44, LAPRAS
-		db SURF
-		db PERISH_SONG
-		db BLIZZARD
-		db RAIN_DANCE
-
-	db 47, STARMIE
-		db SURF
-		db CONFUSE_RAY
-		db RECOVER
-		db ICE_BEAM
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-LtSurgeGroup:
-; ================================
-; ================
-
-	; LT_SURGE (1)
-	db "LT.SURGE@"
-	db 1 ; moves
-
-	; party
-
-	db 44, RAICHU
-		db THUNDER_WAVE
-		db QUICK_ATTACK
-		db THUNDERBOLT
-		db THUNDER
-
-	db 40, ELECTRODE
-		db SCREECH
-		db DOUBLE_TEAM
-		db SWIFT
-		db EXPLOSION
-
-	db 40, MAGNETON
-		db LOCK_ON
-		db DOUBLE_TEAM
-		db SWIFT
-		db ZAP_CANNON
-
-	db 40, ELECTRODE
-		db SCREECH
-		db DOUBLE_TEAM
-		db SWIFT
-		db EXPLOSION
-
-	db 46, ELECTABUZZ
-		db QUICK_ATTACK
-		db THUNDERPUNCH
-		db LIGHT_SCREEN
-		db THUNDER
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-ScientistGroup:
-; ================================
-; ================
-
-	; SCIENTIST (1)
-	db "ROSS@"
-	db 0 ; normal
-
-	; party
-	db 22, KOFFING
-	db 22, KOFFING
-
-	db $ff ; end
-
-; ================
-
-	; SCIENTIST (2)
-	db "MITCH@"
-	db 0 ; normal
-
-	; party
-	db 24, DITTO
-
-	db $ff ; end
-
-; ================
-
-	; SCIENTIST (3)
-	db "JED@"
-	db 0 ; normal
-
-	; party
-	db 20, MAGNEMITE
-	db 20, MAGNEMITE
-	db 20, MAGNEMITE
-
-	db $ff ; end
-
-; ================
-
-	; SCIENTIST (4)
-	db "MARC@"
-	db 0 ; normal
-
-	; party
-	db 27, MAGNEMITE
-	db 27, MAGNEMITE
-	db 27, MAGNEMITE
-
-	db $ff ; end
-
-; ================
-
-	; SCIENTIST (5)
-	db "RICH@"
-	db 1 ; moves
-
-	; party
-
-	db 30, PORYGON
-		db CONVERSION
-		db CONVERSION2
-		db RECOVER
-		db TRI_ATTACK
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-ErikaGroup:
-; ================================
-; ================
-
-	; ERIKA (1)
-	db "ERIKA@"
-	db 1 ; moves
-
-	; party
-
-	db 42, TANGELA
-		db VINE_WHIP
-		db BIND
-		db GIGA_DRAIN
+	db 18, TANGELA
 		db SLEEP_POWDER
-
-	db 41, JUMPLUFF
-		db MEGA_DRAIN
-		db LEECH_SEED
-		db COTTON_SPORE
-		db GIGA_DRAIN
-
-	db 46, VICTREEBEL
-		db SUNNY_DAY
-		db SYNTHESIS
-		db ACID
-		db RAZOR_LEAF
-
-	db 46, BELLOSSOM
-		db SUNNY_DAY
-		db SYNTHESIS
-		db PETAL_DANCE
-		db SOLARBEAM
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-YoungsterGroup:
-; ================================
-; ================
-
-	; YOUNGSTER (1)
-	db "JOEY@"
-	db 0 ; normal
-
-	; party
-	db 4, RATTATA
-
-	db $ff ; end
-
-; ================
-
-	; YOUNGSTER (2)
-	db "MIKEY@"
-	db 0 ; normal
-
-	; party
-	db 2, PIDGEY
-	db 4, RATTATA
-
-	db $ff ; end
-
-; ================
-
-	; YOUNGSTER (3)
-	db "ALBERT@"
-	db 0 ; normal
-
-	; party
-	db 6, RATTATA
-	db 8, ZUBAT
-
-	db $ff ; end
-
-; ================
-
-	; YOUNGSTER (4)
-	db "GORDON@"
-	db 0 ; normal
-
-	; party
-	db 10, WOOPER
-
-	db $ff ; end
-
-; ================
-
-	; YOUNGSTER (5)
-	db "SAMUEL@"
-	db 0 ; normal
-
-	; party
-	db 7, RATTATA
-	db 10, SANDSHREW
-	db 8, SPEAROW
-	db 8, SPEAROW
-
-	db $ff ; end
-
-; ================
-
-	; YOUNGSTER (6)
-	db "IAN@"
-	db 0 ; normal
-
-	; party
-	db 10, MANKEY
-	db 12, DIGLETT
-
-	db $ff ; end
-
-; ================
-
-	; YOUNGSTER (7)
-	db "JOEY@"
-	db 0 ; normal
-
-	; party
-	db 15, RATTATA
-
-	db $ff ; end
-
-; ================
-
-	; YOUNGSTER (8)
-	db "JOEY@"
-	db 1 ; moves
-
-	; party
-
-	db 21, RATICATE
-		db TAIL_WHIP
-		db QUICK_ATTACK
-		db HYPER_FANG
-		db SCARY_FACE
-
-	db $ff ; end
-
-; ================
-
-	; YOUNGSTER (9)
-	db "WARREN@"
-	db 0 ; normal
-
-	; party
-	db 35, FEAROW
-
-	db $ff ; end
-
-; ================
-
-	; YOUNGSTER (10)
-	db "JIMMY@"
-	db 0 ; normal
-
-	; party
-	db 33, RATICATE
-	db 33, ARBOK
-
-	db $ff ; end
-
-; ================
-
-	; YOUNGSTER (11)
-	db "OWEN@"
-	db 0 ; normal
-
-	; party
-	db 35, GROWLITHE
-
-	db $ff ; end
-
-; ================
-
-	; YOUNGSTER (12)
-	db "JASON@"
-	db 0 ; normal
-
-	; party
-	db 33, SANDSLASH
-	db 33, CROBAT
-
-	db $ff ; end
-
-; ================
-
-	; YOUNGSTER (13)
-	db "JOEY@"
-	db 1 ; moves
-
-	; party
-
-	db 30, RATICATE
-		db TAIL_WHIP
-		db QUICK_ATTACK
-		db HYPER_FANG
-		db PURSUIT
-
-	db $ff ; end
-
-; ================
-
-	; YOUNGSTER (14)
-	db "JOEY@"
-	db 1 ; moves
-
-	; party
-
-	db 37, RATICATE
-		db HYPER_BEAM
-		db QUICK_ATTACK
-		db HYPER_FANG
-		db PURSUIT
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-SchoolboyGroup:
-; ================================
-; ================
-
-	; SCHOOLBOY (1)
-	db "JACK@"
-	db 0 ; normal
-
-	; party
-	db 12, ODDISH
-	db 15, VOLTORB
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (2)
-	db "KIPP@"
-	db 0 ; normal
-
-	; party
-	db 27, VOLTORB
-	db 27, MAGNEMITE
-	db 31, VOLTORB
-	db 31, MAGNETON
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (3)
-	db "ALAN@"
-	db 0 ; normal
-
-	; party
-	db 16, TANGELA
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (4)
-	db "JOHNNY@"
-	db 0 ; normal
-
-	; party
-	db 29, BELLSPROUT
-	db 31, WEEPINBELL
-	db 33, VICTREEBEL
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (5)
-	db "DANNY@"
-	db 0 ; normal
-
-	; party
-	db 31, JYNX
-	db 31, ELECTABUZZ
-	db 31, MAGMAR
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (6)
-	db "TOMMY@"
-	db 0 ; normal
-
-	; party
-	db 32, XATU
-	db 34, ALAKAZAM
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (7)
-	db "DUDLEY@"
-	db 0 ; normal
-
-	; party
-	db 35, ODDISH
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (8)
-	db "JOE@"
-	db 0 ; normal
-
-	; party
-	db 33, TANGELA
-	db 33, VAPOREON
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (9)
-	db "BILLY@"
-	db 0 ; normal
-
-	; party
-	db 27, PARAS
-	db 27, PARAS
-	db 27, POLIWHIRL
-	db 35, DITTO
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (10)
-	db "CHAD@"
-	db 0 ; normal
-
-	; party
-	db 19, MR__MIME
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (11)
-	db "NATE@"
-	db 0 ; normal
-
-	; party
-	db 32, LEDIAN
-	db 32, EXEGGUTOR
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (12)
-	db "RICKY@"
-	db 0 ; normal
-
-	; party
-	db 32, AIPOM
-	db 32, DITTO
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (13)
-	db "JACK@"
-	db 0 ; normal
-
-	; party
-	db 14, ODDISH
-	db 17, VOLTORB
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (14)
-	db "JACK@"
-	db 0 ; normal
-
-	; party
-	db 28, GLOOM
-	db 31, ELECTRODE
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (15)
-	db "ALAN@"
-	db 0 ; normal
-
-	; party
-	db 17, TANGELA
-	db 17, YANMA
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (16)
-	db "ALAN@"
-	db 0 ; normal
-
-	; party
-	db 20, NATU
-	db 22, TANGELA
-	db 20, QUAGSIRE
-	db 25, YANMA
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (17)
-	db "CHAD@"
-	db 0 ; normal
-
-	; party
-	db 19, MR__MIME
-	db 19, MAGNEMITE
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (18)
-	db "CHAD@"
-	db 0 ; normal
-
-	; party
-	db 27, MR__MIME
-	db 31, MAGNETON
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (19)
-	db "JACK@"
-	db 0 ; normal
-
-	; party
-	db 30, GLOOM
-	db 33, GROWLITHE
-	db 33, ELECTRODE
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (20)
-	db "JACK@"
-	db 1 ; moves
-
-	; party
-
-	db 35, ELECTRODE
-		db SCREECH
-		db SONICBOOM
-		db ROLLOUT
-		db LIGHT_SCREEN
-
-	db 35, GROWLITHE
-		db SUNNY_DAY
-		db LEER
-		db TAKE_DOWN
-		db FLAME_WHEEL
-
-	db 37, VILEPLUME
-		db SOLARBEAM
-		db SLEEP_POWDER
-		db ACID
-		db MOONLIGHT
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (21)
-	db "ALAN@"
-	db 0 ; normal
-
-	; party
-	db 27, NATU
-	db 27, TANGELA
-	db 30, QUAGSIRE
-	db 30, YANMA
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (22)
-	db "ALAN@"
-	db 1 ; moves
-
-	; party
-
-	db 35, XATU
-		db PECK
-		db NIGHT_SHADE
-		db SWIFT
-		db FUTURE_SIGHT
-
-	db 32, TANGELA
+		db ABSORB
 		db POISONPOWDER
 		db VINE_WHIP
-		db BIND
-		db MEGA_DRAIN
 
-	db 32, YANMA
-		db QUICK_ATTACK
-		db DOUBLE_TEAM
-		db SONICBOOM
-		db SUPERSONIC
+	db 21, IVYSAUR
+		db CUT
+		db RAZOR_LEAF
+		db POISONPOWDER
+		db LEECH_SEED
 
-	db 35, QUAGSIRE
-		db TAIL_WHIP
-		db SLAM
-		db AMNESIA
-		db EARTHQUAKE
+	db -1
 
-	db $ff ; end
+	; RinjiGroup 2
+	db "Rinji@"
 
-; ================
+	db 1
 
-	; SCHOOLBOY (23)
-	db "CHAD@"
-	db 0 ; normal
-
-	; party
-	db 30, MR__MIME
-	db 34, MAGNETON
-
-	db $ff ; end
-
-; ================
-
-	; SCHOOLBOY (24)
-	db "CHAD@"
-	db 1 ; moves
-
-	; party
-
-	db 34, MR__MIME
-		db PSYCHIC_M
-		db LIGHT_SCREEN
-		db REFLECT
-		db ENCORE
-
-	db 38, MAGNETON
-		db ZAP_CANNON
-		db THUNDER_WAVE
-		db LOCK_ON
-		db SWIFT
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-BirdKeeperGroup:
-; ================================
-; ================
-
-	; BIRD_KEEPER (1)
-	db "ROD@"
-	db 0 ; normal
-
-	; party
-	db 7, PIDGEY
-	db 7, PIDGEY
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (2)
-	db "ABE@"
-	db 0 ; normal
-
-	; party
-	db 9, SPEAROW
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (3)
-	db "BRYAN@"
-	db 0 ; normal
-
-	; party
-	db 12, PIDGEY
-	db 14, PIDGEOTTO
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (4)
-	db "THEO@"
-	db 0 ; normal
-
-	; party
-	db 17, PIDGEY
-	db 15, PIDGEY
-	db 19, PIDGEY
-	db 15, PIDGEY
-	db 15, PIDGEY
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (5)
-	db "TOBY@"
-	db 0 ; normal
-
-	; party
-	db 15, DODUO
-	db 16, DODUO
-	db 17, DODUO
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (6)
-	db "DENIS@"
-	db 0 ; normal
-
-	; party
-	db 18, SPEAROW
-	db 20, FEAROW
-	db 18, SPEAROW
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (7)
-	db "VANCE@"
-	db 0 ; normal
-
-	; party
-	db 25, PIDGEOTTO
-	db 25, PIDGEOTTO
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (8)
-	db "HANK@"
-	db 0 ; normal
-
-	; party
-	db 12, PIDGEY
-	db 34, PIDGEOT
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (9)
-	db "ROY@"
-	db 0 ; normal
-
-	; party
-	db 29, FEAROW
-	db 35, FEAROW
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (10)
-	db "BORIS@"
-	db 0 ; normal
-
-	; party
-	db 30, DODUO
-	db 28, DODUO
-	db 32, DODRIO
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (11)
-	db "BOB@"
-	db 0 ; normal
-
-	; party
-	db 34, NOCTOWL
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (12)
-	db "JOSE@"
-	db 0 ; normal
-
-	; party
-	db 36, FARFETCH_D
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (13)
-	db "PETER@"
-	db 0 ; normal
-
-	; party
-	db 6, PIDGEY
-	db 6, PIDGEY
-	db 8, SPEAROW
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (14)
-	db "JOSE@"
-	db 0 ; normal
-
-	; party
-	db 34, FARFETCH_D
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (15)
-	db "PERRY@"
-	db 0 ; normal
-
-	; party
-	db 34, FARFETCH_D
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (16)
-	db "BRET@"
-	db 0 ; normal
-
-	; party
-	db 32, PIDGEOTTO
-	db 32, FEAROW
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (17)
-	db "JOSE@"
-	db 1 ; moves
-
-	; party
-
-	db 40, FARFETCH_D
-		db FURY_ATTACK
-		db DETECT
-		db FLY
-		db SLASH
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (18)
-	db "VANCE@"
-	db 0 ; normal
-
-	; party
-	db 32, PIDGEOTTO
-	db 32, PIDGEOTTO
-
-	db $ff ; end
-
-; ================
-
-	; BIRD_KEEPER (19)
-	db "VANCE@"
-	db 1 ; moves
-
-	; party
-
-	db 38, PIDGEOT
-		db TOXIC
-		db QUICK_ATTACK
-		db WHIRLWIND
-		db FLY
-
-	db 38, PIDGEOT
-		db SWIFT
-		db DETECT
-		db STEEL_WING
-		db FLY
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-LassGroup:
-; ================================
-; ================
-
-	; LASS (1)
-	db "CARRIE@"
-	db 1 ; moves
-
-	; party
-
-	db 18, SNUBBULL
-		db SCARY_FACE
-		db CHARM
-		db BITE
+	db 49, LUDICOLO
+		db SURF
+		db GIGA_DRAIN
+		db HAIL
 		db LICK
 
-	db $ff ; end
-
-; ================
-
-	; LASS (2)
-	db "BRIDGET@"
-	db 0 ; normal
-
-	; party
-	db 15, JIGGLYPUFF
-	db 15, JIGGLYPUFF
-	db 15, JIGGLYPUFF
-
-	db $ff ; end
-
-; ================
-
-	; LASS (3)
-	db "ALICE@"
-	db 0 ; normal
-
-	; party
-	db 30, GLOOM
-	db 34, ARBOK
-	db 30, GLOOM
-
-	db $ff ; end
-
-; ================
-
-	; LASS (4)
-	db "KRISE@"
-	db 0 ; normal
-
-	; party
-	db 12, ODDISH
-	db 15, CUBONE
-
-	db $ff ; end
-
-; ================
-
-	; LASS (5)
-	db "CONNIE@"
-	db 0 ; normal
-
-	; party
-	db 21, MARILL
-
-	db $ff ; end
-
-; ================
-
-	; LASS (6)
-	db "LINDA@"
-	db 0 ; normal
-
-	; party
-	db 30, BULBASAUR
-	db 32, IVYSAUR
-	db 34, VENUSAUR
-
-	db $ff ; end
-
-; ================
-
-	; LASS (7)
-	db "LAURA@"
-	db 0 ; normal
-
-	; party
-	db 28, GLOOM
-	db 31, PIDGEOTTO
-	db 31, BELLOSSOM
-
-	db $ff ; end
-
-; ================
-
-	; LASS (8)
-	db "SHANNON@"
-	db 0 ; normal
-
-	; party
-	db 29, PARAS
-	db 29, PARAS
-	db 32, PARASECT
-
-	db $ff ; end
-
-; ================
-
-	; LASS (9)
-	db "MICHELLE@"
-	db 0 ; normal
-
-	; party
-	db 32, SKIPLOOM
-	db 33, HOPPIP
-	db 34, JUMPLUFF
-
-	db $ff ; end
-
-; ================
-
-	; LASS (10)
-	db "DANA@"
-	db 1 ; moves
-
-	; party
-
-	db 18, FLAAFFY
-		db TACKLE
-		db GROWL
-		db THUNDERSHOCK
-		db THUNDER_WAVE
-
-	db 18, PSYDUCK
-		db SCRATCH
-		db TAIL_WHIP
-		db DISABLE
-		db CONFUSION
-
-	db $ff ; end
-
-; ================
-
-	; LASS (11)
-	db "ELLEN@"
-	db 0 ; normal
-
-	; party
-	db 30, WIGGLYTUFF
-	db 34, GRANBULL
-
-	db $ff ; end
-
-; ================
-
-	; LASS (12)
-	db "CONNIE@"
-	db 0 ; normal
-
-	; party
-	db 21, MARILL
-
-	db $ff ; end
-
-; ================
-
-	; LASS (13)
-	db "CONNIE@"
-	db 0 ; normal
-
-	; party
-	db 21, MARILL
-
-	db $ff ; end
-
-; ================
-
-	; LASS (14)
-	db "DANA@"
-	db 1 ; moves
-
-	; party
-
-	db 21, FLAAFFY
-		db TACKLE
-		db GROWL
-		db THUNDERSHOCK
-		db THUNDER_WAVE
-
-	db 21, PSYDUCK
-		db SCRATCH
-		db TAIL_WHIP
-		db DISABLE
-		db CONFUSION
-
-	db $ff ; end
-
-; ================
-
-	; LASS (15)
-	db "DANA@"
-	db 1 ; moves
-
-	; party
-
-	db 29, PSYDUCK
-		db SCRATCH
-		db DISABLE
-		db CONFUSION
-		db SCREECH
-
-	db 29, AMPHAROS
-		db TACKLE
-		db THUNDERSHOCK
-		db THUNDER_WAVE
-		db COTTON_SPORE
-
-	db $ff ; end
-
-; ================
-
-	; LASS (16)
-	db "DANA@"
-	db 1 ; moves
-
-	; party
-
-	db 32, PSYDUCK
-		db SCRATCH
-		db DISABLE
-		db CONFUSION
-		db SCREECH
-
-	db 32, AMPHAROS
-		db TACKLE
-		db THUNDERPUNCH
-		db THUNDER_WAVE
-		db COTTON_SPORE
-
-	db $ff ; end
-
-; ================
-
-	; LASS (17)
-	db "DANA@"
-	db 1 ; moves
-
-	; party
-
-	db 36, AMPHAROS
-		db SWIFT
-		db THUNDERPUNCH
-		db THUNDER_WAVE
-		db COTTON_SPORE
-
-	db 36, GOLDUCK
-		db DISABLE
-		db SURF
-		db PSYCHIC_M
-		db SCREECH
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-JanineGroup:
-; ================================
-; ================
-
-	; JANINE (1)
-	db "JANINE@"
-	db 1 ; moves
-
-	; party
-
-	db 36, CROBAT
-		db SCREECH
-		db SUPERSONIC
-		db CONFUSE_RAY
-		db WING_ATTACK
-
-	db 36, WEEZING
-		db SMOG
-		db SLUDGE_BOMB
-		db TOXIC
-		db EXPLOSION
-
-	db 36, WEEZING
-		db SMOG
-		db SLUDGE_BOMB
-		db TOXIC
-		db EXPLOSION
-
-	db 33, ARIADOS
-		db SCARY_FACE
-		db GIGA_DRAIN
-		db STRING_SHOT
-		db NIGHT_SHADE
-
-	db 39, VENOMOTH
-		db FORESIGHT
-		db DOUBLE_TEAM
-		db GUST
-		db PSYCHIC_M
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-CooltrainerMGroup:
-; ================================
-; ================
-
-	; COOLTRAINERM (1)
-	db "NICK@"
-	db 1 ; moves
-
-	; party
-
-	db 26, CHARMANDER
-		db EMBER
-		db SMOKESCREEN
-		db RAGE
-		db SCARY_FACE
-
-	db 26, SQUIRTLE
-		db WITHDRAW
-		db WATER_GUN
-		db BITE
-		db CURSE
-
-	db 26, BULBASAUR
-		db LEECH_SEED
-		db POISONPOWDER
+	db 51, TANGROWTH
 		db SLEEP_POWDER
-		db RAZOR_LEAF
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (2)
-	db "AARON@"
-	db 0 ; normal
-
-	; party
-	db 24, IVYSAUR
-	db 24, CHARMELEON
-	db 24, WARTORTLE
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (3)
-	db "PAUL@"
-	db 0 ; normal
-
-	; party
-	db 34, DRATINI
-	db 34, DRATINI
-	db 34, DRATINI
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (4)
-	db "CODY@"
-	db 0 ; normal
-
-	; party
-	db 34, HORSEA
-	db 36, SEADRA
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (5)
-	db "MIKE@"
-	db 0 ; normal
-
-	; party
-	db 37, DRAGONAIR
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (6)
-	db "GAVEN@"
-	db 1 ; moves
-
-	; party
-
-	db 35, VICTREEBEL
-		db WRAP
-		db TOXIC
-		db ACID
-		db RAZOR_LEAF
-
-	db 35, KINGLER
-		db BUBBLEBEAM
-		db STOMP
-		db GUILLOTINE
-		db PROTECT
-
-	db 35, FLAREON
-		db SAND_ATTACK
-		db QUICK_ATTACK
-		db BITE
-		db FIRE_SPIN
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (7)
-	db "GAVEN@"
-	db 3 ; item + moves
-
-	; party
-
-	db 39, VICTREEBEL, NO_ITEM
 		db GIGA_DRAIN
-		db TOXIC
 		db SLUDGE_BOMB
-		db RAZOR_LEAF
+		db SPRING_BUDS
 
-	db 39, KINGLER, KINGS_ROCK
-		db SURF
-		db STOMP
-		db GUILLOTINE
-		db BLIZZARD
+	db 52, VENUSAUR
+		db TOXIC
+		db SOLARBEAM
+		db SUNNY_DAY
+		db SPRING_BUDS
 
-	db 39, FLAREON, NO_ITEM
-		db FLAMETHROWER
-		db QUICK_ATTACK
+	db -1
+
+EdisonGroup:
+	; EdisonGroup 1
+	db "Edison@"
+
+	db 1
+
+	db 26, HOUNDOUR
 		db BITE
-		db FIRE_SPIN
+		db EMBER
+		db ROAR
+		db SMOG
 
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (8)
-	db "RYAN@"
-	db 1 ; moves
-
-	; party
-
-	db 25, PIDGEOT
-		db SAND_ATTACK
+	db 28, SNEASEL
+		db FEINT_ATTACK
+		db METAL_CLAW
+		db AGILITY
 		db QUICK_ATTACK
-		db WHIRLWIND
-		db WING_ATTACK
 
-	db 27, ELECTABUZZ
-		db THUNDERPUNCH
-		db LIGHT_SCREEN
-		db SWIFT
+	db 30, UMBREON
+		db FEINT_ATTACK
+		db CONFUSE_RAY
 		db SCREECH
+		db SUBSTITUTE
 
-	db $ff ; end
+	db -1
 
-; ================
+	; EdisonGroup 2
+	db "Edison@"
 
-	; COOLTRAINERM (9)
-	db "JAKE@"
-	db 1 ; moves
+	db 1
 
-	; party
+	db 51, HOUNDOOM
+		db CRUNCH
+		db FLAMETHROWER
+		db ROAR
+		db SMOG
 
-	db 33, PARASECT
-		db LEECH_LIFE
-		db SPORE
+	db 52, WEAVILE
+		db FEINT_ATTACK
+		db METAL_CLAW
+		db AGILITY
 		db SLASH
+
+	db 53, UMBREON
+		db FEINT_ATTACK
+		db CONFUSE_RAY
+		db SCREECH
+		db SUBSTITUTE
+
+	db -1
+
+AyakaGroup:
+	; AyakaGroup 1
+	db "Ayaka@"
+
+	db 1
+
+	db 36, HAUNTER
+		db CONFUSION
+		db HYPNOSIS
+		db MUSTARD_GAS
+		db POISON_GAS
+
+	db 37, TORKOAL
+		db MUSTARD_GAS
+		db FLAMETHROWER
+		db SMOKESCREEN
+		db BODY_SLAM
+
+	db 39, WEEZING
+		db MUSTARD_GAS
+		db POISON_GAS
+		db SLUDGE_BOMB
+		db EXPLOSION
+
+	db 41, DRAPION
+		db NIGHT_SLASH
+		db EARTHQUAKE
+		db SLUDGE_BOMB
+		db HIDDEN_POWER
+
+	db -1
+	
+BruceGroup:
+	; BruceGroup 1
+	db "Bruce@"
+
+	db 1
+
+	db 50, MAWILE
+		db PLAY_ROUGH
+		db CRUNCH
+		db SWAGGER
 		db SWORDS_DANCE
 
-	db 35, GOLDUCK
-		db CONFUSION
-		db SCREECH
-		db PSYCH_UP
-		db FURY_SWIPES
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (10)
-	db "GAVEN@"
-	db 1 ; moves
-
-	; party
-
-	db 32, VICTREEBEL
-		db WRAP
-		db TOXIC
-		db ACID
-		db RAZOR_LEAF
-
-	db 32, KINGLER
-		db BUBBLEBEAM
-		db STOMP
-		db GUILLOTINE
-		db PROTECT
-
-	db 32, FLAREON
-		db SAND_ATTACK
-		db QUICK_ATTACK
-		db BITE
-		db FIRE_SPIN
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (11)
-	db "BLAKE@"
-	db 1 ; moves
-
-	; party
-
-	db 33, MAGNETON
-		db THUNDERBOLT
-		db SUPERSONIC
-		db SWIFT
-		db SCREECH
-
-	db 31, QUAGSIRE
-		db WATER_GUN
-		db SLAM
-		db AMNESIA
+	db 52, AGGRON
+		db METALLURGY
 		db EARTHQUAKE
-
-	db 31, EXEGGCUTE
-		db LEECH_SEED
-		db CONFUSION
-		db SLEEP_POWDER
-		db SOLARBEAM
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (12)
-	db "BRIAN@"
-	db 1 ; moves
-
-	; party
-
-	db 35, SANDSLASH
-		db SAND_ATTACK
-		db POISON_STING
-		db SLASH
-		db SWIFT
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (13)
-	db "ERICK@"
-	db 0 ; normal
-
-	; party
-	db 10, BULBASAUR
-	db 10, CHARMANDER
-	db 10, SQUIRTLE
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (14)
-	db "ANDY@"
-	db 0 ; normal
-
-	; party
-	db 10, BULBASAUR
-	db 10, CHARMANDER
-	db 10, SQUIRTLE
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (15)
-	db "TYLER@"
-	db 0 ; normal
-
-	; party
-	db 10, BULBASAUR
-	db 10, CHARMANDER
-	db 10, SQUIRTLE
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (16)
-	db "SEAN@"
-	db 0 ; normal
-
-	; party
-	db 35, FLAREON
-	db 35, TANGELA
-	db 35, TAUROS
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (17)
-	db "KEVIN@"
-	db 0 ; normal
-
-	; party
-	db 38, RHYHORN
-	db 35, CHARMELEON
-	db 35, WARTORTLE
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (18)
-	db "STEVE@"
-	db 0 ; normal
-
-	; party
-	db 14, BULBASAUR
-	db 14, CHARMANDER
-	db 14, SQUIRTLE
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (19)
-	db "ALLEN@"
-	db 1 ; moves
-
-	; party
-
-	db 27, CHARMELEON
-		db EMBER
-		db SMOKESCREEN
-		db RAGE
-		db SCARY_FACE
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERM (20)
-	db "DARIN@"
-	db 1 ; moves
-
-	; party
-
-	db 37, DRAGONAIR
-		db WRAP
-		db SURF
-		db DRAGON_RAGE
-		db SLAM
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-CooltrainerFGroup:
-; ================================
-; ================
-
-	; COOLTRAINERF (1)
-	db "GWEN@"
-	db 0 ; normal
-
-	; party
-	db 26, EEVEE
-	db 22, FLAREON
-	db 22, VAPOREON
-	db 22, JOLTEON
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (2)
-	db "LOIS@"
-	db 1 ; moves
-
-	; party
-
-	db 25, SKIPLOOM
-		db SYNTHESIS
-		db POISONPOWDER
-		db MEGA_DRAIN
-		db LEECH_SEED
-
-	db 25, NINETALES
-		db EMBER
-		db QUICK_ATTACK
-		db CONFUSE_RAY
-		db SAFEGUARD
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (3)
-	db "FRAN@"
-	db 0 ; normal
-
-	; party
-	db 37, SEADRA
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (4)
-	db "LOLA@"
-	db 0 ; normal
-
-	; party
-	db 34, DRATINI
-	db 36, DRAGONAIR
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (5)
-	db "KATE@"
-	db 0 ; normal
-
-	; party
-	db 26, SHELLDER
-	db 28, CLOYSTER
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (6)
-	db "IRENE@"
-	db 0 ; normal
-
-	; party
-	db 22, GOLDEEN
-	db 24, SEAKING
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (7)
-	db "KELLY@"
-	db 0 ; normal
-
-	; party
-	db 27, MARILL
-	db 24, WARTORTLE
-	db 24, WARTORTLE
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (8)
-	db "JOYCE@"
-	db 1 ; moves
-
-	; party
-
-	db 36, PIKACHU
-		db QUICK_ATTACK
-		db DOUBLE_TEAM
-		db THUNDERBOLT
-		db THUNDER
-
-	db 32, BLASTOISE
-		db BITE
-		db CURSE
-		db SURF
-		db RAIN_DANCE
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (9)
-	db "BETH@"
-	db 1 ; moves
-
-	; party
-
-	db 36, RAPIDASH
-		db STOMP
-		db FIRE_SPIN
-		db FURY_ATTACK
-		db AGILITY
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (10)
-	db "REENA@"
-	db 0 ; normal
-
-	; party
-	db 31, STARMIE
-	db 33, NIDOQUEEN
-	db 31, STARMIE
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (11)
-	db "MEGAN@"
-	db 1 ; moves
-
-	; party
-
-	db 32, BULBASAUR
-		db GROWL
-		db LEECH_SEED
-		db POISONPOWDER
-		db RAZOR_LEAF
-
-	db 32, IVYSAUR
-		db GROWL
-		db LEECH_SEED
-		db POISONPOWDER
-		db RAZOR_LEAF
-
-	db 32, VENUSAUR
-		db BODY_SLAM
-		db SLEEP_POWDER
-		db RAZOR_LEAF
-		db SWEET_SCENT
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (12)
-	db "BETH@"
-	db 1 ; moves
-
-	; party
-
-	db 39, RAPIDASH
-		db STOMP
-		db FIRE_SPIN
-		db FURY_ATTACK
-		db AGILITY
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (13)
-	db "CAROL@"
-	db 0 ; normal
-
-	; party
-	db 35, ELECTRODE
-	db 35, STARMIE
-	db 35, NINETALES
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (14)
-	db "QUINN@"
-	db 0 ; normal
-
-	; party
-	db 38, IVYSAUR
-	db 38, STARMIE
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (15)
-	db "EMMA@"
-	db 0 ; normal
-
-	; party
-	db 28, POLIWHIRL
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (16)
-	db "CYBIL@"
-	db 1 ; moves
-
-	; party
-
-	db 25, BUTTERFREE
-		db CONFUSION
-		db SLEEP_POWDER
-		db WHIRLWIND
-		db GUST
-
-	db 25, BELLOSSOM
-		db ABSORB
-		db STUN_SPORE
-		db ACID
-		db SOLARBEAM
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (17)
-	db "JENN@"
-	db 0 ; normal
-
-	; party
-	db 24, STARYU
-	db 26, STARMIE
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (18)
-	db "BETH@"
-	db 3 ; item + moves
-
-	; party
-
-	db 43, RAPIDASH, FOCUS_BAND
-		db STOMP
-		db FIRE_SPIN
-		db FURY_ATTACK
-		db FIRE_BLAST
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (19)
-	db "REENA@"
-	db 0 ; normal
-
-	; party
-	db 34, STARMIE
-	db 36, NIDOQUEEN
-	db 34, STARMIE
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (20)
-	db "REENA@"
-	db 3 ; item + moves
-
-	; party
-
-	db 38, STARMIE, NO_ITEM
-		db DOUBLE_TEAM
-		db PSYCHIC_M
-		db WATERFALL
-		db CONFUSE_RAY
-
-	db 40, NIDOQUEEN, PINK_BOW
-		db EARTHQUAKE
-		db DOUBLE_KICK
-		db TOXIC
-		db BODY_SLAM
-
-	db 38, STARMIE, NO_ITEM
-		db BLIZZARD
-		db PSYCHIC_M
-		db WATERFALL
-		db RECOVER
-
-	db $ff ; end
-
-; ================
-
-	; COOLTRAINERF (21)
-	db "CARA@"
-	db 1 ; moves
-
-	; party
-
-	db 33, HORSEA
-		db SMOKESCREEN
-		db LEER
-		db WHIRLPOOL
-		db TWISTER
-
-	db 33, HORSEA
-		db SMOKESCREEN
-		db LEER
-		db WHIRLPOOL
-		db TWISTER
-
-	db 35, SEADRA
-		db SWIFT
-		db LEER
-		db WATERFALL
-		db TWISTER
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-BeautyGroup:
-; ================================
-; ================
-
-	; BEAUTY (1)
-	db "VICTORIA@"
-	db 0 ; normal
-
-	; party
-	db 9, SENTRET
-	db 13, SENTRET
-	db 17, SENTRET
-
-	db $ff ; end
-
-; ================
-
-	; BEAUTY (2)
-	db "SAMANTHA@"
-	db 1 ; moves
-
-	; party
-
-	db 16, MEOWTH
-		db SCRATCH
-		db GROWL
-		db BITE
-		db PAY_DAY
-
-	db 16, MEOWTH
-		db SCRATCH
-		db GROWL
-		db BITE
-		db SLASH
-
-	db $ff ; end
-
-; ================
-
-	; BEAUTY (3)
-	db "JULIE@"
-	db 0 ; normal
-
-	; party
-	db 15, SENTRET
-
-	db $ff ; end
-
-; ================
-
-	; BEAUTY (4)
-	db "JACLYN@"
-	db 0 ; normal
-
-	; party
-	db 15, SENTRET
-
-	db $ff ; end
-
-; ================
-
-	; BEAUTY (5)
-	db "BRENDA@"
-	db 0 ; normal
-
-	; party
-	db 16, FURRET
-
-	db $ff ; end
-
-; ================
-
-	; BEAUTY (6)
-	db "CASSIE@"
-	db 0 ; normal
-
-	; party
-	db 28, VILEPLUME
-	db 34, BUTTERFREE
-
-	db $ff ; end
-
-; ================
-
-	; BEAUTY (7)
-	db "CAROLINE@"
-	db 0 ; normal
-
-	; party
-	db 30, MARILL
-	db 32, SEEL
-	db 30, MARILL
-
-	db $ff ; end
-
-; ================
-
-	; BEAUTY (8)
-	db "CARLENE@"
-	db 0 ; normal
-
-	; party
-	db 15, SENTRET
-
-	db $ff ; end
-
-; ================
-
-	; BEAUTY (9)
-	db "JESSICA@"
-	db 0 ; normal
-
-	; party
-	db 15, SENTRET
-
-	db $ff ; end
-
-; ================
-
-	; BEAUTY (10)
-	db "RACHAEL@"
-	db 0 ; normal
-
-	; party
-	db 15, SENTRET
-
-	db $ff ; end
-
-; ================
-
-	; BEAUTY (11)
-	db "ANGELICA@"
-	db 0 ; normal
-
-	; party
-	db 15, SENTRET
-
-	db $ff ; end
-
-; ================
-
-	; BEAUTY (12)
-	db "KENDRA@"
-	db 0 ; normal
-
-	; party
-	db 15, SENTRET
-
-	db $ff ; end
-
-; ================
-
-	; BEAUTY (13)
-	db "VERONICA@"
-	db 0 ; normal
-
-	; party
-	db 15, SENTRET
-
-	db $ff ; end
-
-; ================
-
-	; BEAUTY (14)
-	db "JULIA@"
-	db 0 ; normal
-
-	; party
-	db 32, PARAS
-	db 32, EXEGGCUTE
-	db 35, PARASECT
-
-	db $ff ; end
-
-; ================
-
-	; BEAUTY (15)
-	db "THERESA@"
-	db 0 ; normal
-
-	; party
-	db 15, SENTRET
-
-	db $ff ; end
-
-; ================
-
-	; BEAUTY (16)
-	db "VALERIE@"
-	db 1 ; moves
-
-	; party
-
-	db 17, HOPPIP
-		db SYNTHESIS
-		db TAIL_WHIP
-		db TACKLE
-		db POISONPOWDER
-
-	db 17, SKIPLOOM
-		db SYNTHESIS
-		db TAIL_WHIP
-		db TACKLE
-		db STUN_SPORE
-
-	db $ff ; end
-
-; ================
-
-	; BEAUTY (17)
-	db "OLIVIA@"
-	db 0 ; normal
-
-	; party
-	db 19, CORSOLA
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-PokemaniacGroup:
-; ================================
-; ================
-
-	; POKEMANIAC (1)
-	db "LARRY@"
-	db 0 ; normal
-
-	; party
-	db 10, SLOWPOKE
-
-	db $ff ; end
-
-; ================
-
-	; POKEMANIAC (2)
-	db "ANDREW@"
-	db 0 ; normal
-
-	; party
-	db 24, MAROWAK
-	db 24, MAROWAK
-
-	db $ff ; end
-
-; ================
-
-	; POKEMANIAC (3)
-	db "CALVIN@"
-	db 0 ; normal
-
-	; party
-	db 26, KANGASKHAN
-
-	db $ff ; end
-
-; ================
-
-	; POKEMANIAC (4)
-	db "SHANE@"
-	db 0 ; normal
-
-	; party
-	db 16, NIDORINA
-	db 16, NIDORINO
-
-	db $ff ; end
-
-; ================
-
-	; POKEMANIAC (5)
-	db "BEN@"
-	db 0 ; normal
-
-	; party
-	db 19, SLOWBRO
-
-	db $ff ; end
-
-; ================
-
-	; POKEMANIAC (6)
-	db "BRENT@"
-	db 0 ; normal
-
-	; party
-	db 19, LICKITUNG
-
-	db $ff ; end
-
-; ================
-
-	; POKEMANIAC (7)
-	db "RON@"
-	db 0 ; normal
-
-	; party
-	db 19, NIDOKING
-
-	db $ff ; end
-
-; ================
-
-	; POKEMANIAC (8)
-	db "ETHAN@"
-	db 0 ; normal
-
-	; party
-	db 31, RHYHORN
-	db 31, RHYDON
-
-	db $ff ; end
-
-; ================
-
-	; POKEMANIAC (9)
-	db "BRENT@"
-	db 0 ; normal
-
-	; party
-	db 25, KANGASKHAN
-
-	db $ff ; end
-
-; ================
-
-	; POKEMANIAC (10)
-	db "BRENT@"
-	db 1 ; moves
-
-	; party
-
-	db 36, PORYGON
-		db RECOVER
-		db PSYCHIC_M
-		db CONVERSION2
-		db TRI_ATTACK
-
-	db $ff ; end
-
-; ================
-
-	; POKEMANIAC (11)
-	db "ISSAC@"
-	db 1 ; moves
-
-	; party
-
-	db 12, LICKITUNG
-		db LICK
-		db SUPERSONIC
-		db CUT
-		db 0
-
-	db $ff ; end
-
-; ================
-
-	; POKEMANIAC (12)
-	db "DONALD@"
-	db 0 ; normal
-
-	; party
-	db 10, SLOWPOKE
-	db 10, SLOWPOKE
-
-	db $ff ; end
-
-; ================
-
-	; POKEMANIAC (13)
-	db "ZACH@"
-	db 0 ; normal
-
-	; party
-	db 27, RHYHORN
-
-	db $ff ; end
-
-; ================
-
-	; POKEMANIAC (14)
-	db "BRENT@"
-	db 1 ; moves
-
-	; party
-
-	db 41, CHANSEY
-		db ROLLOUT
-		db ATTRACT
-		db EGG_BOMB
-		db SOFTBOILED
-
-	db $ff ; end
-
-; ================
-
-	; POKEMANIAC (15)
-	db "MILLER@"
-	db 0 ; normal
-
-	; party
-	db 17, NIDOKING
-	db 17, NIDOQUEEN
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-GruntMGroup:
-; ================================
-; ================
-
-	; GRUNTM (1)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 14, KOFFING
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (2)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 7, RATTATA
-	db 9, ZUBAT
-	db 9, ZUBAT
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (3)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 24, RATICATE
-	db 24, RATICATE
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (4)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 23, GRIMER
-	db 23, GRIMER
-	db 25, MUK
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (5)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 21, RATTATA
-	db 21, RATTATA
-	db 23, RATTATA
-	db 23, RATTATA
-	db 23, RATTATA
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (6)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 26, ZUBAT
-	db 26, ZUBAT
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (7)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 23, KOFFING
-	db 23, GRIMER
-	db 23, ZUBAT
-	db 23, RATTATA
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (8)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 26, WEEZING
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (9)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 24, RATICATE
-	db 26, KOFFING
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (10)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 22, ZUBAT
-	db 24, GOLBAT
-	db 22, GRIMER
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (11)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 23, MUK
-	db 23, KOFFING
-	db 25, RATTATA
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (12)
-	db "EXECUTIVE@"
-	db 0 ; normal
-
-	; party
-	db 33, HOUNDOUR
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (13)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 27, RATTATA
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (14)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 24, RATICATE
-	db 24, GOLBAT
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (15)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 26, GRIMER
-	db 23, WEEZING
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (16)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 16, RATTATA
-	db 16, RATTATA
-	db 16, RATTATA
-	db 16, RATTATA
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (17)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 18, GOLBAT
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (18)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 17, RATTATA
-	db 17, ZUBAT
-	db 17, RATTATA
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (19)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 18, VENONAT
-	db 18, VENONAT
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (20)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 17, DROWZEE
-	db 19, ZUBAT
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (21)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 16, ZUBAT
-	db 17, GRIMER
-	db 18, RATTATA
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (22)
-	db "EXECUTIVE@"
-	db 0 ; normal
-
-	; party
-	db 36, GOLBAT
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (23)
-	db "EXECUTIVE@"
-	db 0 ; normal
-
-	; party
-	db 30, KOFFING
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (24)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 25, KOFFING
-	db 25, KOFFING
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (25)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 24, KOFFING
-	db 24, MUK
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (26)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 15, RATTATA
-	db 15, RATTATA
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (27)
-	db "EXECUTIVE@"
-	db 0 ; normal
-
-	; party
-	db 22, ZUBAT
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (28)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 19, RATICATE
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (29)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 9, RATTATA
-	db 9, RATTATA
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (30)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 25, GOLBAT
-	db 25, GOLBAT
-	db 30, ARBOK
-
-	db $ff ; end
-
-; ================
-
-	; GRUNTM (31)
-	db "GRUNT@"
-	db 0 ; normal
-
-	; party
-	db 30, GOLBAT
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-GentlemanGroup:
-; ================================
-; ================
-
-	; GENTLEMAN (1)
-	db "PRESTON@"
-	db 0 ; normal
-
-	; party
-	db 18, GROWLITHE
-	db 18, GROWLITHE
-
-	db $ff ; end
-
-; ================
-
-	; GENTLEMAN (2)
-	db "EDWARD@"
-	db 0 ; normal
-
-	; party
-	db 33, PERSIAN
-
-	db $ff ; end
-
-; ================
-
-	; GENTLEMAN (3)
-	db "GREGORY@"
-	db 0 ; normal
-
-	; party
-	db 37, PIKACHU
-	db 33, FLAAFFY
-
-	db $ff ; end
-
-; ================
-
-	; GENTLEMAN (4)
-	db "VIRGIL@"
-	db 0 ; normal
-
-	; party
-	db 20, PONYTA
-
-	db $ff ; end
-
-; ================
-
-	; GENTLEMAN (5)
-	db "ALFRED@"
-	db 0 ; normal
-
-	; party
-	db 20, NOCTOWL
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-SkierGroup:
-; ================================
-; ================
-
-	; SKIER (1)
-	db "ROXANNE@"
-	db 0 ; normal
-
-	; party
-	db 28, JYNX
-
-	db $ff ; end
-
-; ================
-
-	; SKIER (2)
-	db "CLARISSA@"
-	db 0 ; normal
-
-	; party
-	db 28, DEWGONG
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-TeacherGroup:
-; ================================
-; ================
-
-	; TEACHER (1)
-	db "COLETTE@"
-	db 0 ; normal
-
-	; party
-	db 36, CLEFAIRY
-
-	db $ff ; end
-
-; ================
-
-	; TEACHER (2)
-	db "HILLARY@"
-	db 0 ; normal
-
-	; party
-	db 32, AIPOM
-	db 36, CUBONE
-
-	db $ff ; end
-
-; ================
-
-	; TEACHER (3)
-	db "SHIRLEY@"
-	db 0 ; normal
-
-	; party
-	db 35, JIGGLYPUFF
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-SabrinaGroup:
-; ================================
-; ================
-
-	; SABRINA (1)
-	db "SABRINA@"
-	db 1 ; moves
-
-	; party
-
-	db 46, ESPEON
-		db SAND_ATTACK
-		db QUICK_ATTACK
-		db SWIFT
-		db PSYCHIC_M
-
-	db 46, MR__MIME
-		db BARRIER
-		db REFLECT
-		db BATON_PASS
-		db PSYCHIC_M
-
-	db 48, ALAKAZAM
-		db RECOVER
-		db FUTURE_SIGHT
-		db PSYCHIC_M
-		db REFLECT
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-BugCatcherGroup:
-; ================================
-; ================
-
-	; BUG_CATCHER (1)
-	db "DON@"
-	db 0 ; normal
-
-	; party
-	db 3, CATERPIE
-	db 3, CATERPIE
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (2)
-	db "ROB@"
-	db 0 ; normal
-
-	; party
-	db 32, BEEDRILL
-	db 32, BUTTERFREE
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (3)
-	db "ED@"
-	db 0 ; normal
-
-	; party
-	db 30, BEEDRILL
-	db 30, BEEDRILL
-	db 30, BEEDRILL
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (4)
-	db "WADE@"
-	db 0 ; normal
-
-	; party
-	db 2, CATERPIE
-	db 2, CATERPIE
-	db 3, WEEDLE
-	db 2, CATERPIE
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (5)
-	db "BENNY@"
-	db 0 ; normal
-
-	; party
-	db 7, WEEDLE
-	db 9, KAKUNA
-	db 12, BEEDRILL
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (6)
-	db "AL@"
-	db 0 ; normal
-
-	; party
-	db 12, CATERPIE
-	db 12, WEEDLE
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (7)
-	db "JOSH@"
-	db 0 ; normal
-
-	; party
-	db 13, PARAS
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (8)
-	db "ARNIE@"
-	db 0 ; normal
-
-	; party
-	db 15, VENONAT
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (9)
-	db "KEN@"
-	db 0 ; normal
-
-	; party
-	db 30, ARIADOS
-	db 32, PINSIR
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (10)
-	db "WADE@"
-	db 0 ; normal
-
-	; party
-	db 9, METAPOD
-	db 9, METAPOD
-	db 10, KAKUNA
-	db 9, METAPOD
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (11)
-	db "WADE@"
-	db 0 ; normal
-
-	; party
-	db 14, BUTTERFREE
-	db 14, BUTTERFREE
-	db 15, BEEDRILL
-	db 14, BUTTERFREE
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (12)
-	db "DOUG@"
-	db 0 ; normal
-
-	; party
-	db 34, ARIADOS
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (13)
-	db "ARNIE@"
-	db 0 ; normal
-
-	; party
-	db 19, VENONAT
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (14)
-	db "ARNIE@"
-	db 1 ; moves
-
-	; party
-
-	db 28, VENOMOTH
-		db DISABLE
-		db SUPERSONIC
-		db CONFUSION
-		db LEECH_LIFE
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (15)
-	db "WADE@"
-	db 1 ; moves
-
-	; party
-
-	db 24, BUTTERFREE
-		db CONFUSION
-		db POISONPOWDER
-		db SUPERSONIC
-		db WHIRLWIND
-
-	db 24, BUTTERFREE
-		db CONFUSION
-		db STUN_SPORE
-		db SUPERSONIC
-		db WHIRLWIND
-
-	db 25, BEEDRILL
-		db FURY_ATTACK
-		db FOCUS_ENERGY
-		db TWINEEDLE
-		db RAGE
-
-	db 24, BUTTERFREE
-		db CONFUSION
-		db SLEEP_POWDER
-		db SUPERSONIC
-		db WHIRLWIND
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (16)
-	db "WADE@"
-	db 1 ; moves
-
-	; party
-
-	db 30, BUTTERFREE
-		db CONFUSION
-		db POISONPOWDER
-		db SUPERSONIC
-		db GUST
-
-	db 30, BUTTERFREE
-		db CONFUSION
-		db STUN_SPORE
-		db SUPERSONIC
-		db GUST
-
-	db 32, BEEDRILL
-		db FURY_ATTACK
-		db PURSUIT
-		db TWINEEDLE
-		db DOUBLE_TEAM
-
-	db 34, BUTTERFREE
-		db PSYBEAM
-		db SLEEP_POWDER
-		db GUST
-		db WHIRLWIND
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (17)
-	db "ARNIE@"
-	db 1 ; moves
-
-	; party
-
-	db 36, VENOMOTH
-		db GUST
-		db SUPERSONIC
-		db PSYBEAM
-		db LEECH_LIFE
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (18)
-	db "ARNIE@"
-	db 1 ; moves
-
-	; party
-
-	db 40, VENOMOTH
-		db GUST
-		db SUPERSONIC
-		db PSYCHIC_M
-		db TOXIC
-
-	db $ff ; end
-
-; ================
-
-	; BUG_CATCHER (19)
-	db "WAYNE@"
-	db 0 ; normal
-
-	; party
-	db 8, LEDYBA
-	db 10, PARAS
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-FisherGroup:
-; ================================
-; ================
-
-	; FISHER (1)
-	db "JUSTIN@"
-	db 0 ; normal
-
-	; party
-	db 5, MAGIKARP
-	db 5, MAGIKARP
-	db 15, MAGIKARP
-	db 5, MAGIKARP
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (2)
-	db "RALPH@"
-	db 0 ; normal
-
-	; party
-	db 10, GOLDEEN
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (3)
-	db "ARNOLD@"
-	db 0 ; normal
-
-	; party
-	db 34, TENTACRUEL
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (4)
-	db "KYLE@"
-	db 0 ; normal
-
-	; party
-	db 28, SEAKING
-	db 31, POLIWHIRL
-	db 31, SEAKING
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (5)
-	db "HENRY@"
-	db 0 ; normal
-
-	; party
-	db 8, POLIWAG
-	db 8, POLIWAG
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (6)
-	db "MARVIN@"
-	db 0 ; normal
-
-	; party
-	db 10, MAGIKARP
-	db 10, GYARADOS
-	db 15, MAGIKARP
-	db 15, GYARADOS
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (7)
-	db "TULLY@"
-	db 0 ; normal
-
-	; party
-	db 18, QWILFISH
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (8)
-	db "ANDRE@"
-	db 0 ; normal
-
-	; party
-	db 27, GYARADOS
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (9)
-	db "RAYMOND@"
-	db 0 ; normal
-
-	; party
-	db 22, MAGIKARP
-	db 22, MAGIKARP
-	db 22, MAGIKARP
-	db 22, MAGIKARP
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (10)
-	db "WILTON@"
-	db 0 ; normal
-
-	; party
-	db 23, GOLDEEN
-	db 23, GOLDEEN
-	db 25, SEAKING
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (11)
-	db "EDGAR@"
-	db 1 ; moves
-
-	; party
-
-	db 25, REMORAID
-		db LOCK_ON
-		db PSYBEAM
-		db AURORA_BEAM
-		db BUBBLEBEAM
-
-	db 25, REMORAID
-		db LOCK_ON
-		db PSYBEAM
-		db AURORA_BEAM
-		db BUBBLEBEAM
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (12)
-	db "JONAH@"
-	db 0 ; normal
-
-	; party
-	db 25, SHELLDER
-	db 29, OCTILLERY
-	db 25, REMORAID
-	db 29, CLOYSTER
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (13)
-	db "MARTIN@"
-	db 0 ; normal
-
-	; party
-	db 32, REMORAID
-	db 32, REMORAID
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (14)
-	db "STEPHEN@"
-	db 0 ; normal
-
-	; party
-	db 25, MAGIKARP
-	db 25, MAGIKARP
-	db 31, QWILFISH
-	db 31, TENTACRUEL
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (15)
-	db "BARNEY@"
-	db 0 ; normal
-
-	; party
-	db 30, GYARADOS
-	db 30, GYARADOS
-	db 30, GYARADOS
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (16)
-	db "RALPH@"
-	db 0 ; normal
-
-	; party
-	db 17, GOLDEEN
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (17)
-	db "RALPH@"
-	db 0 ; normal
-
-	; party
-	db 17, QWILFISH
-	db 19, GOLDEEN
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (18)
-	db "TULLY@"
-	db 0 ; normal
-
-	; party
-	db 23, QWILFISH
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (19)
-	db "TULLY@"
-	db 0 ; normal
-
-	; party
-	db 32, GOLDEEN
-	db 32, GOLDEEN
-	db 32, QWILFISH
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (20)
-	db "WILTON@"
-	db 0 ; normal
-
-	; party
-	db 29, GOLDEEN
-	db 29, GOLDEEN
-	db 32, SEAKING
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (21)
-	db "SCOTT@"
-	db 0 ; normal
-
-	; party
-	db 30, QWILFISH
-	db 30, QWILFISH
-	db 34, SEAKING
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (22)
-	db "WILTON@"
-	db 1 ; moves
-
-	; party
-
-	db 34, SEAKING
-		db SUPERSONIC
-		db WATERFALL
-		db FLAIL
-		db FURY_ATTACK
-
-	db 34, SEAKING
-		db SUPERSONIC
-		db WATERFALL
-		db FLAIL
-		db FURY_ATTACK
-
-	db 38, REMORAID
-		db PSYBEAM
-		db AURORA_BEAM
-		db BUBBLEBEAM
-		db HYPER_BEAM
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (23)
-	db "RALPH@"
-	db 0 ; normal
-
-	; party
-	db 30, QWILFISH
-	db 32, GOLDEEN
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (24)
-	db "RALPH@"
-	db 1 ; moves
-
-	; party
-
-	db 35, QWILFISH
-		db TOXIC
-		db MINIMIZE
-		db SURF
-		db PIN_MISSILE
-
-	db 39, SEAKING
-		db ENDURE
-		db FLAIL
-		db FURY_ATTACK
-		db WATERFALL
-
-	db $ff ; end
-
-; ================
-
-	; FISHER (25)
-	db "TULLY@"
-	db 1 ; moves
-
-	; party
-
-	db 34, SEAKING
-		db SUPERSONIC
-		db RAIN_DANCE
-		db WATERFALL
-		db FURY_ATTACK
-
-	db 34, SEAKING
-		db SUPERSONIC
-		db RAIN_DANCE
-		db WATERFALL
-		db FURY_ATTACK
-
-	db 37, QWILFISH
-		db ROLLOUT
-		db SURF
-		db PIN_MISSILE
-		db TAKE_DOWN
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-SwimmerMGroup:
-; ================================
-; ================
-
-	; SWIMMERM (1)
-	db "HAROLD@"
-	db 0 ; normal
-
-	; party
-	db 32, REMORAID
-	db 30, SEADRA
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (2)
-	db "SIMON@"
-	db 0 ; normal
-
-	; party
-	db 20, TENTACOOL
-	db 20, TENTACOOL
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (3)
-	db "RANDALL@"
-	db 0 ; normal
-
-	; party
-	db 18, SHELLDER
-	db 20, WARTORTLE
-	db 18, SHELLDER
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (4)
-	db "CHARLIE@"
-	db 0 ; normal
-
-	; party
-	db 21, SHELLDER
-	db 19, TENTACOOL
-	db 19, TENTACRUEL
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (5)
-	db "GEORGE@"
-	db 0 ; normal
-
-	; party
-	db 16, TENTACOOL
-	db 17, TENTACOOL
-	db 16, TENTACOOL
-	db 19, STARYU
-	db 17, TENTACOOL
-	db 19, REMORAID
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (6)
-	db "BERKE@"
-	db 0 ; normal
-
-	; party
-	db 23, QWILFISH
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (7)
-	db "KIRK@"
-	db 0 ; normal
-
-	; party
-	db 20, GYARADOS
-	db 20, GYARADOS
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (8)
-	db "MATHEW@"
-	db 0 ; normal
-
-	; party
-	db 23, KRABBY
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (9)
-	db "HAL@"
-	db 0 ; normal
-
-	; party
-	db 24, SEEL
-	db 25, DEWGONG
-	db 24, SEEL
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (10)
-	db "PATON@"
-	db 0 ; normal
-
-	; party
-	db 26, PILOSWINE
-	db 26, PILOSWINE
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (11)
-	db "DARYL@"
-	db 0 ; normal
-
-	; party
-	db 24, SHELLDER
-	db 25, CLOYSTER
-	db 24, SHELLDER
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (12)
-	db "WALTER@"
-	db 0 ; normal
-
-	; party
-	db 15, HORSEA
-	db 15, HORSEA
-	db 20, SEADRA
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (13)
-	db "TONY@"
-	db 0 ; normal
-
-	; party
-	db 13, STARYU
-	db 18, STARMIE
-	db 16, HORSEA
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (14)
-	db "JEROME@"
-	db 0 ; normal
-
-	; party
-	db 26, SEADRA
-	db 28, TENTACOOL
-	db 30, TENTACRUEL
-	db 28, GOLDEEN
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (15)
-	db "TUCKER@"
-	db 0 ; normal
-
-	; party
-	db 30, SHELLDER
-	db 34, CLOYSTER
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (16)
-	db "RICK@"
-	db 0 ; normal
-
-	; party
-	db 13, STARYU
-	db 18, STARMIE
-	db 16, HORSEA
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (17)
-	db "CAMERON@"
-	db 0 ; normal
-
-	; party
-	db 34, MARILL
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (18)
-	db "SETH@"
-	db 0 ; normal
-
-	; party
-	db 29, QUAGSIRE
-	db 29, OCTILLERY
-	db 32, QUAGSIRE
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (19)
-	db "JAMES@"
-	db 0 ; normal
-
-	; party
-	db 13, STARYU
-	db 18, STARMIE
-	db 16, HORSEA
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (20)
-	db "LEWIS@"
-	db 0 ; normal
-
-	; party
-	db 13, STARYU
-	db 18, STARMIE
-	db 16, HORSEA
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERM (21)
-	db "PARKER@"
-	db 0 ; normal
-
-	; party
-	db 32, HORSEA
-	db 32, HORSEA
-	db 35, SEADRA
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-SwimmerFGroup:
-; ================================
-; ================
-
-	; SWIMMERF (1)
-	db "ELAINE@"
-	db 0 ; normal
-
-	; party
-	db 21, STARYU
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (2)
-	db "PAULA@"
-	db 0 ; normal
-
-	; party
-	db 19, STARYU
-	db 19, SHELLDER
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (3)
-	db "KAYLEE@"
-	db 0 ; normal
-
-	; party
-	db 18, GOLDEEN
-	db 20, GOLDEEN
-	db 20, SEAKING
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (4)
-	db "SUSIE@"
-	db 1 ; moves
-
-	; party
-
-	db 20, PSYDUCK
-		db SCRATCH
-		db TAIL_WHIP
-		db DISABLE
-		db CONFUSION
-
-	db 22, GOLDEEN
-		db PECK
-		db TAIL_WHIP
-		db SUPERSONIC
-		db HORN_ATTACK
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (5)
-	db "DENISE@"
-	db 0 ; normal
-
-	; party
-	db 22, SEEL
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (6)
-	db "KARA@"
-	db 0 ; normal
-
-	; party
-	db 20, STARYU
-	db 20, STARMIE
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (7)
-	db "WENDY@"
-	db 1 ; moves
-
-	; party
-
-	db 21, HORSEA
-		db BUBBLE
-		db SMOKESCREEN
-		db LEER
-		db WATER_GUN
-
-	db 21, HORSEA
-		db DRAGON_RAGE
-		db SMOKESCREEN
-		db LEER
-		db WATER_GUN
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (8)
-	db "LISA@"
-	db 0 ; normal
-
-	; party
-	db 28, JYNX
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (9)
-	db "JILL@"
-	db 0 ; normal
-
-	; party
-	db 28, DEWGONG
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (10)
-	db "MARY@"
-	db 0 ; normal
-
-	; party
-	db 20, SEAKING
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (11)
-	db "KATIE@"
-	db 0 ; normal
-
-	; party
-	db 33, DEWGONG
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (12)
-	db "DAWN@"
-	db 0 ; normal
-
-	; party
-	db 34, SEAKING
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (13)
-	db "TARA@"
-	db 0 ; normal
-
-	; party
-	db 20, SEAKING
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (14)
-	db "NICOLE@"
-	db 0 ; normal
-
-	; party
-	db 29, MARILL
-	db 29, MARILL
-	db 32, LAPRAS
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (15)
-	db "LORI@"
-	db 0 ; normal
-
-	; party
-	db 32, STARMIE
-	db 32, STARMIE
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (16)
-	db "JODY@"
-	db 0 ; normal
-
-	; party
-	db 20, SEAKING
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (17)
-	db "NIKKI@"
-	db 0 ; normal
-
-	; party
-	db 28, SEEL
-	db 28, SEEL
-	db 28, SEEL
-	db 28, DEWGONG
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (18)
-	db "DIANA@"
-	db 0 ; normal
-
-	; party
-	db 37, GOLDUCK
-
-	db $ff ; end
-
-; ================
-
-	; SWIMMERF (19)
-	db "BRIANA@"
-	db 0 ; normal
-
-	; party
-	db 35, SEAKING
-	db 35, SEAKING
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-SailorGroup:
-; ================================
-; ================
-
-	; SAILOR (1)
-	db "EUGENE@"
-	db 0 ; normal
-
-	; party
-	db 17, POLIWHIRL
-	db 17, RATICATE
-	db 19, KRABBY
-
-	db $ff ; end
-
-; ================
-
-	; SAILOR (2)
-	db "HUEY@"
-	db 0 ; normal
-
-	; party
-	db 18, POLIWAG
-	db 18, POLIWHIRL
-
-	db $ff ; end
-
-; ================
-
-	; SAILOR (3)
-	db "TERRELL@"
-	db 0 ; normal
-
-	; party
-	db 20, POLIWHIRL
-
-	db $ff ; end
-
-; ================
-
-	; SAILOR (4)
-	db "KENT@"
-	db 1 ; moves
-
-	; party
-
-	db 18, KRABBY
-		db BUBBLE
-		db LEER
-		db VICEGRIP
-		db HARDEN
-
-	db 20, KRABBY
-		db BUBBLEBEAM
-		db LEER
-		db VICEGRIP
-		db HARDEN
-
-	db $ff ; end
-
-; ================
-
-	; SAILOR (5)
-	db "ERNEST@"
-	db 0 ; normal
-
-	; party
-	db 18, MACHOP
-	db 18, MACHOP
-	db 18, POLIWHIRL
-
-	db $ff ; end
-
-; ================
-
-	; SAILOR (6)
-	db "JEFF@"
-	db 0 ; normal
-
-	; party
-	db 32, RATICATE
-	db 32, RATICATE
-
-	db $ff ; end
-
-; ================
-
-	; SAILOR (7)
-	db "GARRETT@"
-	db 0 ; normal
-
-	; party
-	db 34, KINGLER
-
-	db $ff ; end
-
-; ================
-
-	; SAILOR (8)
-	db "KENNETH@"
-	db 0 ; normal
-
-	; party
-	db 28, MACHOP
-	db 28, MACHOP
-	db 28, POLIWRATH
-	db 28, MACHOP
-
-	db $ff ; end
-
-; ================
-
-	; SAILOR (9)
-	db "STANLY@"
-	db 0 ; normal
-
-	; party
-	db 31, MACHOP
-	db 33, MACHOKE
-	db 26, PSYDUCK
-
-	db $ff ; end
-
-; ================
-
-	; SAILOR (10)
-	db "HARRY@"
-	db 0 ; normal
-
-	; party
-	db 19, WOOPER
-
-	db $ff ; end
-
-; ================
-
-	; SAILOR (11)
-	db "HUEY@"
-	db 0 ; normal
-
-	; party
-	db 28, POLIWHIRL
-	db 28, POLIWHIRL
-
-	db $ff ; end
-
-; ================
-
-	; SAILOR (12)
-	db "HUEY@"
-	db 0 ; normal
-
-	; party
-	db 34, POLIWHIRL
-	db 34, POLIWRATH
-
-	db $ff ; end
-
-; ================
-
-	; SAILOR (13)
-	db "HUEY@"
-	db 1 ; moves
-
-	; party
-
-	db 38, POLITOED
-		db WHIRLPOOL
-		db RAIN_DANCE
-		db BODY_SLAM
-		db PERISH_SONG
-
-	db 38, POLIWRATH
-		db SURF
-		db STRENGTH
-		db ICE_PUNCH
-		db SUBMISSION
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-SuperNerdGroup:
-; ================================
-; ================
-
-	; SUPER_NERD (1)
-	db "STAN@"
-	db 0 ; normal
-
-	; party
-	db 20, GRIMER
-
-	db $ff ; end
-
-; ================
-
-	; SUPER_NERD (2)
-	db "ERIC@"
-	db 0 ; normal
-
-	; party
-	db 11, GRIMER
-	db 11, GRIMER
-
-	db $ff ; end
-
-; ================
-
-	; SUPER_NERD (3)
-	db "GREGG@"
-	db 0 ; normal
-
-	; party
-	db 20, MAGNEMITE
-	db 20, MAGNEMITE
-	db 20, MAGNEMITE
-
-	db $ff ; end
-
-; ================
-
-	; SUPER_NERD (4)
-	db "JAY@"
-	db 0 ; normal
-
-	; party
-	db 22, KOFFING
-	db 22, KOFFING
-
-	db $ff ; end
-
-; ================
-
-	; SUPER_NERD (5)
-	db "DAVE@"
-	db 0 ; normal
-
-	; party
-	db 24, DITTO
-
-	db $ff ; end
-
-; ================
-
-	; SUPER_NERD (6)
-	db "SAM@"
-	db 0 ; normal
-
-	; party
-	db 34, GRIMER
-	db 34, MUK
-
-	db $ff ; end
-
-; ================
-
-	; SUPER_NERD (7)
-	db "TOM@"
-	db 0 ; normal
-
-	; party
-	db 32, MAGNEMITE
-	db 32, MAGNEMITE
-	db 32, MAGNEMITE
-
-	db $ff ; end
-
-; ================
-
-	; SUPER_NERD (8)
-	db "PAT@"
-	db 0 ; normal
-
-	; party
-	db 36, PORYGON
-
-	db $ff ; end
-
-; ================
-
-	; SUPER_NERD (9)
-	db "SHAWN@"
-	db 0 ; normal
-
-	; party
-	db 31, MAGNEMITE
-	db 33, MUK
-	db 31, MAGNEMITE
-
-	db $ff ; end
-
-; ================
-
-	; SUPER_NERD (10)
-	db "TERU@"
-	db 0 ; normal
-
-	; party
-	db 7, MAGNEMITE
-	db 11, VOLTORB
-	db 7, MAGNEMITE
-	db 9, MAGNEMITE
-
-	db $ff ; end
-
-; ================
-
-	; SUPER_NERD (11)
-	db "RUSS@"
-	db 0 ; normal
-
-	; party
-	db 27, MAGNEMITE
-	db 27, MAGNEMITE
-	db 27, MAGNEMITE
-
-	db $ff ; end
-
-; ================
-
-	; SUPER_NERD (12)
-	db "NORTON@"
-	db 1 ; moves
-
-	; party
-
-	db 30, PORYGON
-		db CONVERSION
-		db CONVERSION2
-		db RECOVER
-		db TRI_ATTACK
-
-	db $ff ; end
-
-; ================
-
-	; SUPER_NERD (13)
-	db "HUGH@"
-	db 1 ; moves
-
-	; party
-
-	db 39, SEADRA
-		db SMOKESCREEN
-		db TWISTER
-		db SURF
-		db WATERFALL
-
-	db $ff ; end
-
-; ================
-
-	; SUPER_NERD (14)
-	db "MARKUS@"
-	db 1 ; moves
-
-	; party
-
-	db 19, SLOWPOKE
-		db CURSE
-		db WATER_GUN
-		db GROWL
-		db STRENGTH
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-Rival2Group:
-; ================================
-; ================
-
-	; RIVAL2 (1)
-	db "?@"
-	db 1 ; moves
-
-	; party
-
-	db 41, SNEASEL
-		db QUICK_ATTACK
-		db SCREECH
-		db FAINT_ATTACK
-		db FURY_CUTTER
-
-	db 42, GOLBAT
-		db LEECH_LIFE
-		db BITE
-		db CONFUSE_RAY
-		db WING_ATTACK
-
-	db 41, MAGNETON
-		db THUNDERSHOCK
-		db SONICBOOM
-		db THUNDER_WAVE
-		db SWIFT
-
-	db 43, GENGAR
-		db MEAN_LOOK
-		db CURSE
-		db SHADOW_BALL
-		db CONFUSE_RAY
-
-	db 43, ALAKAZAM
-		db DISABLE
-		db RECOVER
-		db FUTURE_SIGHT
-		db PSYCHIC_M
-
-	db 45, MEGANIUM
-		db RAZOR_LEAF
-		db POISONPOWDER
-		db BODY_SLAM
-		db LIGHT_SCREEN
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL2 (2)
-	db "?@"
-	db 1 ; moves
-
-	; party
-
-	db 41, SNEASEL
-		db QUICK_ATTACK
-		db SCREECH
-		db FAINT_ATTACK
-		db FURY_CUTTER
-
-	db 42, GOLBAT
-		db LEECH_LIFE
-		db BITE
-		db CONFUSE_RAY
-		db WING_ATTACK
-
-	db 41, MAGNETON
-		db THUNDERSHOCK
-		db SONICBOOM
-		db THUNDER_WAVE
-		db SWIFT
-
-	db 43, GENGAR
-		db MEAN_LOOK
-		db CURSE
-		db SHADOW_BALL
-		db CONFUSE_RAY
-
-	db 43, ALAKAZAM
-		db DISABLE
-		db RECOVER
-		db FUTURE_SIGHT
-		db PSYCHIC_M
-
-	db 45, TYPHLOSION
-		db SMOKESCREEN
-		db QUICK_ATTACK
-		db FLAME_WHEEL
-		db SWIFT
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL2 (3)
-	db "?@"
-	db 1 ; moves
-
-	; party
-
-	db 41, SNEASEL
-		db QUICK_ATTACK
-		db SCREECH
-		db FAINT_ATTACK
-		db FURY_CUTTER
-
-	db 42, GOLBAT
-		db LEECH_LIFE
-		db BITE
-		db CONFUSE_RAY
-		db WING_ATTACK
-
-	db 41, MAGNETON
-		db THUNDERSHOCK
-		db SONICBOOM
-		db THUNDER_WAVE
-		db SWIFT
-
-	db 43, GENGAR
-		db MEAN_LOOK
-		db CURSE
-		db SHADOW_BALL
-		db CONFUSE_RAY
-
-	db 43, ALAKAZAM
-		db DISABLE
-		db RECOVER
-		db FUTURE_SIGHT
-		db PSYCHIC_M
-
-	db 45, FERALIGATR
-		db RAGE
-		db WATER_GUN
-		db SCARY_FACE
-		db SLASH
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL2 (4)
-	db "?@"
-	db 1 ; moves
-
-	; party
-
-	db 45, SNEASEL
-		db QUICK_ATTACK
-		db SCREECH
-		db FAINT_ATTACK
-		db FURY_CUTTER
-
-	db 48, CROBAT
-		db TOXIC
-		db BITE
-		db CONFUSE_RAY
-		db WING_ATTACK
-
-	db 45, MAGNETON
-		db THUNDER
-		db SONICBOOM
-		db THUNDER_WAVE
-		db SWIFT
-
-	db 46, GENGAR
-		db MEAN_LOOK
-		db CURSE
-		db SHADOW_BALL
-		db CONFUSE_RAY
-
-	db 46, ALAKAZAM
-		db RECOVER
-		db FUTURE_SIGHT
-		db PSYCHIC_M
-		db REFLECT
-
-	db 50, MEGANIUM
-		db GIGA_DRAIN
-		db BODY_SLAM
-		db LIGHT_SCREEN
-		db SAFEGUARD
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL2 (5)
-	db "?@"
-	db 1 ; moves
-
-	; party
-
-	db 45, SNEASEL
-		db QUICK_ATTACK
-		db SCREECH
-		db FAINT_ATTACK
-		db FURY_CUTTER
-
-	db 48, CROBAT
-		db TOXIC
-		db BITE
-		db CONFUSE_RAY
-		db WING_ATTACK
-
-	db 45, MAGNETON
-		db THUNDER
-		db SONICBOOM
-		db THUNDER_WAVE
-		db SWIFT
-
-	db 46, GENGAR
-		db MEAN_LOOK
-		db CURSE
-		db SHADOW_BALL
-		db CONFUSE_RAY
-
-	db 46, ALAKAZAM
-		db RECOVER
-		db FUTURE_SIGHT
-		db PSYCHIC_M
-		db REFLECT
-
-	db 50, TYPHLOSION
-		db SMOKESCREEN
-		db QUICK_ATTACK
-		db FIRE_BLAST
-		db SWIFT
-
-	db $ff ; end
-
-; ================
-
-	; RIVAL2 (6)
-	db "?@"
-	db 1 ; moves
-
-	; party
-
-	db 45, SNEASEL
-		db QUICK_ATTACK
-		db SCREECH
-		db FAINT_ATTACK
-		db FURY_CUTTER
-
-	db 48, CROBAT
-		db TOXIC
-		db BITE
-		db CONFUSE_RAY
-		db WING_ATTACK
-
-	db 45, MAGNETON
-		db THUNDER
-		db SONICBOOM
-		db THUNDER_WAVE
-		db SWIFT
-
-	db 46, GENGAR
-		db MEAN_LOOK
-		db CURSE
-		db SHADOW_BALL
-		db CONFUSE_RAY
-
-	db 46, ALAKAZAM
-		db RECOVER
-		db FUTURE_SIGHT
-		db PSYCHIC_M
-		db REFLECT
-
-	db 50, FERALIGATR
-		db SURF
-		db RAIN_DANCE
-		db SLASH
-		db SCREECH
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-GuitaristGroup:
-; ================================
-; ================
-
-	; GUITARIST (1)
-	db "CLYDE@"
-	db 0 ; normal
-
-	; party
-	db 34, ELECTABUZZ
-
-	db $ff ; end
-
-; ================
-
-	; GUITARIST (2)
-	db "VINCENT@"
-	db 0 ; normal
-
-	; party
-	db 27, MAGNEMITE
-	db 33, VOLTORB
-	db 32, MAGNEMITE
-	db 32, MAGNEMITE
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-HikerGroup:
-; ================================
-; ================
-
-	; HIKER (1)
-	db "ANTHONY@"
-	db 0 ; normal
-
-	; party
-	db 16, GEODUDE
-	db 18, MACHAMP
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (2)
-	db "RUSSELL@"
-	db 0 ; normal
-
-	; party
-	db 4, GEODUDE
-	db 6, GEODUDE
-	db 8, GEODUDE
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (3)
-	db "PHILLIP@"
-	db 0 ; normal
-
-	; party
-	db 23, GEODUDE
-	db 23, GEODUDE
-	db 23, GRAVELER
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (4)
-	db "LEONARD@"
-	db 0 ; normal
-
-	; party
-	db 23, GEODUDE
-	db 25, MACHOP
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (5)
-	db "ANTHONY@"
-	db 0 ; normal
-
-	; party
-	db 11, GEODUDE
-	db 11, MACHOP
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (6)
-	db "BENJAMIN@"
-	db 0 ; normal
-
-	; party
-	db 14, DIGLETT
-	db 14, GEODUDE
-	db 16, DUGTRIO
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (7)
-	db "ERIK@"
-	db 0 ; normal
-
-	; party
-	db 24, MACHOP
-	db 27, GRAVELER
-	db 27, MACHOP
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (8)
-	db "MICHAEL@"
-	db 0 ; normal
-
-	; party
-	db 25, GEODUDE
-	db 25, GRAVELER
-	db 25, GOLEM
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (9)
-	db "PARRY@"
-	db 0 ; normal
-
-	; party
-	db 35, ONIX
-	db 33, SWINUB
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (10)
-	db "TIMOTHY@"
-	db 1 ; moves
-
-	; party
-
-	db 27, DIGLETT
-		db MAGNITUDE
-		db DIG
-		db SAND_ATTACK
-		db SLASH
-
-	db 27, DUGTRIO
-		db MAGNITUDE
-		db DIG
-		db SAND_ATTACK
-		db SLASH
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (11)
-	db "BAILEY@"
-	db 0 ; normal
-
-	; party
-	db 13, GEODUDE
-	db 13, GEODUDE
-	db 13, GEODUDE
-	db 13, GEODUDE
-	db 13, GEODUDE
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (12)
-	db "ANTHONY@"
-	db 0 ; normal
-
-	; party
-	db 25, GRAVELER
-	db 27, GRAVELER
-	db 29, MACHOKE
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (13)
-	db "TIM@"
-	db 0 ; normal
-
-	; party
-	db 31, GRAVELER
-	db 31, GRAVELER
-	db 31, GRAVELER
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (14)
-	db "NOLAND@"
-	db 0 ; normal
-
-	; party
-	db 31, SANDSLASH
-	db 33, GOLEM
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (15)
-	db "SIDNEY@"
-	db 0 ; normal
-
-	; party
-	db 34, DUGTRIO
-	db 32, ONIX
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (16)
-	db "KENNY@"
-	db 0 ; normal
-
-	; party
-	db 27, SANDSLASH
-	db 29, GRAVELER
-	db 31, GOLEM
-	db 29, GRAVELER
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (17)
-	db "JIM@"
-	db 0 ; normal
-
-	; party
-	db 35, MACHAMP
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (18)
-	db "DANIEL@"
-	db 0 ; normal
-
-	; party
-	db 11, ONIX
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (19)
-	db "PARRY@"
-	db 1 ; moves
-
-	; party
-
-	db 35, PILOSWINE
-		db EARTHQUAKE
-		db BLIZZARD
 		db REST
-		db TAKE_DOWN
+		db DRAGON_CLAW
 
-	db 35, DUGTRIO
-		db MAGNITUDE
-		db DIG
-		db MUD_SLAP
-		db SLASH
-
-	db 38, STEELIX
-		db DIG
-		db IRON_TAIL
-		db SANDSTORM
-		db SLAM
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (20)
-	db "PARRY@"
-	db 0 ; normal
-
-	; party
-	db 29, ONIX
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (21)
-	db "ANTHONY@"
-	db 0 ; normal
-
-	; party
-	db 30, GRAVELER
-	db 30, GRAVELER
-	db 32, MACHOKE
-
-	db $ff ; end
-
-; ================
-
-	; HIKER (22)
-	db "ANTHONY@"
-	db 1 ; moves
-
-	; party
-
-	db 34, GRAVELER
-		db MAGNITUDE
-		db SELFDESTRUCT
-		db DEFENSE_CURL
-		db ROLLOUT
-
-	db 36, GOLEM
-		db MAGNITUDE
-		db SELFDESTRUCT
-		db DEFENSE_CURL
-		db ROLLOUT
-
-	db 34, MACHOKE
-		db KARATE_CHOP
-		db VITAL_THROW
-		db HEADBUTT
-		db DIG
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-BikerGroup:
-; ================================
-; ================
-
-	; BIKER (1)
-	db "BENNY@"
-	db 0 ; normal
-
-	; party
-	db 20, KOFFING
-	db 20, KOFFING
-	db 20, KOFFING
-
-	db $ff ; end
-
-; ================
-
-	; BIKER (2)
-	db "KAZU@"
-	db 0 ; normal
-
-	; party
-	db 20, KOFFING
-	db 20, KOFFING
-	db 20, KOFFING
-
-	db $ff ; end
-
-; ================
-
-	; BIKER (3)
-	db "DWAYNE@"
-	db 0 ; normal
-
-	; party
-	db 27, KOFFING
-	db 28, KOFFING
-	db 29, KOFFING
-	db 30, KOFFING
-
-	db $ff ; end
-
-; ================
-
-	; BIKER (4)
-	db "HARRIS@"
-	db 0 ; normal
-
-	; party
-	db 34, FLAREON
-
-	db $ff ; end
-
-; ================
-
-	; BIKER (5)
-	db "ZEKE@"
-	db 0 ; normal
-
-	; party
-	db 32, KOFFING
-	db 32, KOFFING
-
-	db $ff ; end
-
-; ================
-
-	; BIKER (6)
-	db "CHARLES@"
-	db 0 ; normal
-
-	; party
-	db 30, KOFFING
-	db 30, CHARMELEON
-	db 30, WEEZING
-
-	db $ff ; end
-
-; ================
-
-	; BIKER (7)
-	db "RILEY@"
-	db 0 ; normal
-
-	; party
-	db 34, WEEZING
-
-	db $ff ; end
-
-; ================
-
-	; BIKER (8)
-	db "JOEL@"
-	db 0 ; normal
-
-	; party
-	db 32, MAGMAR
-	db 32, MAGMAR
-
-	db $ff ; end
-
-; ================
-
-	; BIKER (9)
-	db "GLENN@"
-	db 0 ; normal
-
-	; party
-	db 28, KOFFING
-	db 30, MAGMAR
-	db 32, WEEZING
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-BlaineGroup:
-; ================================
-; ================
-
-	; BLAINE (1)
-	db "BLAINE@"
-	db 1 ; moves
-
-	; party
-
-	db 45, MAGCARGO
-		db CURSE
-		db SMOG
-		db FLAMETHROWER
-		db ROCK_SLIDE
-
-	db 45, MAGMAR
-		db THUNDERPUNCH
-		db FIRE_PUNCH
-		db SUNNY_DAY
-		db CONFUSE_RAY
-
-	db 50, RAPIDASH
-		db QUICK_ATTACK
-		db FIRE_SPIN
-		db FURY_ATTACK
-		db FIRE_BLAST
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-BurglarGroup:
-; ================================
-; ================
-
-	; BURGLAR (1)
-	db "DUNCAN@"
-	db 0 ; normal
-
-	; party
-	db 23, KOFFING
-	db 25, MAGMAR
-	db 23, KOFFING
-
-	db $ff ; end
-
-; ================
-
-	; BURGLAR (2)
-	db "EDDIE@"
-	db 1 ; moves
-
-	; party
-
-	db 26, GROWLITHE
-		db ROAR
-		db EMBER
-		db LEER
-		db TAKE_DOWN
-
-	db 24, KOFFING
-		db TACKLE
-		db SMOG
-		db SLUDGE
-		db SMOKESCREEN
-
-	db $ff ; end
-
-; ================
-
-	; BURGLAR (3)
-	db "COREY@"
-	db 0 ; normal
-
-	; party
-	db 25, KOFFING
-	db 28, MAGMAR
-	db 25, KOFFING
-	db 30, KOFFING
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-FirebreatherGroup:
-; ================================
-; ================
-
-	; FIREBREATHER (1)
-	db "OTIS@"
-	db 0 ; normal
-
-	; party
-	db 29, MAGMAR
-	db 32, WEEZING
-	db 29, MAGMAR
-
-	db $ff ; end
-
-; ================
-
-	; FIREBREATHER (2)
-	db "DICK@"
-	db 0 ; normal
-
-	; party
-	db 17, CHARMELEON
-
-	db $ff ; end
-
-; ================
-
-	; FIREBREATHER (3)
-	db "NED@"
-	db 0 ; normal
-
-	; party
-	db 15, KOFFING
-	db 16, GROWLITHE
-	db 15, KOFFING
-
-	db $ff ; end
-
-; ================
-
-	; FIREBREATHER (4)
-	db "BURT@"
-	db 0 ; normal
-
-	; party
-	db 32, KOFFING
-	db 32, SLUGMA
-
-	db $ff ; end
-
-; ================
-
-	; FIREBREATHER (5)
-	db "BILL@"
-	db 0 ; normal
-
-	; party
-	db 6, KOFFING
-	db 6, KOFFING
-
-	db $ff ; end
-
-; ================
-
-	; FIREBREATHER (6)
-	db "WALT@"
-	db 0 ; normal
-
-	; party
-	db 11, MAGMAR
-	db 13, MAGMAR
-
-	db $ff ; end
-
-; ================
-
-	; FIREBREATHER (7)
-	db "RAY@"
-	db 0 ; normal
-
-	; party
-	db 9, VULPIX
-
-	db $ff ; end
-
-; ================
-
-	; FIREBREATHER (8)
-	db "LYLE@"
-	db 0 ; normal
-
-	; party
-	db 28, KOFFING
-	db 31, FLAREON
-	db 28, KOFFING
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-JugglerGroup:
-; ================================
-; ================
-
-	; JUGGLER (1)
-	db "IRWIN@"
-	db 0 ; normal
-
-	; party
-	db 2, VOLTORB
-	db 6, VOLTORB
-	db 10, VOLTORB
-	db 14, VOLTORB
-
-	db $ff ; end
-
-; ================
-
-	; JUGGLER (2)
-	db "FRITZ@"
-	db 0 ; normal
-
-	; party
-	db 29, MR__MIME
-	db 29, MAGMAR
-	db 29, MACHOKE
-
-	db $ff ; end
-
-; ================
-
-	; JUGGLER (3)
-	db "HORTON@"
-	db 0 ; normal
-
-	; party
-	db 33, ELECTRODE
-	db 33, ELECTRODE
-	db 33, ELECTRODE
-	db 33, ELECTRODE
-
-	db $ff ; end
-
-; ================
-
-	; JUGGLER (4)
-	db "IRWIN@"
-	db 0 ; normal
-
-	; party
-	db 6, VOLTORB
-	db 10, VOLTORB
-	db 14, VOLTORB
-	db 18, VOLTORB
-
-	db $ff ; end
-
-; ================
-
-	; JUGGLER (5)
-	db "IRWIN@"
-	db 0 ; normal
-
-	; party
-	db 18, VOLTORB
-	db 22, VOLTORB
-	db 26, VOLTORB
-	db 30, ELECTRODE
-
-	db $ff ; end
-
-; ================
-
-	; JUGGLER (6)
-	db "IRWIN@"
-	db 0 ; normal
-
-	; party
-	db 18, VOLTORB
-	db 22, VOLTORB
-	db 26, VOLTORB
-	db 30, ELECTRODE
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-BlackbeltGroup:
-; ================================
-; ================
-
-	; BLACKBELT_T (1)
-	db "KENJI@"
-	db 0 ; normal
-
-	; party
-	db 27, ONIX
-	db 30, HITMONLEE
-	db 27, ONIX
-	db 32, MACHOKE
-
-	db $ff ; end
-
-; ================
-
-	; BLACKBELT_T (2)
-	db "YOSHI@"
-	db 1 ; moves
-
-	; party
-
-	db 27, HITMONLEE
-		db DOUBLE_KICK
-		db MEDITATE
-		db JUMP_KICK
-		db FOCUS_ENERGY
-
-	db $ff ; end
-
-; ================
-
-	; BLACKBELT_T (3)
-	db "KENJI@"
-	db 1 ; moves
-
-	; party
-
-	db 33, ONIX
-		db BIND
-		db ROCK_THROW
-		db TOXIC
-		db DIG
-
-	db 38, MACHAMP
-		db HEADBUTT
-		db SWAGGER
-		db THUNDERPUNCH
-		db VITAL_THROW
-
-	db 33, STEELIX
-		db EARTHQUAKE
-		db ROCK_THROW
-		db IRON_TAIL
-		db SANDSTORM
-
-	db 36, HITMONLEE
-		db DOUBLE_TEAM
-		db HI_JUMP_KICK
-		db MUD_SLAP
-		db SWIFT
-
-	db $ff ; end
-
-; ================
-
-	; BLACKBELT_T (4)
-	db "LAO@"
-	db 1 ; moves
-
-	; party
-
-	db 27, HITMONCHAN
-		db COMET_PUNCH
-		db THUNDERPUNCH
-		db ICE_PUNCH
-		db FIRE_PUNCH
-
-	db $ff ; end
-
-; ================
-
-	; BLACKBELT_T (5)
-	db "NOB@"
-	db 1 ; moves
-
-	; party
-
-	db 25, MACHOP
-		db LEER
-		db FOCUS_ENERGY
-		db KARATE_CHOP
-		db SEISMIC_TOSS
-
-	db 25, MACHOKE
-		db LEER
-		db KARATE_CHOP
-		db SEISMIC_TOSS
-		db ROCK_SLIDE
-
-	db $ff ; end
-
-; ================
-
-	; BLACKBELT_T (6)
-	db "KIYO@"
-	db 0 ; normal
-
-	; party
-	db 34, HITMONLEE
-	db 34, HITMONCHAN
-
-	db $ff ; end
-
-; ================
-
-	; BLACKBELT_T (7)
-	db "LUNG@"
-	db 0 ; normal
-
-	; party
-	db 23, MANKEY
-	db 23, MANKEY
-	db 25, PRIMEAPE
-
-	db $ff ; end
-
-; ================
-
-	; BLACKBELT_T (8)
-	db "KENJI@"
-	db 0 ; normal
-
-	; party
-	db 28, MACHOKE
-
-	db $ff ; end
-
-; ================
-
-	; BLACKBELT_T (9)
-	db "WAI@"
-	db 0 ; normal
-
-	; party
-	db 30, MACHOKE
-	db 32, MACHOKE
-	db 34, MACHOKE
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-ExecutiveMGroup:
-; ================================
-; ================
-
-	; EXECUTIVEM (1)
-	db "EXECUTIVE@"
-	db 1 ; moves
-
-	; party
-
-	db 33, HOUNDOUR
-		db EMBER
-		db ROAR
-		db BITE
-		db FAINT_ATTACK
-
-	db 33, KOFFING
-		db TACKLE
-		db SLUDGE
-		db SMOKESCREEN
-		db HAZE
-
-	db 35, HOUNDOOM
-		db EMBER
-		db SMOG
-		db BITE
-		db FAINT_ATTACK
-
-	db $ff ; end
-
-; ================
-
-	; EXECUTIVEM (2)
-	db "EXECUTIVE@"
-	db 1 ; moves
-
-	; party
-
-	db 36, GOLBAT
-		db LEECH_LIFE
-		db BITE
-		db CONFUSE_RAY
-		db WING_ATTACK
-
-	db $ff ; end
-
-; ================
-
-	; EXECUTIVEM (3)
-	db "EXECUTIVE@"
-	db 1 ; moves
-
-	; party
-
-	db 30, KOFFING
-		db TACKLE
-		db SELFDESTRUCT
-		db SLUDGE
-		db SMOKESCREEN
-
-	db 30, KOFFING
-		db TACKLE
-		db SELFDESTRUCT
-		db SLUDGE
-		db SMOKESCREEN
-
-	db 30, KOFFING
-		db TACKLE
-		db SELFDESTRUCT
-		db SLUDGE
-		db SMOKESCREEN
-
-	db 32, WEEZING
-		db TACKLE
-		db EXPLOSION
-		db SLUDGE
-		db SMOKESCREEN
-
-	db 30, KOFFING
-		db TACKLE
-		db SELFDESTRUCT
-		db SLUDGE
-		db SMOKESCREEN
-
-	db 30, KOFFING
-		db TACKLE
-		db SMOG
-		db SLUDGE
-		db SMOKESCREEN
-
-	db $ff ; end
-
-; ================
-
-	; EXECUTIVEM (4)
-	db "EXECUTIVE@"
-	db 0 ; normal
-
-	; party
-	db 22, ZUBAT
-	db 24, RATICATE
-	db 22, KOFFING
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-PsychicGroup:
-; ================================
-; ================
-
-	; PSYCHIC_T (1)
-	db "NATHAN@"
-	db 0 ; normal
-
-	; party
-	db 26, GIRAFARIG
-
-	db $ff ; end
-
-; ================
-
-	; PSYCHIC_T (2)
-	db "FRANKLIN@"
-	db 0 ; normal
-
-	; party
-	db 37, KADABRA
-
-	db $ff ; end
-
-; ================
-
-	; PSYCHIC_T (3)
-	db "HERMAN@"
-	db 0 ; normal
-
-	; party
-	db 30, EXEGGCUTE
-	db 30, EXEGGCUTE
-	db 30, EXEGGUTOR
-
-	db $ff ; end
-
-; ================
-
-	; PSYCHIC_T (4)
-	db "FIDEL@"
-	db 0 ; normal
-
-	; party
-	db 34, XATU
-
-	db $ff ; end
-
-; ================
-
-	; PSYCHIC_T (5)
-	db "GREG@"
-	db 1 ; moves
-
-	; party
-
-	db 17, DROWZEE
-		db HYPNOSIS
-		db DISABLE
-		db DREAM_EATER
-		db 0
-
-	db $ff ; end
-
-; ================
-
-	; PSYCHIC_T (6)
-	db "NORMAN@"
-	db 1 ; moves
-
-	; party
-
-	db 17, SLOWPOKE
-		db TACKLE
-		db GROWL
-		db WATER_GUN
-		db 0
-
-	db 20, SLOWPOKE
-		db CURSE
-		db BODY_SLAM
-		db WATER_GUN
-		db CONFUSION
-
-	db $ff ; end
-
-; ================
-
-	; PSYCHIC_T (7)
-	db "MARK@"
-	db 1 ; moves
-
-	; party
-
-	db 13, ABRA
-		db TELEPORT
-		db FLASH
-		db 0
-		db 0
-
-	db 13, ABRA
-		db TELEPORT
-		db FLASH
-		db 0
-		db 0
-
-	db 15, KADABRA
-		db TELEPORT
-		db KINESIS
-		db CONFUSION
-		db 0
-
-	db $ff ; end
-
-; ================
-
-	; PSYCHIC_T (8)
-	db "PHIL@"
-	db 1 ; moves
-
-	; party
-
-	db 24, NATU
-		db LEER
-		db NIGHT_SHADE
-		db FUTURE_SIGHT
-		db CONFUSE_RAY
-
-	db 26, KADABRA
-		db DISABLE
-		db PSYBEAM
-		db RECOVER
-		db FUTURE_SIGHT
-
-	db $ff ; end
-
-; ================
-
-	; PSYCHIC_T (9)
-	db "RICHARD@"
-	db 0 ; normal
-
-	; party
-	db 36, ESPEON
-
-	db $ff ; end
-
-; ================
-
-	; PSYCHIC_T (10)
-	db "GILBERT@"
-	db 0 ; normal
-
-	; party
-	db 30, STARMIE
-	db 30, EXEGGCUTE
-	db 34, GIRAFARIG
-
-	db $ff ; end
-
-; ================
-
-	; PSYCHIC_T (11)
-	db "JARED@"
-	db 0 ; normal
-
-	; party
-	db 32, MR__MIME
-	db 32, EXEGGCUTE
-	db 35, EXEGGCUTE
-
-	db $ff ; end
-
-; ================
-
-	; PSYCHIC_T (12)
-	db "RODNEY@"
-	db 0 ; normal
-
-	; party
-	db 29, DROWZEE
-	db 33, HYPNO
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-PicnickerGroup:
-; ================================
-; ================
-
-	; PICNICKER (1)
-	db "LIZ@"
-	db 0 ; normal
-
-	; party
-	db 9, NIDORAN_F
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (2)
-	db "GINA@"
-	db 0 ; normal
-
-	; party
-	db 9, HOPPIP
-	db 9, HOPPIP
-	db 12, BULBASAUR
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (3)
-	db "BROOKE@"
-	db 1 ; moves
-
-	; party
-
-	db 16, PIKACHU
-		db THUNDERSHOCK
-		db GROWL
-		db QUICK_ATTACK
-		db DOUBLE_TEAM
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (4)
-	db "KIM@"
-	db 0 ; normal
-
-	; party
-	db 15, VULPIX
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (5)
-	db "CINDY@"
-	db 0 ; normal
-
-	; party
-	db 36, NIDOQUEEN
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (6)
-	db "HOPE@"
-	db 0 ; normal
-
-	; party
-	db 34, FLAAFFY
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (7)
-	db "SHARON@"
-	db 0 ; normal
-
-	; party
-	db 31, FURRET
-	db 33, RAPIDASH
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (8)
-	db "DEBRA@"
-	db 0 ; normal
-
-	; party
-	db 33, SEAKING
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (9)
-	db "GINA@"
-	db 0 ; normal
-
-	; party
-	db 14, HOPPIP
-	db 14, HOPPIP
-	db 17, IVYSAUR
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (10)
-	db "ERIN@"
-	db 0 ; normal
-
-	; party
-	db 16, PONYTA
-	db 16, PONYTA
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (11)
-	db "LIZ@"
-	db 0 ; normal
-
-	; party
-	db 15, WEEPINBELL
-	db 15, NIDORINA
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (12)
-	db "LIZ@"
-	db 0 ; normal
-
-	; party
-	db 19, WEEPINBELL
-	db 19, NIDORINO
-	db 21, NIDOQUEEN
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (13)
-	db "HEIDI@"
-	db 0 ; normal
-
-	; party
-	db 32, SKIPLOOM
-	db 32, SKIPLOOM
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (14)
-	db "EDNA@"
-	db 0 ; normal
-
-	; party
-	db 30, NIDORINA
-	db 34, RAICHU
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (15)
-	db "GINA@"
-	db 0 ; normal
-
-	; party
-	db 26, SKIPLOOM
-	db 26, SKIPLOOM
-	db 29, IVYSAUR
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (16)
-	db "TIFFANY@"
-	db 1 ; moves
-
-	; party
-
-	db 31, CLEFAIRY
-		db ENCORE
-		db SING
-		db DOUBLESLAP
-		db MINIMIZE
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (17)
-	db "TIFFANY@"
-	db 1 ; moves
-
-	; party
-
-	db 37, CLEFAIRY
-		db ENCORE
-		db DOUBLESLAP
-		db MINIMIZE
-		db METRONOME
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (18)
-	db "ERIN@"
-	db 0 ; normal
-
-	; party
-	db 32, PONYTA
-	db 32, PONYTA
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (19)
-	db "TANYA@"
-	db 0 ; normal
-
-	; party
-	db 37, EXEGGUTOR
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (20)
-	db "TIFFANY@"
-	db 1 ; moves
-
-	; party
-
-	db 20, CLEFAIRY
-		db ENCORE
-		db SING
-		db DOUBLESLAP
-		db MINIMIZE
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (21)
-	db "ERIN@"
-	db 1 ; moves
-
-	; party
-
-	db 36, PONYTA
-		db DOUBLE_TEAM
-		db STOMP
-		db FIRE_SPIN
-		db SUNNY_DAY
-
-	db 34, RAICHU
-		db SWIFT
-		db MUD_SLAP
-		db QUICK_ATTACK
+	db 53, MAGNETON
 		db THUNDERBOLT
-
-	db 36, PONYTA
-		db DOUBLE_TEAM
-		db STOMP
-		db FIRE_SPIN
-		db SUNNY_DAY
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (22)
-	db "LIZ@"
-	db 0 ; normal
-
-	; party
-	db 24, WEEPINBELL
-	db 26, NIDORINO
-	db 26, NIDOQUEEN
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (23)
-	db "LIZ@"
-	db 1 ; moves
-
-	; party
-
-	db 30, WEEPINBELL
-		db SLEEP_POWDER
-		db POISONPOWDER
-		db STUN_SPORE
-		db SLUDGE_BOMB
-
-	db 32, NIDOKING
-		db EARTHQUAKE
-		db DOUBLE_KICK
-		db POISON_STING
-		db IRON_TAIL
-
-	db 32, NIDOQUEEN
-		db EARTHQUAKE
-		db DOUBLE_KICK
-		db TAIL_WHIP
-		db BODY_SLAM
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (24)
-	db "GINA@"
-	db 0 ; normal
-
-	; party
-	db 30, SKIPLOOM
-	db 30, SKIPLOOM
-	db 32, IVYSAUR
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (25)
-	db "GINA@"
-	db 1 ; moves
-
-	; party
-
-	db 33, JUMPLUFF
-		db STUN_SPORE
-		db SUNNY_DAY
-		db LEECH_SEED
-		db COTTON_SPORE
-
-	db 33, JUMPLUFF
-		db SUNNY_DAY
-		db SLEEP_POWDER
-		db LEECH_SEED
-		db COTTON_SPORE
-
-	db 38, VENUSAUR
-		db SOLARBEAM
-		db RAZOR_LEAF
-		db HEADBUTT
-		db MUD_SLAP
-
-	db $ff ; end
-
-; ================
-
-	; PICNICKER (26)
-	db "TIFFANY@"
-	db 1 ; moves
-
-	; party
-
-	db 43, CLEFAIRY
-		db METRONOME
-		db ENCORE
-		db MOONLIGHT
-		db MINIMIZE
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-CamperGroup:
-; ================================
-; ================
-
-	; CAMPER (1)
-	db "ROLAND@"
-	db 0 ; normal
-
-	; party
-	db 9, NIDORAN_M
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (2)
-	db "TODD@"
-	db 0 ; normal
-
-	; party
-	db 14, PSYDUCK
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (3)
-	db "IVAN@"
-	db 0 ; normal
-
-	; party
-	db 10, DIGLETT
-	db 10, ZUBAT
-	db 14, DIGLETT
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (4)
-	db "ELLIOT@"
-	db 0 ; normal
-
-	; party
-	db 13, SANDSHREW
-	db 15, MARILL
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (5)
-	db "BARRY@"
-	db 0 ; normal
-
-	; party
-	db 36, NIDOKING
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (6)
-	db "LLOYD@"
-	db 0 ; normal
-
-	; party
-	db 34, NIDOKING
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (7)
-	db "DEAN@"
-	db 0 ; normal
-
-	; party
-	db 33, GOLDUCK
-	db 31, SANDSLASH
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (8)
-	db "SID@"
-	db 0 ; normal
-
-	; party
-	db 32, DUGTRIO
-	db 29, PRIMEAPE
-	db 29, POLIWRATH
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (9)
-	db "HARVEY@"
-	db 0 ; normal
-
-	; party
-	db 15, NIDORINO
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (10)
-	db "DALE@"
-	db 0 ; normal
-
-	; party
-	db 15, NIDORINO
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (11)
-	db "TED@"
-	db 0 ; normal
-
-	; party
-	db 17, MANKEY
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (12)
-	db "TODD@"
-	db 0 ; normal
-
-	; party
-	db 17, GEODUDE
-	db 17, GEODUDE
-	db 23, PSYDUCK
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (13)
-	db "TODD@"
-	db 0 ; normal
-
-	; party
-	db 23, GEODUDE
-	db 23, GEODUDE
-	db 26, PSYDUCK
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (14)
-	db "THOMAS@"
-	db 0 ; normal
-
-	; party
-	db 33, GRAVELER
-	db 36, GRAVELER
-	db 40, GOLBAT
-	db 42, GOLDUCK
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (15)
-	db "LEROY@"
-	db 0 ; normal
-
-	; party
-	db 33, GRAVELER
-	db 36, GRAVELER
-	db 40, GOLBAT
-	db 42, GOLDUCK
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (16)
-	db "DAVID@"
-	db 0 ; normal
-
-	; party
-	db 33, GRAVELER
-	db 36, GRAVELER
-	db 40, GOLBAT
-	db 42, GOLDUCK
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (17)
-	db "JOHN@"
-	db 0 ; normal
-
-	; party
-	db 33, GRAVELER
-	db 36, GRAVELER
-	db 40, GOLBAT
-	db 42, GOLDUCK
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (18)
-	db "JERRY@"
-	db 0 ; normal
-
-	; party
-	db 37, SANDSLASH
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (19)
-	db "SPENCER@"
-	db 0 ; normal
-
-	; party
-	db 17, SANDSHREW
-	db 17, SANDSLASH
-	db 19, ZUBAT
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (20)
-	db "TODD@"
-	db 0 ; normal
-
-	; party
-	db 30, GRAVELER
-	db 30, GRAVELER
-	db 30, SLUGMA
-	db 32, PSYDUCK
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (21)
-	db "TODD@"
-	db 1 ; moves
-
-	; party
-
-	db 33, GRAVELER
-		db SELFDESTRUCT
-		db ROCK_THROW
-		db HARDEN
-		db MAGNITUDE
-
-	db 33, GRAVELER
-		db SELFDESTRUCT
-		db ROCK_THROW
-		db HARDEN
-		db MAGNITUDE
-
-	db 36, MAGCARGO
-		db ROCK_THROW
-		db HARDEN
-		db AMNESIA
-		db FLAMETHROWER
-
-	db 34, GOLDUCK
-		db DISABLE
-		db PSYCHIC_M
-		db SURF
-		db PSYCH_UP
-
-	db $ff ; end
-
-; ================
-
-	; CAMPER (22)
-	db "QUENTIN@"
-	db 0 ; normal
-
-	; party
-	db 30, FEAROW
-	db 30, PRIMEAPE
-	db 30, TAUROS
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-ExecutiveFGroup:
-; ================================
-; ================
-
-	; EXECUTIVEF (1)
-	db "EXECUTIVE@"
-	db 1 ; moves
-
-	; party
-
-	db 32, ARBOK
-		db WRAP
-		db POISON_STING
-		db BITE
-		db GLARE
-
-	db 32, VILEPLUME
-		db ABSORB
-		db SWEET_SCENT
-		db SLEEP_POWDER
-		db ACID
-
-	db 32, MURKROW
-		db PECK
-		db PURSUIT
-		db HAZE
-		db NIGHT_SHADE
-
-	db $ff ; end
-
-; ================
-
-	; EXECUTIVEF (2)
-	db "EXECUTIVE@"
-	db 1 ; moves
-
-	; party
-
-	db 23, ARBOK
-		db WRAP
-		db LEER
-		db POISON_STING
-		db BITE
-
-	db 23, GLOOM
-		db ABSORB
-		db SWEET_SCENT
-		db SLEEP_POWDER
-		db ACID
-
-	db 25, MURKROW
-		db PECK
-		db PURSUIT
-		db HAZE
-		db 0
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-SageGroup:
-; ================================
-; ================
-
-	; SAGE (1)
-	db "CHOW@"
-	db 0 ; normal
-
-	; party
-	db 3, BELLSPROUT
-	db 3, BELLSPROUT
-	db 3, BELLSPROUT
-
-	db $ff ; end
-
-; ================
-
-	; SAGE (2)
-	db "NICO@"
-	db 0 ; normal
-
-	; party
-	db 3, BELLSPROUT
-	db 3, BELLSPROUT
-	db 3, BELLSPROUT
-
-	db $ff ; end
-
-; ================
-
-	; SAGE (3)
-	db "JIN@"
-	db 0 ; normal
-
-	; party
-	db 6, BELLSPROUT
-
-	db $ff ; end
-
-; ================
-
-	; SAGE (4)
-	db "TROY@"
-	db 0 ; normal
-
-	; party
-	db 7, BELLSPROUT
-	db 7, HOOTHOOT
-
-	db $ff ; end
-
-; ================
-
-	; SAGE (5)
-	db "JEFFREY@"
-	db 0 ; normal
-
-	; party
-	db 22, HAUNTER
-
-	db $ff ; end
-
-; ================
-
-	; SAGE (6)
-	db "PING@"
-	db 0 ; normal
-
-	; party
-	db 16, GASTLY
-	db 16, GASTLY
-	db 16, GASTLY
-	db 16, GASTLY
-	db 16, GASTLY
-
-	db $ff ; end
-
-; ================
-
-	; SAGE (7)
-	db "EDMOND@"
-	db 0 ; normal
-
-	; party
-	db 3, BELLSPROUT
-	db 3, BELLSPROUT
-	db 3, BELLSPROUT
-
-	db $ff ; end
-
-; ================
-
-	; SAGE (8)
-	db "NEAL@"
-	db 0 ; normal
-
-	; party
-	db 6, BELLSPROUT
-
-	db $ff ; end
-
-; ================
-
-	; SAGE (9)
-	db "LI@"
-	db 0 ; normal
-
-	; party
-	db 7, BELLSPROUT
-	db 7, BELLSPROUT
-	db 10, HOOTHOOT
-
-	db $ff ; end
-
-; ================
-
-	; SAGE (10)
-	db "GAKU@"
-	db 0 ; normal
-
-	; party
-	db 32, NOCTOWL
-	db 32, FLAREON
-
-	db $ff ; end
-
-; ================
-
-	; SAGE (11)
-	db "MASA@"
-	db 0 ; normal
-
-	; party
-	db 32, NOCTOWL
-	db 32, JOLTEON
-
-	db $ff ; end
-
-; ================
-
-	; SAGE (12)
-	db "KOJI@"
-	db 0 ; normal
-
-	; party
-	db 32, NOCTOWL
-	db 32, VAPOREON
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-MediumGroup:
-; ================================
-; ================
-
-	; MEDIUM (1)
-	db "MARTHA@"
-	db 0 ; normal
-
-	; party
-	db 18, GASTLY
-	db 20, HAUNTER
-	db 20, GASTLY
-
-	db $ff ; end
-
-; ================
-
-	; MEDIUM (2)
-	db "GRACE@"
-	db 0 ; normal
-
-	; party
-	db 20, HAUNTER
-	db 20, HAUNTER
-
-	db $ff ; end
-
-; ================
-
-	; MEDIUM (3)
-	db "BETHANY@"
-	db 0 ; normal
-
-	; party
-	db 25, HAUNTER
-
-	db $ff ; end
-
-; ================
-
-	; MEDIUM (4)
-	db "MARGRET@"
-	db 0 ; normal
-
-	; party
-	db 25, HAUNTER
-
-	db $ff ; end
-
-; ================
-
-	; MEDIUM (5)
-	db "ETHEL@"
-	db 0 ; normal
-
-	; party
-	db 25, HAUNTER
-
-	db $ff ; end
-
-; ================
-
-	; MEDIUM (6)
-	db "REBECCA@"
-	db 0 ; normal
-
-	; party
-	db 35, DROWZEE
-	db 35, HYPNO
-
-	db $ff ; end
-
-; ================
-
-	; MEDIUM (7)
-	db "DORIS@"
-	db 0 ; normal
-
-	; party
-	db 34, SLOWPOKE
-	db 36, SLOWBRO
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-BoarderGroup:
-; ================================
-; ================
-
-	; BOARDER (1)
-	db "RONALD@"
-	db 0 ; normal
-
-	; party
-	db 24, SEEL
-	db 25, DEWGONG
-	db 24, SEEL
-
-	db $ff ; end
-
-; ================
-
-	; BOARDER (2)
-	db "BRAD@"
-	db 0 ; normal
-
-	; party
-	db 26, SWINUB
-	db 26, SWINUB
-
-	db $ff ; end
-
-; ================
-
-	; BOARDER (3)
-	db "DOUGLAS@"
-	db 0 ; normal
-
-	; party
-	db 24, SHELLDER
-	db 25, CLOYSTER
-	db 24, SHELLDER
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-PokefanMGroup:
-; ================================
-; ================
-
-	; POKEFANM (1)
-	db "WILLIAM@"
-	db 2 ; item
-
-	; party
-	db 14, RAICHU, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANM (2)
-	db "DEREK@"
-	db 2 ; item
-
-	; party
-	db 17, PIKACHU, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANM (3)
-	db "ROBERT@"
-	db 2 ; item
-
-	; party
-	db 33, QUAGSIRE, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANM (4)
-	db "JOSHUA@"
-	db 2 ; item
-
-	; party
-	db 23, PIKACHU, BERRY
-	db 23, PIKACHU, BERRY
-	db 23, PIKACHU, BERRY
-	db 23, PIKACHU, BERRY
-	db 23, PIKACHU, BERRY
-	db 23, PIKACHU, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANM (5)
-	db "CARTER@"
-	db 2 ; item
-
-	; party
-	db 29, BULBASAUR, BERRY
-	db 29, CHARMANDER, BERRY
-	db 29, SQUIRTLE, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANM (6)
-	db "TREVOR@"
-	db 2 ; item
-
-	; party
-	db 33, PSYDUCK, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANM (7)
-	db "BRANDON@"
-	db 2 ; item
-
-	; party
-	db 13, SNUBBULL, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANM (8)
-	db "JEREMY@"
-	db 2 ; item
-
-	; party
-	db 28, MEOWTH, BERRY
-	db 28, MEOWTH, BERRY
-	db 28, MEOWTH, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANM (9)
-	db "COLIN@"
-	db 2 ; item
-
-	; party
-	db 32, DELIBIRD, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANM (10)
-	db "DEREK@"
-	db 2 ; item
-
-	; party
-	db 19, PIKACHU, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANM (11)
-	db "DEREK@"
-	db 2 ; item
-
-	; party
-	db 36, PIKACHU, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANM (12)
-	db "ALEX@"
-	db 2 ; item
-
-	; party
-	db 29, NIDOKING, BERRY
-	db 29, SLOWKING, BERRY
-	db 29, SEAKING, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANM (13)
-	db "REX@"
-	db 2 ; item
-
-	; party
-	db 35, PHANPY, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANM (14)
-	db "ALLAN@"
-	db 2 ; item
-
-	; party
-	db 35, TEDDIURSA, BERRY
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-KimonoGirlGroup:
-; ================================
-; ================
-
-	; KIMONO_GIRL (1)
-	db "NAOKO@"
-	db 0 ; normal
-
-	; party
-	db 20, SKIPLOOM
-	db 20, VULPIX
-	db 18, SKIPLOOM
-
-	db $ff ; end
-
-; ================
-
-	; KIMONO_GIRL (2)
-	db "NAOKO@"
-	db 0 ; normal
-
-	; party
-	db 17, FLAREON
-
-	db $ff ; end
-
-; ================
-
-	; KIMONO_GIRL (3)
-	db "SAYO@"
-	db 0 ; normal
-
-	; party
-	db 17, ESPEON
-
-	db $ff ; end
-
-; ================
-
-	; KIMONO_GIRL (4)
-	db "ZUKI@"
-	db 0 ; normal
-
-	; party
-	db 17, UMBREON
-
-	db $ff ; end
-
-; ================
-
-	; KIMONO_GIRL (5)
-	db "KUNI@"
-	db 0 ; normal
-
-	; party
-	db 17, VAPOREON
-
-	db $ff ; end
-
-; ================
-
-	; KIMONO_GIRL (6)
-	db "MIKI@"
-	db 0 ; normal
-
-	; party
-	db 17, JOLTEON
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-TwinsGroup:
-; ================================
-; ================
-
-	; TWINS (1)
-	db "AMY & MAY@"
-	db 0 ; normal
-
-	; party
-	db 10, SPINARAK
-	db 10, LEDYBA
-
-	db $ff ; end
-
-; ================
-
-	; TWINS (2)
-	db "ANN & ANNE@"
-	db 1 ; moves
-
-	; party
-
-	db 16, CLEFAIRY
-		db GROWL
-		db ENCORE
-		db DOUBLESLAP
-		db METRONOME
-
-	db 16, JIGGLYPUFF
-		db SING
-		db DEFENSE_CURL
-		db POUND
-		db DISABLE
-
-	db $ff ; end
-
-; ================
-
-	; TWINS (3)
-	db "ANN & ANNE@"
-	db 1 ; moves
-
-	; party
-
-	db 16, JIGGLYPUFF
-		db SING
-		db DEFENSE_CURL
-		db POUND
-		db DISABLE
-
-	db 16, CLEFAIRY
-		db GROWL
-		db ENCORE
-		db DOUBLESLAP
-		db METRONOME
-
-	db $ff ; end
-
-; ================
-
-	; TWINS (4)
-	db "AMY & MAY@"
-	db 0 ; normal
-
-	; party
-	db 10, LEDYBA
-	db 10, SPINARAK
-
-	db $ff ; end
-
-; ================
-
-	; TWINS (5)
-	db "JO & ZOE@"
-	db 0 ; normal
-
-	; party
-	db 35, VICTREEBEL
-	db 35, VILEPLUME
-
-	db $ff ; end
-
-; ================
-
-	; TWINS (6)
-	db "JO & ZOE@"
-	db 0 ; normal
-
-	; party
-	db 35, VILEPLUME
-	db 35, VICTREEBEL
-
-	db $ff ; end
-
-; ================
-
-	; TWINS (7)
-	db "MEG & PEG@"
-	db 0 ; normal
-
-	; party
-	db 31, TEDDIURSA
-	db 31, PHANPY
-
-	db $ff ; end
-
-; ================
-
-	; TWINS (8)
-	db "MEG & PEG@"
-	db 0 ; normal
-
-	; party
-	db 31, PHANPY
-	db 31, TEDDIURSA
-
-	db $ff ; end
-
-; ================
-
-	; TWINS (9)
-	db "LEA & PIA@"
-	db 1 ; moves
-
-	; party
-
-	db 35, DRATINI
-		db THUNDER_WAVE
-		db TWISTER
-		db FLAMETHROWER
-		db HEADBUTT
-
-	db 35, DRATINI
-		db THUNDER_WAVE
-		db TWISTER
-		db ICE_BEAM
-		db HEADBUTT
-
-	db $ff ; end
-
-; ================
-
-	; TWINS (10)
-	db "LEA & PIA@"
-	db 1 ; moves
-
-	; party
-
-	db 38, DRATINI
-		db THUNDER_WAVE
-		db TWISTER
-		db ICE_BEAM
-		db HEADBUTT
-
-	db 38, DRATINI
-		db THUNDER_WAVE
-		db TWISTER
-		db FLAMETHROWER
-		db HEADBUTT
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-PokefanFGroup:
-; ================================
-; ================
-
-	; POKEFANF (1)
-	db "BEVERLY@"
-	db 2 ; item
-
-	; party
-	db 14, SNUBBULL, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANF (2)
-	db "RUTH@"
-	db 2 ; item
-
-	; party
-	db 17, PIKACHU, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANF (3)
-	db "BEVERLY@"
-	db 2 ; item
-
-	; party
-	db 18, SNUBBULL, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANF (4)
-	db "BEVERLY@"
-	db 2 ; item
-
-	; party
-	db 30, GRANBULL, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANF (5)
-	db "GEORGIA@"
-	db 2 ; item
-
-	; party
-	db 23, SENTRET, BERRY
-	db 23, SENTRET, BERRY
-	db 23, SENTRET, BERRY
-	db 28, FURRET, BERRY
-	db 23, SENTRET, BERRY
-
-	db $ff ; end
-
-; ================
-
-	; POKEFANF (6)
-	db "JAIME@"
-	db 2 ; item
-
-	; party
-	db 16, MEOWTH, BERRY
-
-	db $ff ; end
-
-; ================
-; ================================
-
+		db HIDDEN_POWER
+		db IRON_DEFENSE
+		db FLASH_CANNON
+
+	db 54, METAGROSS
+		db METEOR_MASH
+		db ICE_PUNCH
+		db ZEN_HEADBUTT
+		db IRON_DEFENSE
+		
+	db 55, MAGNEZONE
+		db THUNDERBOLT
+		db HIDDEN_POWER
+		db IRON_DEFENSE
+		db FLASH_CANNON
+
+	db -1
 
 RedGroup:
-; ================================
-; ================
+	; RedGroup 1
+	db "Red@"
 
-	; RED (1)
-	db "RED@"
-	db 1 ; moves
+	db 3
 
-	; party
-
-	db 81, PIKACHU
+	db 100, PIKACHU, NO_ITEM
+		db THUNDERBOLT
 		db CHARM
 		db QUICK_ATTACK
-		db THUNDERBOLT
-		db THUNDER
+		db CRYSTAL_BOLT
 
-	db 73, ESPEON
-		db MUD_SLAP
-		db REFLECT
-		db SWIFT
+	db 100, ESPEON, NO_ITEM
+		db CALM_MIND
 		db PSYCHIC_M
+		db SUPERSONIC
+		db MORNING_SUN
 
-	db 75, SNORLAX
-		db AMNESIA
-		db SNORE
+	db 100, SNORLAX, NO_ITEM
 		db REST
-		db BODY_SLAM
-
-	db 77, VENUSAUR
-		db SUNNY_DAY
-		db GIGA_DRAIN
-		db SYNTHESIS
-		db SOLARBEAM
-
-	db 77, CHARIZARD
-		db FLAMETHROWER
-		db WING_ATTACK
-		db SLASH
-		db FIRE_SPIN
-
-	db 77, BLASTOISE
-		db RAIN_DANCE
-		db SURF
-		db BLIZZARD
-		db WHIRLPOOL
-
-	db $ff ; end
-
-; ================
-; ================================
-
-
-BlueGroup:
-; ================================
-; ================
-
-	; BLUE (1)
-	db "BLUE@"
-	db 1 ; moves
-
-	; party
-
-	db 56, PIDGEOT
-		db QUICK_ATTACK
-		db WHIRLWIND
-		db WING_ATTACK
-		db MIRROR_MOVE
-
-	db 54, ALAKAZAM
-		db DISABLE
-		db RECOVER
-		db PSYCHIC_M
-		db REFLECT
-
-	db 56, RHYDON
-		db FURY_ATTACK
-		db SANDSTORM
-		db ROCK_SLIDE
+		db SLEEP_TALK
+		db DOUBLE_EDGE
 		db EARTHQUAKE
 
-	db 58, GYARADOS
-		db TWISTER
-		db HYDRO_PUMP
+	db 100, VENUSAUR, NO_ITEM
+		db SPRING_BUDS
+		db SOLARBEAM
+		db SLUDGE_BOMB
+		db SMOG
+
+	db 100, CHARIZARD, NO_ITEM
+		db SWORDS_DANCE
+		db FIRE_PUNCH
+		db DRAGON_CLAW
+		db LAVA_POOL
+
+	db 100, BLASTOISE, NO_ITEM
+		db SURF
+		db ICE_BEAM
 		db RAIN_DANCE
+		db BOIL
+
+	db -1
+
+AndreGroup:
+	; AndreGroup 1
+	db "Andre@"
+
+	db 1
+
+	db 31, MACHOKE
+		db MACH_PUNCH
+		db BULK_UP
+		db SEISMIC_TOSS
+		db FOCUS_ENERGY
+	db 32, GALLADE
+		db FUTURE_SIGHT
+		db X_SCISSOR
+		db SIGNAL_BEAM
+		db DRAININGKISS
+	db 34, LUCARIO
+		db BULLET_PUNCH
+		db IRON_DEFENSE
+		db METAL_CLAW
+		db QUICK_ATTACK
+	db 36, MACHAMP
+		db MACH_PUNCH
+		db BULK_UP
+		db CROSS_CHOP
+		db SCARY_FACE
+	db -1
+
+RivalGroup:
+	; RivalGroup 1
+	db "Thug@"
+
+	db 1
+
+	db 5, BAGON
+		db RAGE
+		db LEER
+		db $0
+		db $0
+
+	db -1
+
+	; RivalGroup 2
+	db "Thug@"
+
+	db 1
+
+	db 11, PARAS
+		db CUT
+		db POISONPOWDER
+		db STUN_SPORE
+		db FURY_CUTTER
+
+	db 12, SNEASEL
+		db CUT
+		db ICY_WIND
+		db QUICK_ATTACK
+		db MUD_SLAP
+
+	db 13, BAGON
+		db CUT
+		db LEER
+		db BITE
+		db HEADBUTT
+
+	db -1
+
+	; RivalGroup 3
+	db "Thug@"
+
+	db 1
+
+	db 27, PARASECT
+		db FURY_CUTTER
+		db SLEEP_POWDER
+		db SLASH
+		db POISONPOWDER
+
+	db 28, SCYTHER
+		db SLASH
+		db WING_ATTACK
+		db FURY_CUTTER
+		db NO_MOVE
+
+	db 28, SNEASEL
+		db METAL_CLAW
+		db SLASH
+		db SCREECH
+		db NO_MOVE
+
+	db 30, SHELGON
+		db SLASH
+		db PROTECT
+		db EMBER
+		db DRAGONBREATH
+
+	db -1
+
+	; RivalGroup 4
+	db "Thug@"
+
+	db 1
+
+	db 41, PARASECT
+		db POISONPOWDER
+		db SLASH
+		db GIGA_DRAIN
+		db FURY_CUTTER
+
+	db 42, SCIZOR
+		db SLASH
+		db METAL_CLAW
+		db FURY_CUTTER
+		db METALLURGY
+
+	db 42, URSARING
+		db SLASH
+		db REST
+		db BULK_UP
+		db NO_MOVE
+
+	db 43, WEAVILE
+		db SLASH
+		db METAL_CLAW
+		db AGILITY
+		db SWORDS_DANCE
+
+	db 44, SHELGON
+		db DRAGON_CLAW
+		db DRAGONBREATH
+		db CRUNCH
+		db SCARY_FACE
+
+	db -1
+	
+	;5
+	db "Thug@"
+	
+	db 1
+	
+	db 51, PARASECT
+		db POISONPOWDER
+		db SLASH
+		db GIGA_DRAIN
+		db X_SCISSOR
+
+	db 52, SCIZOR
+		db SLASH
+		db METAL_CLAW
+		db X_SCISSOR
+		db METALLURGY
+
+	db 53, URSARING
+		db SLASH
+		db REST
+		db BULK_UP
 		db HYPER_BEAM
 
-	db 58, EXEGGUTOR
+	db 53, WEAVILE
+		db NIGHT_SLASH
+		db METAL_CLAW
+		db AGILITY
+		db SWORDS_DANCE
+
+	db 54, SALAMENCE
+		db DRAGON_CLAW
+		db AIR_SLASH
+		db CRUNCH
+		db SCARY_FACE
+
+	db -1
+	
+	;6
+	db "Thug@"
+	
+	db 1
+	
+	db 75, AGGRON
+		db EARTHQUAKE
+		db IRON_HEAD
+		db NIGHT_SLASH
+		db METALLURGY
+	
+	db 76, PARASECT
+		db POISONPOWDER
+		db SLASH
+		db GIGA_DRAIN
+		db X_SCISSOR
+
+	db 77, SCIZOR
+		db SLASH
+		db METAL_CLAW
+		db X_SCISSOR
+		db METALLURGY
+
+	db 79, URSARING
+		db SLASH
+		db REST
+		db BULK_UP
+		db HYPER_BEAM
+
+	db 81, WEAVILE
+		db NIGHT_SLASH
+		db METAL_CLAW
+		db AGILITY
+		db SWORDS_DANCE
+
+	db 83, SALAMENCE
+		db DRAGON_CLAW
+		db AIR_SLASH
+		db CRUNCH
+		db SCARY_FACE
+
+	db -1
+
+MuraGroup:
+	; MuraGroup 1
+	db "Mura@"
+
+	db 1
+
+	db 58, FEAROW
+		db SKY_ATTACK
+		db WHIRLWIND
+		db AGILITY
+		db DRILL_PECK
+
+	db 58, TYRANITAR
+		db EARTHQUAKE
+		db CRUNCH
+		db NO_MOVE
+		db NO_MOVE
+
+	db 59, LUDICOLO
+		db HYDRO_PUMP
+		db GIGA_DRAIN
+		db REST
+		db SLEEP_TALK
+
+	db 59, HOUNDOOM
+		db FLAMETHROWER
+		db CRUNCH
+		db ROAR
 		db SUNNY_DAY
+
+	db 60, WEEZING
+		db SARIN
+		db MUSTARD_GAS
+		db SLUDGE_BOMB
+		db EXPLOSION
+
+	db 60, LEAFEON
+		db SUNNY_DAY
+		db SOLARBEAM
+		db SYNTHESIS
+		db RAZOR_LEAF
+
+	db -1
+	
+	db "Mura@"
+
+	db 1
+
+	db 88, FEAROW
+		db SKY_ATTACK
+		db WHIRLWIND
+		db AGILITY
+		db DRILL_PECK
+
+	db 88, TYRANITAR
+		db EARTHQUAKE
+		db CRUNCH
+		db NO_MOVE
+		db NO_MOVE
+
+	db 89, LUDICOLO
+		db HYDRO_PUMP
+		db GIGA_DRAIN
+		db REST
+		db SLEEP_TALK
+
+	db 89, HOUNDOOM
+		db FLAMETHROWER
+		db CRUNCH
+		db ROAR
+		db SUNNY_DAY
+
+	db 90, WEEZING
+		db SARIN
+		db MUSTARD_GAS
+		db SLUDGE_BOMB
+		db EXPLOSION
+
+	db 90, LEAFEON
+		db SUNNY_DAY
+		db SOLARBEAM
+		db SYNTHESIS
+		db RAZOR_LEAF
+
+	db -1
+
+YukiGroup:
+	; YukiGroup 1
+	db "Yuki@"
+
+	db 1
+
+	db 53, MAMOSWINE
+		db TAKE_DOWN
+		db HAIL
+		db ICE_BEAM
+		db EARTHQUAKE
+
+	db 54, WEAVILE
+		db AGILITY
+		db HAIL
+		db METAL_CLAW
+		db NIGHT_SLASH
+
+	db 55, GLALIE
+		db EARTHQUAKE
+		db HAIL
+		db CRUNCH
+		db LIGHT_SCREEN
+
+	db 55, FROSLASS
+		db FREEZE_BURN
+		db HAIL
+		db CONFUSE_RAY
+		db DESTINY_BOND
+
+	db 56, GLACEON
+		db SHADOW_BALL
+		db HAIL
+		db ICE_BEAM
+		db FREEZE_BURN
+
+	db -1
+	
+	db "Yuki@"
+
+	db 1
+
+	db 83, MAMOSWINE
+		db TAKE_DOWN
+		db HAIL
+		db ICE_BEAM
+		db EARTHQUAKE
+
+	db 84, WEAVILE
+		db AGILITY
+		db HAIL
+		db METAL_CLAW
+		db NIGHT_SLASH
+
+	db 85, GLALIE
+		db EARTHQUAKE
+		db HAIL
+		db CRUNCH
+		db LIGHT_SCREEN
+
+	db 85, FROSLASS
+		db FREEZE_BURN
+		db HAIL
+		db CONFUSE_RAY
+		db DESTINY_BOND
+
+	db 86, GLACEON
+		db SHADOW_BALL
+		db HAIL
+		db ICE_BEAM
+		db FREEZE_BURN
+
+	db -1
+
+SoraGroup:
+	; SoraGroup 1
+	db "Sora@"
+
+	db 1
+
+	db 54, GYARADOS
+		db DRAGON_DANCE
+		db WATERFALL
+		db EARTHQUAKE
+		db CRUNCH
+
+	db 55, PIDGEOT
+		db BRAVE_BIRD
+		db MIRROR_MOVE
+		db AGILITY
+		db WHIRLWIND
+
+	db 56, DRIFBLIM
+		db CURSE
+		db SHADOW_BALL
+		db THUNDERBOLT
+		db WILL_O_WISP
+
+	db 56, GLISCOR
+		db METAL_CLAW
+		db SWORDS_DANCE
+		db EARTHQUAKE
+		db TOXIC
+
+	db 58, ALTARIA
+		db STEEL_WING
+		db SKY_ATTACK
+		db DRAGON_CLAW
+		db DRAGON_DANCE
+
+	db -1
+	
+	db "Sora@"
+
+	db 1
+
+	db 84, GYARADOS
+		db DRAGON_DANCE
+		db WATERFALL
+		db EARTHQUAKE
+		db CRUNCH
+
+	db 85, PIDGEOT
+		db BRAVE_BIRD
+		db MIRROR_MOVE
+		db AGILITY
+		db WHIRLWIND
+
+	db 86, DRIFBLIM
+		db CURSE
+		db SHADOW_BALL
+		db THUNDERBOLT
+		db WILL_O_WISP
+
+	db 86, GLISCOR
+		db METAL_CLAW
+		db SWORDS_DANCE
+		db EARTHQUAKE
+		db TOXIC
+
+	db 88, ALTARIA
+		db STEEL_WING
+		db SKY_ATTACK
+		db DRAGON_CLAW
+		db DRAGON_DANCE
+
+	db -1
+
+DaichiGroup:
+	; DaichiGroup 1
+	db "Daichi@"
+
+	db 1
+
+	db 56, RHYDON
+		db IRON_TAIL
+		db SUBSTITUTE
+		db MEGAHORN
+		db EARTHQUAKE
+
+	db 56, STEELIX
+		db BODY_SLAM
+		db SANDSTORM
+		db IRON_TAIL
+		db EARTHQUAKE
+
+	db 58, DONPHAN
+		db ROLLOUT
+		db SANDSTORM
+		db FLAIL
+		db EARTHQUAKE
+
+	db 58, FLYGON
+		db DRAGON_CLAW
+		db CRUNCH
+		db SCREECH
+		db EARTHQUAKE
+
+	db 60, RHYPERIOR
+		db IRON_TAIL
+		db SUBSTITUTE
+		db MEGAHORN
+		db EARTHQUAKE
+
+	db -1
+	
+	db "Daichi@"
+
+	db 1
+
+	db 86, RHYDON
+		db IRON_TAIL
+		db SUBSTITUTE
+		db MEGAHORN
+		db EARTHQUAKE
+
+	db 86, STEELIX
+		db BODY_SLAM
+		db SANDSTORM
+		db IRON_TAIL
+		db EARTHQUAKE
+
+	db 88, DONPHAN
+		db ROLLOUT
+		db SANDSTORM
+		db FLAIL
+		db EARTHQUAKE
+
+	db 88, FLYGON
+		db DRAGON_CLAW
+		db CRUNCH
+		db SCREECH
+		db EARTHQUAKE
+
+	db 90, RHYPERIOR
+		db IRON_TAIL
+		db SUBSTITUTE
+		db MEGAHORN
+		db EARTHQUAKE
+
+	db -1
+
+KojiGroup:
+	; KojiGroup 1
+	db "Koji@"
+
+	db 1
+
+	db 59, HARIYAMA
+		db CROSS_CHOP
+		db ROCK_SLIDE
+		db DYNAMICPUNCH
+		db BULK_UP
+
+	db 60, GALLADE
+		db ICE_PUNCH
+		db SWORDS_DANCE
+		db WILL_O_WISP
+		db HYPER_BEAM
+
+	db 61, HITMONLEE
+		db EARTHQUAKE
+		db MACH_PUNCH
+		db SUBSTITUTE
+		db HI_JUMP_KICK
+
+	db 61, HITMONCHAN
+		db FIRE_PUNCH
+		db ICE_PUNCH
+		db THUNDERPUNCH
+		db DRAIN_PUNCH
+
+	db 63, MACHAMP
+		db BULK_UP
+		db BULLET_PUNCH
+		db DYNAMICPUNCH
+		db COUNTER
+
+	db -1
+
+LanceGroup:
+	; LanceGroup 1
+	db "Lance@"
+
+	db 1
+
+	db 61, SALAMENCE
+		db DRAGON_CLAW
+		db FLAMETHROWER
+		db SHADOW_CLAW
+		db REST
+
+	db 61, GYARADOS
+		db OUTRAGE
+		db WATERFALL
+		db THUNDER_WAVE
+		db CRUNCH
+
+	db 63, GARCHOMP
+		db OUTRAGE
+		db SWORDS_DANCE
+		db EARTHQUAKE
+		db ROAR
+
+	db 63, ALTARIA
+		db DOUBLE_TEAM
+		db DRAGONBREATH
+		db PERISH_SONG
+		db HYPER_BEAM
+
+	db 64, CHARIZARD
+		db FLAMETHROWER
+		db WING_ATTACK
+		db DRAGON_CLAW
+		db HYPER_BEAM
+
+	db 65, FLYGON
+		db HYPER_BEAM
+		db DRAGON_CLAW
+		db SCREECH
+		db OUTRAGE
+
+	db -1
+	
+	db "Lance@"
+
+	db 1
+
+	db 91, SALAMENCE
+		db DRAGON_CLAW
+		db FLAMETHROWER
+		db SHADOW_CLAW
+		db REST
+
+	db 91, GYARADOS
+		db OUTRAGE
+		db WATERFALL
+		db THUNDER_WAVE
+		db CRUNCH
+
+	db 93, GARCHOMP
+		db OUTRAGE
+		db SWORDS_DANCE
+		db EARTHQUAKE
+		db ROAR
+
+	db 93, ALTARIA
+		db DOUBLE_TEAM
+		db DRAGONBREATH
+		db PERISH_SONG
+		db HYPER_BEAM
+
+	db 94, CHARIZARD
+		db FLAMETHROWER
+		db WING_ATTACK
+		db DRAGON_CLAW
+		db HYPER_BEAM
+
+	db 95, FLYGON
+		db HYPER_BEAM
+		db DRAGON_CLAW
+		db SCREECH
+		db OUTRAGE
+
+	db -1
+
+PatrollerGroup:
+	; PatrollerGroup 1
+	db "Black@"
+
+	db 0
+
+	db 13, HOUNDOUR
+	db 13, SHUPPET
+	db 14, EEVEE
+	db -1
+
+	; PatrollerGroup 2
+	db "Black@"
+
+	db 0
+
+	db 29, HOUNDOOM
+	db 30, SHUPPET
+	db 30, MAWILE
+	db 30, UMBREON
+	db -1
+
+	; PatrollerGroup 3
+	db "Yellow@"
+
+	db 0
+
+	db 13, ELEKID
+	db 13, MAKUHITA
+	db 14, EEVEE
+	db -1
+
+	; PatrollerGroup 4
+	db "Yellow@"
+
+	db 0
+
+	db 28, ELECTABUZZ
+	db 28, HARIYAMA
+	db 29, QUILAVA
+	db 30, JOLTEON
+	db -1
+
+	; PatrollerGroup 5
+	db "Yellow@"
+
+	db 0
+
+	db 37, ELECTABUZZ
+	db 37, HARIYAMA
+	db 38, LUNATONE
+	db 38, TYPHLOSION
+	db 39, JOLTEON
+	db -1
+
+	; PatrollerGroup 6
+	db "Pink@"
+
+	db 0
+
+	db 13, WHISMUR
+	db 13, PORYGON
+	db 14, EEVEE
+	db -1
+
+	; PatrollerGroup 7
+	db "Pink@"
+
+	db 0
+
+	db 28, JIGGLYPUFF
+	db 28, SLOWPOKE
+	db 29, PORYGON2
+	db 30, SYLVEON
+	db -1
+
+	; PatrollerGroup 8
+	db "Pink@"
+
+	db 0
+
+	db 33, WIGGLYTUFF
+	db 33, SLOWBRO
+	db 34, SLOWKING
+	db 35, SYLVEON
+	db 35, PORYGONZ
+	db -1
+
+	; PatrollerGroup 9
+	db "Blue@"
+
+	db 0
+
+	db 12, ZUBAT
+	db 13, TENTACOOL
+	db 14, EEVEE
+	db -1
+
+	; PatrollerGroup 10
+	db "Blue@"
+
+	db 0
+
+	db 28, METANG
+	db 29, TENTACRUEL
+	db 29, GOLBAT
+	db 30, VAPOREON
+	db -1
+
+	; PatrollerGroup 11
+	db "Blue@"
+
+	db 0
+
+	db 34, METANG
+	db 35, TENTACOOL
+	db 35, GOLBAT
+	db 36, VAPOREON
+	db -1
+
+	; PatrollerGroup 12
+	db "Green@"
+
+	db 0
+
+	db 12, NATU
+	db 13, LARVITAR
+	db 15, EEVEE
+	db -1
+
+	; PatrollerGroup 13
+	db "Green@"
+
+	db 0
+
+	db 29, XATU
+	db 29, WEEPINBELL
+	db 30, LEAFEON
+	db 32, PUPITAR
+	db -1
+
+	; PatrollerGroup 14
+	db "Green@"
+
+	db 0
+
+	db 38, XATU
+	db 39, WEEPINBELL
+	db 40, LUDICOLO
+	db 40, LEAFEON
+	db 42, TYRANITAR
+	db -1
+
+	; PatrollerGroup 15
+	db "Red@"
+
+	db 0
+
+	db 15, GROWLITHE
+	db 16, GOLDEEN
+	db 17, EEVEE
+	db -1
+
+	; PatrollerGroup 16
+	db "Red@"
+
+	db 0
+
+	db 35, SOLROCK
+	db 35, PARASECT
+	db 36, ARCANINE
+	db 37, SEAKING
+	db 38, FLAREON
+	db -1
+
+	; PatrollerGroup 17
+	db "Yellow@"
+
+	db 0
+
+	db 46, ELECTABUZZ
+	db 46, HARIYAMA
+	db 47, LUNATONE
+	db 47, TYPHLOSION
+	db 48, JOLTEON
+	db -1
+	
+	; PatrollerGroup 18
+	db "Green@"
+
+	db 0
+
+	db 48, XATU
+	db 48, VICTREEBEL
+	db 49, LUDICOLO
+	db 50, LEAFEON
+	db 52, TYRANITAR
+	db -1
+	
+	; PatrollerGroup 19
+	db "Blue@"
+
+	db 0
+
+	db 70, CROBAT
+	db 71, TENTACRUEL
+	db 72, RAMPARDOS
+	db 73, METAGROSS
+	db 75, VAPOREON
+	db -1
+	
+	; PatrollerGroup 20
+	db "Pink@"
+
+	db 0
+
+	db 80, WIGGLYTUFF
+	db 81, SLOWBRO
+	db 82, SLOWKING
+	db 82, SYLVEON
+	db 83, PORYGONZ
+	db -1
+
+ScientistGroup:
+	; ScientistGroup 1
+	db "No. 13@"
+
+	db 0
+
+	db 16, KADABRA
+	db 17, KOFFING
+	db -1
+
+	; ScientistGroup 2
+	db "No. 07@"
+
+	db 0
+
+	db 20, DITTO
+	db -1
+
+	; ScientistGroup 3
+	db "No. 11@"
+
+	db 0
+
+	db 53, KADABRA
+	db 53, SOLROCK
+	db 53, LUNATONE
+	db -1
+
+	; ScientistGroup 4
+	db "No. 10@"
+
+	db 0
+
+	db 45, SOLROCK
+	db 46, LUNATONE
+	db -1
+
+	; ScientistGroup 5
+	db "No. 0"
+	db $d7 
+	db "@"
+
+	db 0
+
+	db 45, HAUNTER
+	db 46, FROSLASS
+	db -1
+
+	; ScientistGroup 6
+	db "No. 07@"
+
+	db 0
+
+	db 45, DITTO
+	db 46, MAGNETON
+	db 46, ESPEON
+	db -1
+
+	; ScientistGroup 7
+	db "No. 08@"
+
+	db 0
+
+	db 46, PORYGON
+	db 47, KADABRA
+	db 47, PORYGON2
+	db -1
+	
+	; ScientistGroup 8
+	db "No. 06@"
+
+	db 0
+
+	db 48, KADABRA
+	db 48, XATU
+	db 49, ALAKAZAM
+	db -1
+	
+	; ScientistGroup 9
+	db "No. 05@"
+
+	db 0
+
+	db 48, GARDEVOIR
+	db 49, SLOWBRO
+	db 50, PORYGONZ
+	db -1
+	
+	; ScientistGroup 10
+	db "No. 04@"
+
+	db 0
+
+	db 49, GARDEVOIR
+	db 50, WEEZING
+	db 51, EXEGGUTOR
+	db -1
+	
+	; ScientistGroup 11
+	db "No. 03@"
+
+	db 0
+
+	db 48, WEAVILE
+	db 50, SLOWBRO
+	db 52, SLOWKING
+	db -1
+	
+	; ScientistGroup 12
+	db "No. 02@"
+
+	db 0
+
+	db 50, GARDEVOIR
+	db 51, SLOWBRO
+	db 53, MAGNETON
+	db -1
+	
+	; ScientistGroup 13
+	db "No. 01@"
+
+	db 0
+
+	db 50, WEEZING
+	db 51, SLOWKING
+	db 53, MAGNETON
+	db 53, PORYGONZ
+	db 55, MAGNEZONE
+	db -1
+
+YoungsterGroup:
+	; YoungsterGroup 1
+	db "Jordan@"
+
+	db 0
+
+	db 4, TAILLOW
+	db 4, PIDGEY
+	db -1
+
+	; YoungsterGroup 2
+	db "Wilson@"
+
+	db 0
+
+	db 5, MARILL
+	db 7, PIDGEY
+	db -1
+
+	; YoungsterGroup 3
+	db "Rocky@"
+
+	db 0
+
+	db 16, CHIKORITA
+	db 16, BELLSPROUT
+	db 17, TANGELA
+	db -1
+
+	; YoungsterGroup 4
+	db "Willie@"
+
+	db 0
+
+	db 28, ARON
+	db 29, LAIRON
+	db -1
+
+	; YoungsterGroup 5
+	db "Samuel@"
+
+	db 0
+
+	db 76, RAPIDASH
+	db 75, PIDGEOT
+	db 77, SWELLOW
+	db -1
+	
+	; YoungsterGroup 6
+	db "Meil@"
+
+	db 0
+
+	db 80, FROSLASS
+	db 80, FLYGON
+	db 80, SALAMENCE
+	db 80, ALTARIA
+	db 80, MILOTIC
+	db 80, LUXRAY
+	db -1
+
+SchoolboyGroup:
+	; SchoolboyGroup 1
+	db "Doug@"
+
+	db 0
+
+	db 16, PARAS
+	db 17, BULBASAUR
+	db 18, PARAS
+	db -1
+
+	; SchoolboyGroup 2
+	db "Travis@"
+
+	db 0
+
+	db 16, SWELLOW
+	db -1
+
+	; SchoolboyGroup 3
+	db "Jason@"
+
+	db 0
+
+	db 26, TANGELA
+	db -1
+
+BirdKeeperGroup:
+	; BirdKeeperGroup 1
+	db "Tyrone@"
+
+	db 0
+
+	db 9, PIDGEY
+	db 10, TAILLOW
+	db -1
+
+	; BirdKeeperGroup 2
+	db "Carter@"
+
+	db 0
+
+	db 16, PIDGEY
+	db 17, PIDGEY
+	db 18, PIDGEOTTO
+	db -1
+
+	; BirdKeeperGroup 3
+	db "Jerald@"
+
+	db 0
+
+	db 29, PIDGEOTTO
+	db 30, FEAROW
+	db 31, VIBRAVA
+	db -1
+
+	; BirdKeeperGroup 4
+	db "Corbin@"
+
+	db 0
+
+	db 34, YANMA
+	db 35, PIDGEOTTO
+	db 36, PIDGEOT
+	db -1
+
+	; BirdKeeperGroup 5
+	db "Keanu@"
+
+	db 0
+
+	db 72, FEAROW
+	db 73, FEAROW
+	db 74, FEAROW
+	db -1
+
+	; BirdKeeperGroup 6
+	db "Chase@"
+
+	db 0
+
+	db 38, PIDGEOTTO
+	db 39, FEAROW
+	db 40, PIDGEOT
+	db -1
+
+	; BirdKeeperGroup 7
+	db "Edgar@"
+
+	db 0
+
+	db 49, PIDGEOT
+	db 49, FEAROW
+	db 50, SWELLOW
+	db -1
+
+	; BirdKeeperGroup 8
+	db "Murphy@"
+
+	db 0
+
+	db 40, FEAROW
+	db 41, GYARADOS
+	db 41, XATU
+	db -1
+
+LassGroup:
+	; LassGroup 1
+	db "Daphne@"
+
+	db 0
+
+	db 18, MAREEP
+	db 19, FLAAFFY
+	db -1
+
+	; LassGroup 2
+	db "Les@"
+
+	db 0
+
+	db 76, RAICHU
+	db 78, WIGGLYTUFF
+	db -1
+
+	; LassGroup 3
+	db "Jan@"
+
+	db 0
+
+	db 78, WIGGLYTUFF
+	db 78, WIGGLYTUFF
+	db -1
+
+	; LassGroup 4
+	db "Amy@"
+
+	db 0
+
+	db 79, ARIADOS
+	db -1
+
+	; LassGroup 5
+	db "May@"
+
+	db 0
+
+	db 79, MASQUERAIN
+	db -1
+
+	; LassGroup 6
+	db "Maggie@"
+
+	db 0
+
+	db 69, LUCARIO
+	db 70, MISMAGIUS
+	db 72, XATU
+	db -1
+
+	; LassGroup 7
+	db "Lucia@"
+
+	db 0
+
+	db 64, WEEPINBELL
+	db 65, PARASECT
+	db 65, VICTREEBEL
+	db -1
+
+	; LassGroup 8
+	db "Roxy@"
+
+	db 0
+
+	db 64, VENUSAUR
+	db 65, EXEGGUTOR
+	db -1
+
+	; LassGroup 9
+	db "Jana@"
+
+	db 0
+
+	db 59, GALLADE
+	db 60, LUCARIO
+	db -1
+
+	; LassGroup 10
+	db "Debby@"
+
+	db 0
+
+	db 57, MACHOKE
+	db 59, BRELOOM
+	db 59, MACHAMP
+	db -1
+
+CooltrainerMGroup:
+	; CooltrainerMGroup 1
+	db "Frank@"
+
+	db 0
+
+	db 8, HOUNDOUR
+	db 9, HOUNDOUR
+	db -1
+
+	; CooltrainerMGroup 2
+	db "Carl@"
+
+	db 0
+
+	db 9, CHARMANDER
+	db 10, PONYTA
+	db -1
+
+	; CooltrainerMGroup 3
+	db "Peter@"
+
+	db 0
+
+	db 18, KADABRA
+	db -1
+
+	; CooltrainerMGroup 4
+	db "Ace@"
+
+	db 0
+
+	db 31, HOUNDOUR
+	db 31, GRAVELER
+	db 32, GROWLITHE
+	db -1
+
+	; CooltrainerMGroup 5
+	db "Butch@"
+
+	db 0
+
+	db 32, VULPIX
+	db 33, LAIRON
+	db 34, ARCANINE
+	db -1
+
+	; CooltrainerMGroup 6
+	db "Ivor@"
+
+	db 0
+
+	db 81, MAGNEZONE
+	db 81, EXPLOUD
+	db 82, TYPHLOSION
+	db -1
+
+	; CooltrainerMGroup 7
+	db "Lucas@"
+
+	db 0
+
+	db 63, TANGROWTH
+	db 64, BRELOOM
+	db 65, LUDICOLO
+	db -1
+
+	; CooltrainerMGroup 8
+	db "Andy@"
+
+	db 0
+
+	db 62, MAGNETON
+	db 63, LUXRAY
+	db 63, MANECTRIC
+	db -1
+
+	; CooltrainerMGroup 9
+	db "Rhett@"
+
+	db 0
+
+	db 38, ABSOL
+	db 39, VICTREEBEL
+	db 39, TORKOAL
+	db 40, TENTACRUEL
+	db -1
+
+	; CooltrainerMGroup 10
+	db "Lacey@"
+
+	db 0
+
+	db 38, BRELOOM
+	db 39, YANMEGA
+	db 41, CHARIZARD
+	db -1
+
+	; CooltrainerMGroup 11
+	db "Eric@"
+
+	db 1
+
+	db 43, FORRETRESS
+		db SPIKES
+		db ASTONISH
+		db PROTECT
+		db SELFDESTRUCT
+
+	db 43, BRELOOM
+		db MACH_PUNCH
+		db STUN_SPORE
 		db LEECH_SEED
-		db EGG_BOMB
+		db FURY_CUTTER
+
+	db 44, SEAKING
+		db PRISM_SPRAY
+		db WATERFALL
+		db SUPERSONIC
+		db NO_MOVE
+
+	db -1
+
+	; CooltrainerMGroup 12
+	db "Conner@"
+
+	db 0
+
+	db 40, RAPIDASH
+	db 41, WEAVILE
+	db 42, AZUMARILL
+	db -1
+	
+	;CooltrainerMGroup 13
+	db "Alirio@"
+
+	db 1
+
+	db 80, GLISCOR
+		db EARTHQUAKE
+		db SAND_ATTACK
+		db PROTECT
+		db TOXIC
+
+	db 80, VAPOREON
+		db SURF
+		db ICE_BEAM
+		db GROWTH
+		db REST
+
+	db 80, SCIZOR
+		db STEEL_WING
+		db QUICK_ATTACK
+		db DOUBLE_TEAM
+		db SWORDS_DANCE
+	
+	db 80, GARDEVOIR
+		db PSYCHIC_M
+		db MOONBLAST
+		db DESTINY_BOND
+		db WILL_O_WISP
+		db -1
+	
+;CooltrainerMGroup 14
+	db "John@"
+
+	db 1
+
+	db 80, SALAMENCE
+		db EARTHQUAKE
+		db SAND_ATTACK
+		db PROTECT
+		db TOXIC
+
+	db 80, TYRANITAR
+		db EARTHQUAKE
+		db ROCK_SLIDE
+		db CRUNCH
+		db DRAGON_DANCE
+
+	db 80, METAGROSS
+		db PSYCHIC_M
+		db THUNDERPUNCH
+		db ICE_PUNCH
+		db ZEN_HEADBUTT
+	
+	db 80, MILOTIC
+		db HYPNOSIS
+		db BOIL
+		db ICE_BEAM
+		db RECOVER
+		db -1
+		
+	db 80, VENUSAUR
+		db GIGA_DRAIN
+		db SLEEP_POWDER
+		db LEECH_SEED
+		db SLUDGE_BOMB
+		db -1
+	
+	db 80, NINETALES
+		db FLAMETHROWER
+		db HIDDEN_POWER
+		db SUBSTITUTE
+		db WILL_O_WISP
+		db -1
+	
+CooltrainerFGroup:
+	; CooltrainerFGroup 1
+	db "Carla@"
+
+	db 0
+
+	db 14, MARILL
+	db 15, CHINCHOU
+	db 15, MARILL
+	db -1
+
+	; CooltrainerFGroup 2
+	db "Beatrx@"
+
+	db 0
+
+	db 31, VULPIX
+	db 32, CHARMELEON
+	db 34, RHYHORN
+	db -1
+
+	; CooltrainerFGroup 3
+	db "Maud@"
+
+	db 0
+
+	db 33, LAIRON
+	db 33, PONYTA
+	db 35, NINETALES
+	db -1
+
+	; CooltrainerFGroup 4
+	db "Ira@"
+
+	db 0
+
+	db 34, MANECTRIC
+	db 35, CHANSEY
+	db 35, LUXRAY
+	db -1
+
+	; CooltrainerFGroup 5
+	db "Jenny@"
+
+	db 1
+
+	db 37, LAIRON
+		db METAL_CLAW
+		db TAKE_DOWN
+		db SANDSTORM
+		db DIG
+
+	db 38, ABSOL
+		db BITE
+		db SLASH
+		db SANDSTORM
+		db SWORDS_DANCE
+
+	db 38, MAGCARGO
+		db HARDEN
+		db FLAMETHROWER
+		db LAVA_POOL
+		db MUSTARD_GAS
+	db -1
+		
+	; CooltrainerFGroup 6
+	db "Lucy@"
+
+	db 1
+
+	db 80, AGGRON
+		db METAL_CLAW
+		db SHADOW_CLAW
+		db DRAGON_CLAW
+		db SLASH
+
+	db 81, ABSOL
+		db BITE
+		db SLASH
+		db SANDSTORM
+		db SWORDS_DANCE
+
+	db 80, MAGCARGO
+		db HARDEN
+		db FLAMETHROWER
+		db LAVA_POOL
+		db MUSTARD_GAS
+
+	db -1
+
+BeautyGroup:
+	; BeautyGroup 1
+	db "Veronica@"
+
+	db 0
+
+	db 15, CACNEA
+	db 16, SHROOMISH
+	db 17, TANGELA
+	db -1
+
+	; BeautyGroup 2
+	db "Michelle@"
+
+	db 0
+
+	db 17, VOLBEAT
+	db 17, WIGGLYTUFF
+	db -1
+
+	; BeautyGroup 4
+	db "Victoria@"
+
+	db 0
+
+	db 76, FURRET
+	db 76, WIGGLYTUFF
+	db 78, PIDGEOT
+	db -1
+
+	; BeautyGroup 5
+	db "Bridget@"
+
+	db 0
+
+	db 77, WIGGLYTUFF
+	db 79, LOPUNNY
+	db -1
+
+	; BeautyGroup 6
+	db "Camry@"
+
+	db 0
+
+	db 36, TORKOAL
+	db 37, TORKOAL
+	db 38, ARIADOS
+	db -1
+
+	; BeautyGroup 7
+	db "Ginger@"
+
+	db 1
+
+	db 80, WAILORD
+		db HYDRO_PUMP
+		db BLIZZARD
+		db SUBSTITUTE
+		db BODY_SLAM
+
+	db 80, TYPHLOSION
+		db LAVA_POOL
+		db FIRE_BLAST
+		db THUNDERPUNCH
+		db DOUBLE_EDGE
+		
+	db 80, LANTURN
+		db VAPORIZE
+		db THUNDERBOLT
+		db RAIN_DANCE
+		db THUNDER
+		
+	db 80, VENUSAUR
+		db SPRING_BUDS
+		db GIGA_DRAIN
+		db SLEEP_POWDER
+		db GROWTH
+		
+	db 80, BLISSEY
+		db SUBSTITUTE
+		db SOFTBOILED
+		db PSYCHIC_M
+		db TOXIC
+	db -1
+	
+	; BeautyGroup 8
+	db "Ginger@"
+
+	db 1
+
+	db 80, WAILORD
+		db HYDRO_PUMP
+		db BLIZZARD
+		db SUBSTITUTE
+		db BODY_SLAM
+
+	db 80, TYPHLOSION
+		db LAVA_POOL
+		db FIRE_BLAST
+		db THUNDERPUNCH
+		db DOUBLE_EDGE
+		
+	db 80, LANTURN
+		db VAPORIZE
+		db THUNDERBOLT
+		db RAIN_DANCE
+		db THUNDER
+		
+	db 80, VENUSAUR
+		db SPRING_BUDS
+		db GIGA_DRAIN
+		db SLEEP_POWDER
+		db GROWTH
+		
+	db 80, BLISSEY
+		db SUBSTITUTE
+		db SOFTBOILED
+		db PSYCHIC_M
+		db TOXIC
+	db -1
+	
+PokemaniacGroup:
+	; PokemaniacGroup 1
+	db "Aaron@"
+
+	db 0
+
+	db 7, MAREEP
+	db -1
+
+	; PokemaniacGroup 2
+	db "Paul@"
+
+	db 0
+
+	db 7, RALTS
+	db -1
+
+GentlemanGroup:
+	; GentlemanGroup 1
+	db "Ashton@"
+
+	db 0
+
+	db 80, ARCANINE
+	db 82, RELICANTH
+	db 84, NINETALES
+	db -1
+
+	; GentlemanGroup 2
+	db "Angus@"
+
+	db 0
+
+	db 61, LANTURN
+	db 62, ELECTABUZZ
+	db 63, AMPHAROS
+	db -1
+
+	; GentlemanGroup 3
+	db "Chester@"
+
+	db 0
+
+	db 60, BLASTOISE
+	db 61, CAMERUPT
+	db 62, CARNIVINE
+	db -1
+
+	; GentlemanGroup 4
+	db "Wilfred@"
+
+	db 0
+
+	db 49, ARCANINE
+	db 49, HOUNDOOM
+	db 50, SEAKING
+	db -1
+
+SkierGroup:
+	; SkierGroup 1
+	db "Vasco@"
+
+	db 0
+
+	db 5, GLALIE
+	db 5, PILOSWINE
+	db 5, FROSLASS
+	db -1
+
+	; SkierGroup 2
+	db "Brody@"
+
+	db 0
+
+	db 5, SNEASEL
+	db 5, WEAVILE
+	db -1
+
+	; SkierGroup 3
+	db "Caleb@"
+
+	db 0
+
+	db 5, LUNATONE
+	db 5, PILOSWINE
+	db 5, GALLADE
+	db -1
+
+	; SkierGroup 4
+	db "Averi@"
+
+	db 0
+
+	db 44, PILOSWINE
+	db 45, GLALIE
+	db 45, FROSLASS
+	db 46, MAMOSWINE
+	db -1
+
+	; SkierGroup 5
+	db "Allie@"
+
+	db 0
+
+	db 45, SNEASEL
+	db 45, WEAVILE
+	db 46, GLACEON
+	db -1
+
+	; SkierGroup 6
+	db "Fawn@"
+
+	db 0
+
+	db 42, MILOTIC
+	db 43, GLACEON
+	db -1
+
+TeacherGroup:
+	; TeacherGroup 1
+	db "Lyla@"
+
+	db 0
+
+	db 63, VICTREEBEL
+	db 64, TANGROWTH
+	db -1
+
+SherylGroup:
+	; SherylGroup 1
+	db "Sheryl@"
+
+	db 1
+
+	db 75, SLOWBRO
+		db CALM_MIND
+		db SURF
+		db PSYCHIC_M
+		db REST
+
+	db 75, EXEGGUTOR
+		db PSYCHIC_M
+		db SLEEP_POWDER
+		db GIGA_DRAIN
+		db NO_MOVE
+
+	db 76, ESPEON
+		db PSYCHIC_M
+		db LIGHT_SCREEN
+		db CALM_MIND
+		db SHADOW_BALL
+
+	db 77, ALAKAZAM
+		db COUNTER
+		db PSYCHIC_M
+		db SIGNAL_BEAM
+		db RECOVER
+
+	db 79, SLOWKING
+		db CALM_MIND
+		db PSYCHIC_M
+		db SURF
+		db THUNDER_WAVE
+
+	db -1
+
+BugCatcherGroup:
+	; BugCatcherGroup 1
+	db "Gary@"
+
+	db 0
+
+	db 3, VOLBEAT
+	db 3, ILLUMISE
+	db -1
+
+	; BugCatcherGroup 2
+	db "Bruce@"
+
+	db 0
+
+	db 10, PINECO
+	db -1
+
+	; BugCatcherGroup 3
+	db "Lenny@"
+
+	db 0
+
+	db 23, BUTTERFREE
+	db 25, YANMA
+	db 26, VENONAT
+	db -1
+
+	; BugCatcherGroup 4
+	db "Carl@"
+
+	db 0
+
+	db 24, SURSKIT
+	db 25, MASQUERAIN
+	db -1
+
+	; BugCatcherGroup 5
+	db "Fritz@"
+
+	db 0
+
+	db 70, BUTTERFREE
+	db 71, SCIZOR
+	db 73, YANMEGA
+	db -1
+
+	; BugCatcherGroup 6
+	db "Juan@"
+
+	db 0
+
+	db 77, BUTTERFREE
+	db 78, MASQUERAIN
+	db -1
+
+	; BugCatcherGroup 7
+	db "Al@"
+
+	db 0
+
+	db 77, BUTTERFREE
+	db 78, YANMEGA
+	db -1
+
+	; BugCatcherGroup 8
+	db "Benny@"
+
+	db 0
+
+	db 82, VOLBEAT
+	db 82, ILLUMISE
+	db -1
+
+	; BugCatcherGroup 9
+	db "Josh@"
+
+	db 0
+
+	db 78, PARASECT
+	db 80, SCYTHER
+	db 80, SCIZOR
+	db -1
+
+	; BugCatcherGroup 10
+	db "Luke@"
+
+	db 0
+
+	db 68, MASQUERAIN
+	db 70, BUTTERFREE
+	db -1
+
+FisherGroup:
+	; FisherGroup 1
+	db "Garry@"
+
+	db 0
+
+	db 4, VOLBEAT
+	db 4, ILLUMISE
+	db -1
+
+	; FisherGroup 2
+	db "Marty@"
+
+	db 0
+
+	db 37, MAGIKARP
+	db 37, FEEBAS
+	db -1
+
+	; FisherGroup 3
+	db "Al@"
+
+	db 0
+
+	db 27, MILOTIC
+	db -1
+
+	; FisherGroup 4
+	db "Bud@"
+
+	db 0
+
+	db 27, GOLDEEN
+	db 28, SEAKING
+	db -1
+
+	; FisherGroup 5
+	db "Denzel@"
+
+	db 0
+
+	db 41, SEAKING
+	db 42, AZUMARILL
+	db 43, WAILORD
+	db -1
+
+	; FisherGroup 6
+	db "Kaleb@"
+
+	db 0
+
+	db 41, TENTACRUEL
+	db 42, WAILMER
+	db 43, SEAKING
+	db -1
+
+	; FisherGroup 7
+	db "Miles@"
+
+	db 0
+
+	db 71, LANTURN
+	db 73, GYARADOS
+	db 74, FERALIGATR
+	db -1
+
+	; FisherGroup 8
+	db "Lou@"
+
+	db 0
+
+	db 60, LUDICOLO
+	db 61, LANTURN
+	db 61, WAILORD
+	db 62, GYARADOS
+	db -1
+
+	; FisherGroup 9
+	db "Markus@"
+
+	db 0
+
+	db 61, BLASTOISE
+	db 62, WAILORD
+	db 63, MASQUERAIN
+	db -1
+
+	; FisherGroup 10
+	db "Gus@"
+
+	db 0
+
+	db 60, MILOTIC
+	db 62, MASQUERAIN
+	db 64, MILOTIC
+	db -1
+
+	; FisherGroup 11
+	db "Nile@"
+
+	db 0
+
+	db 78, SEAKING
+	db 78, RELICANTH
+	db 80, GYARADOS
+	db -1
+
+	; FisherGroup 12
+	db "Johan@"
+
+	db 0
+
+	db 39, GOLDEEN
+	db 39, WAILMER
+	db 40, SEAKING
+	db -1
+
+	; FisherGroup 13
+	db "Owen@"
+
+	db 0
+
+	db 35, TENTACRUEL
+	db 35, SEAKING
+	db 36, LUDICOLO
+	db -1
+
+	; FisherGroup 14
+	db "Levy@"
+
+	db 0
+
+	db 40, BLASTOISE
+	db 40, GYARADOS
+	db 40, FERALIGATR
+	db -1
+
+SwimmerMGroup:
+	; SwimmerMGroup 1
+	db "Loren@"
+
+	db 0
+
+	db 41, TENTACRUEL
+	db 42, BLASTOISE
+	db -1
+
+	; SwimmerMGroup 2
+	db "Jayden@"
+
+	db 0
+
+	db 40, TENTACRUEL
+	db 41, SEAKING
+	db 42, WAILMER
+	db -1
+
+	; SwimmerMGroup 3
+	db "Dane@"
+
+	db 0
+
+	db 36, SEAKING
+	db 37, TENTACOOL
+	db 38, SEAKING
+	db -1
+
+	; SwimmerMGroup 4
+	db "Adrian@"
+
+	db 0
+
+	db 38, SLOWPOKE
+	db 38, SLOWBRO
+	db 38, SLOWKING
+	db -1
+
+	; SwimmerMGroup 5
+	db "Virgil@"
+
+	db 0
+
+	db 75, TENTACRUEL
+	db 75, WAILORD
+	db 76, VAPOREON
+	db -1
+
+	; SwimmerMGroup 6
+	db "Fabian@"
+
+	db 0
+
+	db 76, AZUMARILL
+	db 75, TENTACRUEL
+	db 76, SEAKING
+	db -1
+
+	; SwimmerMGroup 7
+	db "Xavier@"
+
+	db 0
+
+	db 81, TENTACRUEL
+	db 82, AZUMARILL
+	db 83, WAILORD
+	db -1
+
+	; SwimmerMGroup 8
+	db "Kyron@"
+
+	db 0
+
+	db 81, LUDICOLO
+	db 82, GYARADOS
+	db 83, SEAKING
+	db -1
+
+	; SwimmerMGroup 9
+	db "Ozzie@"
+
+	db 0
+
+	db 75, LUDICOLO
+	db 76, TENTACRUEL
+	db 78, BLASTOISE
+	db -1
+
+	; SwimmerMGroup 10
+	db "Remco@"
+
+	db 0
+
+	db 77, AZUMARILL
+	db 79, SEAKING
+	db 80, FERALIGATR
+	db -1
+
+	; SwimmerMGroup 11
+	db "Porter@"
+
+	db 0
+
+	db 78, SLOWBRO
+	db 80, SEAKING
+	db 81, SLOWKING
+	db -1
+
+	; SwimmerMGroup 12
+	db "Axel@"
+
+	db 0
+
+	db 78, TENTACRUEL
+	db 80, SEAKING
+	db 82, AZUMARILL
+	db -1
+
+	; SwimmerMGroup 13
+	db "Jace@"
+
+	db 0
+
+	db 78, WAILORD
+	db 80, TENTACRUEL
+	db 82, SEAKING
+	db -1
+
+	; SwimmerMGroup 14
+	db "Rider@"
+
+	db 0
+
+	db 35, WAILMER
+	db 36, VAPOREON
+	db 37, WAILORD
+	db -1
+
+	; SwimmerMGroup 15
+	db "Haden@"
+
+	db 0
+
+	db 37, SEAKING
+	db 38, FERALIGATR
+	db -1
+
+SwimmerFGroup:
+	; SwimmerFGroup 1
+	db "Cyndi@"
+
+	db 0
+
+	db 41, SEAKING
+	db 41, MILOTIC
+	db 42, LUDICOLO
+	db -1
+
+	; SwimmerFGroup 2
+	db "Dena@"
+
+	db 0
+
+	db 42, TENTACRUEL
+	db 42, VAPOREON
+	db -1
+
+	; SwimmerFGroup 3
+	db "Kelly@"
+
+	db 0
+
+	db 36, VAPOREON
+	db 37, WAILMER
+	db 38, MILOTIC
+	db -1
+
+	; SwimmerFGroup 4
+	db "Hester@"
+
+	db 0
+
+	db 38, SEAKING
+	db 38, TENTACRUEL
+	db 40, GYARADOS
+	db -1
+
+	; SwimmerFGroup 5
+	db "Corra@"
+
+	db 0
+
+	db 75, RELICANTH
+	db 77, MILOTIC
+	db -1
+
+	; SwimmerFGroup 6
+	db "Sheila@"
+
+	db 0
+
+	db 81, LANTURN
+	db 83, VAPOREON
+	db 83, MILOTIC
+	db -1
+
+	; SwimmerFGroup 7
+	db "Megan@"
+
+	db 0
+
+	db 76, WAILORD
+	db 78, SEAKING
+	db 80, MILOTIC
+	db -1
+
+	; SwimmerFGroup 8
+	db "Sadie@"
+
+	db 0
+
+	db 79, AZUMARILL
+	db 81, LUDICOLO
+	db 82, VAPOREON
+	db -1
+
+	; SwimmerFGroup 9
+	db "Tori@"
+
+	db 0
+
+	db 77, AZUMARILL
+	db 79, MILOTIC
+	db -1
+
+	; SwimmerFGroup 10
+	db "Katlyn@"
+
+	db 0
+
+	db 35, LOMBRE
+	db 36, TENTACRUEL
+	db 36, LUDICOLO
+	db -1
+
+	; SwimmerFGroup 11
+	db "Isabel@"
+
+	db 0
+
+	db 37, MASQUERAIN
+	db 38, RELICANTH
+	db 39, BLASTOISE
+	db -1
+
+SailorGroup:
+	; SailorGroup 1
+	db "Lionel@"
+
+	db 0
+
+	db 13, TENTACOOL
+	db 13, WAILMER
+	db 14, LOTAD
+	db -1
+
+	; SailorGroup 2
+	db "Dave@"
+
+	db 0
+
+	db 18, SURSKIT
+	db -1
+
+	; SailorGroup 3
+	db "Poul@"
+
+	db 0
+
+	db 77, TENTACRUEL
+	db 78, TENTACRUEL
+	db 78, AZUMARILL
+	db 79, RELICANTH
+	db -1
+
+	; SailorGroup 4
+	db "Reed@"
+
+	db 0
+
+	db 41, TENTACRUEL
+	db 41, SLOWBRO
+	db 42, TENTACRUEL
+	db -1
+
+	; SailorGroup 5
+	db "Robert@"
+
+	db 0
+
+	db 39, SEAKING
+	db 40, SLOWBRO
+	db 41, SLOWKING
+	db -1
+
+SuperNerdGroup:
+	; SuperNerdGroup 1
+	db "Bill@"
+
+	db 0
+
+	db 7, YANMA
+	db 8, TRAPINCH
+	db -1
+
+	; SuperNerdGroup 2
+	db "Hugh@"
+
+	db 0
+
+	db 8, KOFFING
+	db 9, SNORUNT
+	db -1
+
+	; SuperNerdGroup 3
+	db "Hector@"
+
+	db 0
+
+	db 36, KADABRA
+	db 37, KIRLIA
+	db -1
+
+	; SuperNerdGroup 4
+	db "Enzo@"
+
+	db 0
+
+	db 69, DUSCLOPS
+	db 71, ABSOL
+	db 72, ALAKAZAM
+	db -1
+
+	; SuperNerdGroup 5
+	db "Bram@"
+
+	db 0
+
+	db 74, SLOWBRO
+	db 74, GARDEVOIR
+	db -1
+
+	; SuperNerdGroup 6
+	db "Teru@"
+
+	db 0
+
+	db 82, MAGNETON
+	db 83, MAGNEZONE
+	db -1
+
+	; SuperNerdGroup 7
+	db "Eric@"
+
+	db 0
+
+	db 82, WEEZING
+	db 83, DITTO
+	db -1
+
+	; SuperNerdGroup 8
+	db "Hunter@"
+
+	db 0
+
+	db 62, RAICHU
+	db 64, MAGNETON
+	db 65, MAGNEZONE
+	db -1
+
+	; SuperNerdGroup 9
+	db "Jonas@"
+
+	db 0
+
+	db 35, VENOMOTH
+	db 35, KOFFING
+	db 36, WEEZING
+	db -1
+	
+	; SuperNerdGroup 10
+	db "Dark@"
+
+	db 1
+
+	db 80, BLASTOISE
+		db SURF
+		db ICE_BEAM
+		db DYNAMICPUNCH
+		db HYDRO_PUMP
+
+	db 80, FEAROW
+		db DRILL_PECK
+		db FLY
+		db TRI_ATTACK
+		db DOUBLE_EDGE
+		
+	db 80, MAGMAR
+		db FIRE_PUNCH
+		db FLAMETHROWER
+		db SHADOW_BALL
+		db CONFUSE_RAY
+
+	db 80, MEGANIUM
+		db BODY_SLAM
+		db POISONPOWDER
+		db RAZOR_LEAF
 		db SOLARBEAM
 
-	db 58, ARCANINE
-		db ROAR
-		db SWIFT
+	db 80, TYRANITAR
+		db NOISE_PULSE
+		db EARTHQUAKE
+		db ROCK_SLIDE
+		db CRUNCH
+	db -1
+	
+	; SuperNerdGroup 11
+	db "Mohammed@"
+
+	db 1
+
+	db 80, MISMAGIUS
+		db CONFUSE_RAY
+		db SHADOW_BALL
+		db PSYCHIC_M
+		db GHOST_HAMMER
+
+	db 80, BANETTE
+		db THIEF
+		db PSYCHIC_M
+		db SHADOW_BALL
+		db CONFUSE_RAY
+		
+	db 80, GENGAR
+		db SHADOW_BALL
+		db HYPNOSIS
+		db DREAM_EATER
+		db GHOST_HAMMER
+
+	db 80, FROSLASS
+		db ICE_BEAM
+		db BLIZZARD
+		db PSYCHIC_M
+		db GHOST_HAMMER
+
+	db 80, UMBREON
+		db PSYCHIC_M
+		db HYPNOSIS
+		db DREAM_EATER
+		db CONFUSE_RAY
+	db -1
+
+GuitaristGroup:
+	; GuitaristGroup 1
+	db "Galen@"
+
+	db 0
+
+	db 40, LANTURN
+	db 41, RAICHU
+	db 42, EXPLOUD
+	db -1
+
+	; GuitaristGroup 2
+	db "Rocky@"
+
+	db 0
+
+	db 42, MANECTRIC
+	db 42, WIGGLYTUFF
+	db 43, LUXRAY
+	db -1
+
+	; GuitaristGroup 3
+	db "Gene@"
+
+	db 0
+
+	db 42, MAGNETON
+	db 43, ELECTABUZZ
+	db 44, MAGNEZONE
+	db -1
+	
+	; GuitaristGroup 4
+	db "Ozzy@"
+
+	db 0
+
+	db 52, LUXRAY
+	db 53, MANECTRIC
+	db 54, RAICHU
+	db -1
+
+HikerGroup:
+	; HikerGroup 1
+	db "Jerry@"
+
+	db 0
+
+	db 5, SENTRET
+	db -1
+
+	; HikerGroup 2
+	db "Harry@"
+
+	db 0
+
+	db 15, GEODUDE
+	db 15, MACHOP
+	db 16, ONIX
+	db -1
+
+	; HikerGroup 3
+	db "Larry@"
+
+	db 0
+
+	db 15, GEODUDE
+	db 16, GLIGAR
+	db 16, ONIX
+	db -1
+
+	; HikerGroup 4
+	db "Eli@"
+
+	db 0
+
+	db 75, GRAVELER
+	db 76, STEELIX
+	db 76, GOLEM
+	db -1
+
+	; HikerGroup 5
+	db "Kip@"
+
+	db 0
+
+	db 78, WEEZING
+	db 80, CAMERUPT
+	db -1
+
+	; HikerGroup 6
+	db "Johan@"
+
+	db 0
+
+	db 78, GOLEM
+	db 80, STEELIX
+	db -1
+
+	; HikerGroup 7
+	db "Ralph@"
+
+	db 0
+
+	db 64, ONIX
+	db 65, STEELIX
+	db -1
+
+	; HikerGroup 8
+	db "Nelson@"
+
+	db 0
+
+	db 63, GRAVELER
+	db 66, AGGRON
+	db 67, GOLEM
+	db -1
+
+	; HikerGroup 9
+	db "Charlie@"
+
+	db 0
+
+	db 64, TORKOAL
+	db 65, FORRETRESS
+	db 68, FLYGON
+	db -1
+
+	; HikerGroup 10
+	db "Lenny@"
+
+	db 0
+
+	db 65, CAMERUPT
+	db 66, GOLEM
+	db 68, GLISCOR
+	db -1
+
+	; HikerGroup 11
+	db "Aiden@"
+
+	db 0
+
+	db 66, CROBAT
+	db 67, RHYDON
+	db 69, RHYPERIOR
+	db -1
+
+	; HikerGroup 12
+	db "Marvolo@"
+
+	db 0
+
+	db 82, RAPIDASH
+	db -1
+
+	; HikerGroup 13
+	db "Saul@"
+
+	db 0
+
+	db 45, GRAVELER
+	db 46, CROBAT
+	db 47, GOLEM
+	db -1
+
+	; HikerGroup 14
+	db "Jevan@"
+
+	db 0
+
+	db 51, STEELIX
+	db 51, GOLEM
+	db 52, RHYDON
+	db -1
+
+BikerGroup:
+	; BikerGroup 1
+	db "Jax@"
+
+	db 0
+
+	db 71, LAIRON
+	db 72, GRAVELER
+	db 73, AGGRON
+	db -1
+
+	; BikerGroup 2
+	db "Easton@"
+
+	db 0
+
+	db 72, WEEZING
+	db 72, WEEZING
+	db 74, VICTREEBEL
+	db -1
+
+	; BikerGroup 3
+	db "Nate@"
+
+	db 0
+
+	db 72, SCYTHER
+	db 73, AZUMARILL
+	db 75, TENTACRUEL
+	db -1
+
+	; BikerGroup 4
+	db "Nile@"
+
+	db 0
+
+	db 72, MAGMAR
+	db 74, MACHAMP
+	db 75, MAGMORTAR
+	db -1
+
+	; BikerGroup 5
+	db "Umar@"
+
+	db 0
+
+	db 74, MANECTRIC
+	db 76, LUXRAY
+	db -1
+
+	; BikerGroup 6
+	db "Cecil@"
+
+	db 0
+
+	db 73, GYARADOS
+	db 74, RHYDON
+	db 75, RHYPERIOR
+	db -1
+
+	; BikerGroup 7
+	db "Kyan@"
+
+	db 0
+
+	db 74, METANG
+	db 75, CAMERUPT
+	db 76, METAGROSS
+	db -1
+
+	; BikerGroup 8
+	db "Gino@"
+
+	db 0
+
+	db 73, PARASECT
+	db 74, TENTACRUEL
+	db 76, VICTREEBEL
+	db -1
+
+	; BikerGroup 9
+	db "Soren@"
+
+	db 0
+
+	db 40, WEEZING
+	db 41, TORKOAL
+	db 42, GOLBAT
+	db -1
+
+BurglarGroup:
+	; BurglarGroup 1
+	db "Poul@"
+
+	db 0
+
+	db 71, WEEZING
+	db 72, YANMEGA
+	db 72, DRAPION
+	db -1
+
+	; BurglarGroup 2
+	db "Tucker@"
+
+	db 0
+
+	db 48, GLIGAR
+	db 49, CAMERUPT
+	db 49, WEEZING
+	db -1
+
+FirebreatherGroup:
+	; FirebreatherGroup 1
+	db "David@"
+
+	db 0
+
+	db 11, VULPIX
+	db 11, GEODUDE
+	db -1
+
+	; FirebreatherGroup 2
+	db "Frank@"
+
+	db 0
+
+	db 32, MAGMAR
+	db 33, MAGMAR
+	db 34, FLAREON
+	db -1
+
+	; FirebreatherGroup 3
+	db "Earl@"
+
+	db 0
+
+	db 33, HOUNDOUR
+	db 34, VULPIX
+	db 36, HOUNDOOM
+	db -1
+
+	; FirebreatherGroup 4
+	db "Garth@"
+
+	db 0
+
+	db 61, CAMERUPT
+	db 62, ARCANINE
+	db 63, NINETALES
+	db -1
+
+	; FirebreatherGroup 5
+	db "Barry@"
+
+	db 0
+
+	db 78, NINETALES
+	db 79, CAMERUPT
+	db 80, HOUNDOOM
+	db -1
+
+	; FirebreatherGroup 6
+	db "Henry@"
+
+	db 0
+
+	db 82, CHARIZARD
+	db 82, TYPHLOSION
+	db -1
+
+	; FirebreatherGroup 7
+	db "Trey@"
+
+	db 0
+
+	db 41, RAPIDASH
+	db 41, ARCANINE
+	db 41, MAGCARGO
+	db -1
+
+	; FirebreatherGroup 8
+	db "Vic@"
+
+	db 0
+
+	db 41, WEEZING
+	db 41, MAGMAR
+	db 41, NINETALES
+	db -1
+
+	; FirebreatherGroup 9
+	db "Lex@"
+
+	db 0
+
+	db 53, NINETALES
+	db 53, CAMERUPT
+	db 54, TYPHLOSION
+	db -1
+	
+	; FirebreatherGroup 10
+	db "Ben@"
+
+	db 1
+	
+	db 80, WAILORD
+		db FREEZE_BURN
+		db NOISE_PULSE
+		db RAIN_DANCE
+		db HYDRO_PUMP
+
+	db 80, FROSLASS
+		db ICE_BEAM
+		db BLIZZARD
+		db PSYCHIC_M
+		db DESTINY_BOND
+
+	db 80, WIGGLYTUFF
 		db FLAMETHROWER
+		db SING
+		db HYPER_VOICE
+		db SUNNY_DAY
+	
+	db 80, LUDICOLO
+		db HYDRO_PUMP
+		db FREEZE_BURN
+		db RAIN_DANCE
+		db RAZOR_LEAF
+		
+	db 80, CHARIZARD
+		db FIRE_BLAST
+		db SWORDS_DANCE
+		db SUNNY_DAY
+		db DRAGON_CLAW
+		db -1
+
+JugglerGroup:
+	; JugglerGroup 1
+	db "James@"
+
+	db 0
+
+	db 10, PIDGEY
+	db 11, SPEAROW
+	db 10, TAILLOW
+	db 11, YANMA
+	db -1
+
+	; JugglerGroup 2
+	db "Cesar@"
+
+	db 0
+
+	db 61, KADABRA
+	db 61, ALAKAZAM
+	db 62, MACHOKE
+	db 63, MACHAMP
+	db -1
+
+	; JugglerGroup 3
+	db "Daxton@"
+
+	db 0
+
+	db 41, MAGMAR
+	db 41, MACHOKE
+	db 41, ELECTABUZZ
+	db -1
+
+BlackbeltGroup:
+	; BlackbeltGroup 1
+	db "Ryu@"
+
+	db 0
+
+	db 9, MAKUHITA
+	db 9, MACHOP
+	db -1
+
+	; BlackbeltGroup 2
+	db "Akira@"
+
+	db 0
+
+	db 18, MACHOKE
+	db -1
+
+	; BlackbeltGroup 3
+	db "Dunn@"
+
+	db 0
+
+	db 30, MACHOKE
+	db 31, HITMONLEE
+	db 32, HITMONCHAN
+	db -1
+
+	; BlackbeltGroup 4
+	db "Everett@"
+
+	db 0
+
+	db 30, HARIYAMA
+	db 31, MACHOKE
+	db 32, BRELOOM
+	db -1
+
+	; BlackbeltGroup 5
+	db "Lennox@"
+
+	db 0
+
+	db 31, HARIYAMA
+	db 32, HITMONTOP
+	db 33, MACHOKE
+	db -1
+
+	; BlackbeltGroup 6
+	db "Bruce@"
+
+	db 0
+
+	db 34, MACHOKE
+	db 35, MACHOKE
+	db 35, GRAVELER
+	db -1
+
+	; BlackbeltGroup 7
+	db "Hideki@"
+
+	db 0
+
+	db 80, MACHAMP
+	db 82, MACHAMP
+	db -1
+
+	; BlackbeltGroup 8
+	db "Hitoshi@"
+
+	db 0
+
+	db 81, MACHAMP
+	db 83, HITMONLEE
+	db -1
+
+	; BlackbeltGroup 9
+	db "Aaron@"
+
+	db 0
+
+	db 80, BRELOOM
+	db 82, GALLADE
+	db 84, MACHAMP
+	db -1
+
+	; BlackbeltGroup 10
+	db "Kiyo@"
+
+	db 1
+
+	db 82, HITMONLEE
+		db FORESIGHT
+		db FOCUS_ENERGY
 		db EXTREMESPEED
+		db HI_JUMP_KICK
 
-	db $ff ; end
+	db 82, HITMONCHAN
+		db DYNAMICPUNCH
+		db THUNDERPUNCH
+		db FIRE_PUNCH
+		db ICE_PUNCH
 
-; ================
-; ================================
+	db 82, HITMONTOP
+		db AGILITY
+		db COUNTER
+		db BULLET_PUNCH
+		db HI_JUMP_KICK
 
+	db -1
+
+	; BlackbeltGroup 11
+	db "Fu@"
+
+	db 0
+
+	db 61, KANGASKHAN
+	db 61, MACHAMP
+	db 62, GOLEM
+	db -1
+
+PsychicGroup:
+	; PsychicGroup 1
+	db "Teller@"
+
+	db 0
+
+	db 14, ABRA
+	db 15, KADABRA
+	db -1
+
+	; PsychicGroup 2
+	db "Penn@"
+
+	db 0
+
+	db 19, LUNATONE
+	db -1
+
+	; PsychicGroup 3
+	db "Murray@"
+
+	db 0
+
+	db 30, EXEGGCUTE
+	db 31, EXEGGUTOR
+	db -1
+
+	; PsychicGroup 4
+	db "Dexter@"
+
+	db 0
+
+	db 74, KADABRA
+	db 75, SOLROCK
+	db 76, ALAKAZAM
+	db -1
+
+	; PsychicGroup 5
+	db "Sidney@"
+
+	db 0
+
+	db 74, XATU
+	db 74, LUNATONE
+	db 76, EXEGGUTOR
+	db -1
+
+	; PsychicGroup 6
+	db "Franklin@"
+
+	db 0
+
+	db 82, ALAKAZAM
+	db -1
+	
+	; PsychicGroup 7
+	
+	db "Box@"
+	
+	db 1
+
+	db 80, XATU
+		db PSYCHIC_M
+		db FLY
+		db REFLECT
+		db HAZE
+
+	db 80, AGGRON
+		db EARTHQUAKE
+		db IRON_HEAD
+		db METALLURGY
+		db ROCK_SLIDE
+
+	db 80, WEAVILE
+		db SURF
+		db METAL_CLAW
+		db ICE_PUNCH
+		db AGILITY
+
+	db 80, CROBAT
+		db BITE
+		db AEROBLAST
+		db CONFUSE_RAY
+		db WING_ATTACK
+
+	db 80, GENGAR
+		db NOISE_PULSE
+		db CONFUSE_RAY
+		db HYPNOSIS
+		db DREAM_EATER
+	db -1
+
+PicnickerGroup:
+	; PicnickerGroup 1
+	db "Lois@"
+
+	db 0
+
+	db 4, NUMEL
+	db 5, VULPIX
+	db -1
+
+	; PicnickerGroup 2
+	db "Kat@"
+
+	db 0
+
+	db 9, BELLSPROUT
+	db -1
+
+	; PicnickerGroup 3
+	db "Emma@"
+
+	db 0
+
+	db 34, PIDGEOTTO
+	db -1
+
+	; PicnickerGroup 4
+	db "Estele@"
+
+	db 0
+
+	db 27, WEEPINBELL
+	db 28, MANECTRIC
+	db 28, VULPIX
+	db -1
+
+	; PicnickerGroup 5
+	db "Rose@"
+
+	db 0
+
+	db 34, IVYSAUR
+	db 35, WEEPINBELL
+	db 35, PONYTA
+	db -1
+
+	; PicnickerGroup 6
+	db "Gina@"
+
+	db 0
+
+	db 74, BRELOOM
+	db 76, BRELOOM
+	db 77, VENUSAUR
+	db -1
+
+	; PicnickerGroup 7
+	db "Lisa@"
+
+	db 0
+
+	db 66, VENUSAUR
+	db 68, PARASECT
+	db 69, MEGANIUM
+	db -1
+
+	; PicnickerGroup 8
+	db "Nancy@"
+
+	db 0
+
+	db 33, WEEPINBELL
+	db 33, MANECTRIC
+	db 34, NINETALES
+	db -1
+
+CamperGroup:
+	; CamperGroup 1
+	db "Todd@"
+
+	db 0
+
+	db 8, SPINARAK
+	db -1
+
+	; CamperGroup 2
+	db "Lesilie@"
+
+	db 0
+
+	db 12, MARILL
+	db -1
+
+	; CamperGroup 3
+	db "Seth@"
+
+	db 0
+
+	db 11, LUNATONE
+	db 12, SENTRET
+	db 12, LOTAD
+	db -1
+
+	; CamperGroup 4
+	db "Herb@"
+
+	db 0
+
+	db 25, LUNATONE
+	db 25, SOLROCK
+	db -1
+
+	; CamperGroup 5
+	db "Otis@"
+
+	db 0
+
+	db 78, RELICANTH
+	db 78, BLASTOISE
+	db -1
+
+	; CamperGroup 6
+	db "Tanner@"
+
+	db 0
+
+	db 58, LUCARIO
+	db 58, HITMONTOP
+	db 59, MACHAMP
+	db -1
+
+	; CamperGroup 7
+	db "Klaus@"
+
+	db 0
+
+	db 78, ARCANINE
+	db 79, NINETALES
+	db 80, MAGCARGO
+	db -1
+
+SageGroup:
+	; SageGroup 1
+	db "Genjo@"
+
+	db 0
+
+	db 21, GASTLY
+	db 21, SHUPPET
+	db 22, HAUNTER
+	db -1
+
+	; SageGroup 2
+	db "Minoru@"
+
+	db 0
+
+	db 22, DUSKULL
+	db 22, SHUPPET
+	db 23, HAUNTER
+	db -1
+
+	; SageGroup 3
+	db "Daikoku@"
+
+	db 0
+
+	db 26, SABLEYE
+	db -1
+
+	; SageGroup 4
+	db "Osamu@"
+
+	db 0
+
+	db 60, WEEPINBELL
+	db 60, VICTREEBEL
+	db -1
+
+	; SageGroup 5
+	db "Taro@"
+
+	db 0
+
+	db 60, HAUNTER
+	db 60, GENGAR
+	db 61, MISDREAVUS
+	db -1
+
+	; SageGroup 6
+	db "Gorou@"
+
+	db 0
+
+	db 60, VICTREEBEL
+	db 60, JOLTEON
+	db 61, BUTTERFREE
+	db -1
+	
+	db "@"
+	
+	db 0
+	db 71, GENGAR
+	db 74, DUSCLOPS
+	db -1
+
+MediumGroup:
+	; MediumGroup 1
+	db "Chieko@"
+
+	db 0
+
+	db 22, DUSKULL
+	db 23, DUSKULL
+	db 23, SHUPPET
+	db -1
+
+	; MediumGroup 2
+	db "Chika@"
+
+	db 0
+
+	db 24, DUSKULL
+	db 25, HAUNTER
+	db -1
+
+	; MediumGroup 3
+	db "Izunami@"
+
+	db 0
+
+	db 25, SPIRITOMB
+	db -1
+
+	; MediumGroup 4
+	db "Peggy@"
+
+	db 0
+
+	db 74, HAUNTER
+	db 75, DRIFBLIM
+	db 75, GENGAR
+	db -1
+
+	; MediumGroup 5
+	db "Laura@"
+
+	db 0
+
+	db 80, DRIFBLIM
+	db 81, MISMAGIUS
+	db 82, ESPEON
+	db -1
+
+	; MediumGroup 6
+	db "Rebecca@"
+
+	db 0
+
+	db 80, HAUNTER
+	db 82, DUSCLOPS
+	db 83, GENGAR
+	db -1
+
+	; MediumGroup 7
+	db "Doris@"
+
+	db 0
+
+	db 75, SLOWBRO
+	db 75, SLOWKING
+	db -1
+
+BoarderGroup:
+	; BoarderGroup 1
+	db "Boyd@"
+
+	db 0
+
+	db 44, TENTACRUEL
+	db 44, GLALIE
+	db 45, FROSLASS
+	db -1
+
+	; BoarderGroup 2
+	db "Lloyd@"
+
+	db 0
+
+	db 44, WEEZING
+	db 46, MASQUERAIN
+	db -1
+
+	; BoarderGroup 3
+	db "Darin@"
+
+	db 0
+
+	db 43, PILOSWINE
+	db 44, WEAVILE
+	db -1
+
+	; BoarderGroup 4
+	db "Vasco@"
+
+	db 0
+
+	db 73, GLALIE
+	db 73, PILOSWINE
+	db 74, FROSLASS
+	db -1
+
+	; BoarderGroup 5
+	db "Brody@"
+
+	db 0
+
+	db 73, SNEASEL
+	db 75, WEAVILE
+	db -1
+
+	; BoarderGroup 6
+	db "Caleb@"
+
+	db 0
+
+	db 74, LUNATONE
+	db 74, PILOSWINE
+	db 75, GALLADE
+	db -1
+
+PokefanMGroup:
+	; PokefanMGroup 1
+	db "Derek@"
+
+	db 0
+
+	db 5, PIKACHU
+	db -1
+
+	; PokefanMGroup 2
+	db "Spencer@"
+
+	db 0
+
+	db 16, PIKACHU
+	db -1
+
+	; PokefanMGroup 3
+	db "Brandon@"
+
+	db 0
+
+	db 80, RAICHU
+	db -1
+
+	; PokefanMGroup 4
+	db "Craig@"
+
+	db 0
+
+	db 38, PONYTA
+	db 38, PONYTA
+	db 39, RAPIDASH
+	db -1
+
+	; PokefanMGroup 5
+	db "Kent@"
+
+	db 0
+
+	db 52, VAPOREON
+	db 52, JOLTEON
+	db 52, FLAREON
+	db -1
+
+	; PokefanMGroup 6
+	db "Mick@"
+
+	db 0
+
+	db 41, WEEZING
+	db 42, WEEZING
+	db -1
+
+TwinsGroup:
+	; TwinsGroup 1
+	db "Amy&May@"
+
+	db 0
+
+	db 14, BELLSPROUT
+	db 15, BUTTERFREE
+	db -1
+
+	; TwinsGroup 2
+	db "Liz&Lily@"
+
+	db 0
+
+	db 19, VOLBEAT
+	db 19, ILLUMISE
+	db -1
+
+PokefanFGroup:
+	; PokefanFGroup 1
+	db "Jessica@"
+
+	db 0
+
+	db 17, JIGGLYPUFF
+	db -1
+
+	; PokefanFGroup 2
+	db "Emily@"
+
+	db 0
+
+	db 16, JIGGLYPUFF
+	db -1
+
+BlueGroup:
+	; BlueGroup 1
+	db "Blue@"
+
+	db 3
+
+	db 85, EXEGGUTOR, NO_ITEM
+		db SPRING_BUDS
+		db PSYCHIC_M
+		db SYNTHESIS
+		db LIGHT_SCREEN
+
+	db 84, MACHAMP, NO_ITEM
+		db EARTHQUAKE
+		db DYNAMICPUNCH
+		db ATTRACT
+		db FOCUS_ENERGY
+
+	db 85, RHYPERIOR, NO_ITEM
+		db EARTHQUAKE
+		db MEGAHORN
+		db ROCK_SLIDE
+		db METALLURGY
+
+	db 84, ARCANINE, NO_ITEM
+		db FLAMETHROWER
+		db TOXIC
+		db EXTREMESPEED
+		db CRUNCH
+
+	db 85, TYRANITAR, NO_ITEM
+		db CRUNCH
+		db ROCK_SLIDE
+		db EARTHQUAKE
+		db NO_MOVE
+
+	db 86, PIDGEOT, NO_ITEM
+		db RETURN
+		db STEEL_WING
+		db DOUBLE_TEAM
+		db FLY
+
+	db -1
 
 OfficerGroup:
-; ================================
-; ================
+	; OfficerGroup 1
+	db "Remy@"
 
-	; OFFICER (1)
-	db "KEITH@"
-	db 0 ; normal
+	db 0
 
-	; party
-	db 17, GROWLITHE
+	db 30, GRAVELER
+	db 30, LAIRON
+	db -1
 
-	db $ff ; end
+	; OfficerGroup 2
+	db "Keith@"
 
-; ================
+	db 0
 
-	; OFFICER (2)
-	db "DIRK@"
-	db 0 ; normal
+	db 85, ARCANINE
+	db -1
 
-	; party
-	db 14, GROWLITHE
-	db 14, GROWLITHE
+	; OfficerGroup 3
+	db "Grun@"
 
-	db $ff ; end
+	db 0
 
-; ================
-; ================================
+	db 5, BULBASAUR
+	db -1
 
+	; OfficerGroup 4
+	db "Porter@"
 
-GruntFGroup:
-; ================================
-; ================
+	db 0
 
-	; GRUNTF (1)
-	db "GRUNT@"
-	db 0 ; normal
+	db 37, CACTURNE
+	db 38, FURRET
+	db 40, DUSCLOPS
+	db -1
 
-	; party
-	db 9, ZUBAT
-	db 11, EKANS
+	; OfficerGroup 5
+	db "Grady@"
 
-	db $ff ; end
+	db 0
 
-; ================
+	db 41, ARCANINE
+	db 42, LUCARIO
+	db 42, PIDGEOT
+	db -1
 
-	; GRUNTF (2)
-	db "GRUNT@"
-	db 0 ; normal
+	; OfficerGroup 6
+	db "John@"
 
-	; party
-	db 26, ARBOK
+	db 0
 
-	db $ff ; end
+	db 41, WEAVILE
+	db 42, AMPHAROS
+	db 42, CARNIVINE
+	db -1
 
-; ================
+	; OfficerGroup 7
+	db "Paulie@"
 
-	; GRUNTF (3)
-	db "GRUNT@"
-	db 0 ; normal
+	db 0
 
-	; party
-	db 25, GLOOM
-	db 25, GLOOM
+	db 43, ELECTABUZZ
+	db 43, MAGMAR
+	db -1
 
-	db $ff ; end
+	; OfficerGroup 8
+	db "Dean@"
 
-; ================
+	db 0
 
-	; GRUNTF (4)
-	db "GRUNT@"
-	db 0 ; normal
+	db 44, MACHOKE
+	db 45, MANECTRIC
+	db 45, ARCANINE
+	db -1
 
-	; party
-	db 21, EKANS
-	db 23, ODDISH
-	db 21, EKANS
-	db 24, GLOOM
+KarpmanGroup:
+	; KarpmanGroup 1
+	db "Karpman@"
 
-	db $ff ; end
+	db 1
 
-; ================
+	db 76, SEAKING
+		db MEGAHORN
+		db ICE_BEAM
+		db SURF
+		db HYDRO_PUMP
 
-	; GRUNTF (5)
-	db "GRUNT@"
-	db 1 ; moves
+	db 77, SLOWBRO
+		db EARTHQUAKE
+		db SURF
+		db CALM_MIND
+		db REST
 
-	; party
+	db 79, LANTURN
+		db THUNDERBOLT
+		db CONFUSE_RAY
+		db SURF
+		db THUNDER_WAVE
 
-	db 18, EKANS
-		db WRAP
-		db LEER
-		db POISON_STING
-		db BITE
+	db 80, TENTACRUEL
+		db SURF
+		db SLUDGE_BOMB
+		db SUBSTITUTE
+		db ICE_BEAM
 
-	db 18, GLOOM
-		db ABSORB
-		db SWEET_SCENT
+	db 82, VAPOREON
+		db VAPORIZE
+		db ACID_ARMOR
+		db SURF
+		db ICE_BEAM
+
+	db -1
+
+LilyGroup:
+	; LilyGroup 1
+	db "Lily@"
+
+	db 1
+
+	db 74, LUNATONE
+		db ICE_BEAM
+		db PSYCHIC_M
+		db CALM_MIND
+		db HYPNOSIS
+
+	db 75, WEAVILE
+		db ICE_PUNCH
+		db NIGHT_SLASH
+		db COUNTER
+		db HAIL
+
+	db 75, GLALIE
+		db ICE_BEAM
+		db CRUNCH
+		db EXPLOSION
+		db HAIL
+
+	db 77, FROSLASS
+		db SHADOW_BALL
+		db ICE_BEAM
+		db THUNDER_WAVE
+		db HAIL
+
+	db 78, GLACEON
+		db FREEZE_BURN
+		db ICE_BEAM
+		db BLIZZARD
+		db HAIL
+
+	db -1
+
+LoisGroup:
+	; LoisGroup 1
+	db "Lois@"
+
+	db 1
+
+	db 63, EXEGGUTOR
 		db STUN_SPORE
 		db SLEEP_POWDER
+		db PSYCHIC_M
+		db SPRING_BUDS
 
-	db $ff ; end
+	db 64, TANGROWTH
+		db EARTHQUAKE
+		db GIGA_DRAIN
+		db SLEEP_POWDER
+		db SYNTHESIS
 
-; ================
-; ================================
+	db 66, VICTREEBEL
+		db SOLARBEAM
+		db TOXIC
+		db SUNNY_DAY
+		db GIGA_DRAIN
 
+	db 67, LEAFEON
+		db QUICK_ATTACK
+		db SWORDS_DANCE
+		db SYNTHESIS
+		db DOUBLE_EDGE
 
-MysticalmanGroup:
-; ================================
-; ================
+	db 69, VENUSAUR
+		db SLUDGE_BOMB
+		db SOLARBEAM
+		db EARTHQUAKE
+		db SUNNY_DAY
 
-	; MYSTICALMAN (1)
-	db "EUSINE@"
-	db 1 ; moves
+	db -1
 
-	; party
+SparkyGroup:
+	; SparkyGroup 1
+	db "Sparky@"
 
-	db 23, DROWZEE
-		db DREAM_EATER
-		db HYPNOSIS
-		db DISABLE
-		db CONFUSION
+	db 1
 
-	db 23, HAUNTER
-		db LICK
-		db HYPNOSIS
-		db MEAN_LOOK
-		db CURSE
+	db 62, MANECTRIC
+		db THUNDERBOLT
+		db FLAMETHROWER
+		db LIGHT_SCREEN
+		db SUBSTITUTE
 
-	db 25, ELECTRODE
+	db 63, LUXRAY
+		db SPARK
+		db CRUNCH
+		db REST
+		db SIGNAL_BEAM
+
+	db 65, RAICHU
+		db THUNDER_WAVE
+		db AGILITY
+		db SIGNAL_BEAM
+		db CRYSTAL_BOLT
+
+	db 66, ELECTIVIRE
+		db THUNDERPUNCH
+		db ICE_PUNCH
+		db EARTHQUAKE
+		db NO_MOVE
+
+	db 68, JOLTEON
+		db IRON_TAIL
+		db SHADOW_BALL
+		db SIGNAL_BEAM
+		db CRYSTAL_BOLT
+
+	db -1
+
+CadenceGroup:
+	; CadenceGroup 1
+	db "Cadence@"
+
+	db 1
+
+	db 42, LOUDRED
+		db NOISE_PULSE
 		db SCREECH
-		db SONICBOOM
-		db THUNDER
-		db ROLLOUT
+		db STOMP
+		db SUPERSONIC
 
-	db $ff ; end
+	db 43, MAGNEZONE
+		db NOISE_PULSE
+		db SCREECH
+		db TRI_ATTACK
+		db THUNDER_WAVE
 
-; ================
-; ================================
+	db 45, WIGGLYTUFF
+		db NOISE_PULSE
+		db SING
+		db MOONBLAST
+		db ENDURE
+
+	db 48, EXPLOUD
+		db NOISE_PULSE
+		db SCREECH
+		db SUPERSONIC
+		db NO_MOVE
+
+	db -1
+
+	; CadenceGroup 2
+	db "Cadence@"
+
+	db 1
+
+	db 50, LOUDRED
+		db NOISE_PULSE
+		db SCREECH
+		db STOMP
+		db SUPERSONIC
+
+	db 52, MAGNEZONE
+		db NOISE_PULSE
+		db SCREECH
+		db TRI_ATTACK
+		db THUNDER_WAVE
+
+	db 53, WIGGLYTUFF
+		db NOISE_PULSE
+		db SING
+		db MOONBLAST
+		db ENDURE
+
+	db 54, EXPLOUD
+		db NOISE_PULSE
+		db SCREECH
+		db SUPERSONIC
+		db NO_MOVE
+
+	db -1
+
+ArcadePCGroup:
+	; PLEASE DO NOT REMOVE THIS TRAINER AGAIN.
+	; Seriously, don't remove it.
+	
+	; Just don't.
+	
+	db "Arcade PC@"
+	db 0
+
+	db -1 ; this party is handled by GenerateArcadeParty
+
+; these trainer groups have no trainers assigned yet
+CheerleaderGroup:
+; CooltrainerFGroup 2
+	db "Khloe@"
+
+	db 0
+
+	db 18, MARILL
+	db 19, MAWILE
+	db -1
+	
+; BeautyGroup 3
+	db "Nicole@"
+
+	db 0
+
+	db 19, JIGGLYPUFF
+	db 19, RALTS
+	db 20, TOGETIC
+	db -1
+
+GruntMGroup:
+	db "Grunt@"
+
+	db 0
+
+	db 78, VENOMOTH
+	db 79, WEEZING
+	db 81, CROBAT
+	db -1
+	
+MinerGroup:
+	db "Mick@"
+
+	db 0
+
+	db 41, WEEZING
+	db 42, GRAVELER
+	db -1
+
+SilverGroup:
+	db "Leader@"
+	
+	db 1
+	
+	db 79, WEAVILE
+	db FURY_CUTTER
+	db ICE_PUNCH
+	db SWORDS_DANCE
+	db NIGHT_SLASH
+	
+	db 81, CROBAT
+	db BRAVE_BIRD
+	db AIR_SLASH
+	db CRUNCH
+	db SCREECH
+	
+	db 82, MAGNETON
+	db METALLURGY
+	db THUNDERBOLT
+	db FLASH_CANNON
+	db SUPERSONIC
+	
+	db 83, GENGAR
+	db WILL_O_WISP
+	db SLUDGE_BOMB
+	db HYPNOSIS
+	db DARK_PULSE
+	
+	db 85, ALAKAZAM
+	db PSYCHIC_M
+	db CALM_MIND
+	db RECOVER
+	db DARK_PULSE
+	
+	db 88, HITMONTOP
+	db HI_JUMP_KICK
+	db BULK_UP
+	db DOUBLE_EDGE
+	db MACH_PUNCH
+	db -1
+
+JoeGroup:
+	db "Joe@"
+	
+	db 1
+	
+	db 69, FURRET
+	db DOUBLE_EDGE
+	db DIG
+	db ROLLOUT
+	db SWAGGER
+	
+	db 71, KANGASKHAN
+	db EARTHQUAKE
+	db DIZZY_PUNCH
+	db FIRE_PUNCH
+	db ATTRACT
+	
+	db 73, URSARING
+	db CRUNCH
+	db SWORDS_DANCE
+	db SEISMIC_TOSS
+	db SLASH
+	
+	db 74, PIDGEOT
+	db AIR_SLASH
+	db BRAVE_BIRD
+	db WHIRLWIND
+	db QUICK_ATTACK
+	
+	db 76, SNORLAX
+	db EARTHQUAKE
+	db ICE_PUNCH
+	db REST
+	db SLEEP_TALK
+	db -1
+	
+DelinquentMGroup:
+DelinquentFGroup:
+GoldGroup:
+	db "Gold@"
+	
+	db 1
+	
+	db 95, AMPHAROS
+	db THUNDERBOLT
+	db DRAGON_PULSE
+	db AGILITY
+	db THUNDER
+	
+	db 96, UMBREON
+	db NIGHT_SHADE
+	db LIGHT_SCREEN
+	db DARK_PULSE
+	db VOID_SPHERE
+	
+	db 96, URSARING
+	db CRUNCH
+	db SWORDS_DANCE
+	db EARTHQUAKE
+	db SLASH
+	
+	db 95, MEGANIUM
+	db SUNNY_DAY
+	db SOLARBEAM
+	db SYNTHESIS
+	db GIGA_DRAIN
+	
+	db 96, TYPHLOSION
+	db FLAMETHROWER
+	db SUNNY_DAY
+	db BODY_SLAM
+	db DIG
+	
+	db 97, FERALIGATR
+	db RAIN_DANCE
+	db SURF
+	db HYDRO_PUMP
+	db CRUNCH
+	db -1
+	
+GiovanniGroup:
+ErnestGroup:
+	db "Ernest@"
+	
+	db 1
+	
+	db 81, MAGMORTAR
+	db FIRE_BLAST
+	db THUNDERBOLT
+	db EARTHQUAKE
+	db REST
+	
+	db 83, RAPIDASH
+	db FLARE_BLITZ
+	db WILL_O_WISP
+	db MORNING_SUN
+	db MEGAHORN
+	
+	db 84, TYPHLOSION
+	db FIRE_BLAST
+	db EARTHQUAKE
+	db SUNNY_DAY
+	db SMOKESCREEN
+	
+	db 86, CAMERUPT
+	db FIRE_BLAST
+	db EARTHQUAKE
+	db DOUBLE_EDGE
+	db SAND_ATTACK
+	
+	db 88, CHARIZARD
+	db DRAGON_DANCE
+	db DRAGON_CLAW
+	db FLARE_BLITZ
+	db WING_ATTACK
+	db -1
+KrisGroup:
+KimonoGirlGroup:
+BugsyGroup:
+	db "Bugsy@"
+	
+	db 1
+	
+	db 79, BUTTERFREE
+	db SLEEP_POWDER
+	db ENERGY_BALL
+	db GIGA_DRAIN
+	db SIGNAL_BEAM
+	
+	db 80, YANMEGA
+	db AIR_SLASH
+	db GIGA_DRAIN
+	db ANCIENTPOWER
+	db FURY_CUTTER
+	
+	db 81, FORRETRESS
+	db SPIKES
+	db TOXIC
+	db PROTECT
+	db ROLLOUT
+	
+	db 82, ARMALDO
+	db ROCK_SLIDE
+	db EARTHQUAKE
+	db X_SCISSOR
+	db SWORDS_DANCE
+	
+	db 84, SCIZOR
+	db SWORDS_DANCE
+	db BULLET_PUNCH
+	db X_SCISSOR
+	db AIR_SLASH
+	db -1
+	
+WhitneyGroup:
+	db "Whitney@"
+	
+	db 1
+	
+	db 79, WIGGLYTUFF
+	db HYPER_VOICE
+	db FIRE_BLAST
+	db CHARM
+	db PLAY_ROUGH
+	
+	db 80, PORYGONZ
+	db NASTY_PLOT
+	db TRI_ATTACK
+	db THUNDERBOLT
+	db AGILITY
+	
+	db 81, BLISSEY
+	db TOXIC
+	db SEISMIC_TOSS
+	db PROTECT
+	db SOFTBOILED
+	
+	db 82, URSARING
+	db CRUNCH
+	db SWORDS_DANCE
+	db SEISMIC_TOSS
+	db SLASH
+	
+	db 83, SNORLAX
+	db BELLY_DRUM
+	db THUNDERPUNCH
+	db EARTHQUAKE
+	db REST
+	db -1
+
+SabrinaGroup:
+	db "Sabrina@"
+	
+	db 1
+	
+	db 83, SLOWKING
+	db PSYCHIC_M
+	db FIRE_BLAST
+	db HYDRO_PUMP
+	db REST
+	
+	db 84, GALLADE
+	db ZEN_HEADBUTT
+	db SWORDS_DANCE
+	db SUBSTITUTE
+	db DRAIN_PUNCH
+	
+	db 86, VENOMOTH
+	db PSYCHIC_M
+	db SLEEP_POWDER
+	db SIGNAL_BEAM
+	db SLUDGE_BOMB
+	
+	db 88, ESPEON
+	db PSYCHIC_M
+	db CALM_MIND
+	db SHADOW_BALL
+	db SAND_ATTACK
+	
+	db 90, ALAKAZAM
+	db PSYCHIC_M
+	db CALM_MIND
+	db SHADOW_BALL
+	db SUBSTITUTE
+	db -1
+
+CandelaGroup:
+BlancheGroup:
+SparkGroup:
+BrownGroup:
+	db "Brown@"
+	
+	db 1
+	
+	db 89, SCIZOR
+	db SWORDS_DANCE
+	db AERIAL_ACE
+	db QUICK_ATTACK
+	db FURY_CUTTER
+	
+	db 90, GOLEM
+	db EARTHQUAKE
+	db ROCK_SLIDE
+	db ROLLOUT
+	db EXPLOSION
+	
+	db 91, MACHAMP
+	db DYNAMICPUNCH
+	db SWORDS_DANCE
+	db BULLET_PUNCH
+	db MACH_PUNCH
+	
+	db 92, VICTREEBEL
+	db SUNNY_DAY
+	db SOLARBEAM
+	db SLUDGE_BOMB
+	db SLEEP_POWDER
+	
+	db 91, JOLTEON
+	db THUNDERBOLT
+	db SIGNAL_BEAM
+	db CRYSTAL_BOLT
+	db SAND_ATTACK
+	
+	db 93, CHARIZARD
+	db FLARE_BLITZ
+	db DRAGON_CLAW
+	db DRAGON_DANCE
+	db CRUNCH
+	db -1
+GuitaristFGroup:
+	db -1

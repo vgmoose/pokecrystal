@@ -7,13 +7,13 @@ MoveDeletion:
 	call PrintText
 	callba SelectMonFromParty
 	jr c, .declined
-	ld a, [CurPartySpecies]
+	ld a, [wCurPartySpecies]
 	cp EGG
 	jr z, .egg
-	ld a, [CurPartyMon]
+	ld a, [wCurPartyMon]
 	ld hl, PartyMon1Moves + 1
 	ld bc, PARTYMON_STRUCT_LENGTH
-	call AddNTimes
+	rst AddNTimes
 	ld a, [hl]
 	and a
 	jr z, .onlyonemove
@@ -27,7 +27,7 @@ MoveDeletion:
 	jr c, .declined
 	ld a, [wMenuCursorY]
 	push af
-	ld a, [CurSpecies]
+	ld a, [wCurSpecies]
 	ld [wd265], a
 	call GetMoveName
 	ld hl, .ConfirmDeleteText
@@ -38,76 +38,55 @@ MoveDeletion:
 	call .DeleteMove
 	call WaitSFX
 	ld de, SFX_MOVE_DELETED
-	call PlaySFX
-	call WaitSFX
+	call PlayWaitSFX
 	ld hl, .MoveDeletedText
-	call PrintText
-	ret
+	jp PrintText
 
 .egg
 	ld hl, .EggText
-	call PrintText
-	ret
+	jp PrintText
 
 .declined
 	ld hl, .DeclinedDeletionText
-	call PrintText
-	ret
+	jp PrintText
 
 .onlyonemove
 	ld hl, .OnlyOneMoveText
-	call PrintText
-	ret
+	jp PrintText
 
-.OnlyOneMoveText: ; 0x2c5d1
-	; That #MON knows only one move.
+.OnlyOneMoveText
+	; That #mon knows only one move.
 	text_jump UnknownText_0x1c5eba
-	db "@"
-; 0x2c5d6
 
-.ConfirmDeleteText: ; 0x2c5d6
+.ConfirmDeleteText
 	; Oh, make it forget @ ?
 	text_jump UnknownText_0x1c5eda
-	db "@"
-; 0x2c5db
 
-.MoveDeletedText: ; 0x2c5db
-	; Done! Your #MON forgot the move.
+.MoveDeletedText
+	; Done! Your #mon forgot the move.
 	text_jump UnknownText_0x1c5ef5
-	db "@"
-; 0x2c5e0
 
-.EggText: ; 0x2c5e0
+.EggText
 	; An EGG doesn't know any moves!
 	text_jump UnknownText_0x1c5f17
-	db "@"
-; 0x2c5e5
 
-.DeclinedDeletionText: ; 0x2c5e5
+.DeclinedDeletionText
 	; No? Come visit me again.
 	text_jump UnknownText_0x1c5f36
-	db "@"
-; 0x2c5ea
 
-.AskWhichMoveText: ; 0x2c5ea
+.AskWhichMoveText
 	; Which move should it forget, then?
 	text_jump UnknownText_0x1c5f50
-	db "@"
-; 0x2c5ef
 
-.IntroText: ; 0x2c5ef
-	; Um… Oh, yes, I'm the MOVE DELETER. I can make #MON forget moves. Shall I make a #MON forget?
+.IntroText
+	; Um… Oh, yes, I'm the MOVE DELETER. I can make #mon forget moves. Shall I make a #mon forget?
 	text_jump UnknownText_0x1c5f74
-	db "@"
-; 0x2c5f4
 
-.AskWhichMonText: ; 0x2c5f4
-	; Which #MON?
+.AskWhichMonText
+	; Which #mon?
 	text_jump UnknownText_0x1c5fd1
-	db "@"
-; 0x2c5f9
 
-.DeleteMove: ; 2c5f9
+.DeleteMove
 	ld a, b
 	push bc
 	dec a
@@ -115,9 +94,9 @@ MoveDeletion:
 	ld b, 0
 	ld hl, PartyMon1Moves
 	add hl, bc
-	ld a, [CurPartyMon]
+	ld a, [wCurPartyMon]
 	ld bc, PARTYMON_STRUCT_LENGTH
-	call AddNTimes
+	rst AddNTimes
 	pop bc
 	push bc
 	inc b
@@ -144,9 +123,9 @@ MoveDeletion:
 	ld b, 0
 	ld hl, PartyMon1PP
 	add hl, bc
-	ld a, [CurPartyMon]
+	ld a, [wCurPartyMon]
 	ld bc, PARTYMON_STRUCT_LENGTH
-	call AddNTimes
+	rst AddNTimes
 	pop bc
 	inc b
 .loop2

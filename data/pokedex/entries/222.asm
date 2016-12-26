@@ -1,10 +1,15 @@
-; CorsolaPokedexEntry: ; 0x1d0c68
-	db "CORAL@" ; species name
-	dw 200, 110 ; height, width
+	ctxt "Land Shark" ; species name
+	done
+	dw 204, 452 ; height, weight
 
-	db   "The points on its"
-	next "head absorb"
-	next "nutrients from"
-	page "clean water. They"
-	next "cannot survive in"
-	next "polluted water.@"
+	db .page2 - .page1
+.page1
+	ctxt "It once lived in"
+	next "the tropics. To"
+	next "avoid the cold, it"
+	done
+.page2
+	ctxt "lives in caves"
+	next "warmed by"
+	next "geothermal heat."
+	done

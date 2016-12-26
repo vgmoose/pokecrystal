@@ -1,10 +1,15 @@
-; KabutoPokedexEntry: ; 0x1cc497
-	db "SHELLFISH@" ; species name
-	dw 108, 250 ; height, width
+	ctxt "Barnacle" ; species name
+	done
+	dw 411, 1332 ; height, weight
 
-	db   "Three hundred"
-	next "million years ago,"
-	next "it hid on the sea"
-	page "floor. It also has"
-	next "eyes on its back"
-	next "that glow.@"
+	db .page2 - .page1
+.page1
+	ctxt "It lives in warm"
+	next "seas. Its heavy"
+	next "body weighs it"
+	done
+.page2
+	ctxt "down so it won't"
+	next "get washed away in"
+	next "rough weather."
+	done

@@ -1,10 +1,15 @@
-; BellsproutPokedexEntry: ; 0x1b81a1
-	db "FLOWER@" ; species name
-	dw 204, 90 ; height, width
+	ctxt "Flower" ; species name
+	done
+	dw 204, 90 ; height, weight
 
-	db   "If it notices"
+	db .page2 - .page1
+.page1
+	ctxt "If it notices"
 	next "anything that"
 	next "moves, it"
-	page "immediately flings"
+	done
+.page2
+	ctxt "immediately flings"
 	next "its vine at the"
-	next "object.@"
+	next "object."
+	done

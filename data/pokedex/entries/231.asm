@@ -1,10 +1,15 @@
-; PhanpyPokedexEntry: ; 0x1d1038
-	db "LONG NOSE@" ; species name
-	dw 108, 740 ; height, width
+	ctxt "Long Nose" ; species name
+	done
+	dw 108, 740 ; height, weight
 
-	db   "During the desert-"
+	db .page2 - .page1
+.page1
+	ctxt "During the desert-"
 	next "ed morning hours,"
 	next "it comes ashore"
-	page "where it deftly"
+	done
+.page2
+	ctxt "where it deftly"
 	next "uses its trunk to"
-	next "take a shower.@"
+	next "take a shower."
+	done

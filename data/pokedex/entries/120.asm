@@ -1,10 +1,14 @@
-; StaryuPokedexEntry: ; 0x1b9702
-	db "STARSHAPE@" ; species name
-	dw 207, 760 ; height, width
+	ctxt "Water Weed" ; species name
+	done
+	dw 108, 57 ; height, weight
 
-	db   "When the stars"
-	next "twinkle at night,"
-	next "it floats up from"
-	page "the sea floor, and"
-	next "its body's center"
-	next "core flickers.@"
+	db .page2 - .page1
+.page1
+	ctxt "It looks like an"
+	next "aquatic plant and"
+	next "serves as a ferry"
+	done
+.page2
+	ctxt "to #mon that"
+	next "can't swim."
+	done

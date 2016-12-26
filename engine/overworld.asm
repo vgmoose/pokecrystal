@@ -1,53 +1,20 @@
-GetEmote2bpp: ; 1412a
+GetEmote2bpp:
 	ld a, $1
 	ld [rVBK], a
 	call Get2bpp
 	xor a
 	ld [rVBK], a
 	ret
-; 14135
 
-_ReplaceKrisSprite:: ; 14135
+_ReplaceKrisSprite::
 	call GetPlayerSprite
 	ld a, [UsedSprites]
 	ld [hUsedSpriteIndex], a
 	ld a, [UsedSprites + 1]
 	ld [hUsedSpriteTile], a
-	call GetUsedSprite
-	ret
-; 14146
+	jp GetUsedSprite
 
-Function14146: ; mobile
-	ld hl, wSpriteFlags
-	ld a, [hl]
-	push af
-	res 7, [hl]
-	set 6, [hl]
-	call MapCallbackSprites_LoadUsedSpritesGFX
-	pop af
-	ld [wSpriteFlags], a
-	ret
-; 14157
-
-Function14157: ; mobile
-	ld hl, wSpriteFlags
-	ld a, [hl]
-	push af
-	set 7, [hl]
-	res 6, [hl]
-	call MapCallbackSprites_LoadUsedSpritesGFX
-	pop af
-	ld [wSpriteFlags], a
-	ret
-; 14168
-
-RefreshSprites:: ; 14168
-	call .Refresh
-	call MapCallbackSprites_LoadUsedSpritesGFX
-	ret
-; 1416f
-
-.Refresh: ; 1416f
+RefreshSprites::
 	xor a
 	ld bc, UsedSpritesEnd - UsedSprites
 	ld hl, UsedSprites
@@ -55,76 +22,192 @@ RefreshSprites:: ; 14168
 	call GetPlayerSprite
 	call AddMapSprites
 	call LoadAndSortSprites
-	ret
-; 14183
+	jp RunCallback_04
 
-GetPlayerSprite: ; 14183
+GetPlayerSprite:
 ; Get Chris or Kris's sprite.
-	ld hl, .Chris
-	ld a, [wPlayerSpriteSetupFlags]
-	bit 2, a
+	CheckEngine ENGINE_CUSTOM_PLAYER_SPRITE
+	ld a, [PlayerSprite]
+	jr nz, .finishCustomSprite
+	CheckEngine ENGINE_POKEMON_MODE
+	jr nz, .GetPlayerSprite_PokemonMode
+	ld hl, .Male0
+	CheckEngine ENGINE_KRIS_IN_CABLE_CLUB
 	jr nz, .go
-	ld a, [PlayerGender]
-	bit 0, a
+	ld a, [wPlayerCharacteristics]
+	and $f
 	jr z, .go
-	ld hl, .Kris
-
+	cp 14
+	jr nc, .go
+	ld e, a
+	ld d, 0
+	; add 9 times
+	add hl, de
+	swap e
+	srl e
+	add hl, de
 .go
 	ld a, [PlayerState]
-	ld c, a
-.loop
-	ld a, [hli]
-	cp c
-	jr z, .good
+	ld e, 2
+	call IsInArray
 	inc hl
-	cp $ff
-	jr nz, .loop
-
+	jr c, .good
 ; Any player state not in the array defaults to Chris's sprite.
 	xor a ; ld a, PLAYER_NORMAL
 	ld [PlayerState], a
-	ld a, SPRITE_CHRIS
+.fail
+	ld a, SPRITE_P0
+	jr .finish
+
+.GetPlayerSprite_PokemonMode
+	ld a, [wPokeonlyMainSpecies]
+	and a
+	jr nz, .get_pkmn_sprite
+	ld hl, wPartyMon1 + MON_HP
+	ld de, wPartySpecies
+	ld bc, PARTYMON_STRUCT_LENGTH - 1
+	jr .handleLoop
+
+.nextMon
+	inc de
+	add hl, bc
+.handleLoop
+	ld a, [de]
+	and a
+	jr z, .fail
+	cp $ff
+	jr z, .fail
+	cp EGG
+	jr z, .nextMon
+	ld a, [hli]
+	or [hl]
+	jr z, .nextMon
+	ld bc, MON_DVS - (MON_HP + 1)
+	add hl, bc
+	ld bc, wPokeonlyMainDVs
+	ld a, [hli]
+	ld [bc], a
+	inc bc
+	ld a, [hl]
+	ld [bc], a
+	ld a, [de]
+	ld [wPokeonlyMainSpecies], a
+.get_pkmn_sprite
+	ld a, SPRITE_POKEMON - 1
 	jr .finish
 
 .good
 	ld a, [hl]
-
 .finish
-	ld [UsedSprites + 0], a
 	ld [PlayerSprite], a
+.finishCustomSprite
+	ld [UsedSprites + 0], a
 	ld [PlayerObjectSprite], a
 	ret
 
-.Chris:
-	db PLAYER_NORMAL,    SPRITE_CHRIS
-	db PLAYER_BIKE,      SPRITE_CHRIS_BIKE
-	db PLAYER_SURF,      SPRITE_SURF
+.PlayerSprites
+.Male0
+	db PLAYER_NORMAL,    SPRITE_P0
+	db PLAYER_BIKE,      SPRITE_P0_BIKE
+	db PLAYER_SURF,      SPRITE_P0_SURF
 	db PLAYER_SURF_PIKA, SPRITE_SURFING_PIKACHU
 	db $ff
 
-.Kris:
-	db PLAYER_NORMAL,    SPRITE_KRIS
-	db PLAYER_BIKE,      SPRITE_KRIS_BIKE
-	db PLAYER_SURF,      SPRITE_SURF
+.Female0
+	db PLAYER_NORMAL,    SPRITE_P1
+	db PLAYER_BIKE,      SPRITE_P1_BIKE
+	db PLAYER_SURF,      SPRITE_P1_SURF
 	db PLAYER_SURF_PIKA, SPRITE_SURFING_PIKACHU
 	db $ff
-; 141c9
 
+.Male1
+	db PLAYER_NORMAL,    SPRITE_P2
+	db PLAYER_BIKE,      SPRITE_P2_BIKE
+	db PLAYER_SURF,      SPRITE_P2_SURF
+	db PLAYER_SURF_PIKA, SPRITE_SURFING_PIKACHU
+	db $ff
 
-AddMapSprites: ; 141c9
+.Female1
+	db PLAYER_NORMAL,    SPRITE_P3
+	db PLAYER_BIKE,      SPRITE_P3_BIKE
+	db PLAYER_SURF,      SPRITE_P3_SURF
+	db PLAYER_SURF_PIKA, SPRITE_SURFING_PIKACHU
+	db $ff
+
+.Male2
+	db PLAYER_NORMAL,    SPRITE_P4
+	db PLAYER_BIKE,      SPRITE_P4_BIKE
+	db PLAYER_SURF,      SPRITE_P4_SURF
+	db PLAYER_SURF_PIKA, SPRITE_SURFING_PIKACHU
+	db $ff
+
+.Female2
+	db PLAYER_NORMAL,    SPRITE_P5
+	db PLAYER_BIKE,      SPRITE_P5_BIKE
+	db PLAYER_SURF,      SPRITE_P5_SURF
+	db PLAYER_SURF_PIKA, SPRITE_SURFING_PIKACHU
+	db $ff
+
+.Male3
+	db PLAYER_NORMAL,    SPRITE_P6
+	db PLAYER_BIKE,      SPRITE_P6_BIKE
+	db PLAYER_SURF,      SPRITE_P6_SURF
+	db PLAYER_SURF_PIKA, SPRITE_SURFING_PIKACHU
+	db $ff
+
+.Female3
+	db PLAYER_NORMAL,    SPRITE_P7
+	db PLAYER_BIKE,      SPRITE_P7_BIKE
+	db PLAYER_SURF,      SPRITE_P7_SURF
+	db PLAYER_SURF_PIKA, SPRITE_SURFING_PIKACHU
+	db $ff
+
+.Male4
+	db PLAYER_NORMAL,    SPRITE_P8
+	db PLAYER_BIKE,      SPRITE_P8_BIKE
+	db PLAYER_SURF,      SPRITE_P8_SURF
+	db PLAYER_SURF_PIKA, SPRITE_SURFING_PIKACHU
+	db $ff
+
+.Female4
+	db PLAYER_NORMAL,    SPRITE_P9
+	db PLAYER_BIKE,      SPRITE_P9_BIKE
+	db PLAYER_SURF,      SPRITE_P9_SURF
+	db PLAYER_SURF_PIKA, SPRITE_SURFING_PIKACHU
+	db $ff
+
+.Male5
+	db PLAYER_NORMAL,    SPRITE_P10
+	db PLAYER_BIKE,      SPRITE_P10_BIKE
+	db PLAYER_SURF,      SPRITE_P10_SURF
+	db PLAYER_SURF_PIKA, SPRITE_SURFING_PIKACHU
+	db $ff
+
+.Female5
+	db PLAYER_NORMAL,    SPRITE_P11
+	db PLAYER_BIKE,      SPRITE_P11_BIKE
+	db PLAYER_SURF,      SPRITE_P11_SURF
+	db PLAYER_SURF_PIKA, SPRITE_SURFING_PIKACHU
+	db $ff
+
+.PalettePatroller
+	db PLAYER_NORMAL,    SPRITE_PALETTE_PATROLLER
+	db PLAYER_BIKE,      SPRITE_P12_BIKE
+	db PLAYER_SURF,      SPRITE_P12_SURF
+	db PLAYER_SURF_PIKA, SPRITE_SURFING_PIKACHU
+	db $ff
+
+.PalettePatrollerF
+	db PLAYER_NORMAL,    SPRITE_PALETTE_PATROLLER
+	db PLAYER_BIKE,      SPRITE_P12_BIKE
+	db PLAYER_SURF,      SPRITE_P12_BIKE
+	db PLAYER_SURF_PIKA, SPRITE_SURFING_PIKACHU
+	db $ff
+
+AddMapSprites:
 	call GetMapPermission
 	call CheckOutdoorMap
-	jr z, .outdoor
-	call AddIndoorSprites
-	ret
-
-.outdoor
-	call AddOutdoorSprites
-	ret
-; 141d9
-
-
-AddIndoorSprites: ; 141d9
+	jp z, .outdoor
 	ld hl, Map1ObjectSprite
 	ld a, 1
 .loop
@@ -138,10 +221,8 @@ AddIndoorSprites: ; 141d9
 	cp NUM_OBJECTS
 	jr nz, .loop
 	ret
-; 141ee
 
-
-AddOutdoorSprites: ; 141ee
+.outdoor:
 	ld a, [MapGroup]
 	dec a
 	ld c, a
@@ -153,61 +234,40 @@ AddOutdoorSprites: ; 141ee
 	ld h, [hl]
 	ld l, a
 	ld c, MAX_OUTDOOR_SPRITES
-.loop
+.loop2
 	push bc
 	ld a, [hli]
 	call AddSpriteGFX
 	pop bc
 	dec c
-	jr nz, .loop
+	jr nz, .loop2
 	ret
-; 14209
 
-
-MapCallbackSprites_LoadUsedSpritesGFX: ; 14209
+RunCallback_04:
 	ld a, MAPCALLBACK_SPRITES
 	call RunMapCallback
 	call GetUsedSprites
-	call .LoadMiscTiles
-	ret
-; 14215
-
-.LoadMiscTiles: ; 14215
-	ld a, [wSpriteFlags]
-	bit 6, a
-	ret nz
 
 	ld c, EMOTE_SHADOW
-	callba LoadEmote
+	call LoadEmote
 	call GetMapPermission
 	call CheckOutdoorMap
 	ld c, EMOTE_0B
 	jr z, .outdoor
 	ld c, EMOTE_BOULDER_DUST
 .outdoor
-	callba LoadEmote
-	ret
-; 14236
+	jp LoadEmote
 
-
-
-SafeGetSprite: ; 14236
-	push hl
-	call GetSprite
-	pop hl
-	ret
-; 1423c
-
-GetSprite: ; 1423c
+GetSpriteHeaderFromFar:
+	ld a, b
+GetSprite:
 	call GetMonSprite
 	ret c
 
 	ld hl, SpriteHeaders ; address
 	dec a
-	ld c, a
-	ld b, 0
-	ld a, 6
-	call AddNTimes
+	ld bc, 6
+	rst AddNTimes
 	; load the address into de
 	ld a, [hli]
 	ld e, a
@@ -217,19 +277,19 @@ GetSprite: ; 1423c
 	ld a, [hli]
 	swap a
 	ld c, a
-	; load the sprite bank into both b and h
+	; load the sprite bank into both b
 	ld b, [hl]
+	inc hl
+	; load the sprite type into l and the default palette into h
 	ld a, [hli]
-	; load the sprite type into l
-	ld l, [hl]
-	ld h, a
+	ld h, [hl]
+	ld l, a
 	ret
-; 14259
 
-
-GetMonSprite: ; 14259
+GetMonSprite:
 ; Return carry if a monster sprite was loaded.
-
+	cp SPRITE_POKEMON - 1
+	jp z, .WalkingPokemon
 	cp SPRITE_POKEMON
 	jr c, .Normal
 	cp SPRITE_DAYCARE_MON_1
@@ -238,20 +298,14 @@ GetMonSprite: ; 14259
 	jr z, .wBreedMon2
 	cp SPRITE_VARS
 	jr nc, .Variable
-	jr .Icon
-
-.Normal:
-	and a
-	ret
-
-.Icon:
+; icon
 	sub SPRITE_POKEMON
 	ld e, a
 	ld d, 0
 	ld hl, SpriteMons
 	add hl, de
 	ld a, [hl]
-	jr .Mon
+	jr .NPCPokemon
 
 .wBreedMon1
 	ld a, [wBreedMon1Species]
@@ -260,19 +314,12 @@ GetMonSprite: ; 14259
 .wBreedMon2
 	ld a, [wBreedMon2Species]
 
-.Mon:
-	ld e, a
+.Mon
 	and a
 	jr z, .NoBreedmon
+	jr .NPCPokemon
 
-	callba LoadOverworldMonIcon
-
-	ld l, 1
-	ld h, 0
-	scf
-	ret
-
-.Variable:
+.Variable
 	sub SPRITE_VARS
 	ld e, a
 	ld d, 0
@@ -282,20 +329,43 @@ GetMonSprite: ; 14259
 	and a
 	jp nz, GetMonSprite
 
-.NoBreedmon:
-	ld a, 1
-	ld l, 1
-	ld h, 0
+.NoBreedmon
+	ld a, SPRITE_P0
+	lb hl, PAL_OW_PLAYER, WALKING_SPRITE
+
+.Normal
 	and a
 	ret
-; 142a7
 
+.WalkingPokemon
+	ld a, [wPokeonlyMainSpecies]
+.NPCPokemon
+	dec a
+	ld e, a
+	ld d, 0
+	ld hl, PokemonOWSpritePointers
+	add hl, de
+	add hl, de
+	add hl, de
+	ld a, BANK(PokemonOWSpritePointers)
+	call GetFarByteHalfword
+	ld b, a
+	ld d, h
+	ld e, l
+	ld c, 12
+	lb hl, PAL_OW_PLAYER, WALKING_SPRITE
+	scf
+	ret
 
-_DoesSpriteHaveFacings:: ; 142a7
+_DoesSpriteHaveFacings::
 ; Checks to see whether we can apply a facing to a sprite.
 ; Returns carry unless the sprite is a Pokemon or a Still Sprite.
+	ld a, b
+_DoesSpriteHaveFacings_IDInA:
+	cp SPRITE_POKEMON - 1
+	jr z, .has_facings
 	cp SPRITE_POKEMON
-	jr nc, .only_down
+	jr nc, .has_facings
 
 	push hl
 	push bc
@@ -304,51 +374,25 @@ _DoesSpriteHaveFacings:: ; 142a7
 	ld c, a
 	ld b, 0
 	ld a, NUM_SPRITEHEADER_FIELDS
-	call AddNTimes
+	rst AddNTimes
 	ld a, [hl]
 	pop bc
 	pop hl
 	cp STILL_SPRITE
-	jr nz, .only_down
+	jr nz, .has_facings
 	scf
 	ret
 
-.only_down
+.has_facings
 	and a
 	ret
-; 142c4
 
-
-_GetSpritePalette:: ; 142c4
-	ld a, c
-	call GetMonSprite
-	jr c, .is_pokemon
-
-	ld hl, SpriteHeaders + 5 ; palette
-	dec a
-	ld c, a
-	ld b, 0
-	ld a, 6
-	call AddNTimes
-	ld c, [hl]
-	ret
-
-.is_pokemon
-	xor a
-	ld c, a
-	ret
-; 142db
-
-
-LoadAndSortSprites: ; 142db
+LoadAndSortSprites:
 	call LoadSpriteGFX
 	call SortUsedSprites
-	call ArrangeUsedSprites
-	ret
-; 142e5
+	jp ArrangeUsedSprites
 
-
-AddSpriteGFX: ; 142e5
+AddSpriteGFX:
 ; Add any new sprite ids to a list of graphics to be loaded.
 ; Return carry if the list is full.
 
@@ -359,10 +403,15 @@ AddSpriteGFX: ; 142e5
 	ld c, SPRITE_GFX_LIST_CAPACITY - 1
 .loop
 	ld a, [hl]
-	cp b
-	jr z, .exists
 	and a
 	jr z, .new
+	cp b
+	jr nz, .next
+	inc hl
+	ld a, [hld]
+	cp d
+	jr z, .exists
+.next
 	inc hl
 	inc hl
 	dec c
@@ -373,22 +422,17 @@ AddSpriteGFX: ; 142e5
 	scf
 	ret
 
+.new
+	ld [hl], b
+	inc hl
+	ld [hl], d
 .exists
 	pop bc
 	pop hl
 	and a
 	ret
 
-.new
-	ld [hl], b
-	pop bc
-	pop hl
-	and a
-	ret
-; 14306
-
-
-LoadSpriteGFX: ; 14306
+LoadSpriteGFX:
 ; Bug: b is not preserved, so
 ; it's useless as a next count.
 
@@ -397,32 +441,26 @@ LoadSpriteGFX: ; 14306
 .loop
 	ld a, [hli]
 	and a
-	jr z, .done
+	ret z
 	push hl
-	call .LoadSprite
+	push bc
+	call GetSprite
+	ld a, l
+	pop bc
 	pop hl
 	ld [hli], a
 	dec b
 	jr nz, .loop
-
-.done
 	ret
 
-.LoadSprite:
-	call GetSprite
-	ld a, l
-	ret
-; 1431e
-
-
-SortUsedSprites: ; 1431e
+SortUsedSprites:
 ; Bubble-sort sprites by type.
 
 ; Run backwards through UsedSprites to find the last one.
 
 	ld c, SPRITE_GFX_LIST_CAPACITY
 	ld de, UsedSprites + (SPRITE_GFX_LIST_CAPACITY - 1) * 2
-.FindLastSprite:
+.FindLastSprite
 	ld a, [de]
 	and a
 	jr nz, .FoundLastSprite
@@ -430,9 +468,9 @@ SortUsedSprites: ; 1431e
 	dec de
 	dec c
 	jr nz, .FindLastSprite
-.FoundLastSprite:
+.FoundLastSprite
 	dec c
-	jr z, .quit
+	ret z
 
 ; If the length of the current sprite is
 ; higher than a later one, swap them.
@@ -440,12 +478,12 @@ SortUsedSprites: ; 1431e
 	inc de
 	ld hl, UsedSprites + 1
 
-.CheckSprite:
+.CheckSprite
 	push bc
 	push de
 	push hl
 
-.CheckFollowing:
+.CheckFollowing
 	ld a, [de]
 	cp [hl]
 	jr nc, .loop
@@ -482,23 +520,20 @@ SortUsedSprites: ; 1431e
 	dec c
 	jr nz, .CheckSprite
 
-.quit
 	ret
-; 14355
 
-
-ArrangeUsedSprites: ; 14355
+ArrangeUsedSprites:
 ; Get the length of each sprite and space them out in VRAM.
 ; Crystal introduces a second table in VRAM bank 0.
 
 	ld hl, UsedSprites
 	ld c, SPRITE_GFX_LIST_CAPACITY
 	ld b, 0
-.FirstTableLength:
+.FirstTableLength
 ; Keep going until the end of the list.
 	ld a, [hli]
 	and a
-	jr z, .quit
+	ret z
 
 	ld a, [hl]
 	call GetSpriteLength
@@ -518,22 +553,22 @@ ArrangeUsedSprites: ; 14355
 	dec c
 	jr nz, .FirstTableLength
 
-.SecondTable:
+.SecondTable
 ; The second tile table starts at tile $80.
 	ld b, $80
 	dec hl
-.SecondTableLength:
+.SecondTableLength
 ; Keep going until the end of the list.
 	ld a, [hli]
 	and a
-	jr z, .quit
+	ret z
 
 	ld a, [hl]
 	call GetSpriteLength
 
 ; There are only two tables, so don't go any further than that.
 	add b
-	jr c, .quit
+	ret c
 
 	ld [hl], b
 	ld b, a
@@ -542,59 +577,36 @@ ArrangeUsedSprites: ; 14355
 	dec c
 	jr nz, .SecondTableLength
 
-.quit
 	ret
-; 14386
 
-
-GetSpriteLength: ; 14386
+GetSpriteLength:
 ; Return the length of sprite type a in tiles.
-
-	cp WALKING_SPRITE
-	jr z, .AnyDirection
-	cp STANDING_SPRITE
-	jr z, .AnyDirection
 	cp STILL_SPRITE
-	jr z, .OneDirection
-
-	ld a, 12
-	ret
-
-.AnyDirection:
-	ld a, 12
-	ret
-
-.OneDirection:
 	ld a, 4
+	ret z
+	ld a, 12
 	ret
-; 1439b
 
-
-GetUsedSprites: ; 1439b
+GetUsedSprites:
 	ld hl, UsedSprites
 	ld c, SPRITE_GFX_LIST_CAPACITY
 
 .loop
-	ld a, [wSpriteFlags]
-	res 5, a
+	xor a
 	ld [wSpriteFlags], a
 
 	ld a, [hli]
 	and a
-	jr z, .done
+	ret z
 	ld [hUsedSpriteIndex], a
 
 	ld a, [hli]
 	ld [hUsedSpriteTile], a
 
-	bit 7, a
-	jr z, .dont_set
-
-	ld a, [wSpriteFlags]
-	set 5, a ; load VBank0
+	rlca
+	and $1
 	ld [wSpriteFlags], a
 
-.dont_set
 	push bc
 	push hl
 	call GetUsedSprite
@@ -603,95 +615,88 @@ GetUsedSprites: ; 1439b
 	dec c
 	jr nz, .loop
 
-.done
 	ret
-; 143c8
 
-GetUsedSprite: ; 143c8
+GetUsedSprite::
 	ld a, [hUsedSpriteIndex]
-	call SafeGetSprite
+	push hl
+	call GetSprite
+	push bc
+	ld h, d
+	ld l, e
+	ld a, b
+	call FarDecompressWRA6
+	pop bc
+	pop hl
+
 	ld a, [hUsedSpriteTile]
 	call .GetTileAddr
 	push hl
-	push de
 	push bc
-	ld a, [wSpriteFlags]
-	bit 7, a
-	jr nz, .skip
+	ld de, wDecompressScratch
 	call .CopyToVram
-
-.skip
 	pop bc
-	ld l, c
-	ld h, $0
-rept 4
-	add hl, hl
-endr
-	pop de
-	add hl, de
-	ld d, h
-	ld e, l
 	pop hl
 
 	ld a, [wSpriteFlags]
-	bit 5, a
-	jr nz, .done
-	bit 6, a
-	jr nz, .done
+	and a
+	ret nz
 
 	ld a, [hUsedSpriteIndex]
-	call _DoesSpriteHaveFacings
-	jr c, .done
+	call _DoesSpriteHaveFacings_IDInA
+	ret c
+
+	ld e, c
+	swap e
+	ld a, e
+	and $f
+	add (wDecompressScratch >> 8)
+	ld d, a
+	ld a, e
+	and $f0
+	ld e, a
 
 	ld a, h
-	add $8
+	add (VTiles1 - VTiles0) >> 8
 	ld h, a
-	call .CopyToVram
 
-.done
-	ret
-; 14406
-
-.GetTileAddr: ; 14406
-; Return the address of tile (a) in (hl).
-	and $7f
-	ld l, a
-	ld h, 0
-rept 4
-	add hl, hl
-endr
-	ld a, l
-	add VTiles0 % $100
-	ld l, a
-	ld a, h
-	adc VTiles0 / $100
-	ld h, a
-	ret
-; 14418
-
-.CopyToVram: ; 14418
+.CopyToVram:
 	ld a, [rVBK]
 	push af
 	ld a, [wSpriteFlags]
-	bit 5, a
-	ld a, $1
-	jr z, .bankswitch
-	ld a, $0
-
-.bankswitch
+	xor 1
 	ld [rVBK], a
-	call Get2bpp
+	call Request2bppInWRA6
 	pop af
 	ld [rVBK], a
 	ret
-; 1442f
 
-LoadEmote:: ; 1442f
+.GetTileAddr
+; Return the address of tile (a) in (hl).
+	and $7f
+	ld l, a
+	ld h, (VTiles0 >> 12)
+	add hl, hl
+	add hl, hl
+	add hl, hl
+	add hl, hl
+	ret
+
+LoadEmote::
 ; Get the address of the pointer to emote c.
 	ld a, c
-	ld bc, 6
+	ld bc, 8
 	ld hl, EmotesPointers
-	call AddNTimes
+	rst AddNTimes
+; Load the SFX into RAM
+	ld a, [hli]
+	and a
+	ld [wEmoteSFX], a
+	ld a, [hli]
+	ld [wEmoteSFX + 1], a
+	jr nz, .okay
+	ld [wPlayEmoteSFX], a
+.okay
 ; Load the emote address into de
 	ld e, [hl]
 	inc hl
@@ -712,634 +717,267 @@ LoadEmote:: ; 1442f
 	ld a, c
 	and a
 	ret z
-	call GetEmote2bpp
-	ret
-; 1444d
+	jp GetEmote2bpp
 
 emote_header: MACRO
-	dw \1
-	db \2 tiles, BANK(\1)
-	dw VTiles1 tile \3
+	dw \1, \2
+	db \3 tiles, BANK(\2)
+	dw VTiles1 tile \4
 ENDM
 
-EmotesPointers: ; 144d
+EmotesPointers:
 ; dw source address
 ; db length, bank
 ; dw dest address
 
-	emote_header ShockEmote,     4, $78
-	emote_header QuestionEmote,  4, $78
-	emote_header HappyEmote,     4, $78
-	emote_header SadEmote,       4, $78
-	emote_header HeartEmote,     4, $78
-	emote_header BoltEmote,      4, $78
-	emote_header SleepEmote,     4, $78
-	emote_header FishEmote,      4, $78
-	emote_header JumpShadowGFX,  1, $7c
-	emote_header FishingRodGFX2, 2, $7c
-	emote_header BoulderDustGFX, 2, $7e
-	emote_header FishingRodGFX4, 1, $7e
-; 14495
+	emote_header SFX_GLASS_TING, ShockEmote,     4, $78
+	emote_header SFX_SQUEAK,     QuestionEmote,  4, $78
+	emote_header SFX_SWEET_KISS, HappyEmote,     4, $78
+	emote_header SFX_POISON,     SadEmote,       4, $78
+	emote_header SFX_UNKNOWN_7F, HeartEmote,     4, $78
+	emote_header SFX_THUNDER,    BoltEmote,      4, $78
+	emote_header SFX_TAIL_WHIP,  SleepEmote,     4, $78
+	emote_header SFX_2_BOOPS,    FishEmote,      4, $78
+	emote_header 0,              JumpShadowGFX,  1, $7c
+	emote_header 0,              FishingRodGFX2, 2, $7c
+	emote_header 0,              BoulderDustGFX, 2, $7e
+	emote_header 0,              FishingRodGFX4, 2, $7e
 
-
-SpriteMons: ; 14495
-	db UNOWN
-	db GEODUDE
-	db GROWLITHE
-	db WEEDLE
-	db SHELLDER
-	db ODDISH
-	db GENGAR
-	db ZUBAT
-	db MAGIKARP
-	db SQUIRTLE
-	db TOGEPI
+SpriteMons:
+	db BAGON
+	db CATERPIE
+	db METAPOD
 	db BUTTERFREE
-	db DIGLETT
-	db POLIWAG
-	db PIKACHU
-	db CLEFAIRY
-	db CHARMANDER
-	db JYNX
-	db STARMIE
-	db BULBASAUR
-	db JIGGLYPUFF
-	db GRIMER
-	db EKANS
-	db PARAS
-	db TENTACOOL
-	db TAUROS
-	db MACHOP
-	db VOLTORB
-	db LAPRAS
+	db WARTORTLE
+	db CHARIZARD
+	db XATU
+	db SURSKIT
+	db TOTODILE
+	db GENGAR
+	db EGG
+	db MACHOKE
+	db GROUDON
+	db AGGRON
+	db FAMBACO
+	db ELECTABUZZ
+	db RAICHU
+	db FLAAFFY
+	db BRONZONG
+	db HARIYAMA
+	db METAGROSS
+	db KYOGRE
 	db RHYDON
 	db MOLTRES
-	db SNORLAX
-	db GYARADOS
-	db LUGIA
-	db HO_OH
-; 144b8
+	db TYPHLOSION
+	db FEAROW
+	db PIDGEOT
+	db SWELLOW
+	db ARTICUNO
+	db PHANCERO
+	db HITMONCHAN
+	db GLACEON
+	db BLASTOISE
+	db MAGMORTAR
+	db AMPHAROS
+	db MILOTIC
+	db LIBABEEL
+	db RAIWATO
+	db ABRA
+	db PIKACHU
+	db CHARMANDER
+	db LARVITAR
+	db VARANEOUS
+	db RAYQUAZA
 
-
-OutdoorSprites: ; 144b8
+OutdoorSprites:
 ; Valid sprite IDs for each map group.
+	dw IntroSprites
+	dw CaperCitySprites
+	dw OxalisCitySprites ;3
+	dw SpurgeCitySprites ;4
+	dw HeathVillageSprites ;5
+	dw LaurelCitySprites ;6
+	dw ToreniaCitySprites ;7
+	dw PhaceliaTownSprites
+	dw SaxifrageIslandSprites
+	dw PhloxTownSprites
+	dw AcaniaDocksSprites
+	dw AcaniaDocksSprites
+	dw HeathVillageSprites ;Route 69
+	dw CaperCitySprites ;Route 70
+	dw CaperCitySprites ;Route 71
+	dw OxalisCitySprites ;72
+	dw ToreniaCitySprites ;73
+	dw SpurgeCitySprites ;74
+	dw SpurgeCitySprites ;75
+	dw LaurelCitySprites ;76
+	dw Route77Sprites ;77
+	dw PhaceliaTownSprites ;78
+	dw Route85Sprites ;79
+	dw SaxifrageIslandSprites ;80
+	dw Route81Sprites ;81
+	dw AcaniaDocksSprites ;82
+	dw ToreniaCitySprites ;83
+	dw Route84Sprites ;84
+	dw Route85Sprites ;85
+	dw Route86Sprites ;86
+	dw Group13Sprites ;Acqua Mines
+	dw Group13Sprites ;Mound Cave
+	dw LaurelForestSprites ;Laurel Forest
+	dw Group13Sprites ;Milos Catacombs
+	dw Group13Sprites ;Municipal Park
+	dw Group13Sprites ;Magma Caverns
+	dw Group13Sprites ;Naljo Ruins
+	dw Group13Sprites ;Clathrite Tunnel
+	dw Group13Sprites ;Naljo Border
+	dw Group13Sprites ;Champion Isle
+	dw Group13Sprites ;Long Tunnel
+	dw SeashoreGravelSprites ; Seashore
+	dw SeashoreGravelSprites ; Gravel
+	dw MersonCitySprites ;  Merson
+	dw HaywardCitySprites ;  Hayward
+	dw OwsauriCitySprites ;  46
+	dw MoragaTownSprites ;  47
+	dw JaeruCitySprites ;  48
+	dw BotanCitySprites ;  49
+	dw CastroValleySprites ;  50
+	dw EagulouLeagueSprites ;  51
+	dw RijonLeagueSprites ;  52
+	dw OwsauriCitySprites ;  53
+	dw OwsauriCitySprites ;  54
+	dw OwsauriCitySprites ;  55
+	dw HaywardCitySprites ;  56
+	dw HaywardCitySprites ;  57
+	dw SeashoreGravelSprites ;  58
+	dw SeashoreGravelSprites ;  59
+	dw MersonCitySprites ; 60
+	dw MersonCitySprites ; 61
+	dw EagulouLeagueSprites ;  62
+	dw CastroValleySprites ;  63
+	dw CastroValleySprites ;  64
+	dw JaeruCitySprites ;  65
+	dw MoragaTownSprites ;  66
+	dw EagulouLeagueSprites ;  67
+	dw EagulouLeagueSprites ;  68
+	dw HaywardCitySprites ;  69
+	dw HaywardCitySprites ;  70
+	dw RijonLeagueSprites ;  71
+	dw OwsauriCitySprites ;  72
+	dw EagulouLeagueSprites ;  73
+	dw Group13Sprites ;  74
+	dw Group13Sprites ;  75
+	dw Group13Sprites ;  76
+	dw Group13Sprites ;  77
+	dw Group13Sprites ;  78
+	dw Group13Sprites ;  79
+	dw Group13Sprites ;  80
+	dw AzaleaTownSprites ;  81
+	dw Group13Sprites ;  82
+	dw GoldenrodSprites ;  83
+	dw GoldenrodSprites ;  84
+	dw SaffronSprites ;  85
+	dw SaffronSprites ;  86
+	dw SaffronSprites ;  87
+	dw SaffronSprites ;  88
+	dw SoutherlySprites ;  89
+	dw SoutherlySprites ;  90
+	dw SoutherlySprites ;  91
+	dw CaperCitySprites ;  92
+	dw CaperCitySprites ;  93
+	dw CaperCitySprites ;  94
 
-	dw Group1Sprites
-	dw Group2Sprites
-	dw Group3Sprites
-	dw Group4Sprites
-	dw Group5Sprites
-	dw Group6Sprites
-	dw Group7Sprites
-	dw Group8Sprites
-	dw Group9Sprites
-	dw Group10Sprites
-	dw Group11Sprites
-	dw Group12Sprites
-	dw Group13Sprites
-	dw Group14Sprites
-	dw Group15Sprites
-	dw Group16Sprites
-	dw Group17Sprites
-	dw Group18Sprites
-	dw Group19Sprites
-	dw Group20Sprites
-	dw Group21Sprites
-	dw Group22Sprites
-	dw Group23Sprites
-	dw Group24Sprites
-	dw Group25Sprites
-	dw Group26Sprites
-; 144ec
-
-
-Group13Sprites: ; 144ec
+SoutherlySprites:
 	db SPRITE_SUICUNE
 	db SPRITE_SILVER_TROPHY
 	db SPRITE_FAMICOM
 	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
+	db SPRITE_SORA
+	db SPRITE_YUKI
 	db SPRITE_NURSE
 	db SPRITE_OLD_LINK_RECEPTIONIST
 	db SPRITE_BIG_LAPRAS
 	db SPRITE_BIG_ONIX
 	db SPRITE_SUDOWOODO
 	db SPRITE_BIG_SNORLAX
-	db SPRITE_TEACHER
-	db SPRITE_FISHER
-	db SPRITE_YOUNGSTER
-	db SPRITE_BLUE
-	db SPRITE_GRAMPS
-	db SPRITE_BUG_CATCHER
 	db SPRITE_COOLTRAINER_F
-	db SPRITE_SWIMMER_GIRL
+	db SPRITE_LASS
 	db SPRITE_SWIMMER_GUY
-	db SPRITE_POKE_BALL
-	db SPRITE_FRUIT_TREE
-; 14503
-
-Group23Sprites: ; 14503
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_BIG_LAPRAS
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_TEACHER
-	db SPRITE_FISHER
-	db SPRITE_YOUNGSTER
-	db SPRITE_BLUE
-	db SPRITE_GRAMPS
-	db SPRITE_BUG_CATCHER
-	db SPRITE_COOLTRAINER_F
 	db SPRITE_SWIMMER_GIRL
-	db SPRITE_SWIMMER_GUY
-	db SPRITE_POKE_BALL
-	db SPRITE_FRUIT_TREE
-; 1451a
-
-Group14Sprites: ; 1451a
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_BIG_LAPRAS
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_TEACHER
 	db SPRITE_FISHER
-	db SPRITE_YOUNGSTER
-	db SPRITE_BLUE
-	db SPRITE_GRAMPS
-	db SPRITE_BUG_CATCHER
-	db SPRITE_COOLTRAINER_F
-	db SPRITE_SWIMMER_GIRL
-	db SPRITE_SWIMMER_GUY
-	db SPRITE_POKE_BALL
-	db SPRITE_FRUIT_TREE
-; 14531
-
-Group6Sprites: ; 14531
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_BIG_LAPRAS
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_TEACHER
-	db SPRITE_FISHER
-	db SPRITE_YOUNGSTER
-	db SPRITE_BLUE
-	db SPRITE_GRAMPS
-	db SPRITE_BUG_CATCHER
-	db SPRITE_COOLTRAINER_F
-	db SPRITE_SWIMMER_GIRL
-	db SPRITE_SWIMMER_GUY
-	db SPRITE_POKE_BALL
-	db SPRITE_FRUIT_TREE
-; 14548
-
-Group7Sprites: ; 14548
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_BIG_LAPRAS
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_COOLTRAINER_M
-	db SPRITE_SUPER_NERD
-	db SPRITE_COOLTRAINER_F
-	db SPRITE_FISHER
-	db SPRITE_YOUNGSTER
-	db SPRITE_LASS
-	db SPRITE_POKEFAN_M
-	db SPRITE_ROCKET
-	db SPRITE_MISTY
-	db SPRITE_POKE_BALL
-	db SPRITE_SLOWPOKE
-; 1455f
-
-Group25Sprites: ; 1455f
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_BIG_LAPRAS
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_COOLTRAINER_M
-	db SPRITE_SUPER_NERD
-	db SPRITE_COOLTRAINER_F
-	db SPRITE_FISHER
-	db SPRITE_YOUNGSTER
-	db SPRITE_LASS
-	db SPRITE_POKEFAN_M
-	db SPRITE_ROCKET
-	db SPRITE_MISTY
-	db SPRITE_POKE_BALL
-	db SPRITE_SLOWPOKE
-; 14576
-
-Group21Sprites: ; 14576
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_BIG_LAPRAS
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_FISHER
-	db SPRITE_POLIWAG
-	db SPRITE_TEACHER
-	db SPRITE_GRAMPS
-	db SPRITE_YOUNGSTER
-	db SPRITE_LASS
-	db SPRITE_BIKER
-	db SPRITE_SILVER
-	db SPRITE_BLUE
-	db SPRITE_POKE_BALL
-	db SPRITE_FRUIT_TREE
-; 1458d
-
-Group18Sprites: ; 1458d
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_BIG_LAPRAS
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_POKEFAN_M
-	db SPRITE_MACHOP
-	db SPRITE_GRAMPS
-	db SPRITE_YOUNGSTER
-	db SPRITE_FISHER
-	db SPRITE_TEACHER
-	db SPRITE_SUPER_NERD
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_BIKER
-	db SPRITE_POKE_BALL
-	db SPRITE_FRUIT_TREE
-; 145a4
-
-Group12Sprites: ; 145a4
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_BIG_LAPRAS
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_POKEFAN_M
-	db SPRITE_MACHOP
-	db SPRITE_GRAMPS
-	db SPRITE_YOUNGSTER
-	db SPRITE_FISHER
-	db SPRITE_TEACHER
-	db SPRITE_SUPER_NERD
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_BIKER
-	db SPRITE_POKE_BALL
-	db SPRITE_FRUIT_TREE
-; 145bb
-
-Group17Sprites: ; 145bb
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_BIG_LAPRAS
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_POKEFAN_M
-	db SPRITE_MACHOP
-	db SPRITE_GRAMPS
-	db SPRITE_YOUNGSTER
-	db SPRITE_FISHER
-	db SPRITE_TEACHER
-	db SPRITE_SUPER_NERD
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_BIKER
-	db SPRITE_POKE_BALL
-	db SPRITE_FRUIT_TREE
-; 145d2
-
-Group16Sprites: ; 145d2
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_BIG_LAPRAS
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_POKEFAN_M
-	db SPRITE_BUENA
-	db SPRITE_GRAMPS
-	db SPRITE_YOUNGSTER
-	db SPRITE_FISHER
-	db SPRITE_TEACHER
-	db SPRITE_SUPER_NERD
-	db SPRITE_MACHOP
-	db SPRITE_BIKER
-	db SPRITE_POKE_BALL
-	db SPRITE_BOULDER
-; 145e9
-
-Group24Sprites: ; 145e9
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_BIG_LAPRAS
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_SILVER
-	db SPRITE_TEACHER
-	db SPRITE_FISHER
-	db SPRITE_COOLTRAINER_M
-	db SPRITE_YOUNGSTER
-	db SPRITE_MONSTER
-	db SPRITE_GRAMPS
-	db SPRITE_BUG_CATCHER
-	db SPRITE_COOLTRAINER_F
-	db SPRITE_POKE_BALL
-	db SPRITE_FRUIT_TREE
-; 14600
-
-Group26Sprites: ; 14600
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_BIG_LAPRAS
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_SILVER
-	db SPRITE_TEACHER
-	db SPRITE_FISHER
-	db SPRITE_COOLTRAINER_M
-	db SPRITE_YOUNGSTER
-	db SPRITE_MONSTER
-	db SPRITE_GRAMPS
-	db SPRITE_BUG_CATCHER
-	db SPRITE_COOLTRAINER_F
-	db SPRITE_POKE_BALL
-	db SPRITE_FRUIT_TREE
-; 14617
-
-Group19Sprites: ; 14617
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_BIG_LAPRAS
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_SILVER
-	db SPRITE_TEACHER
-	db SPRITE_FISHER
-	db SPRITE_COOLTRAINER_M
-	db SPRITE_YOUNGSTER
-	db SPRITE_MONSTER
-	db SPRITE_GRAMPS
-	db SPRITE_BUG_CATCHER
-	db SPRITE_COOLTRAINER_F
-	db SPRITE_POKE_BALL
-	db SPRITE_FRUIT_TREE
-; 1462e
-
-Group10Sprites: ; 1462e
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_BIG_LAPRAS
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_FISHER
-	db SPRITE_LASS
-	db SPRITE_OFFICER
-	db SPRITE_GRAMPS
-	db SPRITE_YOUNGSTER
-	db SPRITE_COOLTRAINER_M
-	db SPRITE_BUG_CATCHER
-	db SPRITE_SUPER_NERD
-	db SPRITE_WEIRD_TREE
-	db SPRITE_POKE_BALL
-	db SPRITE_FRUIT_TREE
-; 14645
-
-Group4Sprites: ; 14645
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_BIG_LAPRAS
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_FISHER
-	db SPRITE_LASS
-	db SPRITE_OFFICER
-	db SPRITE_GRAMPS
-	db SPRITE_YOUNGSTER
-	db SPRITE_COOLTRAINER_M
-	db SPRITE_BUG_CATCHER
-	db SPRITE_SUPER_NERD
-	db SPRITE_WEIRD_TREE
-	db SPRITE_POKE_BALL
-	db SPRITE_FRUIT_TREE
-; 1465c
-
-Group8Sprites: ; 1465c
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_KURT_OUTSIDE
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_GRAMPS
-	db SPRITE_YOUNGSTER
-	db SPRITE_OFFICER
-	db SPRITE_POKEFAN_M
 	db SPRITE_BLACK_BELT
-	db SPRITE_TEACHER
-	db SPRITE_AZALEA_ROCKET
-	db SPRITE_LASS
-	db SPRITE_SILVER
+	db SPRITE_OFFICER
+	db SPRITE_POKE_BALL
 	db SPRITE_FRUIT_TREE
-	db SPRITE_SLOWPOKE
-; 14673
+	db SPRITE_TYPHLOSION
 
-Group11Sprites: ; 14673
+SaffronSprites:
 	db SPRITE_SUICUNE
 	db SPRITE_SILVER_TROPHY
-	db SPRITE_POKE_BALL
+	db SPRITE_FAMICOM
 	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
+	db SPRITE_SORA
+	db SPRITE_YUKI
 	db SPRITE_NURSE
 	db SPRITE_OLD_LINK_RECEPTIONIST
 	db SPRITE_BIG_LAPRAS
 	db SPRITE_BIG_ONIX
 	db SPRITE_SUDOWOODO
 	db SPRITE_BIG_SNORLAX
-	db SPRITE_GRAMPS
-	db SPRITE_YOUNGSTER
-	db SPRITE_OFFICER
-	db SPRITE_POKEFAN_M
-	db SPRITE_DAYCARE_MON_1
 	db SPRITE_COOLTRAINER_F
-	db SPRITE_ROCKET
+	db SPRITE_YOUNGSTER
 	db SPRITE_LASS
-	db SPRITE_DAYCARE_MON_2
-	db SPRITE_FRUIT_TREE
-	db SPRITE_SLOWPOKE
-; 1468a
+	db SPRITE_POKEFAN_M
+	db SPRITE_FISHER
+	db SPRITE_POKE_BALL
+	db SPRITE_MOLTRES
 
-Group22Sprites: ; 1468a
+GoldenrodSprites:
 	db SPRITE_SUICUNE
 	db SPRITE_SILVER_TROPHY
 	db SPRITE_FAMICOM
 	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
+	db SPRITE_SORA
+	db SPRITE_YUKI
 	db SPRITE_NURSE
 	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_STANDING_YOUNGSTER
+	db SPRITE_BIG_LAPRAS
 	db SPRITE_BIG_ONIX
 	db SPRITE_SUDOWOODO
 	db SPRITE_BIG_SNORLAX
-	db SPRITE_OLIVINE_RIVAL
-	db SPRITE_POKEFAN_M
+	db SPRITE_COOLTRAINER_F
+	db SPRITE_YOUNGSTER
 	db SPRITE_LASS
-	db SPRITE_BUENA
-	db SPRITE_SWIMMER_GIRL
-	db SPRITE_SAILOR
-	db SPRITE_POKEFAN_F
-	db SPRITE_SUPER_NERD
-	db SPRITE_TAUROS
-	db SPRITE_FRUIT_TREE
+	db SPRITE_POKEFAN_M
+	db SPRITE_GRAMPS
+	db SPRITE_OFFICER
+	db SPRITE_POKE_BALL
 	db SPRITE_ROCK
-; 146a1
 
-Group1Sprites: ; 146a1
+AzaleaTownSprites:
 	db SPRITE_SUICUNE
 	db SPRITE_SILVER_TROPHY
 	db SPRITE_FAMICOM
 	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
+	db SPRITE_SORA
+	db SPRITE_YUKI
 	db SPRITE_NURSE
 	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_STANDING_YOUNGSTER
+	db SPRITE_BIG_LAPRAS
 	db SPRITE_BIG_ONIX
 	db SPRITE_SUDOWOODO
 	db SPRITE_BIG_SNORLAX
-	db SPRITE_OLIVINE_RIVAL
-	db SPRITE_POKEFAN_M
-	db SPRITE_LASS
-	db SPRITE_BUENA
-	db SPRITE_SWIMMER_GIRL
-	db SPRITE_SAILOR
-	db SPRITE_POKEFAN_F
-	db SPRITE_SUPER_NERD
-	db SPRITE_TAUROS
+	db SPRITE_YOUNGSTER
+	db SPRITE_TEACHER
+	db SPRITE_GRAMPS
 	db SPRITE_FRUIT_TREE
-	db SPRITE_ROCK
-; 146b8
 
-Group9Sprites: ; 146b8
+RijonLeagueSprites:
 	db SPRITE_SUICUNE
 	db SPRITE_SILVER_TROPHY
 	db SPRITE_FAMICOM
 	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
+	db SPRITE_SORA
+	db SPRITE_YUKI
 	db SPRITE_NURSE
 	db SPRITE_OLD_LINK_RECEPTIONIST
 	db SPRITE_BIG_LAPRAS
@@ -1347,103 +985,398 @@ Group9Sprites: ; 146b8
 	db SPRITE_SUDOWOODO
 	db SPRITE_BIG_SNORLAX
 	db SPRITE_LANCE
-	db SPRITE_GRAMPS
-	db SPRITE_SUPER_NERD
-	db SPRITE_COOLTRAINER_F
-	db SPRITE_FISHER
-	db SPRITE_COOLTRAINER_M
-	db SPRITE_LASS
-	db SPRITE_YOUNGSTER
-	db SPRITE_GYARADOS
-	db SPRITE_FRUIT_TREE
-	db SPRITE_POKE_BALL
-; 146cf
+	db SPRITE_MOM
+	db SPRITE_FIRE
+	db SPRITE_SILVER
 
-Group2Sprites: ; 146cf
+EagulouLeagueSprites:
 	db SPRITE_SUICUNE
 	db SPRITE_SILVER_TROPHY
 	db SPRITE_FAMICOM
 	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
+	db SPRITE_SORA
+	db SPRITE_YUKI
 	db SPRITE_NURSE
 	db SPRITE_OLD_LINK_RECEPTIONIST
 	db SPRITE_BIG_LAPRAS
 	db SPRITE_BIG_ONIX
 	db SPRITE_SUDOWOODO
 	db SPRITE_BIG_SNORLAX
-	db SPRITE_GRAMPS
-	db SPRITE_YOUNGSTER
-	db SPRITE_LASS
-	db SPRITE_SUPER_NERD
-	db SPRITE_COOLTRAINER_M
-	db SPRITE_POKEFAN_M
-	db SPRITE_BLACK_BELT
-	db SPRITE_COOLTRAINER_F
+	db SPRITE_SWIMMER_GUY
+	db SPRITE_SWIMMER_GIRL
 	db SPRITE_FISHER
-	db SPRITE_FRUIT_TREE
+	db SPRITE_SAGE
+	db SPRITE_GENTLEMAN
+	db SPRITE_BLACK_BELT
 	db SPRITE_POKE_BALL
-; 146e6
 
-Group5Sprites: ; 146e6
+CastroValleySprites:
 	db SPRITE_SUICUNE
 	db SPRITE_SILVER_TROPHY
 	db SPRITE_FAMICOM
 	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
+	db SPRITE_SORA
+	db SPRITE_YUKI
 	db SPRITE_NURSE
 	db SPRITE_OLD_LINK_RECEPTIONIST
 	db SPRITE_BIG_LAPRAS
 	db SPRITE_BIG_ONIX
 	db SPRITE_SUDOWOODO
 	db SPRITE_BIG_SNORLAX
-	db SPRITE_GRAMPS
 	db SPRITE_YOUNGSTER
-	db SPRITE_LASS
-	db SPRITE_SUPER_NERD
-	db SPRITE_COOLTRAINER_M
-	db SPRITE_POKEFAN_M
-	db SPRITE_BLACK_BELT
-	db SPRITE_COOLTRAINER_F
-	db SPRITE_FISHER
-	db SPRITE_FRUIT_TREE
-	db SPRITE_POKE_BALL
-; 146fd
-
-Group3Sprites: ; 146fd
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_GAMEBOY_KID
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
-	db SPRITE_LASS
-	db SPRITE_POKEFAN_F
-	db SPRITE_TEACHER
-	db SPRITE_YOUNGSTER
-	db SPRITE_GROWLITHE
-	db SPRITE_POKEFAN_M
 	db SPRITE_ROCKER
+	db SPRITE_POKEFAN_F
+	db SPRITE_FISHING_GURU
+	db SPRITE_SAGE
+	db SPRITE_SAILOR
+
+BotanCitySprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_YOUNGSTER
+	db SPRITE_ROCKER
+	db SPRITE_POKEFAN_F
 	db SPRITE_FISHER
-	db SPRITE_SCIENTIST
+	db SPRITE_FISHING_GURU
+	db SPRITE_SAGE
+
+JaeruCitySprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_COOLTRAINER_M
+	db SPRITE_YOUNGSTER
+	db SPRITE_LASS
+	db SPRITE_FISHER
+	db SPRITE_SAGE
+	db SPRITE_PHARMACIST
+	db SPRITE_FIREBREATHER
+	db SPRITE_JUGGLER
+	db SPRITE_POKE_BALL
+
+MoragaTownSprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_COOLTRAINER_M
+	db SPRITE_TEACHER
+	db SPRITE_POKEFAN_F
+	db SPRITE_SAGE
+	db SPRITE_POKE_BALL
+
+OwsauriCitySprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_LASS
+	db SPRITE_SUPER_NERD
+	db SPRITE_SWIMMER_GUY
+	db SPRITE_SWIMMER_GIRL
+	db SPRITE_FISHER
+	db SPRITE_KIMONO_GIRL
+	db SPRITE_BIKER
+	db SPRITE_POKE_BALL
+	db SPRITE_FRUIT_TREE
+
+HaywardCitySprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_BUG_CATCHER
+	db SPRITE_YOUNGSTER
+	db SPRITE_LASS
+	db SPRITE_PALETTE_PATROLLER
+	db SPRITE_FISHER
+	db SPRITE_GYM_GUY
+	db SPRITE_PHARMACIST
+	db SPRITE_POKE_BALL
+	db SPRITE_ROCK
+	db SPRITE_FRUIT_TREE
+
+MersonCitySprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_COOLTRAINER_F
+	db SPRITE_LASS
+	db SPRITE_FISHER
+	db SPRITE_FISHING_GURU
+	db SPRITE_SAGE
+	db SPRITE_GENTLEMAN
+	db SPRITE_BLACK_BELT
+	db SPRITE_FRUIT_TREE
+
+SeashoreGravelSprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_DAISY
+	db SPRITE_COOLTRAINER_M
+	db SPRITE_YOUNGSTER
+	db SPRITE_SUPER_NERD
+	db SPRITE_FISHING_GURU
+	db SPRITE_POKE_BALL
+	db SPRITE_ROCK
+	db SPRITE_FRUIT_TREE
+
+Route84Sprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_COOLTRAINER_M
+	db SPRITE_BUENA
+	db SPRITE_HIKER
 	db SPRITE_POKE_BALL
 	db SPRITE_BOULDER
-; 14714
+	db SPRITE_FRUIT_TREE
 
-Group15Sprites: ; 14714
+PhloxTownSprites:
 	db SPRITE_SUICUNE
 	db SPRITE_SILVER_TROPHY
 	db SPRITE_FAMICOM
 	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_COOLTRAINER_M
+	db SPRITE_YOUNGSTER
+	db SPRITE_POKEFAN_F
+	db SPRITE_SURFING_PIKACHU
+	db SPRITE_FISHING_GURU
+	db SPRITE_OFFICER
+	db SPRITE_SLOWPOKE
+	db SPRITE_POKE_BALL
+	db SPRITE_ROCK
+	db SPRITE_FRUIT_TREE
+	db SPRITE_PALETTE_PATROLLER
+	db SPRITE_PAPER
+
+Route81Sprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_COOLTRAINER_M
+	db SPRITE_COOLTRAINER_F
+	db SPRITE_YOUNGSTER
+	db SPRITE_FISHER
+	db SPRITE_BLACK_BELT
+	db SPRITE_BIRDKEEPER
+	db SPRITE_PICNICKER
+	db SPRITE_POKE_BALL
+	db SPRITE_FRUIT_TREE
+
+AcaniaDocksSprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_COOLTRAINER_F
+	db SPRITE_LASS
+	db SPRITE_POKEFAN_M
+	db SPRITE_GRAMPS
+	db SPRITE_SWIMMER_GUY
+	db SPRITE_SWIMMER_GIRL
+	db SPRITE_FISHER
+	db SPRITE_OFFICER
+	db SPRITE_POKE_BALL
+	db SPRITE_FRUIT_TREE
+
+SaxifrageIslandSprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_COOLTRAINER_M
+	db SPRITE_YOUNGSTER
+	db SPRITE_LASS
+	db SPRITE_POKEFAN_M
+	db SPRITE_SWIMMER_GUY
+	db SPRITE_SWIMMER_GIRL
+	db SPRITE_FISHER
+	db SPRITE_OFFICER
+	db SPRITE_PALETTE_PATROLLER
+	db SPRITE_POKE_BALL
+	db SPRITE_BOULDER
+
+PhaceliaTownSprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_LASS
+	db SPRITE_SWIMMER_GUY
+	db SPRITE_SWIMMER_GIRL
+	db SPRITE_FISHER
+	db SPRITE_BLACK_BELT
+	db SPRITE_OFFICER
+	db SPRITE_POKE_BALL
+	db SPRITE_ROCK
+	db SPRITE_BOULDER
+	db SPRITE_FRUIT_TREE
+	db SPRITE_MACHOKE
+
+LaurelCitySprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_YOUNGSTER
+	db SPRITE_LASS
+	db SPRITE_GRAMPS
+	db SPRITE_FISHER
+	db SPRITE_TOTODILE
+	db SPRITE_TWIN
+	db SPRITE_PSYCHIC
+	db SPRITE_FIREBREATHER
+	db SPRITE_POKE_BALL
+
+HeathVillageSprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_COOLTRAINER_F
+	db SPRITE_YOUNGSTER
+	db SPRITE_POKEFAN_M
+	db SPRITE_BLACK_BELT
+	db SPRITE_POKE_BALL
+	db SPRITE_HIKER
+	db SPRITE_COOLTRAINER_M
+
+SpurgeCitySprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
 	db SPRITE_NURSE
 	db SPRITE_OLD_LINK_RECEPTIONIST
 	db SPRITE_BIG_LAPRAS
@@ -1451,33 +1384,209 @@ Group15Sprites: ; 14714
 	db SPRITE_SUDOWOODO
 	db SPRITE_BIG_SNORLAX
 	db SPRITE_SAILOR
-	db SPRITE_FISHING_GURU
-	db SPRITE_GENTLEMAN
-	db SPRITE_SUPER_NERD
-	db SPRITE_HO_OH
-	db SPRITE_TEACHER
-	db SPRITE_COOLTRAINER_F
-	db SPRITE_YOUNGSTER
-	db SPRITE_FAIRY
+	db SPRITE_POKEFAN_M
+	db SPRITE_POKEFAN_F
+	db SPRITE_PSYCHIC
 	db SPRITE_POKE_BALL
-	db SPRITE_ROCK
-; 1472b
+	db SPRITE_SCHOOLBOY
+	db SPRITE_LASS
+	db SPRITE_BEAUTY
+	db SPRITE_BIRDKEEPER
+	db SPRITE_FRUIT_TREE
 
-Group20Sprites: ; 1472b
-	db SPRITE_OAK
+ToreniaCitySprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_PICNICKER
+	db SPRITE_BIRDKEEPER
+	db SPRITE_BUG_CATCHER
+	db SPRITE_JUGGLER
 	db SPRITE_FISHER
+	db SPRITE_YOUNGSTER
+	db SPRITE_POKE_BALL
+	db SPRITE_FRUIT_TREE
+	db SPRITE_GRAMPS
+	db SPRITE_SCHOOLBOY
+
+OxalisCitySprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_COOLTRAINER_F
+	db SPRITE_PICNICKER
+	db SPRITE_YOUNGSTER
+	db SPRITE_LASS
 	db SPRITE_TEACHER
-	db SPRITE_TWIN
+	db SPRITE_SUPER_NERD
+	db SPRITE_ROCKER
 	db SPRITE_POKEFAN_M
 	db SPRITE_GRAMPS
-	db SPRITE_FAIRY
-	db SPRITE_SILVER
-	db SPRITE_FISHING_GURU
+	db SPRITE_FRUIT_TREE
 	db SPRITE_POKE_BALL
+
+CaperCitySprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
 	db SPRITE_POKEDEX
-; 14736
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_YOUNGSTER
+	db SPRITE_BUG_CATCHER
+	db SPRITE_TEACHER
+	db SPRITE_COOLTRAINER_M
+	db SPRITE_FISHER
+	db SPRITE_HIKER
+	db SPRITE_JUGGLER
+	db SPRITE_FIREBREATHER
+	db SPRITE_FRUIT_TREE
+	db SPRITE_POKE_BALL
 
+LaurelForestSprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_PIKACHU
 
-SpriteHeaders: ; 14736
-INCLUDE "gfx/overworld/sprite_headers.asm"
-; 1499a
+Group13Sprites::
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_TEACHER
+	db SPRITE_FISHER
+	db SPRITE_YOUNGSTER
+	db SPRITE_BLUE
+	db SPRITE_GRAMPS
+	db SPRITE_BUG_CATCHER
+	db SPRITE_COOLTRAINER_F
+	db SPRITE_SWIMMER_GIRL
+	db SPRITE_SWIMMER_GUY
+	db SPRITE_POKE_BALL
+	db SPRITE_FRUIT_TREE
+
+IntroSprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_MOM
+	db SPRITE_FIRE
+
+Route77Sprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_FISHER
+	db SPRITE_DAYCARE_MON_1
+	db SPRITE_DAYCARE_MON_2
+	db SPRITE_YOUNGSTER
+	db SPRITE_PICNICKER
+	db SPRITE_BOULDER
+	db SPRITE_OFFICER
+	db SPRITE_POKE_BALL
+	db SPRITE_FRUIT_TREE
+	db SPRITE_EGG
+
+Route85Sprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_BIRDKEEPER
+	db SPRITE_OFFICER
+	db SPRITE_ROCK
+	db SPRITE_PALETTE_PATROLLER
+	db SPRITE_PSYCHIC
+	db SPRITE_POKE_BALL
+	db SPRITE_FRUIT_TREE
+	db SPRITE_COOLTRAINER_M
+	db SPRITE_POKEFAN_M
+	db SPRITE_BLACK_BELT
+	db SPRITE_PICNICKER
+
+Route86Sprites:
+	db SPRITE_SUICUNE
+	db SPRITE_SILVER_TROPHY
+	db SPRITE_FAMICOM
+	db SPRITE_POKEDEX
+	db SPRITE_SORA
+	db SPRITE_YUKI
+	db SPRITE_NURSE
+	db SPRITE_OLD_LINK_RECEPTIONIST
+	db SPRITE_BIG_LAPRAS
+	db SPRITE_BIG_ONIX
+	db SPRITE_SUDOWOODO
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_SAILOR
+	db SPRITE_YOUNGSTER
+	db SPRITE_COOLTRAINER_F
+
+INCLUDE "data/sprite_headers.asm"

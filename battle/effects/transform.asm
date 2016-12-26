@@ -1,42 +1,46 @@
-
-BattleCommand_Transform: ; 371cd
+BattleCommand_Transform:
 ; transform
 
 	call ClearLastMove
 	ld a, BATTLE_VARS_SUBSTATUS5_OPP
 	call GetBattleVarAddr
 	bit SUBSTATUS_TRANSFORMED, [hl]
-	jp nz, BattleEffect_ButItFailed
+	jr nz, .ButItFailed
 	call CheckHiddenOpponent
-	jp nz, BattleEffect_ButItFailed
+	jr z, .not_hidden_or_transformed
+.ButItFailed
+	jpba BattleEffect_ButItFailed
+.not_hidden_or_transformed
 	xor a
 	ld [wNumHits], a
 	ld [FXAnimIDHi], a
 	ld a, $1
-	ld [wKickCounter], a
-	ld a, BATTLE_VARS_SUBSTATUS4
-	call GetBattleVarAddr
-	bit SUBSTATUS_SUBSTITUTE, [hl]
-	push af
+	ld [wBattleAnimParam], a
+	call CheckSubstituteOpp
+	push af ; save flags for later
 	jr z, .mimic_substitute
 	call CheckUserIsCharging
-	jr nz, .mimic_substitute
-	ld a, SUBSTITUTE
-	call LoadAnim
+	call nz, PlaySubstituteAnim
 .mimic_substitute
 	ld a, BATTLE_VARS_SUBSTATUS5
 	call GetBattleVarAddr
 	set SUBSTATUS_TRANSFORMED, [hl]
-	call ResetActorDisable
-	ld hl, BattleMonSpecies
-	ld de, EnemyMonSpecies
 	ld a, [hBattleTurn]
 	and a
-	jr nz, .got_mon_species
+	jr nz, .enemyTurn
 	ld hl, EnemyMonSpecies
 	ld de, BattleMonSpecies
 	xor a
 	ld [CurMoveNum], a
+	ld [PlayerDisableCount], a
+	ld [DisabledMove], a
+	jr .got_mon_species
+.enemyTurn
+	ld hl, BattleMonSpecies
+	ld de, EnemyMonSpecies
+	xor a
+	ld [EnemyDisableCount], a
+	ld [EnemyDisabledMove], a
 .got_mon_species
 	push hl
 	ld a, [hli]
@@ -45,7 +49,7 @@ BattleCommand_Transform: ; 371cd
 	inc de
 	inc de
 	ld bc, NUM_MOVES
-	call CopyBytes
+	rst CopyBytes
 	ld a, [hBattleTurn]
 	and a
 	jr z, .mimic_enemy_backup
@@ -74,7 +78,7 @@ BattleCommand_Transform: ; 371cd
 	ld e, l
 	pop hl
 	ld bc, BattleMonStructEnd - BattleMonStats
-	call CopyBytes
+	rst CopyBytes
 ; init the power points
 	ld bc, BattleMonMoves - BattleMonStructEnd
 	add hl, bc
@@ -89,9 +93,6 @@ BattleCommand_Transform: ; 371cd
 	ld a, [de]
 	inc de
 	and a
-	jr z, .done_move
-	cp SKETCH
-	ld a, 1
 	jr z, .done_move
 	ld a, 5
 .done_move
@@ -110,7 +111,7 @@ BattleCommand_Transform: ; 371cd
 	ld de, PlayerStatLevels
 	ld bc, 8
 	call BattleSideCopy
-	call _CheckBattleScene
+	call CheckBattleScene
 	jr c, .mimic_anims
 	ld a, [hBattleTurn]
 	and a
@@ -120,7 +121,7 @@ BattleCommand_Transform: ; 371cd
 .got_byte
 	and a
 	jr nz, .mimic_anims
-	call LoadMoveAnim
+	callba LoadMoveAnim
 	jr .after_anim
 
 .mimic_anims
@@ -131,11 +132,29 @@ BattleCommand_Transform: ; 371cd
 	ld [wNumHits], a
 	ld [FXAnimIDHi], a
 	ld a, $2
-	ld [wKickCounter], a
+	ld [wBattleAnimParam], a
 	pop af
-	ld a, SUBSTITUTE
-	call nz, LoadAnim
+	call nz, PlaySubstituteAnim
 	ld hl, TransformedText
 	jp StdBattleTextBox
 
-; 372c6
+BattleSideCopy:
+; Copy bc bytes from hl to de if it's the player's turn.
+; Copy bc bytes from de to hl if it's the enemy's turn.
+	ld a, [hBattleTurn]
+	and a
+	jr z, .copy
+
+; Swap hl and de
+	push hl
+	ld h, d
+	ld l, e
+	pop de
+.copy
+	rst CopyBytes
+	ret
+
+PlaySubstituteAnim:
+	ld a, SUBSTITUTE
+	ld [FXAnimIDLo], a
+	jpba PlayUserBattleAnim

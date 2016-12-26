@@ -1,7 +1,8 @@
 Music_SuccessfulCapture: ; f4602
-	musicheader 3, 1, Music_SuccessfulCapture_Ch1
-	musicheader 1, 2, Music_SuccessfulCapture_Ch2
-	musicheader 1, 3, Music_SuccessfulCapture_Ch3
+	channelcount 3
+	channel 1, Music_SuccessfulCapture_Ch1
+	channel 2, Music_SuccessfulCapture_Ch2
+	channel 3, Music_SuccessfulCapture_Ch3
 ; f460b
 
 Music_SuccessfulCapture_Ch1: ; f460b

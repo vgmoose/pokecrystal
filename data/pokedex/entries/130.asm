@@ -1,10 +1,15 @@
-; GyaradosPokedexEntry: ; 0x1cc065
-	db "ATROCIOUS@" ; species name
-	dw 2104, 5180 ; height, width
+	ctxt "Atrocious" ; species name
+	done
+	dw 2104, 5180 ; height, weight
 
-	db   "It appears when-"
+	db .page2 - .page1
+.page1
+	ctxt "It appears when-"
 	next "ever there is"
 	next "world conflict,"
-	page "burning down any"
+	done
+.page2
+	ctxt "burning down any"
 	next "place it travels"
-	next "through.@"
+	next "through."
+	done

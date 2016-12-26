@@ -1,7 +1,8 @@
 Music_PalletTown: ; f4b0c
-	musicheader 3, 1, Music_PalletTown_Ch1
-	musicheader 1, 2, Music_PalletTown_Ch2
-	musicheader 1, 3, Music_PalletTown_Ch3
+	channelcount 3
+	channel 1, Music_PalletTown_Ch1
+	channel 2, Music_PalletTown_Ch2
+	channel 3, Music_PalletTown_Ch3
 ; f4b15
 
 Music_PalletTown_Ch1: ; f4b15

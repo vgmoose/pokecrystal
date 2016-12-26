@@ -1,7 +1,8 @@
 Music_PokeFluteChannel: ; f7b13
-	musicheader 3, 1, Music_PokeFluteChannel_Ch1
-	musicheader 1, 2, Music_PokeFluteChannel_Ch2
-	musicheader 1, 3, Music_PokeFluteChannel_Ch3
+	channelcount 3
+	channel 1, Music_PokeFluteChannel_Ch1
+	channel 2, Music_PokeFluteChannel_Ch2
+	channel 3, Music_PokeFluteChannel_Ch3
 ; f7b1c
 
 Music_PokeFluteChannel_Ch1: ; f7b1c

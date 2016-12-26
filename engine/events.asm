@@ -1,131 +1,46 @@
-INCLUDE "includes.asm"
-
-SECTION "Events", ROMX, BANK[EVENTS]
-
-OverworldLoop:: ; 966b0
+OverworldLoop::
 	xor a
 	ld [MapStatus], a
 .loop
-	ld a, [MapStatus]
-	ld hl, .jumps
-	rst JumpTable
-	ld a, [MapStatus]
-	cp 3 ; done
-	jr nz, .loop
-.done
+	call .OverworldLoop
+	jr nc, .loop
 	ret
 
-.jumps
-	dw StartMap
-	dw EnterMap
-	dw HandleMap
-	dw .done
-; 966cb
+.OverworldLoop
+	ld a, [MapStatus]
+	and a
+	jr z, StartMap
+	dec a
+	jr z, EnterMap
+	dec a
+	jr z, HandleMap
+	scf
+	ret
 
-DisableEvents: ; 966cb
+DisableEvents:
 	xor a
 	ld [ScriptFlags3], a
 	ret
-; 966d0
 
-EnableEvents:: ; 966d0
+EnableEvents::
 	ld a, $ff
 	ld [ScriptFlags3], a
 	ret
-; 966d6
 
-CheckBit5_ScriptFlags3: ; 966d6
-	ld hl, ScriptFlags3
-	bit 5, [hl]
-	ret
-; 966dc
-
-DisableWarpsConnxns: ; 966dc
-	ld hl, ScriptFlags3
-	res 2, [hl]
-	ret
-; 966e2
-
-DisableCoordEvents: ; 966e2
-	ld hl, ScriptFlags3
-	res 1, [hl]
-	ret
-; 966e8
-
-DisableStepCount: ; 966e8
-	ld hl, ScriptFlags3
-	res 0, [hl]
-	ret
-; 966ee
-
-DisableWildEncounters: ; 966ee
-	ld hl, ScriptFlags3
-	res 4, [hl]
-	ret
-; 966f4
-
-EnableWarpsConnxns: ; 966f4
-	ld hl, ScriptFlags3
-	set 2, [hl]
-	ret
-; 966fa
-
-EnableCoordEvents: ; 966fa
-	ld hl, ScriptFlags3
-	set 1, [hl]
-	ret
-; 96700
-
-EnableStepCount: ; 96700
-	ld hl, ScriptFlags3
-	set 0, [hl]
-	ret
-; 96706
-
-EnableWildEncounters: ; 96706
+EnableWildEncounters:
 	ld hl, ScriptFlags3
 	set 4, [hl]
 	ret
-; 9670c
 
-CheckWarpConnxnScriptFlag: ; 9670c
-	ld hl, ScriptFlags3
-	bit 2, [hl]
-	ret
-; 96712
-
-CheckCoordEventScriptFlag: ; 96712
-	ld hl, ScriptFlags3
-	bit 1, [hl]
-	ret
-; 96718
-
-CheckStepCountScriptFlag: ; 96718
-	ld hl, ScriptFlags3
-	bit 0, [hl]
-	ret
-; 9671e
-
-CheckWildEncountersScriptFlag: ; 9671e
-	ld hl, ScriptFlags3
-	bit 4, [hl]
-	ret
-; 96724
-
-StartMap: ; 96724
+StartMap:
 	xor a
-	ld [ScriptVar], a
-	xor a
+	ld [hScriptVar], a
 	ld [ScriptRunning], a
 	ld hl, MapStatus
 	ld bc, wMapStatusEnd - MapStatus
 	call ByteFill
-	callba InitCallReceiveDelay
 	call ClearJoypad
-EnterMap: ; 9673e
-	xor a
-	ld [wXYComparePointer], a
-	ld [wXYComparePointer + 1], a
+EnterMap:
 	call SetUpFiveStepWildEncounterCooldown
 	callba RunMapSetupScript
 	call DisableEvents
@@ -147,100 +62,76 @@ EnterMap: ; 9673e
 	ld [hMapEntryMethod], a
 	ld a, 2 ; HandleMap
 	ld [MapStatus], a
+	and a
 	ret
-; 9676d
 
-UnusedWait30Frames: ; 9676d
-	ld c, 30
-	call DelayFrames
-	ret
-; 96773
-
-HandleMap: ; 96773
+HandleMap:
 	call ResetOverworldDelay
 	call HandleMapTimeAndJoypad
-	callba HandleCmdQueue ; no need to farcall
+	call HandleCmdQueue
 	call MapEvents
 
 ; Not immediately entering a connected map will cause problems.
 	ld a, [MapStatus]
 	cp 2 ; HandleMap
-	ret nz
+	jr nz, .done
+	call DoBackgroundEvents
+	call DoBackgroundEvents
+.done
+	and a
+	ret
 
-	call HandleMapObjects
+DoBackgroundEvents:
+	call HandleOverworldObjects
 	call NextOverworldFrame
-	call HandleMapBackground
-	call CheckPlayerState
-	ret
-; 96795
+	call HandleMapBackgroundEvents
+	jp EnableEventsIfPlayerNotMoving
 
-MapEvents: ; 96795
+MapEvents:
 	ld a, [MapEventStatus]
-	ld hl, .jumps
-	rst JumpTable
-	ret
-
-.jumps
-	dw .events
-	dw .no_events
-; 967a1
-
-.events ; 967a1
+	and a
+	ret nz
 	call PlayerEvents
 	call DisableEvents
-	callba ScriptEvents
+	jpba ScriptEvents
+
+ResetOverworldDelay:
+	ld hl, wOverworldDelay
+	bit 7, [hl]
+	res 7, [hl]
+	ret nz
+	ld [hl], 2
 	ret
-; 967ae
 
-.no_events ; 967ae
-	ret
-; 967af
-
-MaxOverworldDelay: ; 967af
-	db 2
-; 967b0
-
-ResetOverworldDelay: ; 967b0
-	ld a, [MaxOverworldDelay]
-	ld [OverworldDelay], a
-	ret
-; 967b7
-
-NextOverworldFrame: ; 967b7
-	ld a, [OverworldDelay]
+NextOverworldFrame:
+	ld a, [wOverworldDelay]
 	and a
-	ret z
-	ld c, a
-	call DelayFrames
+	jp nz, DelayFrame
+; reset overworld delay to leak into the next frame
+	ld a, $82
+	ld [wOverworldDelay], a
 	ret
-; 967c1
 
-HandleMapTimeAndJoypad: ; 967c1
+HandleMapTimeAndJoypad:
 	ld a, [MapEventStatus]
-	cp 1 ; no events
+	dec a ; no events
 	ret z
 
 	call UpdateTime
 	call GetJoypad
-	call TimeOfDayPals
-	ret
-; 967d1
+	jp TimeOfDayPals
 
-HandleMapObjects: ; 967d1
+HandleOverworldObjects:
 	callba HandleNPCStep ; engine/map_objects.asm
 	callba _HandlePlayerStep
-	call _CheckObjectEnteringVisibleRange
-	ret
-; 967e1
+	jp _CheckObjectEnteringVisibleRange
 
-HandleMapBackground: ; 967e1
+HandleMapBackgroundEvents:
 	callba _UpdateSprites
-	callba ScrollScreen
-	callba PlaceMapNameSign
-	ret
-; 967f4
+	callba RunLandmarkSignAnim
+	jpba ScrollScreen
 
-CheckPlayerState: ; 967f4
+EnableEventsIfPlayerNotMoving:
 	ld a, [wPlayerStepFlags]
 	bit 5, a ; in the middle of step
 	jr z, .events
@@ -250,7 +141,7 @@ CheckPlayerState: ; 967f4
 	jr nz, .noevents
 	call EnableEvents
 .events
-	ld a, 0 ; events
+	xor a ; events
 	ld [MapEventStatus], a
 	ret
 
@@ -258,32 +149,23 @@ CheckPlayerState: ; 967f4
 	ld a, 1 ; no events
 	ld [MapEventStatus], a
 	ret
-; 96812
 
-_CheckObjectEnteringVisibleRange: ; 96812
+_CheckObjectEnteringVisibleRange:
 	ld hl, wPlayerStepFlags
 	bit 6, [hl]
 	ret z
-	callba CheckObjectEnteringVisibleRange
-	ret
-; 9681f
+	jpba CheckObjectEnteringVisibleRange
 
-PlayerEvents: ; 9681f
-	xor a
+PlayerEvents:
 ; If there's already a player event, don't interrupt it.
 	ld a, [ScriptRunning]
 	and a
 	ret nz
 
-	call Dummy_CheckScriptFlags3Bit5 ; This is a waste of time
-
 	call CheckTrainerBattle3
 	jr c, .ok
 
 	call CheckTileEvent
-	jr c, .ok
-
-	call RunMemScript
 	jr c, .ok
 
 	call DoMapTrigger
@@ -309,20 +191,13 @@ PlayerEvents: ; 9681f
 	cp PLAYEREVENT_CONNECTION
 	jr z, .ok2
 	cp PLAYEREVENT_JOYCHANGEFACING
-	jr z, .ok2
-
-	xor a
-	ld [wLandmarkSignTimer], a
-
+	call nz, CancelMapSign
 .ok2
 	scf
 	ret
-; 96867
 
-CheckTrainerBattle3: ; 96867
-	nop
-	nop
-	call CheckTrainerBattle2
+CheckTrainerBattle3:
+	call CheckTrainerBattle
 	jr nc, .nope
 
 	ld a, PLAYEREVENT_SEENBYTRAINER
@@ -332,12 +207,12 @@ CheckTrainerBattle3: ; 96867
 .nope
 	xor a
 	ret
-; 96874
 
-CheckTileEvent: ; 96874
+CheckTileEvent:
 ; Check for warps, tile triggers or wild battles.
 
-	call CheckWarpConnxnScriptFlag
+	ld hl, ScriptFlags3
+	bit 2, [hl]
 	jr z, .connections_disabled
 
 	callba CheckMovingOffEdgeOfMap
@@ -347,26 +222,28 @@ CheckTileEvent: ; 96874
 	jr c, .warp_tile
 
 .connections_disabled
-	call CheckCoordEventScriptFlag
+	ld hl, ScriptFlags3
+	bit 1, [hl]
 	jr z, .coord_events_disabled
 
 	call CheckCurrentMapXYTriggers
 	jr c, .coord_event
 
 .coord_events_disabled
-	call CheckStepCountScriptFlag
+	ld hl, ScriptFlags3
+	bit 0, [hl]
 	jr z, .step_count_disabled
 
 	call CountStep
 	ret c
 
 .step_count_disabled
-	call CheckWildEncountersScriptFlag
+	ld hl, ScriptFlags3
+	bit 4, [hl]
 	jr z, .ok
 
 	call RandomEncounter
 	ret c
-	jr .ok ; pointless
 
 .ok
 	xor a
@@ -395,12 +272,10 @@ CheckTileEvent: ; 96874
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	call GetMapScriptHeaderBank
-	call CallScript
-	ret
-; 968c7
+	ld a, [MapScriptHeaderBank]
+	jp CallScript
 
-CheckWildEncounterCooldown:: ; 968c7
+CheckWildEncounterCooldown::
 	ld hl, wWildEncounterCooldown
 	ld a, [hl]
 	and a
@@ -409,35 +284,21 @@ CheckWildEncounterCooldown:: ; 968c7
 	ret z
 	scf
 	ret
-; 968d1
 
-SetUpFiveStepWildEncounterCooldown: ; 968d1
+SetUpFiveStepWildEncounterCooldown:
 	ld a, 5
 	ld [wWildEncounterCooldown], a
 	ret
-; 968d7
 
-ret_968d7: ; 968d7
-	ret
-;968d8
-
-SetMinTwoStepWildEncounterCooldown: ; 968d8
+SetMinTwoStepWildEncounterCooldown:
 	ld a, [wWildEncounterCooldown]
 	cp 2
 	ret nc
 	ld a, 2
 	ld [wWildEncounterCooldown], a
 	ret
-; 968e4
 
-Dummy_CheckScriptFlags3Bit5: ; 968e4
-	call CheckBit5_ScriptFlags3
-	ret z
-	call ret_2f3e
-	ret
-; 968ec
-
-DoMapTrigger: ; 968ec
+DoMapTrigger:
 	ld a, [wCurrMapTriggerCount]
 	and a
 	jr z, .nope
@@ -453,13 +314,14 @@ DoMapTrigger: ; 968ec
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-rept 4
 	add hl, de
-endr
+	add hl, de
+	add hl, de
+	add hl, de
 
-	call GetMapScriptHeaderBank
+	ld a, [MapScriptHeaderBank]
 	call GetFarHalfword
-	call GetMapScriptHeaderBank
+	ld a, [MapScriptHeaderBank]
 	call CallScript
 
 	ld hl, ScriptFlags
@@ -484,48 +346,32 @@ endr
 .nope
 	xor a
 	ret
-; 9693a
 
-CheckTimeEvents: ; 9693a
+CheckTimeEvents:
 	ld a, [wLinkMode]
 	and a
 	jr nz, .nothing
 
-	ld hl, StatusFlags2
-	bit 2, [hl] ; bug contest
+	ld hl, wTimeEventCallback
+	ld a, [hli]
+	and a
 	jr z, .do_daily
-
-	callba CheckBugContestTimer
-	jr c, .end_bug_contest
-	xor a
-	ret
+	ld l, [hl]
+	ld h, a
+	ld a, [wTimeEventCallbackBank]
+	call FarCall_hl
+	ret c
 
 .do_daily
 	callba CheckDailyResetTimer
 	callba CheckPokerusTick
-	callba CheckPhoneCall
 	ret c
 
 .nothing
 	xor a
 	ret
 
-.end_bug_contest
-	ld a, BANK(BugCatchingContestOverScript)
-	ld hl, BugCatchingContestOverScript
-	call CallScript
-	scf
-	ret
-; 96970
-
-.unused ; 96970
-	ld a, 8
-	scf
-	ret
-; 96974
-
-OWPlayerInput: ; 96974
-
+OWPlayerInput:
 	call PlayerMovement
 	ret c
 	and a
@@ -541,19 +387,27 @@ OWPlayerInput: ; 96974
 	call CheckMenuOW
 	jr c, .Action
 
-.NoAction:
+.NoAction
 	xor a
 	ret
 
-.Action:
+.Action
 	push af
-	callba StopPlayerForEvent
+
+	ld hl, wPlayerNextMovement
+	ld a, movement_step_sleep_1
+	cp [hl]
+	jr z, .skip
+
+	ld [hl], a
+	xor a
+	ld [wPlayerMovementDirection], a
+.skip
 	pop af
 	scf
 	ret
-; 96999
 
-CheckAPressOW: ; 96999
+CheckAPressOW:
 	ld a, [hJoyPressed]
 	and A_BUTTON
 	ret z
@@ -565,23 +419,17 @@ CheckAPressOW: ; 96999
 	ret c
 	xor a
 	ret
-; 969ac
 
-PlayTalkObject: ; 969ac
+PlayTalkObject:
 	push de
 	ld de, SFX_READ_TEXT_2
 	call PlaySFX
 	pop de
 	ret
-; 969b5
 
-TryObjectEvent: ; 969b5
+TryObjectEvent:
 	callba CheckFacingObject
-	jr c, .IsObject
-	xor a
-	ret
-
-.IsObject:
+	ret nc
 	call PlayTalkObject
 	ld a, [hObjectStructIndexBuffer]
 	call GetObjectStruct
@@ -597,101 +445,130 @@ TryObjectEvent: ; 969b5
 	ld a, [hl]
 	and %00001111
 
-; Bug: If IsInArray returns nc, data at bc will be executed as code.
-	push bc
-	ld de, 3
-	ld hl, .pointers
-	call IsInArray
-	jr nc, .nope_bugged
-	pop bc
-
-	inc hl
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	jp [hl]
-
-.nope_bugged
-	; pop bc
-	xor a
-	ret
+	cp (.pointers_end - .pointers) / 2
+	ret nc
+	jumptable
 
 .pointers
-	dbw PERSONTYPE_SCRIPT, .script
-	dbw PERSONTYPE_ITEMBALL, .itemball
-	dbw PERSONTYPE_TRAINER, .trainer
-	; the remaining four are dummy events
-	dbw PERSONTYPE_3, .three
-	dbw PERSONTYPE_4, .four
-	dbw PERSONTYPE_5, .five
-	dbw PERSONTYPE_6, .six
-	db -1
-; 96a04
+	dw .script ; PERSONTYPE_SCRIPT
+	dw .itemball ; PERSONTYPE_ITEMBALL
+	dw .trainer ; PERSONTYPE_TRAINER
+	dw .tmhm ; PERSONTYPE_TMHMBALL
+.pointers_end
 
-.script ; 96a04
+.script
+	; call CheckTellPlayerOff
+	; jr c, .tell_player_off
 	ld hl, MAPOBJECT_SCRIPT_POINTER
 	add hl, bc
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	call GetMapScriptHeaderBank
-	call CallScript
-	ret
-; 96a12
+	ld a, [MapScriptHeaderBank]
+	jp CallScript
 
-.itemball ; 96a12
+.itemball
 	ld hl, MAPOBJECT_SCRIPT_POINTER
 	add hl, bc
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	call GetMapScriptHeaderBank
-	ld de, EngineBuffer1
+	ld a, [MapScriptHeaderBank]
+	ld de, wCurItemBallContents
 	ld bc, 2
 	call FarCopyBytes
 	ld a, PLAYEREVENT_ITEMBALL
 	scf
 	ret
-; 96a29
 
-.trainer ; 96a29
+.trainer
+	; call CheckTellPlayerOff
+	; jr c, .tell_player_off
 	call TalkToTrainer
 	ld a, PLAYEREVENT_TALKTOTRAINER
 	scf
 	ret
-; 96a30
 
-.three ; 96a30
-	xor a
+.tmhm
+	ld hl, MAPOBJECT_PARAMETER
+	add hl, bc
+	ld a, [hl]
+	ld [wCurItemBallContents], a
+	ld a, PLAYEREVENT_GETTMHM
+	scf
 	ret
-; 96a32
 
-.four ; 96a32
-	xor a
-	ret
-; 96a34
+; .tell_player_off
+	; call Random
+	; and $7
+	; ld e, a
+	; ld d, 0
+	; ld hl, .TellPlayerOffTexts
+	; add hl, de
+	; add hl, de
+	; ld a, [hli]
+	; ld d, [hl]
+	; ld e, a
+	; ld a, BANK(.TellPlayerOffTexts)
+	; ld hl, wScriptTextBank
+	; ld [hli], a
+	; ld [hl], e
+	; inc hl
+	; ld [hl], d
+	; ld a, BANK(JumpTextFacePlayerScript)
+	; ld hl, JumpTextFacePlayerScript
+	; jp CallScript
 
-.five ; 96a34
-	xor a
-	ret
-; 96a36
+; .TellPlayerOffTexts:
+	; dw .dummy
+	; dw .dummy
+	; dw .dummy
+	; dw .dummy
+	; dw .dummy
+	; dw .dummy
+	; dw .dummy
+	; dw .dummy
 
-.six ; 96a36
-	xor a
-	ret
-; 96a38
+; .dummy
+	; text "Bugger off."
+	; done
 
-TryReadSign: ; 96a38
+; CheckTellPlayerOff:
+	; ld a, [bc]
+	; push bc
+	; call GetObjectStruct
+	; ld hl, OBJECT_TELL_OFF_FLAG
+	; add hl, bc
+	; pop bc
+	; ld a, [hli]
+	; and a
+	; jr nz, .tell_off
+	; ld a, [hl]
+	; cp 5
+	; jr nc, .sample_tell_off
+	; inc [hl]
+	; and a
+	; ret
+
+; .sample_tell_off
+	; call Random
+	; and $3
+	; ret nz
+	; dec hl
+	; ld [hl], 1
+; .tell_off
+	; scf
+	; ret
+
+TryReadSign:
 	call CheckFacingSign
 	jr c, .IsSign
 	xor a
 	ret
 
-.IsSign:
-	ld a, [EngineBuffer3]
-	ld hl, .signs
-	rst JumpTable
-	ret
+.IsSign
+	ld a, [wCurSignpostType]
+	jumptable
 
 .signs
 	dw .read
@@ -702,61 +579,63 @@ TryReadSign: ; 96a38
 	dw .ifset
 	dw .ifnotset
 	dw .itemifset
-	dw .copy
-; 96a59
+	dw .loadsignpost
 
 .up
 	ld b, OW_UP
 	jr .checkdir
+
 .down
 	ld b, OW_DOWN
 	jr .checkdir
+
 .right
 	ld b, OW_RIGHT
 	jr .checkdir
+
 .left
 	ld b, OW_LEFT
-	jr .checkdir
-
 .checkdir
 	ld a, [PlayerDirection]
 	and %1100
 	cp b
-	jp nz, .dontread
+	jr nz, .dontread
 
 .read
 	call PlayTalkObject
-	ld hl, EngineBuffer4
+	ld hl, wCurSignpostScriptAddr
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	call GetMapScriptHeaderBank
-	call CallScript
-	scf
-	ret
+	ld a, [MapScriptHeaderBank]
+	jr .callScriptAndReturnCarry
 
+.loadsignpost
+	call PlayTalkObject
+	ld hl, wLoadSignpostScriptBuffer + 2
+	ld a, [wCurSignpostScriptAddr + 1]
+	ld [hld], a
+	ld a, [wCurSignpostScriptAddr]
+	ld [hld], a
+	ld [hl], loadsignpost_command
+	ld a, [MapScriptHeaderBank]
+	jr .callScriptAndReturnCarry
+	
 .itemifset
 	call CheckSignFlag
 	jp nz, .dontread
 	call PlayTalkObject
-	call GetMapScriptHeaderBank
-	ld de, EngineBuffer1
+	ld a, [MapScriptHeaderBank]
+	ld de, wCurSignpostItemFlag
 	ld bc, 3
 	call FarCopyBytes
 	ld a, BANK(HiddenItemScript)
 	ld hl, HiddenItemScript
-	call CallScript
-	scf
-	ret
+	jr .callScriptAndReturnCarry
 
-.copy
-	call CheckSignFlag
-	jr nz, .dontread
-	call GetMapScriptHeaderBank
-	ld de, EngineBuffer1
-	ld bc, 3
-	call FarCopyBytes
-	jr .dontread
+.dontread
+	xor a
+	ret
 
 .ifset
 	call CheckSignFlag
@@ -773,46 +652,37 @@ TryReadSign: ; 96a38
 	pop hl
 	inc hl
 	inc hl
-	call GetMapScriptHeaderBank
+	ld a, [MapScriptHeaderBank]
+	push af
 	call GetFarHalfword
-	call GetMapScriptHeaderBank
+	pop af
+.callScriptAndReturnCarry
 	call CallScript
 	scf
 	ret
 
-.dontread
-	xor a
-	ret
-; 96ad8
-
-CheckSignFlag: ; 96ad8
-	ld hl, EngineBuffer4
+CheckSignFlag:
+	ld hl, wCurSignpostScriptAddr
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
 	push hl
-	call GetMapScriptHeaderBank
+	ld a, [MapScriptHeaderBank]
 	call GetFarHalfword
 	ld e, l
 	ld d, h
 	ld b, CHECK_FLAG
-	call EventFlagAction
+	predef EventFlagAction
 	ld a, c
 	and a
 	pop hl
 	ret
-; 96af0
 
-PlayerMovement: ; 96af0
+PlayerMovement:
 	callba DoPlayerMovement
 	ld a, c
-	ld hl, .pointers
-	rst JumpTable
-	ld a, c
-	ret
-; 96afd
+	jumptable
 
-.pointers
 	dw .zero
 	dw .one
 	dw .two
@@ -823,62 +693,52 @@ PlayerMovement: ; 96af0
 	dw .seven
 
 .zero
-.four ; 96b0d
+.four
+.seven
 	xor a
-	ld c, a
 	ret
-; 96b10
 
-.seven ; 96b10
-	call ret_968d7 ; mobile
-	xor a
-	ld c, a
-	ret
-; 96b16
-
-.one ; 96b16
-	ld a, 5
-	ld c, a
+.one
+	ld a, PLAYEREVENT_WARP
 	scf
 	ret
-; 96b1b
 
-.two ; 96b1b
-	ld a, 9
-	ld c, a
+.two
+	ld a, PLAYEREVENT_JOYCHANGEFACING
 	scf
 	ret
-; 96b20
 
-.three ; 96b20
+.three
 ; force the player to move in some direction
 	ld a, BANK(Script_ForcedMovement)
 	ld hl, Script_ForcedMovement
 	call CallScript
-;	ld a, -1
-	ld c, a
+	ld a, PLAYEREVENT_MAPSCRIPT
 	scf
 	ret
-; 96b2b
 
 .five
-.six ; 96b2b
-	ld a, -1
-	ld c, a
+.six
+	ld a, PLAYEREVENT_MAPSCRIPT
 	and a
 	ret
-; 96b30
 
-CheckMenuOW: ; 96b30
+CheckMenuOW:
 	xor a
 	ld [hMenuReturn], a
 	ld [hMenuReturn + 1], a
+
+	debug_mode_flag
+	jr c, .debug_mode
+	CheckEngine ENGINE_WILDS_DISABLED
+	jr nz, .NoMenu
+.debug_mode
 	ld a, [hJoyPressed]
 
-	bit 2, a ; SELECT
+	bit SELECT_F, a
 	jr nz, .Select
 
-	bit 3, a ; START
+	bit START_F, a
 	jr z, .NoMenu
 
 	ld a, BANK(StartMenuScript)
@@ -886,57 +746,76 @@ CheckMenuOW: ; 96b30
 	call CallScript
 	scf
 	ret
-
-.NoMenu:
+.IncrementCounter
+	ld hl, wSelectButtonCounter
+	bit 7, [hl]
+	jr nz, .NoMenu
+	inc hl
+	inc hl
+	inc [hl]
+	jr nz, .NoMenu
+	dec hl
+	inc [hl]
+	jr nz, .NoMenu
+	dec hl
+	inc [hl]
+.NoMenu
 	xor a
 	ret
 
-.Select:
+.Select
+	CheckEngine ENGINE_POKEMON_MODE
+	jr nz, .NoMenu
+	callba CheckRegisteredItem
+	jr c, .IncrementCounter
 	call PlayTalkObject
 	ld a, BANK(SelectMenuScript)
 	ld hl, SelectMenuScript
 	call CallScript
 	scf
 	ret
-; 96b58
 
-StartMenuScript: ; 96b58
+StartMenuScript:
 	callasm StartMenu
 	jump StartMenuCallback
-; 96b5f
 
-SelectMenuScript: ; 96b5f
+SelectMenuScript:
 	callasm SelectMenu
-	jump SelectMenuCallback
-; 96b66
-
 StartMenuCallback:
-SelectMenuCallback: ; 96b66
 	copybytetovar hMenuReturn
 	if_equal HMENURETURN_SCRIPT, .Script
 	if_equal HMENURETURN_ASM, .Asm
 	end
-; 96b72
 
-.Script: ; 96b72
+.Script
 	ptjump wQueuedScriptBank
-; 96b75
 
-.Asm: ; 96b75
+.Asm
 	ptcallasm wQueuedScriptBank
 	end
-; 96b79
 
-CountStep: ; 96b79
+CountStep:
+	; Global counter is always updated
+	ld hl, wGlobalStepCounter
+	inc [hl]
+	jr nz, .done_global_counter
+	rept 3
+		inc hl
+		inc [hl]
+		jr nz, .done_global_counter
+	endr
+	ld a, -1
+	rept 4
+		ld [hld], a
+	endr
+.done_global_counter
+
 	; Don't count steps in link communication rooms.
 	ld a, [wLinkMode]
 	and a
 	jr nz, .done
 
-	; If there is a special phone call, don't count the step.
-	callba CheckSpecialPhoneCall
-	jr c, .doscript
-
+	call CollectSoot
 	; If Repel wore off, don't count the step.
 	call DoRepelStep
 	jr c, .doscript
@@ -970,43 +849,59 @@ CountStep: ; 96b79
 	ld hl, PoisonStepCount
 	ld a, [hl]
 	cp 4
-	jr c, .skip_poison
+	jr c, .done
 	ld [hl], 0
 
 	callba DoPoisonStep
 	jr c, .doscript
-
-.skip_poison
-	callba DoBikeStep
-
 .done
 	xor a
 	ret
 
 .doscript
-	ld a, -1
+	ld a, PLAYEREVENT_MAPSCRIPT
 	scf
 	ret
 
 .hatch
-	ld a, 8
+	ld a, PLAYEREVENT_HATCH
 	scf
 	ret
-; 96bd3
 
-.unreferenced ; 96bd3
-	ld a, 7
-	scf
-	ret
-; 96bd7
+CollectSoot:
+	ld a, [MapGroup]
+	cp GROUP_MAGMA_F1
+	ret nz
+	ld a, SOOT_SACK
+	ld [wCurItem], a
+	ld hl, NumItems
+	call CheckItem
+	ret nc
+	
+	xor a
+	ld [hMoneyTemp], a
+	inc a
+	ld [hMoneyTemp + 1], a
+	ld bc, hMoneyTemp
+	jpba GiveAsh
 
-DoRepelStep: ; 96bd7
-	ld a, [wRepelEffect]
-	and a
+DoRepelStep:
+	callba CheckStandingOnIce
+	jr c, .nope
+
+	ld hl, wRepelEffect
+	ld a, [hli]
+	or [hl]
 	ret z
 
-	dec a
-	ld [wRepelEffect], a
+	ld a, [hld]
+	ld c, [hl]
+	ld b, a
+	dec bc
+	ld a, c
+	ld [hli], a
+	ld [hl], b
+	or b
 	ret nz
 
 	ld a, BANK(RepelWoreOffScript)
@@ -1014,9 +909,12 @@ DoRepelStep: ; 96bd7
 	call CallScript
 	scf
 	ret
-; 96beb
 
-DoPlayerEvent: ; 96beb
+.nope
+	and a
+	ret
+
+DoPlayerEvent:
 	ld a, [ScriptRunning]
 	and a
 	ret z
@@ -1033,6 +931,7 @@ DoPlayerEvent: ; 96beb
 	add hl, bc
 	add hl, bc
 	add hl, bc
+
 	ld a, [hli]
 	ld [ScriptBank], a
 	ld a, [hli]
@@ -1040,9 +939,8 @@ DoPlayerEvent: ; 96beb
 	ld a, [hl]
 	ld [ScriptPos + 1], a
 	ret
-; 96c0c
 
-PlayerEventScriptPointers: ; 96c0c
+PlayerEventScriptPointers:
 	dba Invalid_0x96c2d          ; 0
 	dba SeenByTrainerScript      ; 1
 	dba TalkToTrainerScript      ; 2
@@ -1053,56 +951,326 @@ PlayerEventScriptPointers: ; 96c0c
 	dba Script_OverworldWhiteout ; 7
 	dba HatchEggScript           ; 8
 	dba ChangeDirectionScript    ; 9
-	dba Invalid_0x96c2d          ; 10
-; 96c2d
+	dba FindTMorHMScript         ; 10
 
-Invalid_0x96c2d: ; 96c2d
-	end
-; 96c2e
-
-; unreferenced
-	end
-; 96c2f
-
-HatchEggScript: ; 96c2f
+HatchEggScript:
 	callasm OverworldHatchEgg
+Invalid_0x96c2d:
 	end
-; 96c34
 
-WarpToNewMapScript: ; 96c34
+WarpToNewMapScript:
 	warpsound
 	newloadmap MAPSETUP_DOOR
 	end
-; 96c38
 
-FallIntoMapScript: ; 96c38
+FallIntoMapScript:
 	newloadmap MAPSETUP_FALL
 	playsound SFX_KINESIS
 	applymovement PLAYER, MovementData_0x96c48
 	playsound SFX_STRENGTH
-	scall LandAfterPitfallScript
-	end
-; 96c48
-
-MovementData_0x96c48: ; 96c48
-	skyfall
-	step_end
-; 96c4a
-
-LandAfterPitfallScript: ; 96c4a
 	earthquake 16
 	end
-; 96c4d
+
+MovementData_0x96c48:
+	skyfall
+	step_end
 
 EdgeWarpScript: ; 4
 	reloadandreturn MAPSETUP_CONNECTION
-; 96c4f
 
 ChangeDirectionScript: ; 9
-	deactivatefacing 3
+	callasm ReleaseAllMapObjects
 	callasm EnableWildEncounters
 	end
-; 96c56
 
 INCLUDE "engine/scripting.asm"
-INCLUDE "engine/events_2.asm"
+
+; More overworld event handling.
+
+ClearSafariZoneFlag::
+	ResetEngine ENGINE_SAFARI_ZONE
+	ret
+
+CheckFacingTileEvent::
+	call GetFacingTileCoord
+	ld [wTempFacingTile], a
+	ld c, a
+	call CheckFacingTileForStd
+	jr c, .skip_sfx
+
+	ld a, [wTempFacingTile]
+	call CheckCutTreeTile
+	jr nz, .waterfall
+	callba TryCutOW
+	jr .done
+
+.waterfall
+	ld a, [wTempFacingTile]
+	call CheckWaterfallTile
+	jr nz, .headbutt
+	callba TryWaterfallOW
+	jr .done
+
+.headbutt
+	ld a, [wTempFacingTile]
+	call CheckHeadbuttTreeTile
+	jr nz, .surf
+	callba TryHeadbuttOW
+	jr c, .done
+	jr .noevent
+
+.surf
+	callba TrySurfOW
+	jr nc, .noevent
+	jr .done
+
+.noevent
+	xor a
+	ret
+
+.done
+	call PlayClickSFX
+.skip_sfx
+	ld a, $ff
+	scf
+	ret
+
+RandomEncounter::
+; Random encounter
+
+	call CheckWildEncounterCooldown
+	jr c, .nope
+	call CanUseSweetScent
+	jr nc, .nope
+	ld hl, wStatusFlags2
+	callba TryWildEncounter
+	jr nz, .nope
+	jr .ok
+
+.nope
+	ld a, 1
+	and a
+	ret
+
+.ok
+	ld a, BANK(WildBattleScript)
+	ld hl, WildBattleScript
+	call CallScript
+	scf
+	ret
+
+WildBattleScript:
+	randomwildmon
+	startbattle
+	reloadmapafterbattle
+	end
+
+CanUseSweetScent::
+	CheckEngine ENGINE_WILDS_DISABLED
+	jr nz, .no
+
+	ld a, [wPermission]
+	cp CAVE
+	jr z, .ice_check
+	cp DUNGEON
+	jr z, .ice_check
+	callba CheckGrassCollision
+	jr nc, .no
+
+.ice_check
+	ld a, [PlayerStandingTile]
+	call CheckIceTile
+	jr z, .no
+	scf
+	ret
+
+.no
+	and a
+	ret
+
+ClearCmdQueue::
+	ld hl, wCmdQueue
+	ld de, 6
+	ld c, 4
+	xor a
+.loop
+	ld [hl], a
+	add hl, de
+	dec c
+	jr nz, .loop
+	ret
+
+HandleCmdQueue::
+	ld hl, wCmdQueue
+	xor a
+.loop
+	ld [hMapObjectIndexBuffer], a
+	ld a, [hl]
+	and a
+	jr z, .skip
+	push hl
+	ld b, h
+	ld c, l
+	call HandleQueuedCommand
+	pop hl
+
+.skip
+	ld de, CMDQUEUE_ENTRY_SIZE
+	add hl, de
+	ld a, [hMapObjectIndexBuffer]
+	inc a
+	cp CMDQUEUE_CAPACITY
+	jr nz, .loop
+	ret
+
+WriteCmdQueue::
+	push bc
+	push de
+	call .GetNextEmptyEntry
+	ld d, h
+	ld e, l
+	pop hl
+	pop bc
+	ret c
+	ld a, b
+	ld bc, CMDQUEUE_ENTRY_SIZE - 1
+	call FarCopyBytes
+	xor a
+	ld [hl], a
+	ret
+
+.GetNextEmptyEntry
+	ld hl, wCmdQueue
+	ld de, CMDQUEUE_ENTRY_SIZE
+	ld c, CMDQUEUE_CAPACITY
+.loop
+	ld a, [hl]
+	and a
+	jr z, .done
+	add hl, de
+	dec c
+	jr nz, .loop
+	scf
+	ret
+
+.done
+	ld a, CMDQUEUE_CAPACITY
+	sub c
+	and a
+	ret
+
+DelCmdQueue::
+	ld hl, wCmdQueue
+	ld de, CMDQUEUE_ENTRY_SIZE
+	ld c, CMDQUEUE_CAPACITY
+.loop
+	ld a, [hl]
+	cp b
+	jr z, .done
+	add hl, de
+	dec c
+	jr nz, .loop
+	and a
+	ret
+
+.done
+	xor a
+	ld [hl], a
+	scf
+	ret
+
+HandleQueuedCommand:
+	ld de, PlayerStruct
+	ld a, NUM_OBJECT_STRUCTS
+.loop
+	push af
+
+	ld hl, OBJECT_SPRITE
+	add hl, de
+	ld a, [hl]
+	and a
+	jr z, .next
+
+	ld hl, OBJECT_MOVEMENTTYPE
+	add hl, de
+	ld a, [hl]
+	cp STEP_TYPE_SKYFALL_TOP
+	jr nz, .next
+
+	ld hl, OBJECT_NEXT_TILE
+	add hl, de
+	ld a, [hl]
+	call CheckPitTile
+	jr nz, .next
+
+	ld hl, OBJECT_DIRECTION_WALKING
+	add hl, de
+	ld a, [hl]
+	cp STANDING
+	jr nz, .next
+	call HandleStoneQueue
+	jr c, .fall_down_hole
+
+.next
+	ld hl, OBJECT_STRUCT_LENGTH
+	add hl, de
+	ld d, h
+	ld e, l
+
+	pop af
+	dec a
+	jr nz, .loop
+	ret
+
+.fall_down_hole
+	pop af
+	ret
+
+CheckFacingTileForStd::
+; Checks to see if the tile you're facing has a std script associated with it.  If so, executes the script and returns carry.
+	ld a, c
+	ld e, 2
+	ld hl, .table1
+	call IsInArray
+	jr nc, .notintable
+
+	ld a, jumpstd_command
+	ld [wJumpStdScriptBuffer], a
+	inc hl
+	ld a, [hli]
+	ld [wJumpStdScriptBuffer + 1], a
+	cp jumpingshoes
+	jr z, .skip_sfx
+	cp mining
+	jr z, .skip_sfx
+	cp pcscript
+	jr nz, .play_sfx
+	ld a, [PlayerDirection]
+	cp OW_UP
+	jr nz, .notintable
+.play_sfx
+	call PlayClickSFX
+.skip_sfx
+	ld a, BANK(Script_JumpStdFromRAM)
+	ld hl, Script_JumpStdFromRAM
+	call CallScript
+	scf
+	ret
+
+.notintable
+	xor a
+	ret
+
+.table1
+	db $91, magazinebookshelf
+	db $93, pcscript
+	db $94, smelting
+	db $95, townmap
+	db $96, merchandiseshelf
+	db $97, jumpingshoes
+	db $9d, mining
+	db $9f, fastcurrent
+	db   -1 ; end
+
+Script_JumpStdFromRAM:
+	jump wJumpStdScriptBuffer

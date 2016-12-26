@@ -1,10 +1,15 @@
-; TeddiursaPokedexEntry: ; 0x1d09da
-	db "LITTLE BEAR@" ; species name
-	dw 200, 190 ; height, width
+	ctxt "Little Bear" ; species name
+	done
+	dw 200, 190 ; height, weight
 
-	db   "It always licks"
+	db .page2 - .page1
+.page1
+	ctxt "It always licks"
 	next "honey. Its palm"
 	next "tastes sweet"
-	page "because of all the"
+	done
+.page2
+	ctxt "because of all the"
 	next "honey it has"
-	next "absorbed.@"
+	next "absorbed."
+	done

@@ -1,10 +1,15 @@
-; GolduckPokedexEntry: ; 0x182d55
-	db "DUCK@" ; species name
-	dw 507, 1690 ; height, width
+	ctxt "Head Butt" ; species name
+	done
+	dw 503, 2260 ; height, weight
 
-	db   "It swims grace-"
-	next "fully along on the"
-	next "quiet, slow-moving"
-	page "rivers and lakes"
-	next "of which it is so"
-	next "fond.@"
+	db .page2 - .page1
+.page1
+	ctxt "Its skull is as"
+	next "hard as iron. It"
+	next "is a brute that"
+	done
+.page2
+	ctxt "tears down jungle"
+	next "trees while"
+	next "catching prey."
+	done

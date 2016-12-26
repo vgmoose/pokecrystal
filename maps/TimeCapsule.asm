@@ -1,7 +1,3 @@
-const_value set 2
-	const TIMECAPSULE_CHRIS1
-	const TIMECAPSULE_CHRIS2
-
 TimeCapsule_MapScriptHeader:
 .MapTriggers:
 	db 2
@@ -27,18 +23,18 @@ TimeCapsule_MapScriptHeader:
 TimeCapsule_SetWhichChris:
 	special Special_CableClubCheckWhichChris
 	iffalse .Chris2
-	disappear TIMECAPSULE_CHRIS2
-	appear TIMECAPSULE_CHRIS1
+	disappear 3
+	appear 2
 	return
 
 .Chris2:
-	disappear TIMECAPSULE_CHRIS1
-	appear TIMECAPSULE_CHRIS2
+	disappear 2
+	appear 3
 	return
 
 TimeCapsule_Initialize:
 	dotrigger $1
-	domaptrigger POKECENTER_2F, $3
+	domaptrigger POKECENTER_BACKROOM, $3
 	end
 
 MapTimeCapsuleSignpost1Script:
@@ -47,14 +43,10 @@ MapTimeCapsuleSignpost1Script:
 	end
 
 ChrisScript_0x19351a:
-	opentext
-	writetext UnknownText_0x193521
-	waitbutton
-	closetext
-	end
+	jumptext UnknownText_0x193521
 
 UnknownText_0x193521:
-	text "Your friend is"
+	ctxt "Your friend is"
 	line "ready."
 	done
 
@@ -64,8 +56,8 @@ TimeCapsule_MapEventHeader:
 
 .Warps:
 	db 2
-	warp_def $7, $4, 4, POKECENTER_2F
-	warp_def $7, $5, 4, POKECENTER_2F
+	warp_def $7, $4, 4, POKECENTER_BACKROOM
+	warp_def $7, $5, 4, POKECENTER_BACKROOM
 
 .XYTriggers:
 	db 0
@@ -77,5 +69,5 @@ TimeCapsule_MapEventHeader:
 
 .PersonEvents:
 	db 2
-	person_event SPRITE_CHRIS, 4, 3, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, PERSONTYPE_SCRIPT, 0, ChrisScript_0x19351a, EVENT_GAVE_KURT_APRICORNS
-	person_event SPRITE_CHRIS, 4, 6, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, PERSONTYPE_SCRIPT, 0, ChrisScript_0x19351a, EVENT_RECEIVED_BALLS_FROM_KURT
+	person_event SPRITE_P0, 4, 3, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, PERSONTYPE_SCRIPT, 0, ChrisScript_0x19351a, EVENT_LINKED_PLAYER_RIGHT
+	person_event SPRITE_P0, 4, 6, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, PERSONTYPE_SCRIPT, 0, ChrisScript_0x19351a, EVENT_LINKED_PLAYER_LEFT

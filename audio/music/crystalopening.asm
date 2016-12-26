@@ -1,8 +1,9 @@
 Music_CrystalOpening: ; 1786e8
-	musicheader 4, 1, Music_CrystalOpening_Ch1
-	musicheader 1, 2, Music_CrystalOpening_Ch2
-	musicheader 1, 3, Music_CrystalOpening_Ch3
-	musicheader 1, 4, Music_CrystalOpening_Ch4
+	channelcount 4
+	channel 1, Music_CrystalOpening_Ch1
+	channel 2, Music_CrystalOpening_Ch2
+	channel 3, Music_CrystalOpening_Ch3
+	channel 4, Music_CrystalOpening_Ch4
 ; 1786f4
 
 Music_CrystalOpening_Ch1: ; 1786f4

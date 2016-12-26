@@ -1,10 +1,15 @@
-; ChinchouPokedexEntry: ; 0x1cd165
-	db "ANGLER@" ; species name
-	dw 108, 260 ; height, width
+	ctxt "Angler" ; species name
+	done
+	dw 108, 260 ; height, weight
 
-	db   "Its antennae, whi-"
+	db .page2 - .page1
+.page1
+	ctxt "Its antennae, whi-"
 	next "ch evolved from a"
 	next "fin, have both po-"
-	page "sitive and neg-"
+	done
+.page2
+	ctxt "sitive and neg-"
 	next "ative charges flo-"
-	next "wing through them.@"
+	next "wing through them."
+	done

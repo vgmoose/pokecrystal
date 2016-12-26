@@ -79,13 +79,13 @@ if_less_than: macro
 	enum jumpstd_command
 jumpstd: macro
 	db jumpstd_command
-	dw \1 ; predefined_script
+	db \1 ; predefined_script
 	endm
 
 	enum callstd_command
 callstd: macro
 	db callstd_command
-	dw \1 ; predefined_script
+	db \1 ; predefined_script
 	endm
 
 	enum callasm_command
@@ -97,7 +97,7 @@ callasm: macro
 	enum special_command
 special: macro
 	db special_command
-	dw (\1Special - SpecialsPointers) / 3
+	db (\1Special - SpecialsPointers) / 3
 	endm
 
 add_special: MACRO
@@ -150,12 +150,17 @@ addvar: macro
 	enum random_command
 random: macro
 	db random_command
-	db \1 ; input
+	IF _NARG == 1
+		db \1 ; input
+	ELSE
+		db 0
+	ENDC
 	endm
 
-	enum checkver_command
-checkver: macro
-	db checkver_command
+	enum readarrayhalfword_command
+readarrayhalfword: macro
+	db readarrayhalfword_command
+	db \1 ; array entry index
 	endm
 
 	enum copybytetovar_command
@@ -263,22 +268,21 @@ checkcoins: macro
 	dw \1 ; coins
 	endm
 
-	enum addcellnum_command
-addcellnum: macro
-	db addcellnum_command
-	db \1 ; person
+	enum writehalfword_command
+writehalfword: macro
+	db writehalfword_command
+	dw \1 ; halfword to store
 	endm
 
-	enum delcellnum_command
-delcellnum: macro
-	db delcellnum_command
-	db \1 ; person
+	enum pushhalfword_command
+pushhalfword: macro
+	db pushhalfword_command
+	dw \1 ; halfword to push
 	endm
 
-	enum checkcellnum_command
-checkcellnum: macro
-	db checkcellnum_command
-	db \1 ; person
+	enum pushhalfwordvar_command
+pushhalfwordvar: macro
+	db pushhalfwordvar_command
 	endm
 
 	enum checktime_command
@@ -314,7 +318,7 @@ givepoke: macro
 	db 0
 	endc
 	else
-	db 0, 0
+	db NO_ITEM, 0
 	endc
 	endm
 
@@ -325,16 +329,14 @@ giveegg: macro
 	db \2 ; level
 	endm
 
-	enum givepokeitem_command
-givepokeitem: macro
-	db givepokeitem_command
-	dw \1 ; pointer
+	enum givefossil_command
+givefossil: macro
+	db givefossil_command
 	endm
 
-	enum checkpokeitem_command
-checkpokeitem: macro
-	db checkpokeitem_command
-	dw \1 ; pointer
+	enum takefossil_command
+takefossil: macro
+	db takefossil_command
 	endm
 
 	enum checkevent_command
@@ -381,12 +383,6 @@ wildon: macro
 	enum wildoff_command
 wildoff: macro
 	db wildoff_command
-	endm
-
-	enum xycompare_command
-xycompare: macro
-	db xycompare_command
-	dw \1 ; pointer
 	endm
 
 	enum warpmod_command
@@ -482,7 +478,6 @@ opentext: macro
 	enum refreshscreen_command
 refreshscreen: macro
 	db refreshscreen_command
-	db \1 ; dummy
 	endm
 
 	enum closetext_command
@@ -490,12 +485,56 @@ closetext: macro
 	db closetext_command
 	endm
 
-	enum loadbytec2cf_command
-loadbytec2cf: macro
-	db loadbytec2cf_command
-	db \1 ; byte
+	enum cmdwitharrayargs_command
+cmdwitharrayargs: macro
+	db cmdwitharrayargs_command
+	db \1 ; skip offset (for script conditionals)
 	endm
 
+customarraycmd: macro
+	db \1_command ; command
+	db \2 ; length
+	shift
+; just do a hardcode for now
+	if _NARG == 2
+		db (\2 - 1)
+		db $00
+	else
+		if _NARG == 3
+			db (\3 - 1) << 2 | (\2 - 1)
+			db $00
+		else
+			if _NARG == 4
+				db (\4 - 1) << 4 | (\3 - 1) << 2 | (\2 - 1)
+				db $00
+			else
+				if _NARG == 5
+					db (\5 - 1) << 6 | (\4 - 1) << 4 | (\3 - 1) << 2 | (\2 - 1)
+					db $00
+				else
+					if _NARG == 6
+						db (\5 - 1) << 6 | (\4 - 1) << 4 | (\3 - 1) << 2 | (\2 - 1)
+						db (\6 - 1)
+					else
+						if _NARG == 7
+							db (\5 - 1) << 6 | (\4 - 1) << 4 | (\3 - 1) << 2 | (\2 - 1)
+							db (\7 - 1) << 2 | (\6 - 1)
+						else
+							if _NARG == 8
+								db (\5 - 1) << 6 | (\4 - 1) << 4 | (\3 - 1) << 2 | (\2 - 1)
+								db (\8 - 1) << 4 | (\7 - 1) << 2 | (\6 - 1)
+							else
+								db (\5 - 1) << 6 | (\4 - 1) << 4 | (\3 - 1) << 2 | (\2 - 1)
+								db (\9 - 1) << 6 | (\8 - 1) << 4 | (\7 - 1) << 2 | (\6 - 1)
+							endc
+						endc
+					endc
+				endc
+			endc
+		endc
+	endc
+	endm
+	
 	enum farwritetext_command
 farwritetext: macro
 	db farwritetext_command
@@ -511,8 +550,6 @@ writetext: macro
 	enum repeattext_command
 repeattext: macro
 	db repeattext_command
-	db \1 ; byte
-	db \2 ; byte
 	endm
 
 	enum yesorno_command
@@ -537,13 +574,16 @@ jumptextfaceplayer: macro
 	dw \1 ; text_pointer
 	endm
 
-; IF _CRYSTAL
 	enum farjumptext_command
 farjumptext: macro
 	db farjumptext_command
-	dba \1
+	if "\1" == "-1"
+		db \1
+		dw -1
+	else
+		dba \1
+	endc
 	endm
-; ENDC
 
 	enum jumptext_command
 jumptext: macro
@@ -582,9 +622,10 @@ verticalmenu: macro
 	db verticalmenu_command
 	endm
 
-	enum loadpikachudata_command
-loadpikachudata: macro
-	db loadpikachudata_command
+	enum scrollingmenu_command
+scrollingmenu: macro
+	db scrollingmenu_command
+	db \1 ; flags
 	endm
 
 	enum randomwildmon_command
@@ -600,8 +641,36 @@ loadmemtrainer: macro
 	enum loadwildmon_command
 loadwildmon: macro
 	db loadwildmon_command
-	db \1 ; pokemon
-	db \2 ; level
+	if _NARG == 2
+		db \1 ; pokemon
+		db \2 ; level
+	else
+		if _NARG > 2
+			db \1 ; pokemon
+			db \2 | $80 ; level, additional data flag
+			db \3 ; item
+			if _NARG > 3
+				db \4 ; move 1
+			else
+				db $00
+			endc
+			if _NARG > 4
+				db \5 ; move 2
+			else
+				db $00
+			endc
+			if _NARG > 5
+				db \6 ; move 3
+			else
+				db $00
+			endc
+			if _NARG > 6
+				db \7 ; move 4
+			else
+				db $00
+			endc
+		endc
+	endc
 	endm
 
 	enum loadtrainer_command
@@ -749,6 +818,11 @@ showemote: macro
 	db \1 ; bubble
 	db \2 ; person
 	db \3 ; time
+IF _NARG >= 4
+	db \4 ; flag
+ELSE
+	db 1
+ENDC
 	endm
 
 	enum spriteface_command
@@ -839,7 +913,7 @@ dontrestartmapmusic: macro
 	enum cry_command
 cry: macro
 	db cry_command
-	dw \1 ; cry_id
+	db \1 ; cry_id
 	endm
 
 	enum playsound_command
@@ -856,11 +930,6 @@ waitsfx: macro
 	enum warpsound_command
 warpsound: macro
 	db warpsound_command
-	endm
-
-	enum specialsound_command
-specialsound: macro
-	db specialsound_command
 	endm
 
 	enum passtoengine_command
@@ -929,7 +998,7 @@ end_all: macro
 pokemart: macro
 	db pokemart_command
 	db \1 ; dialog_id
-	dw \2 ; mart_id
+	db \2 ; mart_id
 	endm
 
 	enum elevator_command
@@ -944,26 +1013,25 @@ trade: macro
 	db \1 ; trade_id
 	endm
 
-	enum askforphonenumber_command
-askforphonenumber: macro
-	db askforphonenumber_command
-	db \1 ; number
+	enum pophalfwordvar_command
+pophalfwordvar: macro
+	db pophalfwordvar_command
 	endm
 
-	enum phonecall_command
-phonecall: macro
-	db phonecall_command
-	dw \1 ; caller_name
+	enum swaphalfword_command
+swaphalfword: macro
+	db swaphalfword_command
+	dw \1 ; halfword to swap hScriptHalfwordVar with
 	endm
 
-	enum hangup_command
-hangup: macro
-	db hangup_command
+	enum swaphalfwordvar_command
+swaphalfwordvar: macro
+	db swaphalfwordvar_command
 	endm
 
-	enum describedecoration_command
-describedecoration: macro
-	db describedecoration_command
+	enum pushbyte_command
+pushbyte: macro
+	db pushbyte_command
 	db \1 ; byte
 	endm
 
@@ -973,15 +1041,21 @@ fruittree: macro
 	db \1 ; tree_id
 	endm
 
-	enum specialphonecall_command
-specialphonecall: macro
-	db specialphonecall_command
-	dw \1 ; call_id
+	enum swapbyte_command
+swapbyte: macro
+	db swapbyte_command
+	db \1 ; byte
 	endm
 
-	enum checkphonecall_command
-checkphonecall: macro
-	db checkphonecall_command
+	enum loadarray_command
+loadarray: macro
+	db loadarray_command
+	dw \1 ; array pointer
+	if _NARG == 2
+		db \2 ; array size
+	else
+		db \1EntrySizeEnd - \1
+	endc
 	endm
 
 	enum verbosegiveitem_command
@@ -1062,7 +1136,419 @@ wait: macro
 	db \1 ; duration
 	endm
 
-	enum check_save_command
-check_save: macro
-	db check_save_command
+	enum loadscrollingmenudata_command
+loadscrollingmenudata: macro
+	db loadscrollingmenudata_command
+	dw \1
+	endm
+
+;Prism Custom
+	enum backupcustchar_command
+backupcustchar: macro
+	db backupcustchar_command
+	endm
+
+	enum restorecustchar_command
+restorecustchar: macro
+	db restorecustchar_command
+	endm
+
+	enum giveminingEXP_command
+giveminingEXP: macro
+	db giveminingEXP_command
+	endm
+
+	enum givesmeltingEXP_command
+givesmeltingEXP: macro
+	db givesmeltingEXP_command
+	endm
+
+	enum givejewelingEXP_command
+givejewelingEXP: macro
+	db givejewelingEXP_command
+	endm
+
+	enum giveballmakingEXP_command
+giveballmakingEXP: macro
+	db giveballmakingEXP_command
+	endm
+
+	enum givetm_command
+givetm: macro
+	db givetm_command
+	db \1 ; TM
+	endm
+
+	enum checkash_command
+checkash: macro
+	db checkash_command
+	endm
+
+	enum itemplural_command
+itemplural: macro
+	db itemplural_command
+	db \1 ; string buffer
+	endm
+
+	enum pullvar_command
+pullvar: macro
+	db pullvar_command
+	endm
+
+	enum setplayersprite_command
+setplayersprite: macro
+	db setplayersprite_command
+	db \1 ; character model index (0-5)
+	endm
+
+	enum setplayercolor_command
+setplayercolor: macro
+	db setplayercolor_command
+	db \1
+if \1 == 0
+	RGB \2, \3, \4 ; clothes
+	db \5 ; race
+endc
+	endm
+
+	enum loadsignpost_command
+loadsignpost: macro
+	db loadsignpost_command
+	IF _NARG == 2
+		dw AddSignpostHeader
+	ELSE
+		dw \1
+	endc
+	endm
+
+signpostheader: macro
+	if \1 == 0
+		db \1
+	else
+		if \1 >= TX_COMPRESSED
+			db \1 + 1
+		else
+			db \1
+		endc
+	endc
+	endm
+
+	enum checkpokemontype_command ;Check if the selected Pokemon is part type or has a move of the type.
+checkpokemontype: macro
+	db checkpokemontype_command
+	db \1 ;type
+	endm
+
+	enum giveorphanpoints_command
+giveorphanpoints: macro
+	db giveorphanpoints_command
+	dw \1 ; totalpoints
+	endm
+
+	enum takeorphanpoints_command
+takeorphanpoints: macro
+	db takeorphanpoints_command
+	dw \1 ; totalpoints
+	endm
+
+	enum checkorphanpoints_command
+checkorphanpoints: macro
+	db checkorphanpoints_command
+	dw \1 ; totalpoints
+	endm
+
+	enum startmirrorbattle_command
+startmirrorbattle: macro
+	db startmirrorbattle_command
+	endm
+
+	enum comparevartobyte_command
+comparevartobyte: macro
+	db comparevartobyte_command
+	dw \1
+	endm
+
+	enum backupsecondpokemon_command
+backupsecondpokemon: macro
+	db backupsecondpokemon_command
+	endm
+
+	enum restoresecondpokemon_command
+restoresecondpokemon: macro
+	db restoresecondpokemon_command
+	endm
+
+	enum vartohalfwordvar_command
+vartohalfwordvar: macro
+	db vartohalfwordvar_command
+	endm
+
+	enum pullhalfwordvar_command
+pullhalfwordvar: macro
+	db pullhalfwordvar_command
+	endm
+
+	enum divideop_command
+divideop: macro
+	db divideop_command
+	db \1 ; operation, what value to return
+	IF \1 < 2
+		db \2 ; hard value
+	ENDC
+	endm
+
+	enum givearcadetickets_command
+givearcadetickets: macro
+	db givearcadetickets_command
+	dt \1
+	endm
+
+	enum takearcadetickets_command
+takearcadetickets: macro
+	db takearcadetickets_command
+	dt \1
+	endm
+
+	enum checkarcadetickets_command
+checkarcadetickets: macro
+	db checkarcadetickets_command
+	dt \1
+	endm
+
+	enum checkarcadehighscore_command
+checkarcadehighscore: macro
+	db checkarcadehighscore_command
+	dq \1
+	endm
+
+	enum checkarcademaxround_command
+checkarcademaxround: macro
+	db checkarcademaxround_command
+	dw \1
+	endm
+
+	enum switch_command
+switch: macro
+	db switch_command
+	db \1
+	endm
+
+	enum multiplyvar_command
+multiplyvar: macro
+	db multiplyvar_command
+	db \1
+	endm
+
+	enum showFX_command
+showFX: macro
+	db showFX_command
+	dw \1
+	dw \2
+	endm
+
+	enum minpartylevel_command
+minpartylevel: macro
+	db minpartylevel_command
+	endm
+
+	enum jumptable_command
+scriptjumptable: macro
+	db jumptable_command
+	dw \1
+	endm
+
+	enum anonjumptable_command
+anonjumptable: macro
+	db anonjumptable_command
+	endm
+
+	enum givebattlepoints_command
+givebattlepoints: macro
+	db givebattlepoints_command
+	dw \1
+	endm
+
+	enum takebattlepoints_command
+takebattlepoints: macro
+	db takebattlepoints_command
+	endm
+
+	enum checkbattlepoints_command
+checkbattlepoints: macro
+	db checkbattlepoints_command
+	endm
+
+	enum playwaitsfx_command
+playwaitsfx: macro
+	db playwaitsfx_command
+	dw \1
+	endm
+
+	enum scriptstartasm_command
+scriptstartasm: macro
+	db scriptstartasm_command
+	endm
+
+scriptstopasm: macro
+	; This is not a command; this simply closes a scriptstartasm so that the script continues right after this macro
+	ld hl, .asmend\@
+	ret
+.asmend\@
+	endm
+
+	enum copystring_command
+copystring: macro
+	db copystring_command
+	db \1
+	endm
+
+	enum endtext_command
+endtext: macro
+	db endtext_command
+	endm
+
+	enum pushvar_command
+pushvar: macro
+	db pushvar_command
+	endm
+
+	enum popvar_command
+popvar: macro
+	db popvar_command
+	endm
+
+	enum swapvar_command
+swapvar: macro
+	db swapvar_command
+	endm
+
+	enum getweekday_command
+getweekday: macro
+	db getweekday_command
+	endm
+
+	enum milosswitch_command
+milosswitch: macro
+	db milosswitch_command
+	dw \1 ; event flag
+	dw \2 ; iffalse
+	dw \3 ; iftrue
+	endm
+	
+	enum qrcode_command
+qrcode: macro
+	db qrcode_command
+	db \1 ; code ID
+	endm
+
+then_command EQU scriptstartasm_command ;we can't use scriptstartasm with conditionals, so...
+
+	enum selse_command
+selse: macro
+	db selse_command
+	endm
+	
+	enum sendif_command
+sendif: macro
+	db sendif_command
+	endm
+	
+	enum siffalse_command
+	enum siftrue_command
+	enum sifgt_command
+	enum siflt_command
+	enum sifeq_command
+	enum sifne_command
+sif: macro
+parameterized_if_command = 1
+if_parameter_offset = 0
+if ("\1" == "=") || ("\1" == "==")
+	db sifeq_command
+else
+if ("\1" == "!=") || ("\1" == "<>")
+	db sifne_command
+else
+if ("\1" == ">")
+	db sifgt_command
+else
+if ("\1" == "<")
+	db siflt_command
+else
+if ("\1" == ">=")
+if_parameter_offset = -1
+	db sifgt_command
+else
+if ("\1" == "<=")
+if_parameter_offset = 1
+	db siflt_command
+else
+if ("\1" == "true")
+parameterized_if_command = 0
+	db siftrue_command
+else
+if ("\1" == "false")
+parameterized_if_command = 0
+	db siffalse_command
+else
+	fail "Invalid condition to sif"
+endc
+endc
+endc
+endc
+endc
+endc
+endc
+endc
+if parameterized_if_command
+	db (\2) + if_parameter_offset
+	if _NARG == 3
+		if "\3" == "then"
+			db then_command
+		endc
+	endc
+else
+	if _NARG == 2
+		if "\2" == "then"
+			db then_command
+		endc
+	endc
+endc
+	endm
+
+	enum readarray_command
+readarray: macro
+	db readarray_command
+	db \1 ; index within array
+	endm
+
+	enum givetmnomessage_command
+givetmnomessage: macro
+	db givetmnomessage_command
+	db \1
+	endm
+	
+	enum findpokemontype_command
+findpokemontype: macro
+	db findpokemontype_command
+	db \1
+	endm
+	
+	enum startpokeonly_command
+startpokeonly: macro
+	db startpokeonly_command
+	map \1
+	db \2
+	endm
+	
+	enum endpokeonly_command
+endpokeonly: macro
+	db endpokeonly_command
+	map \1
+	db \2
+	endm
+	
+	enum readhalfwordbyindex_command
+readhalfwordbyindex: macro
+	db readhalfwordbyindex_command
+	dw \1
 	endm

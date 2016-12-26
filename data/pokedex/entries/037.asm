@@ -1,10 +1,15 @@
-; VulpixPokedexEntry: ; 0x18259b
-	db "FOX@" ; species name
-	dw 200, 220 ; height, width
+	ctxt "Fox" ; species name
+	done
+	dw 200, 220 ; height, weight
 
-	db   "As its body grows"
+	db .page2 - .page1
+.page1
+	ctxt "As its body grows"
 	next "larger, its six"
 	next "warm tails become"
-	page "more beautiful,"
+	done
+.page2
+	ctxt "more beautiful,"
 	next "with a more luxur-"
-	next "ious coat of fur.@"
+	next "ious coat of fur."
+	done

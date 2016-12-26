@@ -4,8 +4,10 @@
 	const SLIGHTLY_FAST
 	const SLIGHTLY_SLOW
 	const MEDIUM_SLOW
-	const FAST
 	const SLOW
+	const FAST
+	const ERRATIC
+	const FLUCTUATING
 
 ; egg group constants
 const_value SET 1
@@ -75,6 +77,12 @@ const_value SET 1
 	const EVOLVE_TRADE
 	const EVOLVE_HAPPINESS
 	const EVOLVE_STAT
+	const EVOLVE_MAPGROUP
+	const EVOLVE_HOLD_NIGHT
+	const EVOLVE_ITEM_MALE
+	const EVOLVE_ITEM_FEMALE
+	const EVOLVE_SYLVEON
+	const EVOLVE_MOVE
 
 
 BASE_HAPPINESS        EQU 70

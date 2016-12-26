@@ -1,10 +1,15 @@
-; EkansPokedexEntry: ; 0x181fd4
-	db "SNAKE@" ; species name
-	dw 607, 150 ; height, width
+	ctxt "Rabbit" ; species name
+	done
+	dw 104, 121 ; height, weight
 
-	db   "It flutters the"
-	next "tip of its tongue"
-	next "to seek out the"
-	page "scent of prey,"
-	next "then swallows the"
-	next "prey whole.@"
+	db .page2 - .page1
+.page1
+	ctxt "You can tell how"
+	next "it feels by the"
+	next "way it rolls its"
+	done
+.page2
+	ctxt "ears. When it's"
+	next "scared, both ears"
+	next "are rolled up."
+	done

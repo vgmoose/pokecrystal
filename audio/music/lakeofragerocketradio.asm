@@ -1,7 +1,8 @@
 Music_LakeOfRageRocketRadio: ; ef5b1
-	musicheader 3, 1, Music_LakeOfRageRocketRadio_Ch1
-	musicheader 1, 2, Music_LakeOfRageRocketRadio_Ch2
-	musicheader 1, 3, Music_LakeOfRageRocketRadio_Ch3
+	channelcount 3
+	channel 1, Music_LakeOfRageRocketRadio_Ch1
+	channel 2, Music_LakeOfRageRocketRadio_Ch2
+	channel 3, Music_LakeOfRageRocketRadio_Ch3
 ; ef5ba
 
 Music_LakeOfRageRocketRadio_Ch1: ; ef5ba

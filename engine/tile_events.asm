@@ -1,4 +1,4 @@
-CheckWarpCollision:: ; 1499a
+CheckWarpCollision::
 ; Is this tile a warp?
 	ld a, [PlayerStandingTile]
 	cp $60
@@ -14,37 +14,32 @@ CheckWarpCollision:: ; 1499a
 .warp
 	scf
 	ret
-; 149af
 
-CheckDirectionalWarp:: ; 149af
+CheckDirectionalWarp::
 ; If this is a directional warp, clear carry (press the designated button to warp).
 ; Else, set carry (immediate warp).
 	ld a, [PlayerStandingTile]
 	cp $70 ; Warp on down
-	jr z, .directional
+	jr z, .not_warp
 	cp $76 ; Warp on left
-	jr z, .directional
+	jr z, .not_warp
 	cp $78 ; Warp on up
-	jr z, .directional
+	jr z, .not_warp
 	cp $7e ; Warp on right
-	jr z, .directional
+	jr z, .not_warp
 	scf
 	ret
 
-.directional
+.not_warp
 	xor a
 	ret
-; 149c6
 
-CheckWarpFacingDown: ; 149c6
-	ld de, 1
+CheckWarpFacingDown:
 	ld hl, .blocks
 	ld a, [PlayerStandingTile]
-	call IsInArray
-	ret
-; 149d3
+	jp IsInSingularArray
 
-.blocks ; 149d3
+.blocks
 	db $71 ; door
 	db $79
 	db $7a ; stairs
@@ -55,17 +50,13 @@ CheckWarpFacingDown: ; 149c6
 	db $75
 	db $7d
 	db -1
-; 149dd
 
-CheckGrassCollision:: ; 149dd
+CheckGrassCollision::
 	ld a, [PlayerStandingTile]
 	ld hl, .blocks
-	ld de, 1
-	call IsInArray
-	ret
-; 149ea
+	jp IsInSingularArray
 
-.blocks ; 149ea
+.blocks
 	db $08
 	db $18 ; tall grass
 	db $14 ; tall grass
@@ -77,17 +68,13 @@ CheckGrassCollision:: ; 149dd
 	db $4b
 	db $4c
 	db -1
-; 149f5
 
-CheckCutCollision: ; 149f5
+CheckCutCollision:
 	ld a, c
 	ld hl, .blocks
-	ld de, 1
-	call IsInArray
-	ret
-; 14a00
+	jp IsInSingularArray
 
-.blocks ; 14a00
+.blocks
 	db $12 ; cut tree
 	db $1a ; cut tree
 	db $10 ; tall grass
@@ -95,16 +82,3 @@ CheckCutCollision: ; 149f5
 	db $14 ; tall grass
 	db $1c ; tall grass
 	db -1
-; 14a07
-
-Function14a07:: ; 14a07
-	ld a, [PlayerStandingTile]
-	ld de, $1f
-	cp $71 ; door
-	ret z
-	ld de, $13
-	cp $7c ; warp pad
-	ret z
-	ld de, $23
-	ret
-; 14a1a

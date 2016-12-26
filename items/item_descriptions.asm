@@ -1,23 +1,20 @@
-PrintItemDescription: ; 0x1c8955
-; Print the description for item [CurSpecies] at de.
+UpdateItemDescription::
+	ld a, [wMenuSelection]
+	ld [wCurSpecies], a
+	call SpeechTextBox
+	ld a, [wMenuSelection]
+	cp -1
+	ret z
+	decoord 1, 14
+	; fallthrough
 
-	ld a, [CurSpecies]
-	cp TM01
-	jr c, .not_a_tm
+PrintItemDescription:
+; Print the description for item [wCurSpecies] at de.
 
-	ld [CurItem], a
-	push de
-	callba GetTMHMItemMove
-	pop hl
-	ld a, [wd265]
-	ld [CurSpecies], a
-	predef PrintMoveDesc
-	ret
-
-.not_a_tm
+	ld a, [wCurSpecies]
 	push de
 	ld hl, ItemDescriptions
-	ld a, [CurSpecies]
+	ld a, [wCurSpecies]
 	dec a
 	ld c, a
 	ld b, 0
@@ -27,17 +24,15 @@ PrintItemDescription: ; 0x1c8955
 	inc hl
 	ld d, [hl]
 	pop hl
-	jp PlaceString
-; 0x1c8987
-
+	jp PlaceText
 
 ItemDescriptions:
-	dw MasterBallDesc
-	dw UltraBallDesc
+	dw MasterballDesc
+	dw UltraballDesc
 	dw BrightpowderDesc
-	dw GreatBallDesc
-	dw PokeBallDesc
-	dw TeruSama1Desc
+	dw GreatballDesc
+	dw PokeballDesc
+	dw CoalDesc
 	dw BicycleDesc
 	dw MoonStoneDesc
 	dw AntidoteDesc
@@ -56,7 +51,7 @@ ItemDescriptions:
 	dw FireStoneDesc
 	dw ThunderStoneDesc
 	dw WaterStoneDesc
-	dw TeruSama2Desc
+	dw PoisonGuardDesc
 	dw HPUpDesc
 	dw ProteinDesc
 	dw IronDesc
@@ -76,18 +71,18 @@ ItemDescriptions:
 	dw SuperRepelDesc
 	dw MaxRepelDesc
 	dw DireHitDesc
-	dw TeruSama3Desc
+	dw BurnGuardDesc
 	dw FreshWaterDesc
 	dw SodaPopDesc
 	dw LemonadeDesc
 	dw XAttackDesc
-	dw TeruSama4Desc
+	dw FreezeGuardDesc
 	dw XDefendDesc
 	dw XSpeedDesc
 	dw XSpecialDesc
 	dw CoinCaseDesc
-	dw ItemfinderDesc
-	dw TeruSama5Desc
+	dw TokenFinderDesc
+	dw HeartScaleDesc
 	dw ExpShareDesc
 	dw OldRodDesc
 	dw GoodRodDesc
@@ -97,12 +92,12 @@ ItemDescriptions:
 	dw EtherDesc
 	dw MaxEtherDesc
 	dw ElixerDesc
-	dw RedScaleDesc
-	dw SecretPotionDesc
-	dw SSTicketDesc
-	dw MysteryEggDesc
-	dw ClearBellDesc
-	dw SilverWingDesc
+	dw CellCardDesc
+	dw RijonPassDesc
+	dw FerryTicketDesc
+	dw CellCardDesc
+	dw CellCardDesc
+	dw CellCardDesc
 	dw MoomooMilkDesc
 	dw QuickClawDesc
 	dw PsnCureBerryDesc
@@ -110,7 +105,7 @@ ItemDescriptions:
 	dw SoftSandDesc
 	dw SharpBeakDesc
 	dw PrzCureBerryDesc
-	dw BurntBerryDesc
+	dw AspearBerryDesc
 	dw IceBerryDesc
 	dw PoisonBarbDesc
 	dw KingsRockDesc
@@ -121,7 +116,7 @@ ItemDescriptions:
 	dw BigMushroomDesc
 	dw SilverPowderDesc
 	dw BluApricornDesc
-	dw TeruSama6Desc
+	dw SleepGuardDesc
 	dw AmuletCoinDesc
 	dw YlwApricornDesc
 	dw GrnApricornDesc
@@ -131,13 +126,13 @@ ItemDescriptions:
 	dw WhtApricornDesc
 	dw BlackbeltDesc
 	dw BlkApricornDesc
-	dw TeruSama7Desc
+	dw ParlyzGuardDesc
 	dw PnkApricornDesc
 	dw BlackGlassesDesc
 	dw SlowpokeTailDesc
 	dw PinkBowDesc
 	dw StickDesc
-	dw SmokeBallDesc
+	dw SmokeballDesc
 	dw NeverMeltIceDesc
 	dw MagnetDesc
 	dw MiracleBerryDesc
@@ -145,898 +140,1263 @@ ItemDescriptions:
 	dw BigPearlDesc
 	dw EverStoneDesc
 	dw SpellTagDesc
-	dw RageCandyBarDesc
-	dw GSBallDesc
-	dw BlueCardDesc
+	dw SilverEggDesc
+	dw CrystalEggDesc
+	dw RubyEggDesc
 	dw MiracleSeedDesc
-	dw ThickClubDesc
+	dw GoldEggDesc
 	dw FocusBandDesc
-	dw TeruSama8Desc
+	dw ConfuseGuardDesc
 	dw EnergyPowderDesc
 	dw EnergyRootDesc
 	dw HealPowderDesc
 	dw RevivalHerbDesc
 	dw HardStoneDesc
 	dw LuckyEggDesc
-	dw CardKeyDesc
-	dw MachinePartDesc
-	dw EggTicketDesc
-	dw LostItemDesc
+	dw EmeraldEggDesc
+	dw PrismKeyDesc
+	dw RedOrbDesc
+	dw GreenOrbDesc
 	dw StardustDesc
 	dw StarPieceDesc
-	dw BasementKeyDesc
-	dw PassDesc
-	dw TeruSama9Desc
-	dw TeruSama10Desc
-	dw TeruSama11Desc
+	dw MansionKeyDesc
+	dw BlueOrbDesc
+	dw SapphireEggDesc
+	dw CuroShardDesc
+	dw BedroomKeyDesc
 	dw CharcoalDesc
 	dw BerryJuiceDesc
 	dw ScopeLensDesc
-	dw TeruSama12Desc
-	dw TeruSama13Desc
+	dw MegaphoneDesc
+	dw CigaretteDesc
 	dw MetalCoatDesc
 	dw DragonFangDesc
-	dw TeruSama14Desc
+	dw CellCardDesc
 	dw LeftoversDesc
-	dw TeruSama15Desc
-	dw TeruSama16Desc
-	dw TeruSama17Desc
+	dw CellCardDesc
+	dw EagulouBallDesc
+	dw GiantRockDesc
 	dw MysteryBerryDesc
 	dw DragonScaleDesc
 	dw BerserkGeneDesc
-	dw TeruSama18Desc
-	dw TeruSama19Desc
-	dw TeruSama20Desc
+	dw BlueFluteDesc
+	dw XSpDefDesc
+	dw CageKeyDesc
 	dw SacredAshDesc
-	dw HeavyBallDesc
-	dw FlowerMailDesc
-	dw LevelBallDesc
-	dw LureBallDesc
-	dw FastBallDesc
-	dw TeruSama21Desc
-	dw LightBallDesc
-	dw FriendBallDesc
-	dw MoonBallDesc
-	dw LoveBallDesc
-	dw NormalBoxDesc
-	dw GorgeousBoxDesc
+	dw UnusedItemDesc
+	dw GoldTokenDesc
+	dw UnusedItemDesc
+	dw DiveballDesc
+	dw FastballDesc
+	dw UnusedItemDesc
+	dw LightballDesc
+	dw FriendballDesc
+	dw UnusedItemDesc
+	dw UnusedItemDesc
+	dw BurntBerryDesc
+	dw SullenStoneDesc
 	dw SunStoneDesc
 	dw PolkadotBowDesc
-	dw TeruSama22Desc
+	dw DynamiteDesc
 	dw UpGradeDesc
 	dw BerryDesc
 	dw GoldBerryDesc
-	dw SquirtBottleDesc
-	dw TeruSama23Desc
-	dw ParkBallDesc
-	dw RainbowWingDesc
-	dw TeruSama24Desc
+	dw DawnStoneDesc
+	dw GoldDustDesc
+	dw ParkballDesc
+	dw UnusedItemDesc
+	dw ShinyStoneDesc
 	dw BrickPieceDesc
-	dw SurfMailDesc
-	dw LiteBlueMailDesc
-	dw PortraitMailDesc
-	dw LovelyMailDesc
-	dw EonMailDesc
-	dw MorphMailDesc
-	dw BlueSkyMailDesc
-	dw MusicMailDesc
-	dw MewMailDesc
-	dw TeruSama25Desc
-	dw TeruSama26Desc
-	dw TeruSama26Desc
-	dw TeruSama26Desc
-	dw TeruSama26Desc
-	dw TeruSama26Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama27Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama28Desc
-	dw TeruSama29Desc
-	dw TeruSama30Desc
-	dw TeruSama31Desc
-	dw TeruSama32Desc
-	dw TeruSama33Desc
+	dw RedFluteDesc
+	dw YellowFluteDesc
+	dw BlackFluteDesc
+	dw WhiteFluteDesc
+	dw GreenFluteDesc
+	dw OrangeFluteDesc
+	dw SootSackDesc
+	dw PurpleFluteDesc
+	dw UnusedItemDesc
+	dw MiningPickDesc
+	dw TMCaseDesc
+	dw SafeGogglesDesc
+	dw RedJewelDesc
+	dw BlueJewelDesc
+	dw BrownJewelDesc
+	dw WhiteJewelDesc
+	dw PrismJewelDesc
+	dw BigNuggetDesc
+	dw HeatRockDesc
+	dw DampRockDesc
+	dw SmoothRockDesc
+	dw IcyRockDesc
+	dw LightClayDesc
+	dw ShellBellDesc
+	dw KegofBeerDesc
+	dw FireRingDesc
+	dw GrassRingDesc
+	dw WaterRingDesc
+	dw ThunderRingDesc
+	dw ShinyRingDesc
+	dw DawnRingDesc
+	dw DuskRingDesc
+	dw MoonRingDesc
+	dw DuskStoneDesc
+	dw UnusedItemDesc
+	dw TradeStoneDesc
+	dw ShinyBallDesc
+	dw OreDesc
+	dw BurgerDesc
+	dw CoronetStoneDesc
+	dw FriesDesc
+	dw FossilCaseDesc
+	dw SilkDesc
+	dw MagmarizerDesc
+	dw ElectrizerDesc
+	dw PrismScaleDesc
+	dw DubiousDiscDesc
+	dw RazorClawDesc
+	dw RazorFangDesc
+	dw ProtectorDesc
+	dw OrngApricornDesc
+	dw CyanApricornDesc
+	dw GreyApricornDesc
+	dw PrplApricornDesc
+	dw ShnyApricornDesc
+	dw PokeballCoreDesc
+	dw MysteryTcktDesc
+	dw OrphanCardDesc
+	dw QRReaderDesc
+	dw GasMaskDesc
+	dw FakeIDDesc
+	dw FluffyCoatDesc
+	dw RoofCardDesc
+	dw LabCardDesc
+	dw GrappleHookDesc
+	dw QuickBallDesc
+	dw DuskBallDesc
+	dw RepeatBallDesc
+	dw TimerBallDesc
+	dw MagnetPassDesc
 
-MasterBallDesc:
-	db   "The best BALL. It"
-	next "never misses.@"
+MasterballDesc:
+	ctxt "The best ball. It"
+	next "never misses."
+	done
 
-UltraBallDesc:
-	db   "A BALL with a high"
-	next "rate of success.@"
+UltraballDesc:
+	ctxt "A ball with a high"
+	next "rate of success."
+	done
 
 BrightpowderDesc:
-	db   "Lowers the foe's"
-	next "accuracy. (HOLD)@"
+	ctxt "Lowers the foe's"
+	next "accuracy. (Hold)"
+	done
 
-GreatBallDesc:
-	db   "A BALL with a de-"
-	next "cent success rate.@"
+GreatballDesc:
+	ctxt "A ball with a de-"
+	next "cent success rate."
+	done
 
-PokeBallDesc:
-	db   "An item for catch-"
-	next "ing #MON.@"
-
-TeruSama1Desc:
-	db   "?@"
-
-BicycleDesc:
-	db   "A collapsible bike"
-	next "for fast movement.@"
-
-MoonStoneDesc:
-	db   "Evolves certain"
-	next "kinds of #MON.@"
+PokeballDesc:
+	ctxt "An item for catch-"
+	next "ing #mon."
+	done
 
 AntidoteDesc:
-	db   "Cures poisoned"
-	next "#MON.@"
+	ctxt "Cures poisoned"
+	next "#mon."
+	done
 
 BurnHealDesc:
-	db   "Heals burned"
-	next "#MON.@"
+	ctxt "Heals burned"
+	next "#mon."
+	done
 
 IceHealDesc:
-	db   "Defrosts frozen"
-	next "#MON.@"
+	ctxt "Defrosts frozen"
+	next "#mon."
+	done
 
 AwakeningDesc:
-	db   "Awakens sleeping"
-	next "#MON.@"
+	ctxt "Awakens sleeping"
+	next "#mon."
+	done
 
 ParlyzHealDesc:
-	db   "Heals paralyzed"
-	next "#MON.@"
+	ctxt "Heals paralyzed"
+	next "#mon."
+	done
 
 FullRestoreDesc:
-	db   "Fully restores HP"
-	next "& status.@"
+	ctxt "Fully restores HP"
+	next "& status."
+	done
 
 MaxPotionDesc:
-	db   "Fully restores"
-	next "#MON HP.@"
+	ctxt "Fully restores"
+	next "#mon HP."
+	done
 
 HyperPotionDesc:
-	db   "Restores #MON"
-	next "HP by 200.@"
+	ctxt "Restores #mon"
+	next "HP by 200."
+	done
 
 SuperPotionDesc:
-	db   "Restores #MON"
-	next "HP by 50.@"
+	ctxt "Restores #mon"
+	next "HP by 50."
+	done
 
 PotionDesc:
-	db   "Restores #MON"
-	next "HP by 20.@"
+	ctxt "Restores #mon"
+	next "HP by 20."
+	done
 
 EscapeRopeDesc:
-	db   "Use for escaping"
-	next "from caves, etc.@"
+	ctxt "Use for escaping"
+	next "from caves, etc."
+	done
 
 RepelDesc:
-	db   "Repels weak #-"
-	next "MON for 100 steps.@"
+	ctxt "Repels weak #-"
+	next "MON for 100 steps."
+	done
 
 MaxElixerDesc:
-	db   "Fully restores the"
-	next "PP of one #MON.@"
-
-FireStoneDesc:
-	db   "Evolves certain"
-	next "kinds of #MON.@"
-
-ThunderStoneDesc:
-	db   "Evolves certain"
-	next "kinds of #MON.@"
-
-WaterStoneDesc:
-	db   "Evolves certain"
-	next "kinds of #MON.@"
-
-TeruSama2Desc:
-	db   "?@"
+	ctxt "Fully restores the"
+	next "PP of one #mon."
+	done
 
 HPUpDesc:
-	db   "Raises the HP of"
-	next "one #MON.@"
+	ctxt "Raises the HP of"
+	next "one #mon."
+	done
 
 ProteinDesc:
-	db   "Raises ATTACK of"
-	next "one #MON.@"
+	ctxt "Raises Attack of"
+	next "one #mon."
+	done
 
 IronDesc:
-	db   "Raises DEFENSE of"
-	next "one #MON.@"
+	ctxt "Raises Defense of"
+	next "one #mon."
+	done
 
 CarbosDesc:
-	db   "Raises SPEED of"
-	next "one #MON.@"
+	ctxt "Raises Speed of"
+	next "one #mon."
+	done
 
 LuckyPunchDesc:
-	db   "Ups critical hit"
-	next "ratio of CHANSEY.@"
+	ctxt "Ups critical hit"
+	next "ratio of Chansey."
+	done
 
 CalciumDesc:
-	db   "Ups SPECIAL stats"
-	next "of one #MON.@"
+	ctxt "Ups Special stats"
+	next "of one #mon."
+	done
 
 RareCandyDesc:
-	db   "Raises level of a"
-	next "#MON by one.@"
+	ctxt "Raises level of a"
+	next "#mon by one."
+	done
 
 XAccuracyDesc:
-	db   "Raises accuracy."
-	next "(1 BTL)@"
-
-LeafStoneDesc:
-	db   "Evolves certain"
-	next "kinds of #MON.@"
+	ctxt "Raises accuracy."
+	next "(1 battle)"
+	done
 
 MetalPowderDesc:
-	db   "Raises DEFENSE of"
-	next "DITTO. (HOLD)@"
+	ctxt "Raises Defense of"
+	next "Ditto. (Hold)"
+	done
 
 NuggetDesc:
-	db   "Made of pure gold."
-	next "Sell high.@"
+	ctxt "Made of pure gold."
+	next "Sell high."
+	done
 
 PokeDollDesc:
-	db   "Use to escape from"
-	next "a wild #MON.@"
+	ctxt "Use to escape from"
+	next "a wild #mon."
+	done
 
 FullHealDesc:
-	db   "Eliminates all"
-	next "status problems.@"
+	ctxt "Eliminates all"
+	next "status problems."
+	done
 
 ReviveDesc:
-	db   "Restores a fainted"
-	next "#MON to 1/2 HP.@"
+	ctxt "Restores a fainted"
+	next "#mon to 1/2 HP."
+	done
 
 MaxReviveDesc:
-	db   "Fully restores a"
-	next "fainted #MON.@"
+	ctxt "Fully restores a"
+	next "fainted #mon."
+	done
 
 GuardSpecDesc:
-	db   "Prevents stats"
-	next "reduction. (1 BTL)@"
+	ctxt "Prevents stats"
+	next "reduction. (1 btl)"
+	done
 
 SuperRepelDesc:
-	db   "Repels weak #-"
-	next "MON for 200 steps.@"
+	ctxt "Repels weak #-"
+	next "mon for 200 steps."
+	done
 
 MaxRepelDesc:
-	db   "Repels weak #-"
-	next "MON for 250 steps.@"
+	ctxt "Repels weak #-"
+	next "mon for 300 steps."
+	done
 
 DireHitDesc:
-	db   "Ups critical hit"
-	next "ratio. (1 BTL)@"
-
-TeruSama3Desc:
-	db   "?@"
+	ctxt "Ups critical hit"
+	next "ratio. (1 battle)"
+	done
 
 FreshWaterDesc:
-	db   "Restores #MON"
-	next "HP by 50.@"
+	ctxt "Restores #mon"
+	next "HP by 50."
+	done
 
 SodaPopDesc:
-	db   "Restores #MON"
-	next "HP by 60.@"
+	ctxt "Restores #mon"
+	next "HP by 60."
+	done
 
 LemonadeDesc:
-	db   "Restores #MON"
-	next "HP by 80.@"
+	ctxt "Restores #mon"
+	next "HP by 80."
+	done
 
 XAttackDesc:
-	db   "Raises ATTACK."
-	next "(1 BTL)@"
-
-TeruSama4Desc:
-	db   "?@"
+	ctxt "Raises Attack."
+	next "(1 battle)"
+	done
 
 XDefendDesc:
-	db   "Raises DEFENSE."
-	next "(1 BTL)@"
+	ctxt "Raises Defense."
+	next "(1 battle)"
+	done
 
 XSpeedDesc:
-	db   "Raises SPEED."
-	next "(1 BTL)@"
+	ctxt "Raises Speed."
+	next "(1 battle)"
+	done
 
 XSpecialDesc:
-	db   "Raises SPECIAL"
-	next "ATTACK. (1 BTL)@"
+	ctxt "Raises Special"
+	next "Attack. (1 battle)"
+	done
+
+XSpDefDesc:
+	ctxt "Raises Special"
+	next "Defense. (1 btl)"
+	done
 
 CoinCaseDesc:
-	db   "Holds up to 9,999"
-	next "game coins.@"
-
-ItemfinderDesc:
-	db   "Checks for unseen"
-	next "items in the area.@"
-
-TeruSama5Desc:
-	db   "?@"
+	ctxt "Holds up to 9,999"
+	next "game coins."
+	done
 
 ExpShareDesc:
-	db   "Shares battle EXP."
-	next "Points. (HOLD)@"
+	ctxt "Shares battle EXP."
+	next "Points. (Hold)"
+	done
 
 OldRodDesc:
-	db   "Use by water to"
-	next "fish for #MON.@"
+	ctxt "Use by water to"
+	next "fish for #mon."
+	done
 
 GoodRodDesc:
-	db   "A good ROD for"
-	next "catching #MON.@"
+	ctxt "A good rod for"
+	next "catching #mon."
+	done
 
 SilverLeafDesc:
-	db   "A strange, silver-"
-	next "colored leaf.@"
+	ctxt "A strange, silver-"
+	next "colored leaf."
+	done
 
 SuperRodDesc:
-	db   "The best ROD for"
-	next "catching #MON.@"
+	ctxt "The best rod for"
+	next "catching #mon."
+	done
 
 PPUpDesc:
-	db   "Raises max PP of"
-	next "a selected move.@"
+	ctxt "Raises max PP of"
+	next "a selected move."
+	done
 
 EtherDesc:
-	db   "Restores PP of one"
-	next "move by 10.@"
+	ctxt "Restores PP of one"
+	next "move by 10."
+	done
 
 MaxEtherDesc:
-	db   "Fully restores PP"
-	next "of one move.@"
+	ctxt "Fully restores PP"
+	next "of one move."
+	done
 
 ElixerDesc:
-	db   "Restores PP of all"
-	next "moves by 10.@"
+	ctxt "Restores PP of all"
+	next "moves by 10."
+	done
 
-RedScaleDesc:
-	db   "A scale from the"
-	next "red GYARADOS.@"
+MagnetPassDesc:
+	ctxt "A pass for the"
+	next "magnet train."
+	done
 
 SecretPotionDesc:
-	db   "Fully heals any"
-	next "#MON.@"
-
-SSTicketDesc:
-	db   "A ticket for the"
-	next "S.S.AQUA.@"
-
-MysteryEggDesc:
-	db   "An EGG obtained"
-	next "from MR.#MON.@"
-
-ClearBellDesc:
-	db   "Makes a gentle"
-	next "ringing.@"
-
-SilverWingDesc:
-	db   "A strange, silver-"
-	next "colored feather.@"
+	ctxt "Fully heals any"
+	next "#mon."
+	done
 
 MoomooMilkDesc:
-	db   "Restores #MON"
-	next "HP by 100.@"
+	ctxt "Restores #mon"
+	next "HP by 100."
+	done
 
 QuickClawDesc:
-	db   "Raises 1st strike"
-	next "ratio. (HOLD)@"
+	ctxt "Raises 1st strike"
+	next "ratio. (Hold)"
+	done
 
 PsnCureBerryDesc:
-	db   "A self-cure for"
-	next "poison. (HOLD)@"
+	ctxt "A self-cure for"
+	next "poison. (Hold)"
+	done
 
 GoldLeafDesc:
-	db   "A strange, gold-"
-	next "colored leaf.@"
+	ctxt "A strange, gold-"
+	next "colored leaf."
+	done
 
 SoftSandDesc:
-	db   "Powers up ground-"
-	next "type moves. (HOLD)@"
+	ctxt "Powers up ground-"
+	next "type moves. (Hold)"
+	done
 
 SharpBeakDesc:
-	db   "Powers up flying-"
-	next "type moves. (HOLD)@"
+	ctxt "Powers up flying-"
+	next "type moves. (Hold)"
+	done
 
 PrzCureBerryDesc:
-	db   "A self-cure for"
-	next "paralysis. (HOLD)@"
+	ctxt "A self-cure for"
+	next "paralysis. (Hold)"
+	done
 
-BurntBerryDesc:
-	db   "A self-cure for"
-	next "freezing. (HOLD)@"
+AspearBerryDesc:
+	ctxt "A self-cure for"
+	next "freezing. (Hold)"
+	done
 
 IceBerryDesc:
-	db   "A self-heal for a"
-	next "burn. (HOLD)@"
+	ctxt "A self-heal for a"
+	next "burn. (Hold)"
+	done
 
 PoisonBarbDesc:
-	db   "Powers up poison-"
-	next "type moves. (HOLD)@"
+	ctxt "Powers up poison-"
+	next "type moves. (Hold)"
+	done
 
 KingsRockDesc:
-	db   "May make the foe"
-	next "flinch. (HOLD)@"
+	ctxt "May make the foe"
+	next "flinch. (Hold)"
+	done
 
 BitterBerryDesc:
-	db   "A self-cure for"
-	next "confusion. (HOLD)@"
+	ctxt "A self-cure for"
+	next "confusion. (Hold)"
+	done
 
 MintBerryDesc:
-	db   "A self-awakening"
-	next "for sleep. (HOLD)@"
+	ctxt "A self-awakening"
+	next "for sleep. (Hold)"
+	done
 
 RedApricornDesc:
-	db   "A red APRICORN.@"
+	ctxt "A red Apricorn."
+	done
 
 TinyMushroomDesc:
-	db   "An ordinary mush-"
-	next "room. Sell low.@"
+	ctxt "An ordinary mush-"
+	next "room. Sell low."
+	done
 
 BigMushroomDesc:
-	db   "A rare mushroom."
-	next "Sell high.@"
+	ctxt "A rare mushroom."
+	next "Sell high."
+	done
 
 SilverPowderDesc:
-	db   "Powers up bug-type"
-	next "moves. (HOLD)@"
+	ctxt "Powers up bug-type"
+	next "moves. (Hold)"
+	done
 
 BluApricornDesc:
-	db   "A blue APRICORN.@"
-
-TeruSama6Desc:
-	db   "?@"
+	ctxt "A blue Apricorn."
+	done
 
 AmuletCoinDesc:
-	db   "Doubles monetary"
-	next "earnings. (HOLD)@"
+	ctxt "Doubles monetary"
+	next "earnings. (Hold)"
+	done
 
 YlwApricornDesc:
-	db   "A yellow APRICORN.@"
+	ctxt "A yellow Apricorn."
+	done
 
 GrnApricornDesc:
-	db   "A green APRICORN.@"
+	ctxt "A green Apricorn."
+	done
 
 CleanseTagDesc:
-	db   "Helps repel wild"
-	next "#MON. (HOLD)@"
+	ctxt "Helps repel wild"
+	next "#mon. (Hold)"
+	done
 
 MysticWaterDesc:
-	db   "Powers up water-"
-	next "type moves. (HOLD)@"
+	ctxt "Powers up water-"
+	next "type moves. (Hold)"
+	done
 
 TwistedSpoonDesc:
-	db   "Powers up psychic-"
-	next "type moves. (HOLD)@"
+	ctxt "Powers up psychic-"
+	next "type moves. (Hold)"
+	done
 
 WhtApricornDesc:
-	db   "A white APRICORN.@"
+	ctxt "A white Apricorn."
+	done
 
 BlackbeltDesc:
-	db   "Boosts fighting-"
-	next "type moves. (HOLD)@"
+	ctxt "Boosts fighting-"
+	next "type moves. (Hold)"
+	done
 
 BlkApricornDesc:
-	db   "A black APRICORN."
-	next "@"
-
-TeruSama7Desc:
-	db   "?@"
+	ctxt "A black Apricorn."
+	done
 
 PnkApricornDesc:
-	db   "A pink APRICORN."
-	next "@"
+	ctxt "A pink Apricorn."
+	done
 
 BlackGlassesDesc:
-	db   "Powers up dark-"
-	next "type moves. (HOLD)@"
+	ctxt "Powers up dark-"
+	next "type moves. (Hold)"
+	done
 
 SlowpokeTailDesc:
-	db   "Very tasty. Sell"
-	next "high.@"
+	ctxt "Very tasty. Sell"
+	next "high."
+	done
 
 PinkBowDesc:
-	db   "Powers up normal-"
-	next "type moves. (HOLD)@"
+	ctxt "Powers up normal-"
+	next "type moves. (Hold)"
+	done
 
 StickDesc:
-	db   "An ordinary stick."
-	next "Sell low.@"
+	ctxt "An ordinary stick."
+	next "Sell low."
+	done
 
-SmokeBallDesc:
-	db   "Escape from wild"
-	next "#MON. (HOLD)@"
+SmokeballDesc:
+	ctxt "Escape from wild"
+	next "#mon. (Hold)"
+	done
 
 NeverMeltIceDesc:
-	db   "Powers up ice-type"
-	next "moves. (HOLD)@"
+	ctxt "Powers up ice-type"
+	next "moves. (Hold)"
+	done
 
 MagnetDesc:
-	db   "Boosts electric-"
-	next "type moves. (HOLD)@"
+	ctxt "Boosts electric-"
+	next "type moves. (Hold)"
+	done
 
 MiracleBerryDesc:
-	db   "Cures all status"
-	next "problems. (HOLD)@"
+	ctxt "Cures all status"
+	next "problems. (Hold)"
+	done
 
 PearlDesc:
-	db   "A beautiful pearl."
-	next "Sell low.@"
+	ctxt "A beautiful pearl."
+	next "Sell low."
+	done
 
 BigPearlDesc:
-	db   "A big, beautiful"
-	next "pearl. Sell high.@"
+	ctxt "A big, beautiful"
+	next "pearl. Sell high."
+	done
 
 EverStoneDesc:
-	db   "Stops evolution."
-	next "(HOLD)@"
+	ctxt "Stops evolution."
+	next "(Hold)"
+	done
 
 SpellTagDesc:
-	db   "Powers up ghost-"
-	next "type moves. (HOLD)@"
+	ctxt "Powers up ghost-"
+	next "type moves. (Hold)"
+	done
 
 RageCandyBarDesc:
-	db   "Restores #MON"
-	next "HP by 20.@"
-
-GSBallDesc:
-	db   "The mysterious"
-	next "BALL.@"
-
-BlueCardDesc:
-	db   "Card to save"
-	next "points.@"
+	ctxt "Restores #mon"
+	next "HP by 20."
+	done
 
 MiracleSeedDesc:
-	db   "Powers up grass-"
-	next "type moves. (HOLD)@"
+	ctxt "Powers up grass-"
+	next "type moves. (Hold)"
+	done
 
 ThickClubDesc:
-	db   "A bone of some"
-	next "sort. Sell low.@"
+	ctxt "A bone of some"
+	next "sort. Sell low."
+	done
 
 FocusBandDesc:
-	db   "May prevent faint-"
-	next "ing. (HOLD)@"
-
-TeruSama8Desc:
-	db   "?@"
+	ctxt "May prevent faint-"
+	next "ing. (Hold)"
+	done
 
 EnergyPowderDesc:
-	db   "Restores #MON"
-	next "HP by 50. Bitter.@"
+	ctxt "Restores #mon"
+	next "HP by 50. Bitter."
+	done
 
 EnergyRootDesc:
-	db   "Restores #MON"
-	next "HP by 200. Bitter.@"
+	ctxt "Restores #mon"
+	next "HP by 200. Bitter."
+	done
 
 HealPowderDesc:
-	db   "Cures all status"
-	next "problems. Bitter.@"
+	ctxt "Cures all status"
+	next "problems. Bitter."
+	done
 
 RevivalHerbDesc:
-	db   "Revives fainted"
-	next "#MON. Bitter.@"
+	ctxt "Revives fainted"
+	next "#mon. Bitter."
+	done
 
 HardStoneDesc:
-	db   "Powers up rock-"
-	next "type moves. (HOLD)@"
+	ctxt "Powers up rock-"
+	next "type moves. (Hold)"
+	done
 
 LuckyEggDesc:
-	db   "Earns extra EXP."
-	next "points. (HOLD)@"
-
-CardKeyDesc:
-	db   "Opens shutters in"
-	next "the RADIO TOWER.@"
-
-MachinePartDesc:
-	db   "A machine part for"
-	next "the POWER PLANT.@"
+	ctxt "Earns extra EXP."
+	next "points. (Hold)"
+	done
 
 EggTicketDesc:
-	db   "May use at Golden-"
-	next "rod trade corner.@"
-
-LostItemDesc:
-	db   "The # DOLL lost"
-	next "by the COPYCAT.@"
+	ctxt "May use at Golden-"
+	next "rod trade corner."
+	done
 
 StardustDesc:
-	db   "Pretty, red sand."
-	next "Sell high.@"
+	ctxt "Pretty, red sand."
+	next "Sell high."
+	done
 
 StarPieceDesc:
-	db   "A hunk of red gem."
-	next "Sell very high.@"
-
-BasementKeyDesc:
-	db   "Opens doors.@"
-
-PassDesc:
-	db   "A ticket for the"
-	next "MAGNET TRAIN.@"
-
-TeruSama9Desc:
-	db   "?@"
-
-TeruSama10Desc:
-	db   "?@"
-
-TeruSama11Desc:
-	db   "?@"
+	ctxt "A hunk of red gem."
+	next "Sell very high."
+	done
 
 CharcoalDesc:
-	db   "Powers up fire-"
-	next "type moves. (HOLD)@"
+	ctxt "Powers up fire-"
+	next "type moves. (Hold)"
+	done
 
 BerryJuiceDesc:
-	db   "Restores #MON"
-	next "HP by 20.@"
+	ctxt "Restores #mon"
+	next "HP by 20."
+	done
 
 ScopeLensDesc:
-	db   "Raises critical"
-	next "hit ratio. (HOLD)@"
-
-TeruSama12Desc:
-	db   "?@"
-
-TeruSama13Desc:
-	db   "?@"
+	ctxt "Raises critical"
+	next "hit ratio. (Hold)"
+	done
 
 MetalCoatDesc:
-	db   "Powers up steel-"
-	next "type moves. (HOLD)@"
+	ctxt "Powers up steel-"
+	next "type moves. (Hold)"
+	done
 
 DragonFangDesc:
-	db   "Powers up dragon-"
-	next "type moves. (HOLD)@"
-
-TeruSama14Desc:
-	db   "?@"
+	ctxt "Powers up dragon-"
+	next "type moves. (Hold)"
+	done
 
 LeftoversDesc:
-	db   "Restores HP during"
-	next "battle. (HOLD)@"
-
-TeruSama15Desc:
-	db   "?@"
-
-TeruSama16Desc:
-	db   "?@"
-
-TeruSama17Desc:
-	db   "?@"
+	ctxt "Restores HP during"
+	next "battle. (Hold)"
+	done
 
 MysteryBerryDesc:
-	db   "A self-restore"
-	next "for PP. (HOLD)@"
+	ctxt "A self-restore"
+	next "for PP. (Hold)"
+	done
 
 DragonScaleDesc:
-	db   "A rare dragon-type"
-	next "item.@"
+	ctxt "A rare dragon-type"
+	next "item."
+	done
 
 BerserkGeneDesc:
-	db   "Boosts ATTACK but"
-	next "causes confusion.@"
-
-TeruSama18Desc:
-	db   "?@"
-
-TeruSama19Desc:
-	db   "?@"
-
-TeruSama20Desc:
-	db   "?@"
+	ctxt "Boosts Attack but"
+	next "causes confusion."
+	done
 
 SacredAshDesc:
-	db   "Fully revives all"
-	next "fainted #MON.@"
+	ctxt "Fully revives all"
+	next "fainted #mon."
+	done
 
-HeavyBallDesc:
-	db   "A BALL for catch-"
-	next "ing heavy #MON.@"
+DiveballDesc:
+	ctxt "A ball for #mon"
+	next "living in water."
+	done
 
-FlowerMailDesc:
-	db   "Flower-print MAIL."
-	next "(HOLD)@"
+FastballDesc:
+	ctxt "A ball for catch-"
+	next "ing fast #mon."
+	done
 
-LevelBallDesc:
-	db   "A BALL for lower-"
-	next "level #MON.@"
+LightballDesc:
+	ctxt "An odd, electrical"
+	next "orb. (Hold)"
+	done
 
-LureBallDesc:
-	db   "A BALL for #MON"
-	next "hooked by a ROD.@"
-
-FastBallDesc:
-	db   "A BALL for catch-"
-	next "ing fast #MON.@"
-
-TeruSama21Desc:
-	db   "?@"
-
-LightBallDesc:
-	db   "An odd, electrical"
-	next "orb. (HOLD)@"
-
-FriendBallDesc:
-	db   "A BALL that makes"
-	next "#MON friendly.@"
-
-MoonBallDesc:
-	db   "A BALL for MOON"
-	next "STONE evolvers.@"
-
-LoveBallDesc:
-	db   "For catching the"
-	next "opposite gender.@"
-
-NormalBoxDesc:
-	db   "Open it and see"
-	next "what's inside.@"
-
-GorgeousBoxDesc:
-	db   "Open it and see"
-	next "what's inside.@"
-
-SunStoneDesc:
-	db   "Evolves certain"
-	next "kinds of #MON.@"
+FriendballDesc:
+	ctxt "A ball that makes"
+	next "#mon friendly."
+	done
 
 PolkadotBowDesc:
-	db   "Powers up normal-"
-	next "type moves. (HOLD)@"
-
-TeruSama22Desc:
-	db   "?@"
+	ctxt "Powers up normal-"
+	next "type moves. (Hold)"
+	done
 
 UpGradeDesc:
-	db   "A mysterious box"
-	next "made by SILPH CO.@"
+	ctxt "A mysterious box"
+	next "made by Silph Co."
+	done
 
 BerryDesc:
-	db   "A self-restore"
-	next "item. (10HP, HOLD)@"
+	ctxt "A self-restore"
+	next "item. (10HP, Hold)"
+	done
 
 GoldBerryDesc:
-	db   "A self-restore"
-	next "item. (30HP, HOLD)@"
+	ctxt "A self-restore"
+	next "item. (30HP, Hold)"
+	done
 
-SquirtBottleDesc:
-	db   "A bottle used for"
-	next "watering plants.@"
-
-TeruSama23Desc:
-	db   "?@"
-
-ParkBallDesc:
-	db   "The Bug-Catching"
-	next "Contest BALL.@"
-
-RainbowWingDesc:
-	db   "A mystical feather"
-	next "of rainbow colors.@"
-
-TeruSama24Desc:
-	db   "?@"
+ParkballDesc:
+	ctxt "The Provincial"
+	next "Park ball."
+	done
 
 BrickPieceDesc:
-	db   "A rare chunk of"
-	next "tile.@"
+	ctxt "A rare chunk of"
+	next "tile."
+	done
 
-SurfMailDesc:
-	db   "LAPRAS-print MAIL."
-	next "(HOLD)@"
+UnusedItemDesc:
+	text "b&"
+	done
 
-LiteBlueMailDesc:
-	db   "DRATINI-print"
-	next "MAIL. (HOLD)@"
+CoalDesc:
+	ctxt "A combustible"
+	next "black rock."
+	done
 
-PortraitMailDesc:
-	db   "MAIL featuring the"
-	next "holder's likeness.@"
+BicycleDesc:
+	ctxt "A collapsible bike"
+	next "for fast movement."
+	done
 
-LovelyMailDesc:
-	db   "Heart-print MAIL."
-	next "(HOLD)@"
+OreDesc:
+	ctxt "May contain a"
+	next "valuable metal."
+	done
 
-EonMailDesc:
-	db   "EEVEE-print MAIL."
-	next "(HOLD)@"
+BurgerDesc:
+	ctxt "Restores #mon"
+	next "HP by 80."
+	done
 
-MorphMailDesc:
-	db   "DITTO-print MAIL."
-	next "(HOLD)@"
+FriesDesc:
+	ctxt "Restores #mon"
+	next "HP by 30."
+	done
 
-BlueSkyMailDesc:
-	db   "Sky-print MAIL."
-	next "(HOLD)@"
+CoronetStoneDesc:
+	ctxt "A stone found in"
+	next "Mt. Coronet."
+	done
 
-MusicMailDesc:
-	db   "NATU-print MAIL."
-	next "(HOLD)@"
+TokenFinderDesc:
+	ctxt "Checks for unseen"
+	next "tokens nearby."
+	done
 
-MewMailDesc:
-	db   "MEW-print MAIL."
-	next "(HOLD)@"
+HeartScaleDesc:
+	ctxt "A pretty, heart-"
+	next "shaped scale."
+	done
 
-TeruSama25Desc:
-	db   "?@"
+RijonPassDesc:
+	ctxt "Grants access to"
+	next "the Rijon region."
+	done
 
-TeruSama26Desc:
-	db   "?@"
+FossilCaseDesc:
+	ctxt "A handy case for"
+	next "#mon fossils."
+	done
 
-TeruSama27Desc:
-	db   "?@"
+GoldEggDesc:
+SilverEggDesc:
+CrystalEggDesc:
+RubyEggDesc:
+SapphireEggDesc:
+EmeraldEggDesc:
+	ctxt "A very shiny and"
+	next "mysterious egg."
+	done
 
-TeruSama28Desc:
-	db   "?@"
+PrismKeyDesc:
+	ctxt "A rainbow-emitting"
+	next "transparent key."
+	done
 
-TeruSama29Desc:
-	db   "?@"
+RedOrbDesc:
+	ctxt "A red, glowing"
+	next "orb from Hoenn."
+	done
 
-TeruSama30Desc:
-	db   "?@"
+BlueOrbDesc:
+	ctxt "A blue, glowing"
+	next "orb from Hoenn."
+	done
 
-TeruSama31Desc:
-	db   "?@"
+GreenOrbDesc:
+	ctxt "A green, glowing"
+	next "orb from Hoenn."
+	done
 
-TeruSama32Desc:
-	db   "?@"
+SilkDesc:
+	ctxt "Strong fiber made"
+	next "by Caterpie."
+	done
 
-TeruSama33Desc:
-	db   "?@"
+MansionKeyDesc:
+	ctxt "Unlocks the Haun-"
+	next "ted Mansion door."
+	done
+
+BedroomKeyDesc:
+	ctxt "Unlocks Haunted"
+	next "Mansion's bedroom."
+	done
+
+CuroShardDesc:
+	ctxt "Purifies #mon"
+	next "from mind control."
+	done
+
+MegaphoneDesc:
+	ctxt "Powers up sound-"
+	next "type moves. (Hold)"
+	done
+
+CigaretteDesc:
+	ctxt "Powers up gas-"
+	next "type moves. (Hold)"
+	done
+
+GiantRockDesc:
+	ctxt "Large enough to"
+	next "block moats."
+	done
+
+RedFluteDesc:
+	ctxt "Snaps a #mon"
+	next "out of infatuation"
+	done
+
+BlueFluteDesc:
+	ctxt "Awakens a sleeping"
+	next "#mon."
+	done
+
+YellowFluteDesc:
+	ctxt "Snaps a #mon"
+	next "out of confusion."
+	done
+
+BlackFluteDesc:
+	ctxt "Deters wild"
+	next "#mon."
+	done
+
+WhiteFluteDesc:
+	ctxt "Lures wild"
+	next "#mon."
+	done
+
+GreenFluteDesc:
+	ctxt "Frees #mon from"
+	next "being HP drained."
+	done
+
+OrangeFluteDesc:
+	ctxt "Ends all weather"
+	next "effects in battle."
+	done
+
+PurpleFluteDesc:
+	ctxt "Clears any active"
+	next "walls in battle."
+	done
+
+SootSackDesc:
+	ctxt "A sack used to"
+	next "hold volcanic ash."
+	done
+
+GoldTokenDesc:
+	ctxt "Can be exchanged"
+	next "for prizes."
+	done
+
+CageKeyDesc:
+	ctxt "Used to unlock"
+	next "jail cells."
+	done
+
+BurntBerryDesc:
+	ctxt "An Oran Berry that"
+	next "has been burnt."
+	done
+
+MoonStoneDesc:
+FireStoneDesc:
+ThunderStoneDesc:
+WaterStoneDesc:
+LeafStoneDesc:
+SunStoneDesc:
+DawnStoneDesc:
+SullenStoneDesc:
+ShinyStoneDesc:
+DuskStoneDesc:
+TradeStoneDesc:
+	ctxt "Evolves certain"
+	next "kinds of #mon."
+	done
+
+DynamiteDesc:
+	ctxt "A highly explosive"
+	next "red stick."
+	done
+
+GoldDustDesc:
+	ctxt "Golden dust."
+	next "Sell low."
+	done
+
+MiningPickDesc:
+	ctxt "Used to mine"
+	next "for items."
+	done
+
+TMCaseDesc:
+	ctxt "Used to mine"
+	next "for items."
+	done
+
+SafeGogglesDesc:
+	ctxt "Immunity to weat-"
+	next "her damage."
+	done
+
+RedJewelDesc:
+BrownJewelDesc:
+BlueJewelDesc:
+WhiteJewelDesc:
+PrismJewelDesc:
+	ctxt "An ancient jewel"
+	next "from Naljo Ruins."
+	done
+
+BigNuggetDesc:
+	ctxt "A big nugget of"
+	next "pure gold."
+	done
+
+HeatRockDesc:
+	ctxt "Sunny Day lasts"
+	next "eight turns."
+	done
+
+DampRockDesc:
+	ctxt "Rain Dance lasts"
+	next "eight turns."
+	done
+
+IcyRockDesc:
+	ctxt "Hail lasts"
+	next "eight turns."
+	done
+
+SmoothRockDesc:
+	ctxt "Sandstorm lasts"
+	next "eight turns."
+	done
+
+LightClayDesc:
+	ctxt "Barrier moves last"
+	next "eight turns."
+	done
+
+ShellBellDesc:
+	ctxt "Restores HP after"
+	next "striking the foe."
+	done
+
+KegofBeerDesc:
+	ctxt "Alcohol that was"
+	next "brewed in Rijon."
+	done
+
+GrassRingDesc:
+	ctxt "Boosts Spcl.Def,"
+	next "reduces Defense."
+	done
+
+FireRingDesc:
+	ctxt "Boosts Defense,"
+	next "reduces Spcl.Def."
+	done
+
+WaterRingDesc:
+	ctxt "Boosts Attack,"
+	next "reduces Evasion."
+	done
+
+ThunderRingDesc:
+	ctxt "Boosts Spcl.Atk,"
+	next "reduces Accuracy."
+	done
+
+MoonRingDesc:
+	ctxt "Boosts Evasion,"
+	next "reduces Speed."
+	done
+
+ShinyRingDesc:
+	ctxt "Boosts Accuracy,"
+	next "reduces Evasion."
+	done
+
+DawnRingDesc:
+	ctxt "Boosts Speed,"
+	next "reduces Accuracy."
+	done
+
+DuskRingDesc:
+	ctxt "The effect of this"
+	next "ring is unknown."
+	done
+
+ShinyBallDesc:
+	ctxt "The caught #mon"
+	next "becomes shiny."
+	done
+
+PoisonGuardDesc:
+	ctxt "User can't get"
+	next "poisoned. (Hold)"
+	done
+
+BurnGuardDesc:
+	ctxt "User can't get"
+	next "burned. (Hold)"
+	done
+
+FreezeGuardDesc:
+	ctxt "User can't get"
+	next "frozen. (Hold)"
+	done
+
+SleepGuardDesc:
+	ctxt "User can't fall"
+	next "asleep. (Hold)"
+	done
+
+ParlyzGuardDesc:
+	ctxt "(Hold) User can't"
+	next "get paralyzed."
+	done
+
+ConfuseGuardDesc:
+	ctxt "User can't get"
+	next "confused. (Hold)"
+	done
+
+MagmarizerDesc:
+	ctxt "A box packed with"
+	next "magma energy."
+	done
+
+ElectrizerDesc:
+	ctxt "A box packed with"
+	next "electric energy."
+	done
+
+PrismScaleDesc:
+	ctxt "A shiny scale that"
+	next "emits rainbows."
+	done
+
+DubiousDiscDesc:
+	ctxt "Transparent device"
+	next "with dubious data."
+	done
+
+RazorClawDesc:
+	ctxt "Raises critical"
+	next "hit ratio. (Hold)"
+	done
+
+RazorFangDesc:
+	ctxt "Can cause the foe"
+	next "to flinch. (Hold)"
+	done
+
+ProtectorDesc:
+	ctxt "A stiff and heavy"
+	next "protective item."
+	done
+
+OrngApricornDesc:
+	ctxt "An orange"
+	next "Apricorn."
+	done
+
+CyanApricornDesc:
+	ctxt "A cyan Apricorn."
+	done
+
+GreyApricornDesc:
+	ctxt "A grey Apricorn."
+	done
+
+PrplApricornDesc:
+	ctxt "A purple Apricorn."
+	done
+
+ShnyApricornDesc:
+	ctxt "A shiny Apricorn."
+	done
+
+PokeballCoreDesc:
+	ctxt "A device used to"
+	next "make #balls."
+	done
+
+MysteryTcktDesc:
+	ctxt "Lets you fly to"
+	next "the Mystery Zone."
+	done
+
+OrphanCardDesc:
+	ctxt "Keeps track of"
+	next "Orphan Points."
+	done
+
+QRReaderDesc:
+	ctxt "Can decipher QR"
+	next "codes."
+	done
+
+GasMaskDesc:
+	ctxt "Protects from"
+	next "deadly toxins."
+	done
+
+FakeIDDesc:
+	ctxt "A fake Naljo"
+	next "citizen ID."
+	done
+
+FluffyCoatDesc:
+	ctxt "Protects you from"
+	next "low temperatures."
+	done
+
+RoofCardDesc:
+	ctxt "Allows access to"
+	next "the prison roof."
+	done
+
+LabCardDesc:
+	ctxt "Unlocks the Phlox"
+	next "Lab's door."
+	done
+
+FerryTicketDesc:
+	ctxt "A ferry ticket to"
+	next "Route 86."
+	done
+
+GrappleHookDesc:
+	ctxt "Useful for climbing"
+	next "up high places."
+	done
+
+QuickBallDesc:
+	ctxt "Easier to catch"
+	next "on the first turn."
+	done
+
+DuskBallDesc:
+	ctxt "Easier to catch"
+	next "in caves or dark."
+	done
+
+RepeatBallDesc:
+	ctxt "Easier to catch"
+	next "if in the #dex."
+	done
+
+TimerBallDesc:
+	ctxt "Easier to catch"
+	next "as time goes on."
+	done
+
+CellCardDesc:
+	ctxt "Opens ups a Phlox"
+	next "Lab door."
+	done
+
+EagulouBallDesc:
+	ctxt "The ball for the"
+	next "Eagulou Park."
+	done
+	

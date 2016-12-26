@@ -1,10 +1,15 @@
-; SmoochumPokedexEntry: ; 0x1d132b
-	db "KISS@" ; species name
-	dw 104, 130 ; height, width
+	ctxt "Jiu-Jitsu" ; species name
+	done
+	dw 509, 1437 ; height, weight
 
-	db   "The sensitivity of"
-	next "its lips develops"
-	next "most quickly."
-	page "It uses them to"
-	next "try to identify"
-	next "unknown objects.@"
+	db .page2 - .page1
+.page1
+	ctxt "A highly skilled"
+	next "martial artist."
+	next "It's duty is to"
+	done
+.page2
+	ctxt "keep peace while"
+	next "protecting Naljo"
+	next "from threats."
+	done

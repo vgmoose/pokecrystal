@@ -1,11 +1,7 @@
-
-INCLUDE "engine/facings.asm"
-
-SpriteMovementData:: ; 4273
+INCLUDE "data/facings.asm"
 INCLUDE "data/map_objects.asm"
 
-; 4357
-DeleteMapObject:: ; 4357
+DeleteMapObject::
 	push bc
 	ld hl, OBJECT_MAP_OBJECT_INDEX
 	add hl, bc
@@ -28,25 +24,34 @@ DeleteMapObject:: ; 4357
 .ok
 	pop bc
 	ret
-; 437b
 
-Function437b: ; 437b
+HandleCurNPCStep:
 	call .CheckObjectStillVisible
 	ret c
 	call .HandleStepType
-	call .HandleObjectAction
-	ret
+	jp .HandleObjectAction
 
-.CheckObjectStillVisible:
+.CheckObjectStillVisible
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
 	res 6, [hl]
+	ld a, [hMapObjectIndexBuffer]
+	and a
+	jr nz, .notPlayer
+; hardcode for crossing over connections
+	ld a, [YCoord]
+	inc a
+	jr z, .yes
+	ld a, [XCoord]
+	inc a
+	jr z, .yes
+.notPlayer
 	ld a, [XCoord]
 	ld e, a
 	ld hl, OBJECT_NEXT_MAP_X
 	add hl, bc
 	ld a, [hl]
-	add 1
+	inc a
 	sub e
 	jr c, .ok
 	cp MAPOBJECT_SCREEN_WIDTH
@@ -56,7 +61,7 @@ Function437b: ; 437b
 	ld hl, OBJECT_NEXT_MAP_Y
 	add hl, bc
 	ld a, [hl]
-	add 1
+	inc a
 	sub e
 	jr c, .ok
 	cp MAPOBJECT_SCREEN_HEIGHT
@@ -72,7 +77,7 @@ Function437b: ; 437b
 	ld hl, OBJECT_INIT_X
 	add hl, bc
 	ld a, [hl]
-	add 1
+	inc a
 	sub e
 	jr c, .ok2
 	cp MAPOBJECT_SCREEN_WIDTH
@@ -82,7 +87,7 @@ Function437b: ; 437b
 	ld hl, OBJECT_INIT_Y
 	add hl, bc
 	ld a, [hl]
-	add 1
+	inc a
 	sub e
 	jr c, .ok2
 	cp MAPOBJECT_SCREEN_HEIGHT
@@ -107,27 +112,27 @@ Function437b: ; 437b
 	and a
 	ret
 
-.HandleStepType:
+.HandleStepType
 	ld hl, OBJECT_STEP_TYPE
 	add hl, bc
 	ld a, [hl]
 	and a
-	jr z, .zero
+	jr z, .null_step_type
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	bit 5, [hl]
-	jr nz, .bit5
+	bit OBJECT_DISABLE_STEP_TYPE, [hl]
+	ret nz
 	cp STEP_TYPE_SLEEP
-	jr z, .one
-	jr .ok3
+	jr z, .map_object_movement_pattern
+	jr .do_step_type
 
-.zero
+.null_step_type
 	call ObjectMovementReset
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	bit 5, [hl]
-	jr nz, .bit5
-.one
+	bit OBJECT_DISABLE_STEP_TYPE, [hl]
+	ret nz
+.map_object_movement_pattern
 	call MapObjectMovementPattern
 	ld hl, OBJECT_STEP_TYPE
 	add hl, bc
@@ -136,15 +141,11 @@ Function437b: ; 437b
 	ret z
 	cp STEP_TYPE_SLEEP
 	ret z
-.ok3
-	ld hl, StepTypesJumptable
-	rst JumpTable
+.do_step_type
+	jumptable Pointers4b45
 	ret
 
-.bit5
-	ret
-
-.HandleObjectAction:
+.HandleObjectAction
 	ld hl, OBJECT_FLAGS1
 	add hl, bc
 	bit INVISIBLE, [hl]
@@ -153,27 +154,35 @@ Function437b: ; 437b
 	add hl, bc
 	bit 6, [hl]
 	jr nz, SetFacingStanding
-	bit 5, [hl]
+	bit OBJECT_DISABLE_STEP_TYPE, [hl]
 	jr nz, asm_4448
 	ld de, Pointers445f ; use first column
 	jr asm_444d
-; 4440
 
-Function4440: ; 4440
+HandleMapObjectAction_Stationary:
 	ld hl, OBJECT_FLAGS1
 	add hl, bc
 	bit INVISIBLE, [hl]
 	jr nz, SetFacingStanding
-asm_4448 ; use second column
+asm_4448: ; use second column
 	ld de, Pointers445f + 2
-	jr asm_444d
-; 444d
+	; fallthrough
 
-asm_444d
-; call [4 * ObjectStructs[ObjInd, OBJECT_ACTION] + de]
+asm_444d:
+	; call [4 * ObjectStructs[ObjInd, OBJECT_ACTION] + de]
+	ld hl, OBJECT_ACTION
+	add hl, bc
+	ld a, [hl]
+	ld l, a
+	ld h, 0
+	add hl, hl
+	add hl, hl
+	add hl, de
+	jp CallLocalPointer
+
 INCLUDE "engine/map_object_action.asm"
 
-CopyNextCoordsTileToStandingCoordsTile: ; 4600
+CopyNextCoordsTileToStandingCoordsTile:
 	ld hl, OBJECT_NEXT_MAP_X
 	add hl, bc
 	ld a, [hl]
@@ -192,15 +201,9 @@ CopyNextCoordsTileToStandingCoordsTile: ; 4600
 	ld hl, OBJECT_STANDING_TILE
 	add hl, bc
 	ld [hl], a
-	call SetTallGrassFlags
-	ld hl, OBJECT_NEXT_TILE
-	add hl, bc
-	ld a, [hl]
-	call UselessAndA
-	ret
-; 462a
+	jp SetTallGrassFlags
 
-Function462a: ; 462a
+CopyCurCoordsToNextCoords:
 	ld hl, OBJECT_MAP_X
 	add hl, bc
 	ld a, [hl]
@@ -214,35 +217,24 @@ Function462a: ; 462a
 	add hl, bc
 	ld [hl], a
 	ret
-; 463f
 
-UpdateTallGrassFlags: ; 463f
+UpdateTallGrassFlags:
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
 	bit 3, [hl] ; is current tile grass?
-	jr z, .ok
+	ret z
 	ld hl, OBJECT_NEXT_TILE
 	add hl, bc
 	ld a, [hl]
-	call SetTallGrassFlags
-.ok
-	ld hl, OBJECT_NEXT_TILE
-	add hl, bc
-	ld a, [hl]
-	call UselessAndA
-	ret c ; never happens
-	ld hl, OBJECT_STANDING_TILE
-	add hl, bc
-	ld a, [hl]
-	call UselessAndA
-	ret
-; 4661
 
-SetTallGrassFlags: ; 4661
+SetTallGrassFlags:
 	call CheckSuperTallGrassTile
 	jr z, .set
 	call CheckGrassTile
-	jr c, .reset
+	jr nc, .set
+	ld a, d
+	cp $8
+	jr nz, .reset
 .set
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
@@ -254,14 +246,8 @@ SetTallGrassFlags: ; 4661
 	add hl, bc
 	res 3, [hl]
 	ret
-; 4679
 
-UselessAndA: ; 4679
-	and a
-	ret
-; 467b
-
-EndSpriteMovement: ; 467b
+EndSpriteMovement:
 	xor a
 	ld hl, OBJECT_STEP_FRAME
 	add hl, bc
@@ -276,9 +262,8 @@ EndSpriteMovement: ; 467b
 	add hl, bc
 	ld [hl], STANDING
 	ret
-; 4690
 
-InitStep: ; 4690
+InitStep:
 	ld hl, OBJECT_DIRECTION_WALKING
 	add hl, bc
 	ld [hl], a
@@ -292,7 +277,8 @@ InitStep: ; 4690
 	ld hl, OBJECT_FACING
 	add hl, bc
 	ld [hl], a
-GetNextTile: ; 46a6
+	; fallthrough
+GetNextTile:
 	call GetStepVector
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
@@ -322,10 +308,17 @@ GetNextTile: ; 46a6
 	add hl, bc
 	ld [hl], a
 	ret
-; 46d7
 
-AddStepVector: ; 46d7
+AddStepVector:
 	call GetStepVector
+	jr nc, .okay
+	ld hl, OBJECT_STEP_DURATION
+	add hl, bc
+	ld a, [hl]
+	and %1
+	jr nz, .okay
+	lb de, 0, 0
+.okay
 	ld hl, OBJECT_SPRITE_X
 	add hl, bc
 	ld a, [hl]
@@ -337,9 +330,8 @@ AddStepVector: ; 46d7
 	add e
 	ld [hl], a
 	ret
-; 46e9
 
-GetStepVector: ; 46e9
+GetStepVector:
 ; Return (x, y, duration, speed) in (d, e, a, h).
 	ld hl, OBJECT_DIRECTION_WALKING
 	add hl, bc
@@ -357,36 +349,55 @@ GetStepVector: ; 46e9
 	inc hl
 	ld a, [hli]
 	ld h, [hl]
+	push af
+	push hl
+	ld hl, OBJECT_DIRECTION_WALKING
+	add hl, bc
+	ld a, [hl]
+	cp (STEP_SLOW << 2 | RIGHT) + 1
+	jr c, .slowStep
+	pop hl
+	pop af
+	and a
 	ret
-; 4700
+.slowStep
+	pop hl
+	pop af
+	scf
+	ret
 
-StepVectors: ; 4700
+StepVectors:
 ; x,  y, duration, speed
 	; slow
+	db  0,  1, 32, 1
+	db  0, -1, 32, 1
+	db -1,  0, 32, 1
+	db  1,  0, 32, 1
+	; normal
 	db  0,  1, 16, 1
 	db  0, -1, 16, 1
 	db -1,  0, 16, 1
 	db  1,  0, 16, 1
-	; normal
-	db  0,  2,  8, 2
-	db  0, -2,  8, 2
-	db -2,  0,  8, 2
-	db  2,  0,  8, 2
 	; fast
 	db  0,  4,  4, 4
 	db  0, -4,  4, 4
 	db -4,  0,  4, 4
 	db  4,  0,  4, 4
-; 4730
-GetStepVectorSign: ; 4730
+	; running shoes
+	db  0,  2,  8, 2
+	db  0, -2,  8, 2
+	db -2,  0,  8, 2
+	db  2,  0,  8, 2
+
+GetStepVectorSign:
 	add a
 	ret z  ; 0 or 128
 	ld a, 1
 	ret nc ; 1 - 127
 	ld a, -1
 	ret    ; 129 - 255
-; 4738
-UpdatePlayerStep: ; 4738
+
+UpdatePlayerStep:
 	ld hl, OBJECT_DIRECTION_WALKING
 	add hl, bc
 	ld a, [hl]
@@ -402,24 +413,8 @@ UpdatePlayerStep: ; 4738
 	ld hl, wPlayerStepFlags
 	set 5, [hl]
 	ret
-; 4759
 
-Function4759: ; 4759
-; unreferenced
-	push bc
-	ld e, a
-	ld d, 0
-	ld hl, OBJECT_MAP_OBJECT_INDEX
-	add hl, bc
-	ld a, [hl]
-	call GetMapObject
-	add hl, de
-	ld a, [hl]
-	pop bc
-	ret
-; 4769
-
-RestoreDefaultMovement: ; 4769
+RestoreDefaultMovement:
 	ld hl, OBJECT_MAP_OBJECT_INDEX
 	add hl, bc
 	ld a, [hl]
@@ -436,76 +431,62 @@ RestoreDefaultMovement: ; 4769
 .ok
 	ld a, SPRITEMOVEFN_STANDING
 	ret
-; 4780
 
-ClearObjectMovementByteIndex: ; 4780
+ClearObjectMovementByteIndex:
 	ld hl, OBJECT_MOVEMENT_BYTE_INDEX
 	add hl, bc
 	ld [hl], 0
 	ret
-; 4787
 
-IncrementObjectMovementByteIndex: ; 4787
+IncrementObjectMovementByteIndex:
 	ld hl, OBJECT_MOVEMENT_BYTE_INDEX
 	add hl, bc
 	inc [hl]
 	ret
-; 478d
 
-DecrementObjectMovementByteIndex: ; 478d
+DecrementObjectMovementByteIndex:
 	ld hl, OBJECT_MOVEMENT_BYTE_INDEX
 	add hl, bc
 	dec [hl]
 	ret
-; 4793
 
-MovementAnonymousJumptable: ; 4793
+MovementAnonymousJumptable:
 	ld hl, OBJECT_MOVEMENT_BYTE_INDEX
 	add hl, bc
 	ld a, [hl]
-	pop hl
-	rst JumpTable
-	ret
-; 479b
+	jp Jumptable
 
-ClearObjectStructField28: ; 479b
+ClearObjectStructField28:
 	ld hl, OBJECT_28
 	add hl, bc
 	ld [hl], 0
 	ret
-; 47a2
 
-IncrementObjectStructField28: ; 47a2
+IncrementObjectStructField28:
 	ld hl, OBJECT_28
 	add hl, bc
 	inc [hl]
 	ret
-; 47a8
 
-Object28AnonymousJumptable: ; 47a8
+Object28AnonymousJumptable:
 	ld hl, OBJECT_28
 	add hl, bc
 	ld a, [hl]
-	pop hl
-	rst JumpTable
-	ret
-; 47b0
+	jp Jumptable
 
-GetValueObjectStructField28: ; 47b0
+GetValueObjectStructField28:
 	ld hl, OBJECT_28
 	add hl, bc
 	ld a, [hl]
 	ret
-; 47b6
 
-SetValueObjectStructField28: ; 47b6
+SetValueObjectStructField28:
 	ld hl, OBJECT_28
 	add hl, bc
 	ld [hl], a
 	ret
-; 47bc
 
-ObjectMovementReset: ; 47bc
+ObjectMovementReset:
 	ld hl, OBJECT_NEXT_MAP_X
 	add hl, bc
 	ld d, [hl]
@@ -524,17 +505,14 @@ ObjectMovementReset: ; 47bc
 	add hl, bc
 	ld [hl], STEP_TYPE_SLEEP
 	ret
-; 47dd
 
-MapObjectMovementPattern: ; 47dd
+MapObjectMovementPattern:
 	call ClearObjectStructField28
 	call GetSpriteMovementFunction
 	ld a, [hl]
-	ld hl, .Pointers
-	rst JumpTable
-	ret
+	jumptable
 
-.Pointers: ; 47e9
+.Pointers
 	dw .Null_00 ; 00
 	dw .RandomWalkY ; 01
 	dw .RandomWalkX ; 02
@@ -563,30 +541,31 @@ MapObjectMovementPattern: ; 47dd
 	dw .MovementSpinCounterclockwise ; 19
 	dw .MovementBoulderDust ; 1a
 	dw .MovementShakingGrass ; 1b
+	dw .MovementDeepSnow
 
-.Null_00:
+.Null_00
 	ret
 
-.RandomWalkY:
+.RandomWalkY
 	call Random
 	ld a, [hRandomAdd]
 	and %00000001
 	jp .RandomWalkContinue
 
-.RandomWalkX:
+.RandomWalkX
 	call Random
 	ld a, [hRandomAdd]
 	and %00000001
 	or  %00000010
 	jp .RandomWalkContinue
 
-.RandomWalkXY:
+.RandomWalkXY
 	call Random
 	ld a, [hRandomAdd]
 	and %00000011
 	jp .RandomWalkContinue
 
-.RandomSpin1:
+.RandomSpin1
 	call Random
 	ld a, [hRandomAdd]
 	and %00001100
@@ -595,7 +574,7 @@ MapObjectMovementPattern: ; 47dd
 	ld [hl], a
 	jp RandomStepDuration_Slow
 
-.RandomSpin2:
+.RandomSpin2
 	ld hl, OBJECT_FACING
 	add hl, bc
 	ld a, [hl]
@@ -611,8 +590,8 @@ MapObjectMovementPattern: ; 47dd
 	ld [hl], a
 	jp RandomStepDuration_Fast
 
-.Standing:
-	call Function462a
+.Standing
+	call CopyCurCoordsToNextCoords
 	call EndSpriteMovement
 	ld hl, OBJECT_ACTION
 	add hl, bc
@@ -622,48 +601,39 @@ MapObjectMovementPattern: ; 47dd
 	ld [hl], STEP_TYPE_05
 	ret
 
-.ObeyDPad:
+.ObeyDPad
+.Movement0d
 	ld hl, Function5000
 	jp HandleMovementData
 
-.Movement08:
+.Movement08
 	ld hl, Function5015
 	jp HandleMovementData
 
-.Movement09:
+.Movement09
 	ld hl, Function5026
 	jp HandleMovementData
 
-.Movement0a:
+.Movement0a
+.Movement0b
+.Movement0c
+.Movement0e
 	jp _GetMovementPerson
 
-.Movement0b:
-	jp _GetMovementPerson
-
-.Movement0c:
-	jp _GetMovementPerson
-
-.Movement0d:
-	ld hl, Function5000
-	jp HandleMovementData
-
-.Movement0e:
-	jp _GetMovementPerson
-
-.Follow:
+.Follow
 	ld hl, GetFollowerNextMovementByte
 	jp HandleMovementData
 
-.Script:
+.Script
 	ld hl, GetMovementByte
 	jp HandleMovementData
 
-.Strength:
+.Strength
 	call MovementAnonymousJumptable
 	dw .Strength_Start
 	dw .Strength_Stop
 
-.Strength_Start:
+.Strength_Start
 	ld hl, OBJECT_NEXT_TILE
 	add hl, bc
 	ld a, [hl]
@@ -692,7 +662,7 @@ MapObjectMovementPattern: ; 47dd
 	ret
 
 .ok2
-	call Function462a
+	call CopyCurCoordsToNextCoords
 .ok
 	ld hl, OBJECT_DIRECTION_WALKING
 	add hl, bc
@@ -701,13 +671,13 @@ MapObjectMovementPattern: ; 47dd
 
 .on_pit
 	call IncrementObjectMovementByteIndex
-.Strength_Stop:
+.Strength_Stop
 	ld hl, OBJECT_DIRECTION_WALKING
 	add hl, bc
 	ld [hl], STANDING
 	ret
 
-.FollowNotExact:
+.FollowNotExact
 	ld hl, OBJECT_NEXT_MAP_X
 	add hl, bc
 	ld d, [hl]
@@ -769,7 +739,7 @@ MapObjectMovementPattern: ; 47dd
 	ld [hl], PERSON_ACTION_STAND
 	ret
 
-.MovementBigStanding:
+.MovementBigStanding
 	call EndSpriteMovement
 	ld hl, OBJECT_DIRECTION_WALKING
 	add hl, bc
@@ -782,7 +752,7 @@ MapObjectMovementPattern: ; 47dd
 	ld [hl], STEP_TYPE_04
 	ret
 
-.MovementBouncing:
+.MovementBouncing
 	call EndSpriteMovement
 	ld hl, OBJECT_DIRECTION_WALKING
 	add hl, bc
@@ -795,55 +765,54 @@ MapObjectMovementPattern: ; 47dd
 	ld [hl], STEP_TYPE_04
 	ret
 
-.MovementSpinCounterclockwise:
+.MovementSpinCounterclockwise
 	call MovementAnonymousJumptable
 	dw .MovementSpinInit
 	dw .MovementSpinRepeat
 	dw .MovementSpinTurnLeft
 
-.MovementSpinClockwise:
+.MovementSpinClockwise
 	call MovementAnonymousJumptable
 	dw .MovementSpinInit
 	dw .MovementSpinRepeat
 	dw .MovementSpinTurnRight
 
-.MovementSpinInit:
+.MovementSpinInit
 	call EndSpriteMovement
 	call IncrementObjectMovementByteIndex
-.MovementSpinRepeat:
+.MovementSpinRepeat
 	ld hl, OBJECT_ACTION
 	add hl, bc
 	ld [hl], PERSON_ACTION_STAND
 	ld hl, OBJECT_RANGE
 	add hl, bc
 	ld a, [hl]
-	ld a, $10
+	ld a, $20
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
 	ld [hl], a
 	ld hl, OBJECT_STEP_TYPE
 	add hl, bc
 	ld [hl], STEP_TYPE_03
-	call IncrementObjectMovementByteIndex
-	ret
+	jp IncrementObjectMovementByteIndex
 
-.MovementSpinTurnLeft:
+.MovementSpinTurnLeft
 	ld de, .DirectionData_Counterclockwise
 	call .MovementSpinNextFacing
 	jr .MovementSpinCounterclockwise
 
-.DirectionData_Counterclockwise: ; 49c0
+.DirectionData_Counterclockwise
 	db OW_RIGHT, OW_LEFT, OW_DOWN, OW_UP
 
-.MovementSpinTurnRight:
+.MovementSpinTurnRight
 	ld de, .DirectionData_Clockwise
 	call .MovementSpinNextFacing
 	jr .MovementSpinClockwise
 
-.DirectionData_Clockwise: ; 49cc
+.DirectionData_Clockwise
 	db OW_LEFT, OW_RIGHT, OW_UP, OW_DOWN
 
-.MovementSpinNextFacing:
+.MovementSpinNextFacing
 	ld hl, OBJECT_FACING
 	add hl, bc
 	ld a, [hl]
@@ -857,10 +826,9 @@ MapObjectMovementPattern: ; 47dd
 	ld a, [hl]
 	pop hl
 	ld [hl], a
-	call DecrementObjectMovementByteIndex
-	ret
+	jp DecrementObjectMovementByteIndex
 
-.MovementShadow:
+.MovementShadow
 	call ._MovementShadow_Grass_Emote_BoulderDust
 	ld hl, OBJECT_ACTION
 	add hl, bc
@@ -896,7 +864,7 @@ MapObjectMovementPattern: ; 47dd
 	ld [hl], STEP_TYPE_TRACKING_OBJECT
 	ret
 
-.MovementEmote:
+.MovementEmote
 	call EndSpriteMovement
 	call ._MovementShadow_Grass_Emote_BoulderDust
 	ld hl, OBJECT_ACTION
@@ -916,7 +884,7 @@ MapObjectMovementPattern: ; 47dd
 	ld [hl], STEP_TYPE_TRACKING_OBJECT
 	ret
 
-.MovementBoulderDust:
+.MovementBoulderDust
 	call EndSpriteMovement
 	call ._MovementShadow_Grass_Emote_BoulderDust
 	ld hl, OBJECT_ACTION
@@ -953,14 +921,14 @@ MapObjectMovementPattern: ; 47dd
 	ld [hl], STEP_TYPE_TRACKING_OBJECT
 	ret
 
-.data_4a81  ; 4a81
+.data_4a81
 	;   x,  y
 	db  0, -4
 	db  0,  8
 	db  6,  2
 	db -6,  2
 
-.MovementShakingGrass:
+.MovementShakingGrass
 	call EndSpriteMovement
 	call ._MovementShadow_Grass_Emote_BoulderDust
 	ld hl, OBJECT_ACTION
@@ -978,7 +946,25 @@ MapObjectMovementPattern: ; 47dd
 	ld [hl], STEP_TYPE_TRACKING_OBJECT
 	ret
 
-._MovementShadow_Grass_Emote_BoulderDust:
+.MovementDeepSnow
+	call EndSpriteMovement
+	call ._MovementShadow_Grass_Emote_BoulderDust
+	ld hl, OBJECT_ACTION
+	add hl, bc
+	ld [hl], PERSON_ACTION_SNOW
+	ld hl, OBJECT_STEP_DURATION
+	add hl, de
+	ld a, [hl]
+	add -1
+	ld hl, OBJECT_STEP_DURATION
+	add hl, bc
+	ld [hl], a
+	ld hl, OBJECT_STEP_TYPE
+	add hl, bc
+	ld [hl], STEP_TYPE_TRACKING_OBJECT
+	ret
+
+._MovementShadow_Grass_Emote_BoulderDust
 	ld hl, OBJECT_RANGE
 	add hl, bc
 	ld a, [hl]
@@ -994,7 +980,7 @@ MapObjectMovementPattern: ; 47dd
 	ld [hl], d
 	ret
 
-.MovementScreenShake:
+.MovementScreenShake
 	call EndSpriteMovement
 	ld hl, OBJECT_ACTION
 	add hl, bc
@@ -1014,7 +1000,7 @@ MapObjectMovementPattern: ; 47dd
 	ld [hl], STEP_TYPE_15
 	ret
 
-._MovementScreenShake:
+._MovementScreenShake
 	ld d, a
 	and %00111111
 	ld e, a
@@ -1031,7 +1017,7 @@ MapObjectMovementPattern: ; 47dd
 	add a
 	jr .loop
 
-.RandomWalkContinue:
+.RandomWalkContinue
 	call InitStep
 	call Function6ec1 ; check whether the object can move in that direction
 	jr c, .NewDuration
@@ -1054,21 +1040,24 @@ MapObjectMovementPattern: ; 47dd
 	ld [hl], STEP_TYPE_PLAYER_WALK
 	ret
 
-.NewDuration:
+.NewDuration
 	call EndSpriteMovement
-	call Function462a
-RandomStepDuration_Slow: ; 4b1d
+	call CopyCurCoordsToNextCoords
+	; fallthrough
+RandomStepDuration_Slow:
 	call Random
 	ld a, [hRandomAdd]
-	and %01111111
+	and %11111110
+	jr z, RandomStepDuration_Slow
 	jr SetRandomStepDuration
-; 4b26
 
-RandomStepDuration_Fast: ; 4b26
+RandomStepDuration_Fast:
 	call Random
 	ld a, [hRandomAdd]
-	and %00011111
-SetRandomStepDuration: ; 4b2d
+	and %00111110
+	jr z, RandomStepDuration_Fast
+	; fallthrough
+SetRandomStepDuration:
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
 	ld [hl], a
@@ -1082,9 +1071,8 @@ SetRandomStepDuration: ; 4b2d
 	add hl, bc
 	ld [hl], STEP_TYPE_03
 	ret
-; 4b45
 
-StepTypesJumptable: ; 4b45
+Pointers4b45:
 ; These pointers use OBJECT_STEP_TYPE.  See constants/sprite_constants.asm
 	dw ObjectMovementReset ; 00
 	dw MapObjectMovementPattern ; unused
@@ -1112,9 +1100,9 @@ StepTypesJumptable: ; 4b45
 	dw StepType17 ; 17
 	dw StepType18 ; 18
 	dw SkyfallTop ; 19
-; 4b79
+	dw FishingStep ; 1a
 
-WaitStep_InPlace: ; 4b79
+WaitStep_InPlace:
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
 	dec [hl]
@@ -1123,15 +1111,14 @@ WaitStep_InPlace: ; 4b79
 	add hl, bc
 	ld [hl], STEP_TYPE_SLEEP
 	ret
-; 4b86
 
-NPCJump: ; 4b86
+NPCJump:
 	call Object28AnonymousJumptable
 ; anonymous dw
 	dw .Jump
 	dw .Land
 
-.Jump:
+.Jump
 	call AddStepVector
 	call UpdateJumpPosition
 	ld hl, OBJECT_STEP_DURATION
@@ -1143,10 +1130,9 @@ NPCJump: ; 4b86
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
 	res 3, [hl]
-	call IncrementObjectStructField28
-	ret
+	jp IncrementObjectStructField28
 
-.Land:
+.Land
 	call AddStepVector
 	call UpdateJumpPosition
 	ld hl, OBJECT_STEP_DURATION
@@ -1158,9 +1144,8 @@ NPCJump: ; 4b86
 	add hl, bc
 	ld [hl], STEP_TYPE_SLEEP
 	ret
-; 4bbf
 
-PlayerJump: ; 4bbf
+PlayerJump:
 	call Object28AnonymousJumptable
 ; anonymous dw
 	dw .initjump
@@ -1186,8 +1171,7 @@ PlayerJump: ; 4bbf
 	ld hl, wPlayerStepFlags
 	set 6, [hl]
 	set 4, [hl]
-	call IncrementObjectStructField28
-	ret
+	jp IncrementObjectStructField28
 
 .initland
 	call GetNextTile
@@ -1208,26 +1192,24 @@ PlayerJump: ; 4bbf
 	add hl, bc
 	ld [hl], STEP_TYPE_SLEEP
 	ret
-; 4c18
 
-TeleportFrom: ; 4c18
+TeleportFrom:
 	call Object28AnonymousJumptable
 ; anonymous dw
 	dw .InitSpin
 	dw .DoSpin
 	dw .InitSpinRise
 	dw .DoSpinRise
-; 4c23
 
-.InitSpin:
+.InitSpin
 	ld hl, OBJECT_STEP_FRAME
 	add hl, bc
 	ld [hl], 0
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
-	ld [hl], 16
+	ld [hl], 32
 	call IncrementObjectStructField28
-.DoSpin:
+.DoSpin
 	ld hl, OBJECT_ACTION
 	add hl, bc
 	ld [hl], PERSON_ACTION_SPIN
@@ -1235,24 +1217,23 @@ TeleportFrom: ; 4c18
 	add hl, bc
 	dec [hl]
 	ret nz
-	call IncrementObjectStructField28
-	ret
+	jp IncrementObjectStructField28
 
-.InitSpinRise:
+.InitSpinRise
 	ld hl, OBJECT_STEP_FRAME
 	add hl, bc
 	ld [hl], 0
 	ld hl, OBJECT_31
 	add hl, bc
-	ld [hl], $10
+	ld [hl], $20
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
-	ld [hl], 16
+	ld [hl], 32
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
 	res 3, [hl]
 	call IncrementObjectStructField28
-.DoSpinRise:
+.DoSpinRise
 	ld hl, OBJECT_ACTION
 	add hl, bc
 	ld [hl], PERSON_ACTION_SPIN
@@ -1260,6 +1241,7 @@ TeleportFrom: ; 4c18
 	add hl, bc
 	inc [hl]
 	ld a, [hl]
+	srl a
 	ld d, $60
 	call Sine
 	ld a, h
@@ -1278,9 +1260,8 @@ TeleportFrom: ; 4c18
 	add hl, bc
 	ld [hl], STEP_TYPE_SLEEP
 	ret
-; 4c89
 
-TeleportTo: ; 4c89
+TeleportTo:
 	call Object28AnonymousJumptable
 ; anonymous dw
 	dw .InitWait
@@ -1290,26 +1271,23 @@ TeleportTo: ; 4c89
 	dw .InitFinalSpin
 	dw .DoFinalSpin
 	dw .FinishStep
-; 4c9a
 
-.InitWait:
+.InitWait
 	ld hl, OBJECT_ACTION
 	add hl, bc
 	ld [hl], PERSON_ACTION_00
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
-	ld [hl], 16
-	call IncrementObjectStructField28
-	ret
-; 4caa
+	ld [hl], 32
+	jp IncrementObjectStructField28
 
-.DoWait:
+.DoWait
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
 	dec [hl]
 	ret nz
 	call IncrementObjectStructField28
-.InitDescent:
+.InitDescent
 	ld hl, OBJECT_STEP_FRAME
 	add hl, bc
 	ld [hl], 0
@@ -1318,12 +1296,10 @@ TeleportTo: ; 4c89
 	ld [hl], 0
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
-	ld [hl], 16
-	call IncrementObjectStructField28
-	ret
-; 4cc9
+	ld [hl], 32
+	jp IncrementObjectStructField28
 
-.DoDescent:
+.DoDescent
 	ld hl, OBJECT_ACTION
 	add hl, bc
 	ld [hl], PERSON_ACTION_SPIN
@@ -1331,6 +1307,7 @@ TeleportTo: ; 4c89
 	add hl, bc
 	inc [hl]
 	ld a, [hl]
+	srl a
 	ld d, $60
 	call Sine
 	ld a, h
@@ -1343,15 +1320,13 @@ TeleportTo: ; 4c89
 	dec [hl]
 	ret nz
 	call IncrementObjectStructField28
-.InitFinalSpin:
+.InitFinalSpin
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
-	ld [hl], 16
-	call IncrementObjectStructField28
-	ret
-; 4cf5
+	ld [hl], 32
+	jp IncrementObjectStructField28
 
-.DoFinalSpin:
+.DoFinalSpin
 	ld hl, OBJECT_ACTION
 	add hl, bc
 	ld [hl], PERSON_ACTION_SPIN
@@ -1359,7 +1334,7 @@ TeleportTo: ; 4c89
 	add hl, bc
 	dec [hl]
 	ret nz
-.FinishStep:
+.FinishStep
 	ld hl, OBJECT_STEP_FRAME
 	add hl, bc
 	ld [hl], 0
@@ -1370,18 +1345,16 @@ TeleportTo: ; 4c89
 	add hl, bc
 	ld [hl], STEP_TYPE_SLEEP
 	ret
-; 4d14
 
-Skyfall: ; 4d14
+Skyfall:
 	call Object28AnonymousJumptable
 ; anonymous dw
 	dw .Init
 	dw .Step
 	dw .Fall
 	dw .Finish
-; 4d1f
 
-.Init:
+.Init
 	ld hl, OBJECT_ACTION
 	add hl, bc
 	ld [hl], PERSON_ACTION_00
@@ -1389,7 +1362,7 @@ Skyfall: ; 4d14
 	add hl, bc
 	ld [hl], 16
 	call IncrementObjectStructField28
-.Step:
+.Step
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
 	dec [hl]
@@ -1407,7 +1380,7 @@ Skyfall: ; 4d14
 	add hl, bc
 	ld [hl], 16
 	call IncrementObjectStructField28
-.Fall:
+.Fall
 	ld hl, OBJECT_31
 	add hl, bc
 	inc [hl]
@@ -1424,7 +1397,7 @@ Skyfall: ; 4d14
 	dec [hl]
 	ret nz
 	call IncrementObjectStructField28
-.Finish:
+.Finish
 	ld hl, OBJECT_STEP_FRAME
 	add hl, bc
 	ld [hl], 0
@@ -1435,16 +1408,35 @@ Skyfall: ; 4d14
 	add hl, bc
 	ld [hl], STEP_TYPE_SLEEP
 	ret
-; 4d7e
 
-GotBiteStep: ; 4d7e
+FishingStep:
+	ld hl, OBJECT_STEP_DURATION
+	add hl, bc
+	ld a, [hl]
+	and a
+	jr z, .done
+	dec [hl]
+	ret
+
+.done
+	ld hl, OBJECT_STEP_TYPE
+	add hl, bc
+	ld [hl], STEP_TYPE_SLEEP
+	ld hl, OBJECT_ACTION
+	add hl, bc
+	ld a, [hl]
+	cp PERSON_ACTION_FISHING
+	ret z
+	ld [hl], PERSON_ACTION_STAND
+	ret
+
+GotBiteStep:
 	call Object28AnonymousJumptable
 ; anonymous dw
 	dw .Init
 	dw .Run
-; 4d85
 
-.Init:
+.Init
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
 	ld [hl], 8
@@ -1452,7 +1444,7 @@ GotBiteStep: ; 4d7e
 	add hl, bc
 	ld [hl], 0
 	call IncrementObjectStructField28
-.Run:
+.Run
 	ld hl, OBJECT_SPRITE_Y_OFFSET
 	add hl, bc
 	ld a, [hl]
@@ -1469,14 +1461,8 @@ GotBiteStep: ; 4d7e
 	add hl, bc
 	ld [hl], STEP_TYPE_SLEEP
 	ret
-; 4daf
 
-RockSmashStep: ; 4daf
-	call .Step
-	jp WaitStep_InPlace
-; 4db5
-
-.Step:
+RockSmashStep:
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
 	ld a, [hl]
@@ -1488,10 +1474,9 @@ RockSmashStep: ; 4daf
 	ld hl, OBJECT_ACTION
 	add hl, bc
 	ld [hl], a
-	ret
-; 4dc8
+	jp WaitStep_InPlace
 
-ReturnDigStep: ; 4dc8
+ReturnDigStep:
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
 	ld a, [hl]
@@ -1504,9 +1489,8 @@ ReturnDigStep: ; 4dc8
 	add hl, bc
 	ld [hl], a
 	jp WaitStep_InPlace
-; 4ddd
 
-StepType03: ; 4ddd
+StepType03:
 	ld hl, OBJECT_DIRECTION_WALKING
 	add hl, bc
 	ld [hl], STANDING
@@ -1518,9 +1502,8 @@ StepType03: ; 4ddd
 	add hl, bc
 	ld [hl], STEP_TYPE_SLEEP
 	ret
-; 4df0
 
-StepType18: ; 4df0
+StepType18:
 	ld hl, OBJECT_DIRECTION_WALKING
 	add hl, bc
 	ld [hl], STANDING
@@ -1529,9 +1512,8 @@ StepType18: ; 4df0
 	dec [hl]
 	ret nz
 	jp DeleteMapObject
-; 4dff
 
-StepTypeBump: ; 4dff
+StepTypeBump:
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
 	dec [hl]
@@ -1540,15 +1522,14 @@ StepTypeBump: ; 4dff
 	add hl, bc
 	ld [hl], STEP_TYPE_SLEEP
 	ret
-; 4e0c
 
-StepType05: ; 4e0c
+StepType05:
 	call Object28AnonymousJumptable
 ; anonymous dw
 	dw .Reset
 	dw StepType04
 
-.Reset:
+.Reset
 	call RestoreDefaultMovement
 	call GetInitialFacing
 	ld hl, OBJECT_FACING
@@ -1556,15 +1537,12 @@ StepType05: ; 4e0c
 	ld [hl], a
 	call IncrementObjectStructField28
 StepType04: ; 4e21
-	call MobileFn_4fb2
 	ld hl, OBJECT_DIRECTION_WALKING
 	add hl, bc
 	ld [hl], STANDING
 	ret
-; 4e2b
 
-NPCStep: ; 4e2b
-	call MobileFn_4fb2
+NPCStep:
 	call AddStepVector
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
@@ -1578,9 +1556,8 @@ NPCStep: ; 4e2b
 	add hl, bc
 	ld [hl], STEP_TYPE_SLEEP
 	ret
-; 4e47
 
-StepType07: ; 4e47
+StepType07:
 	call AddStepVector
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
@@ -1588,9 +1565,8 @@ StepType07: ; 4e47
 	ret nz
 	call CopyNextCoordsTileToStandingCoordsTile
 	jp RandomStepDuration_Slow
-; 4e56
 
-PlayerStep: ; 4e56
+PlayerStep:
 ; AnimateStep?
 	call Object28AnonymousJumptable
 ; anonymous dw
@@ -1617,9 +1593,8 @@ PlayerStep: ; 4e56
 	add hl, bc
 	ld [hl], STEP_TYPE_SLEEP
 	ret
-; 4e83
 
-PlayerOrNPCTurnStep: ; 4e83
+PlayerOrNPCTurnStep:
 	call Object28AnonymousJumptable
 ; anonymous dw
 	dw .init1
@@ -1637,7 +1612,8 @@ PlayerOrNPCTurnStep: ; 4e83
 	ld [hl], 2
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
-	ld [hl], 2
+	call .GetTurningSpeed
+	ld [hl], a
 	call IncrementObjectStructField28
 .step1
 	ld hl, OBJECT_STEP_DURATION
@@ -1654,7 +1630,8 @@ PlayerOrNPCTurnStep: ; 4e83
 	ld [hl], a
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
-	ld [hl], 2
+	call .GetTurningSpeed
+	ld [hl], a
 	call IncrementObjectStructField28
 .step2
 	ld hl, OBJECT_STEP_DURATION
@@ -1665,9 +1642,16 @@ PlayerOrNPCTurnStep: ; 4e83
 	add hl, bc
 	ld [hl], STEP_TYPE_SLEEP
 	ret
-; 4ecd
+	
+.GetTurningSpeed:
+	ld a, [wOptions]
+	bit TURNING_SPEED, a
+	ld a, 4
+	ret z
+	ld a, 2
+	ret
 
-StepType0f: ; 4ecd
+StepType0f:
 	call AddStepVector
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
@@ -1697,9 +1681,8 @@ StepType0f: ; 4ecd
 	add hl, bc
 	ld [hl], STEP_TYPE_SLEEP
 	ret
-; 4f04
 
-StepTypeTrackingObject: ; 4f04
+StepTypeTrackingObject:
 	ld hl, OBJECT_29
 	add hl, bc
 	ld e, [hl]
@@ -1731,22 +1714,21 @@ StepTypeTrackingObject: ; 4f04
 	ret nz
 .nope
 	jp DeleteMapObject
-; 4f33
 
-StepType14: ; 4f33
-StepType15: ; 4f33
+StepType14:
+StepType15:
 	call Object28AnonymousJumptable
 ; anonymous dw
 	dw .Init
 	dw .Run
 
-.Init:
+.Init
 	xor a
 	ld hl, OBJECT_29
 	add hl, bc
 	ld [hl], a
 	call IncrementObjectStructField28
-.Run:
+.Run
 	ld hl, OBJECT_29
 	add hl, bc
 	ld d, [hl]
@@ -1756,7 +1738,7 @@ StepType15: ; 4f33
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
 	dec [hl]
-	jr z, .ok
+	jp z, DeleteMapObject
 	ld a, [hl]
 	call .GetSign
 	ld hl, OBJECT_29
@@ -1768,40 +1750,30 @@ StepType15: ; 4f33
 	ld [wPlayerStepVectorY], a
 	ret
 
-.ok
-	call DeleteMapObject
-	ret
-
-.GetSign:
+.GetSign
 	ld hl, OBJECT_30
 	add hl, bc
-	and 1
+	and %11
 	ld a, [hl]
 	ret z
 	cpl
 	inc a
 	ret
-; 4f77
 
-StepType16: ; 4f77
-	call Object28AnonymousJumptable ; ????
-; 4f7a
-StepType17: ; 4f7a
-	call Object28AnonymousJumptable
-; anonymous dw
-	dw .null
-	dw .null
-	dw .null
-.null
-; 4f83
+StepType16:
+	; clearly bugged, using code as data. Commenting out.
+	;call Object28AnonymousJumptable
+StepType17:
+	; bugged as well, had a useless jumptable pointing right into the next function through all of its entries
+	; fallthrough
 
-SkyfallTop: ; 4f83
+SkyfallTop:
 	call Object28AnonymousJumptable
 ; anonymous dw
 	dw .Init
 	dw .Run
 
-.Init:
+.Init
 	ld hl, OBJECT_ACTION
 	add hl, bc
 	ld [hl], PERSON_ACTION_10
@@ -1810,7 +1782,7 @@ SkyfallTop: ; 4f83
 	ld [hl], 16
 	call IncrementObjectStructField28
 
-.Run:
+.Run
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
 	dec [hl]
@@ -1825,30 +1797,8 @@ SkyfallTop: ; 4f83
 	add hl, bc
 	ld [hl], STEP_TYPE_SLEEP
 	ret
-; 4fb2
 
-MobileFn_4fb2: mobile
-	ld hl, OBJECT_29
-	add hl, bc
-	inc [hl]
-	ld a, [hl]
-	srl a
-	srl a
-	and %00000111
-	ld l, a
-	ld h, 0
-	ld de, .y
-	add hl, de
-	ld a, [hl]
-	ld hl, OBJECT_SPRITE_Y_OFFSET
-	add hl, bc
-	ld [hl], a
-	ret
-
-.y ; 4fcd
-	db 0, -1, -2, -3, -4, -3, -2, -1
-; 4fd5
-UpdateJumpPosition: ; 4fd5
+UpdateJumpPosition:
 	call GetStepVector
 	ld a, h
 	ld hl, OBJECT_31
@@ -1867,30 +1817,27 @@ UpdateJumpPosition: ; 4fd5
 	ld [hl], a
 	ret
 
-.y ; 4ff0
+.y
 	db  -4,  -6,  -8, -10, -11, -12, -12, -12
 	db -11, -10,  -9,  -8,  -6,  -4,   0,   0
-; 5000
+
 Function5000: ; unscripted?
 ; copy [wPlayerNextMovement] to [wPlayerMovement]
 	ld a, [wPlayerNextMovement]
 	ld hl, wPlayerMovement
 	ld [hl], a
-; load [wPlayerNextMovement] with movement_step_sleep
-	ld a, movement_step_sleep
+; load [wPlayerNextMovement] with movement_step_sleep_1
+	ld a, movement_step_sleep_1
 	ld [wPlayerNextMovement], a
 ; recover the previous value of [wPlayerNextMovement]
 	ld a, [hl]
 	ret
-; 500e
 
 GetMovementByte:
 	ld hl, wMovementDataPointer
-	call _GetMovementByte
-	ret
-; 5015
+	jp _GetMovementByte
 
-Function5015: ; 5015
+Function5015:
 	ld hl, OBJECT_MOVEMENT_BYTE_INDEX
 	add hl, bc
 	ld e, [hl]
@@ -1903,9 +1850,8 @@ Function5015: ; 5015
 	add hl, de
 	ld a, [hl]
 	ret
-; 5026
 
-Function5026: ; 5026
+Function5026:
 	ld hl, OBJECT_MOVEMENT_BYTE_INDEX
 	add hl, bc
 	ld e, [hl]
@@ -1918,20 +1864,20 @@ Function5026: ; 5026
 	add hl, de
 	ld a, [hl]
 	ret
-; 5037
 
-_GetMovementPerson: ; 5037
-	ld hl, GetMovementPerson
-	jp HandleMovementData
-; 503d
-
-GetMovementPerson: ; 503d
+GetMovementPerson:
 	ld a, [wMovementPerson]
 	ret
-; 5041
 
-HandleMovementData: ; 5041
-	call .StorePointer
+_GetMovementPerson:
+	ld hl, GetMovementPerson
+	; fallthrough
+
+HandleMovementData:
+	ld a, l
+	ld [wMovementPointer], a
+	ld a, h
+	ld [wMovementPointer + 1], a
 .loop
 	xor a
 	ld [wMovementByteWasControlSwitch], a
@@ -1942,41 +1888,25 @@ HandleMovementData: ; 5041
 	jr nz, .loop
 	ret
 
-.StorePointer:
-	ld a, l
-	ld [wMovementPointer], a
-	ld a, h
-	ld [wMovementPointer + 1], a
-	ret
-; 505e
-
-JumpMovementPointer: ; 505e
+JumpMovementPointer:
 	ld hl, wMovementPointer
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	jp [hl]
-; 5065
+	jp CallLocalPointer
 
-ContinueReadingMovement: ; 5065
+ContinueReadingMovement:
 	ld a, 1
 	ld [wMovementByteWasControlSwitch], a
 	ret
-; 506b
 
-DoMovementFunction: ; 506b
+DoMovementFunction:
 	push af
 	call ApplyMovementToFollower
 	pop af
-	ld hl, MovementPointers
-	rst JumpTable
+	jumptable MovementPointers
 	ret
-; 5075
 
 INCLUDE "engine/movement.asm"
-; 54b8
 
-ApplyMovementToFollower: ; 54b8
+ApplyMovementToFollower:
 	ld e, a
 	ld a, [wObjectFollow_Follower]
 	cp -1
@@ -1987,7 +1917,7 @@ ApplyMovementToFollower: ; 54b8
 	cp d
 	ret nz
 	ld a, e
-	cp movement_step_sleep
+	cp movement_step_sleep_1
 	ret z
 	cp movement_step_end
 	ret z
@@ -1995,7 +1925,7 @@ ApplyMovementToFollower: ; 54b8
 	ret z
 	cp movement_step_bump
 	ret z
-	cp movement_slow_step
+	cp movement_turn_step_right + 1
 	ret c
 	push af
 	ld hl, wFollowerMovementQueueLength
@@ -2007,9 +1937,8 @@ ApplyMovementToFollower: ; 54b8
 	pop af
 	ld [hl], a
 	ret
-; 54e6
 
-GetFollowerNextMovementByte: ; 54e6
+GetFollowerNextMovementByte:
 	ld hl, wFollowerMovementQueueLength
 	ld a, [hl]
 	and a
@@ -2034,10 +1963,10 @@ GetFollowerNextMovementByte: ; 54e6
 .done
 	call .CancelFollowIfLeaderMissing
 	ret c
-	ld a, movement_step_sleep
+	ld a, movement_step_sleep_1
 	ret
 
-.CancelFollowIfLeaderMissing:
+.CancelFollowIfLeaderMissing
 	ld a, [wObjectFollow_Leader]
 	cp -1
 	jr z, .nope
@@ -2058,9 +1987,8 @@ GetFollowerNextMovementByte: ; 54e6
 	ld a, movement_step_end
 	scf
 	ret
-; 5529
 
-SpawnShadow: ; 5529
+SpawnShadow:
 	push bc
 	ld de, .ShadowObject
 	call CopyTempObjectData
@@ -2068,11 +1996,11 @@ SpawnShadow: ; 5529
 	pop bc
 	ret
 
-.ShadowObject:
+.ShadowObject
 	; vtile, palette, movement
 	db $00, PAL_OW_SILVER, SPRITEMOVEDATA_SHADOW
-; 5538
-SpawnStrengthBoulderDust: ; 5538
+
+SpawnStrengthBoulderDust:
 	push bc
 	ld de, .BoulderDustObject
 	call CopyTempObjectData
@@ -2080,10 +2008,21 @@ SpawnStrengthBoulderDust: ; 5538
 	pop bc
 	ret
 
-.BoulderDustObject:
+.BoulderDustObject
 	db $00, PAL_OW_SILVER, SPRITEMOVEDATA_BOULDERDUST
-; 5547
-SpawnEmote: ; 5547
+
+SpawnEmote:
+	ld a, [wPlayEmoteSFX]
+	and a
+	ld a, 0
+	ld [wPlayEmoteSFX], a
+	jr z, .skip
+	ld a, [wEmoteSFX]
+	ld e, a
+	ld a, [wEmoteSFX + 1]
+	ld d, a
+	call WaitPlaySFX
+.skip
 	push bc
 	ld de, .EmoteObject
 	call CopyTempObjectData
@@ -2091,21 +2030,32 @@ SpawnEmote: ; 5547
 	pop bc
 	ret
 
-.EmoteObject:
+.EmoteObject
 	db $00, PAL_OW_SILVER, SPRITEMOVEDATA_EMOTE
-; 5556
-ShakeGrass: ; 5556
+
+DeepSnow:
 	push bc
-	ld de, .data_5562
+	ld de, .SnowObject
 	call CopyTempObjectData
 	call InitTempObject
 	pop bc
 	ret
 
-.data_5562
-	db $00, PAL_OW_TREE, SPRITEMOVEDATA_GRASS
-; 5565
-ShakeScreen: ; 5565
+.SnowObject
+	db $00, PAL_OW_SILVER, SPRITEMOVEDATA_SNOW
+
+ShakeGrass:
+	push bc
+	ld de, .GrassShakeObject
+	call CopyTempObjectData
+	call InitTempObject
+	pop bc
+	ret
+
+.GrassShakeObject
+	db $00, PAL_OW_GREEN, SPRITEMOVEDATA_GRASS
+
+ShakeScreen:
 	push bc
 	push af
 	ld de, .ScreenShakeObject
@@ -2116,10 +2066,10 @@ ShakeScreen: ; 5565
 	pop bc
 	ret
 
-.ScreenShakeObject:
+.ScreenShakeObject
 	db $00, PAL_OW_SILVER, SPRITEMOVEDATA_SCREENSHAKE
-; 5579
-DespawnEmote: ; 5579
+
+DespawnEmote:
 	push bc
 	ld a, [hMapObjectIndexBuffer]
 	ld c, a
@@ -2127,7 +2077,7 @@ DespawnEmote: ; 5579
 	pop bc
 	ret
 
-.DeleteEmote:
+.DeleteEmote
 	ld de, ObjectStructs
 	ld a, NUM_OBJECT_STRUCTS
 .loop
@@ -2155,26 +2105,22 @@ DespawnEmote: ; 5579
 	dec a
 	jr nz, .loop
 	ret
-; 55ac
 
-InitTempObject: ; 55ac
+InitTempObject:
 	call FindFirstEmptyObjectStruct
 	ret nc
 	ld d, h
 	ld e, l
-	callba CopyTempObjectToObjectStruct
-	ret
-; 55b9
+	jpba CopyTempObjectToObjectStruct
 
-CopyTempObjectData: ; 55b9
+CopyTempObjectData:
 ; load into wTempObjectCopy:
 ; -1, -1, [de], [de + 1], [de + 2], [hMapObjectIndexBuffer], [NextMapX], [NextMapY], -1
 ; This spawns the object at the same place as whichever object is loaded into bc.
 	ld hl, wTempObjectCopyMapObjectIndex
-	ld [hl], -1
-	inc hl
-	ld [hl], -1
-	inc hl
+	ld a, -1
+	ld [hli], a
+	ld [hli], a
 	ld a, [de]
 	inc de
 	ld [hli], a
@@ -2199,20 +2145,14 @@ CopyTempObjectData: ; 55b9
 	inc hl
 	ld [hl], -1
 	ret
-; 55e0
 
-Function55e0:: ; 55e0
-	ld a, [VramState]
-	bit 0, a
-	ret z
+UpdateMapObjectDataAndSprites::
 	ld bc, ObjectStructs
 	xor a
 .loop
 	ld [hMapObjectIndexBuffer], a
-	call DoesObjectHaveASprite
-	jr z, .ok
-	call Function565c
-.ok
+	call GetObjectSprite
+	call nz, UpdateCurObjectData
 	ld hl, OBJECT_STRUCT_LENGTH
 	add hl, bc
 	ld b, h
@@ -2221,34 +2161,30 @@ Function55e0:: ; 55e0
 	inc a
 	cp NUM_OBJECT_STRUCTS
 	jr nz, .loop
-	ret
-; 5602
+	jp _UpdateSprites
 
-Function5602: ; 5602, called at battle start
-	call Function5645 ; clear sprites
+BattleStart_HideAllSpritesExceptBattleParticipants:
+	; called at battle start
+	call MaskAllObjectStructs ; clear sprites
 	ld a, PLAYER
-	call Function5629 ; respawn player
+	call RespawnObject ; respawn player
 	ld a, [wBattleScriptFlags]
 	bit 7, a
 	jr z, .ok
 	ld a, [hLastTalked]
 	and a
-	jr z, .ok
-	call Function5629 ; respawn opponent
+	call nz, RespawnObject ; respawn opponent
 .ok
-	call _UpdateSprites
-	ret
-; 561d
+	jp _UpdateSprites
 
-Function561d: ; 561d
-	call Function5645 ; clear sprites
+ReturnFromFly_SpawnOnlyPlayer:
+	call MaskAllObjectStructs ; clear sprites
 	ld a, PLAYER
-	call Function5629 ; respawn player
-	call _UpdateSprites
-	ret
-; 5629
+	call RespawnObject ; respawn player
+	jp _UpdateSprites
 
-Function5629: ; 5629
+RespawnObject:
+	ld [hMapObjectIndexBuffer], a
 	cp NUM_OBJECTS
 	ret nc
 	call GetMapObject
@@ -2260,13 +2196,15 @@ Function5629: ; 5629
 	cp NUM_OBJECT_STRUCTS
 	ret nc
 	call GetObjectStruct
-	call DoesObjectHaveASprite
+	call GetObjectSprite
 	ret z
-	call Function5673
+	call IsObjectOnScreen
+	jr c, SetFacing_Standing
+	call HandleMapObjectAction_Stationary ; no need to callba
+	xor a
 	ret
-; 5645
 
-Function5645: ; 5645
+MaskAllObjectStructs:
 	xor a
 	ld bc, ObjectStructs
 .loop
@@ -2281,38 +2219,14 @@ Function5645: ; 5645
 	cp NUM_OBJECT_STRUCTS
 	jr nz, .loop
 	ret
-; 565c
 
-Function565c: ; 565c
+UpdateCurObjectData:
 	push bc
-	call Function56cd
+	call CheckCurSpriteCoveredByTextBox
 	pop bc
 	jr c, SetFacing_Standing
-	call Function56a3
+	call IsObjectOnScreen
 	jr c, SetFacing_Standing
-	call Function5688
-	callba Function4440
-	xor a
-	ret
-; 5673
-
-Function5673: ; 5673
-	call Function56a3
-	jr c, SetFacing_Standing
-	callba Function4440 ; no need to farcall
-	xor a
-	ret
-; 5680
-
-SetFacing_Standing: ; 5680
-	ld hl, OBJECT_FACING_STEP
-	add hl, bc
-	ld [hl], STANDING
-	scf
-	ret
-; 5688
-
-Function5688: ; 5688
 	push bc
 	ld hl, OBJECT_NEXT_MAP_X
 	add hl, bc
@@ -2325,11 +2239,19 @@ Function5688: ; 5688
 	ld hl, OBJECT_NEXT_TILE
 	add hl, bc
 	ld [hl], a
-	callba UpdateTallGrassFlags ; no need to farcall
+	call UpdateTallGrassFlags ; no need to callba
+	call HandleMapObjectAction_Stationary ; same bank
+	xor a
 	ret
-; 56a3
 
-Function56a3: ; 56a3
+SetFacing_Standing:
+	ld hl, OBJECT_FACING_STEP
+	add hl, bc
+	ld [hl], STANDING
+	scf
+	ret
+
+IsObjectOnScreen:
 	ld hl, OBJECT_NEXT_MAP_X
 	add hl, bc
 	ld d, [hl]
@@ -2342,7 +2264,7 @@ Function56a3: ; 56a3
 	cp d
 	jr z, .equal_x
 	jr nc, .nope
-	add $b
+	add SCREEN_WIDTH / 2 + 1
 	cp d
 	jr c, .nope
 .equal_x
@@ -2350,7 +2272,7 @@ Function56a3: ; 56a3
 	cp e
 	jr z, .equal_y
 	jr nc, .nope
-	add $a
+	add SCREEN_HEIGHT / 2 + 1
 	cp e
 	jr c, .nope
 .equal_y
@@ -2360,10 +2282,10 @@ Function56a3: ; 56a3
 .nope
 	scf
 	ret
-; 56cd
 
-Function56cd: ; 56cd
-	ld a, [wPlayerBGMapOffsetX]
+CheckCurSpriteCoveredByTextBox:
+; x coord
+	ld a, [wMapObjectGlobalOffsetX]
 	ld d, a
 	ld hl, OBJECT_SPRITE_X_OFFSET
 	add hl, bc
@@ -2372,9 +2294,9 @@ Function56cd: ; 56cd
 	add hl, bc
 	add [hl]
 	add d
-	cp $f0
+	cp -2 * 8
 	jr nc, .ok1
-	cp $a0
+	cp SCREEN_WIDTH * 8
 	jp nc, .nope
 .ok1
 	and %00000111
@@ -2389,10 +2311,11 @@ Function56cd: ; 56cd
 	srl a
 	cp SCREEN_WIDTH
 	jr c, .ok3
-	sub $20
+	sub 4 * 8
 .ok3
-	ld [hUsedSpriteIndex], a
-	ld a, [wPlayerBGMapOffsetY]
+	ld [hCurSpriteXCoord], a
+; y coord
+	ld a, [wMapObjectGlobalOffsetY]
 	ld e, a
 	ld hl, OBJECT_SPRITE_Y_OFFSET
 	add hl, bc
@@ -2401,9 +2324,9 @@ Function56cd: ; 56cd
 	add hl, bc
 	add [hl]
 	add e
-	cp $f0
+	cp -2 * 8
 	jr nc, .ok4
-	cp $90
+	cp SCREEN_HEIGHT * 8
 	jr nc, .nope
 .ok4
 	and %00000111
@@ -2416,14 +2339,15 @@ Function56cd: ; 56cd
 	srl a
 	srl a
 	srl a
-	cp $12
+	cp SCREEN_HEIGHT
 	jr c, .ok6
-	sub $20
+	sub 4 * 8
 .ok6
-	ld [hUsedSpriteTile], a
+	ld [hCurSpriteYCoord], a
+	; priority check
 	ld hl, OBJECT_PALETTE
 	add hl, bc
-	bit 7, [hl]
+	bit OAM_PRIORITY, [hl]
 	jr z, .ok7
 	ld a, d
 	add 2
@@ -2433,21 +2357,21 @@ Function56cd: ; 56cd
 	ld e, a
 .ok7
 	ld a, d
-	ld [hFFBF], a
+	ld [hCurSpriteXPixel], a
 .loop
-	ld a, [hFFBF]
+	ld a, [hCurSpriteXPixel]
 	ld d, a
 	ld a, [hUsedSpriteTile]
 	add e
 	dec a
-	cp $12
+	cp SCREEN_HEIGHT
 	jr nc, .ok9
 	ld b, a
-.next
+.loop2
 	ld a, [hUsedSpriteIndex]
 	add d
 	dec a
-	cp $14
+	cp SCREEN_WIDTH
 	jr nc, .ok8
 	ld c, a
 	push bc
@@ -2458,7 +2382,7 @@ Function56cd: ; 56cd
 	jr nc, .nope
 .ok8
 	dec d
-	jr nz, .next
+	jr nz, .loop2
 .ok9
 	dec e
 	jr nz, .loop
@@ -2468,31 +2392,15 @@ Function56cd: ; 56cd
 .nope
 	scf
 	ret
-; 576a
 
-HandleNPCStep:: ; 576a
+HandleNPCStep::
 	call .ResetStepVector
-	call .DoStepsForAllObjects
-	ret
-
-.ResetStepVector:
 	xor a
-	ld [wPlayerStepVectorX], a
-	ld [wPlayerStepVectorY], a
-	ld [wPlayerStepFlags], a
-	ld a, -1
-	ld [wPlayerStepDirection], a
-	ret
-
-.DoStepsForAllObjects:
 	ld bc, ObjectStructs
-	xor a
 .loop
 	ld [hMapObjectIndexBuffer], a
-	call DoesObjectHaveASprite
-	jr z, .next
-	call Function437b
-.next
+	call GetObjectSprite
+	call nz, HandleCurNPCStep
 	ld hl, OBJECT_STRUCT_LENGTH
 	add hl, bc
 	ld b, h
@@ -2502,35 +2410,41 @@ HandleNPCStep:: ; 576a
 	cp NUM_OBJECT_STRUCTS
 	jr nz, .loop
 	ret
-; 579d
 
-RefreshPlayerSprite: ; 579d
-	ld a, movement_step_sleep
+.ResetStepVector
+	xor a
+	ld [wPlayerStepVectorX], a
+	ld [wPlayerStepVectorY], a
+	ld a, [wPlayerStepFlags]
+	bit 6, a
+	ld a, $0
+	ld [wPlayerStepFlags], a
+	ret nz
+	dec a
+	ld [wPlayerStepDirection], a
+	ret
+
+RefreshPlayerSprite:
+	ld a, movement_step_sleep_1
 	ld [wPlayerNextMovement], a
 	ld [wPlayerMovement], a
 	xor a
-	ld [wPlayerTurningDirection], a
+	ld [wPlayerMovementDirection], a
 	ld [PlayerObjectStepFrame], a
 	call .TryResetPlayerAction
 	callba CheckWarpFacingDown
 	call c, SpawnInFacingDown
-	call .SpawnInCustomFacing
-	ret
-; 57bc
+	jp .SpawnInCustomFacing
 
-.TryResetPlayerAction: ; 57bc
+.TryResetPlayerAction
 	ld hl, wPlayerSpriteSetupFlags
 	bit 7, [hl]
-	jr nz, .ok
-	ret
-
-.ok
-	ld a, PERSON_ACTION_00
+	ret z
+	xor a
 	ld [PlayerAction], a
 	ret
-; 57ca
 
-.SpawnInCustomFacing: ; 57ca
+.SpawnInCustomFacing
 	ld hl, wPlayerSpriteSetupFlags
 	bit 5, [hl]
 	ret z
@@ -2539,26 +2453,18 @@ RefreshPlayerSprite: ; 579d
 	add a
 	add a
 	jr ContinueSpawnFacing
-; 57d9
 
-SpawnInFacingDown: ; 57d9
-	ld a, 0
-ContinueSpawnFacing: ; 57db
+SpawnInFacingDown:
+	xor a
+	; fallthrough
+ContinueSpawnFacing:
 	ld bc, PlayerStruct
-	call SetSpriteDirection
-	ret
-; 57e2
+	jp SetSpriteDirection
 
-SetPlayerPalette: ; 57e2
+SetPlayerPalette:
 	ld a, d
 	and %10000000
 	ret z
-	ld bc, 0 ; debug?
-	ld hl, OBJECT_FACING
-	add hl, bc
-	ld a, [hl]
-	or d
-	ld [hl], a
 	ld a, d
 	swap a
 	and %00000111
@@ -2571,9 +2477,8 @@ SetPlayerPalette: ; 57e2
 	or d
 	ld [hl], a
 	ret
-; 5803
 
-StartFollow:: ; 5803
+StartFollow::
 	push bc
 	ld a, b
 	call SetLeaderIfVisible
@@ -2581,31 +2486,51 @@ StartFollow:: ; 5803
 	ret c
 	ld a, c
 	call SetFollowerIfVisible
-	callba QueueFollowerFirstStep
-	ret
-; 5815
+	jpba QueueFollowerFirstStep
 
-SetLeaderIfVisible: ; 5815
+SetLeaderIfVisible:
 	call CheckObjectVisibility
 	ret c
 	ld a, [hObjectStructIndexBuffer]
 	ld [wObjectFollow_Leader], a
 	ret
-; 581f
 
-StopFollow:: ; 581f
-	call ResetLeader
-	call ResetFollower
-	ret
-; 5826
-
-ResetLeader: ; 5826
+StopFollow::
 	ld a, -1
 	ld [wObjectFollow_Leader], a
-	ret
-; 582c
+	; fallthrough
+ResetFollower:
+	ld a, [wObjectFollow_Follower]
+	cp -1
+	ret z
+	call GetObjectStruct
+	ld hl, OBJECT_MAP_OBJECT_INDEX
+	add hl, bc
+	ld a, [hl]
+	cp -1
+	jr z, .not_map_object
+	push bc
+	call GetMapObject
+	ld hl, MAPOBJECT_MOVEMENT
+	add hl, bc
+	ld a, [hl]
+	pop bc
+	jr .finish
 
-SetFollowerIfVisible: ; 582c
+.not_map_object
+	call SpriteDirectionToMapMovement
+.finish
+	ld hl, OBJECT_MOVEMENTTYPE
+	add hl, bc
+	ld [hl], a
+	ld hl, OBJECT_STEP_TYPE
+	add hl, bc
+	ld [hl], STEP_TYPE_00
+	ld a, -1
+	ld [wObjectFollow_Follower], a
+	ret
+
+SetFollowerIfVisible:
 	push af
 	call ResetFollower
 	pop af
@@ -2620,53 +2545,21 @@ SetFollowerIfVisible: ; 582c
 	ld a, [hObjectStructIndexBuffer]
 	ld [wObjectFollow_Follower], a
 	ret
-; 5847
 
-ResetFollower: ; 5847
-	ld a, [wObjectFollow_Follower]
-	cp -1
-	ret z
-	call GetObjectStruct
-	callba Function58e3 ; no need to bankswitch
-	ld a, -1
-	ld [wObjectFollow_Follower], a
-	ret
-; 585c
-
-SetFlagsForMovement_1:: ; 585c
+SetFlagsForMovement_1::
 	ld a, c
 	call CheckObjectVisibility
 	ret c
 	push bc
-	call Function587a
-	pop bc
-	ld hl, OBJECT_FLAGS2
-	add hl, bc
-	res 5, [hl]
-	xor a
-	ret
-; 586e
-
-Function586e: ; 586e
-	call CheckObjectVisibility
-	ret c
-	ld hl, OBJECT_FLAGS2
-	add hl, bc
-	set 5, [hl]
-	xor a
-	ret
-; 587a
-
-Function587a: ; 587a
 	ld bc, ObjectStructs
 	xor a
 .loop
 	push af
-	call DoesObjectHaveASprite
+	call GetObjectSprite
 	jr z, .next
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	set 5, [hl]
+	set OBJECT_DISABLE_STEP_TYPE, [hl]
 .next
 	ld hl, OBJECT_STRUCT_LENGTH
 	add hl, bc
@@ -2676,10 +2569,14 @@ Function587a: ; 587a
 	inc a
 	cp NUM_OBJECT_STRUCTS
 	jr nz, .loop
+	pop bc
+	ld hl, OBJECT_FLAGS2
+	add hl, bc
+	res OBJECT_DISABLE_STEP_TYPE, [hl]
+	xor a
 	ret
-; 5897
 
-_SetFlagsForMovement_2:: ; 5897
+_SetFlagsForMovement_2::
 	ld a, [wObjectFollow_Leader]
 	cp -1
 	ret z
@@ -2697,22 +2594,17 @@ _SetFlagsForMovement_2:: ; 5897
 	call GetObjectStruct
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	res 5, [hl]
+	res OBJECT_DISABLE_STEP_TYPE, [hl]
 	ret
-; 58b9
 
-Function58b9:: ; 58b9
+ReleaseAllMapObjects::
 	push bc
 	ld bc, ObjectStructs
 	xor a
 .loop
 	push af
-	call DoesObjectHaveASprite
-	jr z, .next
-	ld hl, OBJECT_FLAGS2
-	add hl, bc
-	res 5, [hl]
-.next
+	call GetObjectSprite
+	call nz, ReleaseCurMapObject
 	ld hl, OBJECT_STRUCT_LENGTH
 	add hl, bc
 	ld b, h
@@ -2723,62 +2615,14 @@ Function58b9:: ; 58b9
 	jr nz, .loop
 	pop bc
 	ret
-; 58d8
 
-Function58d8: ; 58d8
-	call CheckObjectVisibility
-	ret c
+ReleaseCurMapObject:
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	res 5, [hl]
-	ret
-; 58e3
-
-Function58e3: ; 58e3
-	ld hl, OBJECT_MAP_OBJECT_INDEX
-	add hl, bc
-	ld a, [hl]
-	cp -1
-	jp z, Function5903 ; a jr would have been appropriate here
-	push bc
-	call GetMapObject
-	ld hl, MAPOBJECT_MOVEMENT
-	add hl, bc
-	ld a, [hl]
-	pop bc
-	ld hl, OBJECT_MOVEMENTTYPE
-	add hl, bc
-	ld [hl], a
-	ld hl, OBJECT_STEP_TYPE
-	add hl, bc
-	ld [hl], STEP_TYPE_00
-	ret
-; 5903
-
-Function5903: ; 5903
-	call GetSpriteDirection
-	rrca
-	rrca
-	ld e, a
-	ld d, 0
-	ld hl, .standing_movefns
-	add hl, de
-	ld a, [hl]
-	ld hl, OBJECT_MOVEMENTTYPE
-	add hl, bc
-	ld [hl], a
-	ld hl, OBJECT_STEP_TYPE
-	add hl, bc
-	ld [hl], STEP_TYPE_00
+	res OBJECT_DISABLE_STEP_TYPE, [hl]
 	ret
 
-.standing_movefns
-	db SPRITEMOVEDATA_STANDING_DOWN
-	db SPRITEMOVEDATA_STANDING_UP
-	db SPRITEMOVEDATA_STANDING_LEFT
-	db SPRITEMOVEDATA_STANDING_RIGHT
-; 5920
-_UpdateSprites:: ; 5920
+_UpdateSprites::
 	ld a, [VramState]
 	bit 0, a
 	ret z
@@ -2815,21 +2659,20 @@ _UpdateSprites:: ; 5920
 	cp l
 	jr nz, .loop
 	ret
-; 5958
 
-ApplyBGMapAnchorToObjects: ; 5958
+ReanchorOverworldSprites:
 	push hl
 	push de
 	push bc
-	ld a, [wPlayerBGMapOffsetX]
+	ld a, [wMapObjectGlobalOffsetX]
 	ld d, a
-	ld a, [wPlayerBGMapOffsetY]
+	ld a, [wMapObjectGlobalOffsetY]
 	ld e, a
 	ld bc, ObjectStructs
 	ld a, NUM_OBJECT_STRUCTS
 .loop
 	push af
-	call DoesObjectHaveASprite
+	call GetObjectSprite
 	jr z, .skip
 	ld hl, OBJECT_SPRITE_X
 	add hl, bc
@@ -2850,15 +2693,14 @@ ApplyBGMapAnchorToObjects: ; 5958
 	dec a
 	jr nz, .loop
 	xor a
-	ld [wPlayerBGMapOffsetX], a
-	ld [wPlayerBGMapOffsetY], a
+	ld [wMapObjectGlobalOffsetX], a
+	ld [wMapObjectGlobalOffsetY], a
 	pop bc
 	pop de
 	pop hl
 	ret
-; 5991
 
-InitSprites: ; 5991
+InitSprites:
 PRIORITY_LOW  EQU $10
 PRIORITY_NORM EQU $20
 PRIORITY_HIGH EQU $30
@@ -2868,10 +2710,9 @@ PRIORITY_HIGH EQU $30
 	ld c, PRIORITY_NORM
 	call .InitSpritesByPriority
 	ld c, PRIORITY_LOW
-	call .InitSpritesByPriority
-	ret
+	jp .InitSpritesByPriority
 
-.DeterminePriorities:
+.DeterminePriorities
 	xor a
 	ld hl, wMovementPointer
 	ld bc, NUM_OBJECT_STRUCTS
@@ -2881,7 +2722,7 @@ PRIORITY_HIGH EQU $30
 	ld hl, wMovementPointer
 .loop
 	push hl
-	call DoesObjectHaveASprite
+	call GetObjectSprite
 	jr z, .skip
 	ld hl, OBJECT_FACING_STEP
 	add hl, bc
@@ -2892,10 +2733,10 @@ PRIORITY_HIGH EQU $30
 	ld e, PRIORITY_LOW
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	bit 0, [hl]
+	bit OBJECT_PRIORITY_LOW, [hl]
 	jr nz, .add
 	ld e, PRIORITY_NORM
-	bit 1, [hl]
+	bit OBJECT_PRIORITY_HIGH, [hl]
 	jr z, .add
 	ld e, PRIORITY_HIGH
 	jr .add
@@ -2924,7 +2765,7 @@ PRIORITY_HIGH EQU $30
 	jr nz, .loop
 	ret
 
-.InitSpritesByPriority:
+.InitSpritesByPriority
 	ld hl, wMovementPointer
 .next_sprite
 	ld a, [hli]
@@ -2943,12 +2784,12 @@ PRIORITY_HIGH EQU $30
 	pop bc
 	jr .next_sprite
 
-.InitSprite:
+.InitSprite
 	ld hl, OBJECT_SPRITE_TILE
 	add hl, bc
 	ld a, [hl]
 	and %01111111
-	ld [hFFC1], a
+	ld [hCurSpriteTile], a
 	xor a
 	bit 7, [hl]
 	jr nz, .skip1
@@ -2977,7 +2818,7 @@ PRIORITY_HIGH EQU $30
 	jr z, .skip4
 	or %10000000
 .skip4
-	ld [hFFC2], a
+	ld [hCurSpriteOAMFlags], a
 	ld hl, OBJECT_SPRITE_X
 	add hl, bc
 	ld a, [hl]
@@ -2986,9 +2827,9 @@ PRIORITY_HIGH EQU $30
 	add [hl]
 	add 8
 	ld e, a
-	ld a, [wPlayerBGMapOffsetX]
+	ld a, [wMapObjectGlobalOffsetX]
 	add e
-	ld [hFFBF], a
+	ld [hCurSpriteXPixel], a
 	ld hl, OBJECT_SPRITE_Y
 	add hl, bc
 	ld a, [hl]
@@ -2997,9 +2838,9 @@ PRIORITY_HIGH EQU $30
 	add [hl]
 	add 12
 	ld e, a
-	ld a, [wPlayerBGMapOffsetY]
+	ld a, [wMapObjectGlobalOffsetY]
 	add e
-	ld [hFFC0], a
+	ld [hCurSpriteYPixel], a
 	ld hl, OBJECT_FACING_STEP
 	add hl, bc
 	ld a, [hl]
@@ -3024,19 +2865,19 @@ PRIORITY_HIGH EQU $30
 	cp SpritesEnd % $100
 	jr nc, .full
 .addsprite
-	ld a, [hFFC0]
+	ld a, [hCurSpriteYPixel]
 	add [hl]
 	inc hl
 	ld [bc], a
 	inc c
-	ld a, [hFFBF]
+	ld a, [hCurSpriteXPixel]
 	add [hl]
 	inc hl
 	ld [bc], a
 	inc c
 	ld e, [hl]
 	inc hl
-	ld a, [hFFC1]
+	ld a, [hCurSpriteTile]
 	bit 2, e
 	jr z, .nope1
 	xor a
@@ -3048,7 +2889,7 @@ PRIORITY_HIGH EQU $30
 	ld a, e
 	bit 1, a
 	jr z, .nope2
-	ld a, [hFFC2]
+	ld a, [hCurSpriteOAMFlags]
 	or e
 .nope2
 	and %11110000
@@ -3069,7 +2910,7 @@ PRIORITY_HIGH EQU $30
 	scf
 	ret
 
-.GetObjectStructPointer:
+.GetObjectStructPointer
 	ld c, a
 	ld b, 0
 	ld hl, .Addresses
@@ -3080,7 +2921,7 @@ PRIORITY_HIGH EQU $30
 	ld b, [hl]
 	ret
 
-.Addresses: ; 5ace
+.Addresses
 	dw PlayerStruct
 	dw Object1Struct
 	dw Object2Struct
@@ -3094,4 +2935,25 @@ PRIORITY_HIGH EQU $30
 	dw Object10Struct
 	dw Object11Struct
 	dw Object12Struct
-; 5ae8
+
+FreezeTrainerFacing:
+	; Load map object pointer into bc
+	ld a, [hLastTalked]
+	call GetMapObject
+	; Save the map object pointer, and load the object struct pointer into bc
+	ld hl, MAPOBJECT_OBJECT_STRUCT_ID
+	add hl, bc
+	ld a, [hl]
+	push bc
+	call GetObjectStruct
+	; Stop the spinning
+	call SpriteDirectionToMapMovement
+	ld hl, OBJECT_MOVEMENTTYPE
+	add hl, bc
+	ld [hl], a
+	; Make sure the person don't start spinning again until the player reloads the map.
+	pop bc
+	ld hl, MAPOBJECT_MOVEMENT
+	add hl, bc
+	ld [hl], a
+	ret

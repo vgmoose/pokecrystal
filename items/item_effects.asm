@@ -1,218 +1,272 @@
-_DoItemEffect:: ; e722
-	ld a, [CurItem]
+_DoItemEffect::
+	ld a, [wCurItem]
 	ld [wd265], a
 	call GetItemName
 	call CopyName1
 	ld a, 1
 	ld [wItemEffectSucceeded], a
-	ld a, [CurItem]
+	ld a, [wCurItem]
 	dec a
-	ld hl, ItemEffects
-	rst JumpTable
-	ret
-; e73c
-
-
-ItemEffects: ; e73c
-	dw MasterBall
-	dw UltraBall
-	dw Brightpowder
-	dw GreatBall
-	dw PokeBall
+	jumptable
+ItemEffects:
+	dw ItemBall
+	dw ItemBall
+	dw ItemDoesNothing
+	dw ItemBall
+	dw ItemBall
 	dw TownMap
 	dw Bicycle
-	dw MoonStone
-	dw Antidote
-	dw BurnHeal
-	dw IceHeal
-	dw Awakening
-	dw ParlyzHeal
+	dw EvolutionItem
+	dw StatusCureItem
+	dw StatusCureItem
+	dw StatusCureItem
+	dw StatusCureItem
+	dw StatusCureItem
 	dw FullRestore
-	dw MaxPotion
-	dw HyperPotion
-	dw SuperPotion
-	dw Potion
+	dw RecoverHPItem
+	dw RecoverHPItem
+	dw RecoverHPItem
+	dw RecoverHPItem
 	dw EscapeRope
-	dw Repel
-	dw MaxElixer
-	dw FireStone
-	dw Thunderstone
-	dw WaterStone
-	dw Item19
-	dw HPUp
-	dw Protein
-	dw Iron
-	dw Carbos
-	dw LuckyPunch
-	dw Calcium
+	dw Repel ;
+	dw ElixirItem
+	dw EvolutionItem
+	dw EvolutionItem
+	dw EvolutionItem
+	dw ItemDoesNothing
+	dw VitaminItem
+	dw VitaminItem
+	dw VitaminItem
+	dw VitaminItem
+	dw ItemDoesNothing
+	dw VitaminItem
 	dw RareCandy
-	dw XAccuracy
-	dw LeafStone
-	dw MetalPowder
-	dw Nugget
+	dw XBoostItem
+	dw EvolutionItem
+	dw ItemDoesNothing
+	dw ItemDoesNothing
 	dw PokeDoll
-	dw FullHeal
-	dw Revive
-	dw MaxRevive
+	dw StatusCureItem
+	dw ReviveItem
+	dw ReviveItem
 	dw GuardSpec
-	dw SuperRepel
-	dw MaxRepel
-	dw DireHit
-	dw Item2D
-	dw FreshWater
-	dw SodaPop
-	dw Lemonade
-	dw XAttack
-	dw Item32
-	dw XDefend
-	dw XSpeed
-	dw XSpecial
-	dw CoinCase
-	dw Itemfinder
-	dw PokeFlute
-	dw ExpShare
-	dw OldRod
-	dw GoodRod
-	dw SilverLeaf
-	dw SuperRod
-	dw PPUp
-	dw Ether
-	dw MaxEther
-	dw Elixer
-	dw RedScale
-	dw Secretpotion
-	dw SSTicket
-	dw MysteryEgg
-	dw ClearBell
-	dw SilverWing
-	dw MoomooMilk
-	dw QuickClaw
-	dw Psncureberry
-	dw GoldLeaf
-	dw SoftSand
-	dw SharpBeak
-	dw Przcureberry
-	dw BurntBerry
-	dw IceBerry
-	dw PoisonBarb
-	dw KingsRock
-	dw BitterBerry
-	dw MintBerry
-	dw RedApricorn
-	dw Tinymushroom
-	dw BigMushroom
-	dw Silverpowder
-	dw BluApricorn
-	dw Item5A
-	dw AmuletCoin
-	dw YlwApricorn
-	dw GrnApricorn
-	dw CleanseTag
-	dw MysticWater
-	dw Twistedspoon
-	dw WhtApricorn
-	dw Blackbelt
-	dw BlkApricorn
-	dw Item64
-	dw PnkApricorn
-	dw Blackglasses
-	dw Slowpoketail
-	dw PinkBow
-	dw Stick
-	dw SmokeBall
-	dw Nevermeltice
-	dw Magnet
-	dw Miracleberry
-	dw Pearl
-	dw BigPearl
-	dw Everstone
-	dw SpellTag
-	dw Ragecandybar
-	dw GsBall
-	dw BlueCard
-	dw MiracleSeed
-	dw ThickClub
-	dw FocusBand
-	dw Item78
-	dw Energypowder
-	dw EnergyRoot
+	dw SuperRepel ;
+	dw MaxRepel ;
+	dw DireHit ;
+	dw ItemDoesNothing ;0x2D
+	dw RecoverHPItem
+	dw RecoverHPItem
+	dw RecoverHPItem ;0x30
+	dw XBoostItem
+	dw EvolutionItem
+	dw XBoostItem
+	dw XBoostItem
+	dw XBoostItem
+	dw CoinCase ;
+	dw Itemfinder ;
+	dw ItemDoesNothing ; formerly Poke Flute
+	dw ItemDoesNothing
+	dw OldRod ;
+	dw GoodRod ;
+	dw ItemDoesNothing
+	dw SuperRod ;
+	dw PPUP
+	dw RecoverPPItem
+	dw RecoverPPItem
+	dw ElixirItem
+	dw ItemDoesNothing ;
+	dw ItemDoesNothing ;Rijon Pass
+	dw ItemDoesNothing ;Ferry Ticket
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw RecoverHPItem
+	dw ItemDoesNothing
+	dw StatusCureItem
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw StatusCureItem
+	dw StatusCureItem
+	dw StatusCureItem
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw StatusCureItem
+	dw StatusCureItem
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw StatusCureItem
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw RecoverHPItem
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw HerbelMedicine_HealHP
+	dw HerbelMedicine_HealHP
 	dw HealPowder
 	dw RevivalHerb
-	dw HardStone
-	dw LuckyEgg
-	dw CardKey
-	dw MachinePart
-	dw EggTicket
-	dw LostItem
-	dw Stardust
-	dw StarPiece
-	dw BasementKey
-	dw Pass
-	dw Item87
-	dw Item88
-	dw Item89
-	dw Charcoal
-	dw BerryJuice
-	dw ScopeLens
-	dw Item8D
-	dw Item8E
-	dw MetalCoat
-	dw DragonFang
-	dw Item91
-	dw Leftovers
-	dw Item93
-	dw Item94
-	dw Item95
-	dw Mysteryberry
-	dw DragonScale
-	dw BerserkGene
-	dw Item99
-	dw Item9A
-	dw Item9B
-	dw SacredAsh
-	dw HeavyBall
-	dw FlowerMail
-	dw LevelBall
-	dw LureBall
-	dw FastBall
-	dw ItemA2
-	dw LightBall
-	dw FriendBall
-	dw MoonBall
-	dw LoveBall
-	dw NormalBox
-	dw GorgeousBox
-	dw SunStone
-	dw PolkadotBow
-	dw ItemAB
-	dw UpGrade
-	dw Berry
-	dw GoldBerry
-	dw Squirtbottle
-	dw ItemB0
-	dw ParkBall
-	dw RainbowWing
-	dw ItemB3
-; e8a2
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw RecoverHPItem
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing ;90
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemBall
+	dw ItemDoesNothing
+	dw RecoverPPItem
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw BlueFluteEffect
+	dw XBoostItem
+	dw ItemDoesNothing
+	dw SacredAsh ;
+	dw ItemBall
+	dw ItemDoesNothing
+	dw ItemBall
+	dw ItemBall ;A0
+	dw ItemBall
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemBall
+	dw ItemBall
+	dw ItemBall
+	dw ItemDoesNothing
+	dw EvolutionItem
+	dw EvolutionItem
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw RecoverHPItem
+	dw RecoverHPItem
+	dw EvolutionItem
+	dw ItemDoesNothing ;B0
+	dw ItemBall
+	dw ItemDoesNothing
+	dw EvolutionItem
+	dw ItemDoesNothing
+	dw RedFluteEffect
+	dw YellowFluteEffect
+	dw BlackFluteEffect
+	dw WhiteFluteEffect
+	dw GreenFluteEffect
+	dw OrangeFluteEffect
+	dw SootSackEffect
+	dw PurpleFluteEffect
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing ;C0
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing ;D0
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw EvolutionItem
+	dw ItemDoesNothing
+	dw EvolutionItem
+	dw ItemBall
+	dw ItemDoesNothing
+	dw RecoverHPItem
+	dw ItemDoesNothing
+	dw RecoverHPItem
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing ;E0
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw OrphanCardEffect ;
+	dw ItemDoesNothing
+	dw ItemDoesNothing ;F0
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemDoesNothing
+	dw ItemBall
+	dw ItemBall
+	dw ItemBall
+	dw ItemBall
+	dw ItemDoesNothing
+	dw ItemDoesNothing
 
-
-MasterBall:
-UltraBall:
-GreatBall:
-PokeBall:
-HeavyBall:
-LevelBall:
-LureBall:
-FastBall:
-FriendBall:
-MoonBall:
-LoveBall:
-ParkBall: ; e8a2
+ItemBall:
 	ld a, [wBattleMode]
 	dec a
 	jp nz, UseBallInTrainerBattle
 
-	ld a, [PartyCount]
+	ld a, [wPartyCount]
 	cp PARTY_LENGTH
 	jr nz, .room_in_party
 
@@ -221,188 +275,51 @@ ParkBall: ; e8a2
 	ld a, [sBoxCount]
 	cp MONS_PER_BOX
 	call CloseSRAM
+	jr nz, .room_in_party
+	CheckEngine ENGINE_PARK_MINIGAME
 	jp z, Ball_BoxIsFullMessage
+	; callba FindFreeBox
+	; jp c, Ball_DidntUse
+	; jp z, Ball_BoxIsFullMessage
 
 .room_in_party
 	xor a
 	ld [wWildMon], a
-	ld a, [CurItem]
-	cp PARK_BALL
-	call nz, ReturnToBattle_UseBall
+	ld a, [wCurItem]
+	call ReturnToBattle_UseBall
 
-	ld hl, Options
+	ld hl, wOptions
 	res NO_TEXT_SCROLL, [hl]
 	ld hl, UsedItemText
 	call PrintText
 
-	ld a, [EnemyMonCatchRate]
-	ld b, a
-	ld a, [BattleType]
-	cp BATTLETYPE_TUTORIAL
-	jp z, .catch_without_fail
-	ld a, [CurItem]
+	ld a, [wCurItem]
 	cp MASTER_BALL
-	jp z, .catch_without_fail
-	ld a, [CurItem]
-	ld c, a
-	ld hl, BallMultiplierFunctionTable
-
-.get_multiplier_loop
-	ld a, [hli]
-	cp $ff
-	jr z, .skip_or_return_from_ball_fn
-	cp c
-	jr z, .call_ball_function
-	inc hl
-	inc hl
-	jr .get_multiplier_loop
-
-.call_ball_function
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	ld de, .skip_or_return_from_ball_fn
-	push de
-	jp [hl]
-
-.skip_or_return_from_ball_fn
-	ld a, [CurItem]
-	cp LEVEL_BALL
-	ld a, b
-	jp z, .skip_hp_calc
-
-	ld a, b
-	ld [hMultiplicand + 2], a
-
-	ld hl, EnemyMonHP
-	ld b, [hl]
-	inc hl
-	ld c, [hl]
-	inc hl
-	ld d, [hl]
-	inc hl
-	ld e, [hl]
-	sla c
-	rl b
-
-	ld h, d
-	ld l, e
-	add hl, de
-	add hl, de
-	ld d, h
-	ld e, l
-	ld a, d
-	and a
-	jr z, .okay_1
-
-	srl d
-	rr e
-	srl d
-	rr e
-	srl b
-	rr c
-	srl b
-	rr c
-
-	ld a, c
-	and a
-	jr nz, .okay_1
-	ld c, $1
-.okay_1
-	ld b, e
-
-	push bc
-	ld a, b
-	sub c
-	ld [hMultiplier], a
-	xor a
-	ld [hDividend + 0], a
-	ld [hMultiplicand + 0], a
-	ld [hMultiplicand + 1], a
-	call Multiply
-	pop bc
-
-	ld a, b
-	ld [hDivisor], a
-	ld b, $4
-	call Divide
-
-	ld a, [hQuotient + 2]
-	and a
-	jr nz, .statuscheck
-	ld a, 1
-.statuscheck
-; This routine is buggy. It was intended that SLP and FRZ provide a higher
-; catch rate than BRN/PSN/PAR, which in turn provide a higher catch rate than
-; no status effect at all. But instead, it makes BRN/PSN/PAR provide no
-; benefit.
-; Uncomment the line below to fix this.
-	ld b, a
-	ld a, [EnemyMonStatus]
-	and 1 << FRZ | SLP
-	ld c, 10
-	jr nz, .addstatus
-	; ld a, [EnemyMonStatus]
-	and a
-	ld c, 5
-	jr nz, .addstatus
-	ld c, 0
-.addstatus
-	ld a, b
-	add c
-	jr nc, .max_1
-	ld a, $ff
-.max_1
-
-	ld d, a
-	push de
-
-	; BUG: callba overwrites a,
-	; and GetItemHeldEffect takes b anyway.
-
-	; This is probably the reason
-	; the HELD_CATCH_CHANCE effect
-	; is never used.
-
-	; Uncomment the line below to fix.
-
-	ld a, [BattleMonItem]
-;	ld b, a
-	callba GetItemHeldEffect
-	ld a, b
-	cp HELD_CATCH_CHANCE
-
-	pop de
-	ld a, d
-
-	jr nz, .skip_hp_calc
-	add c
-	jr nc, .skip_hp_calc
-	ld a, $ff
-.skip_hp_calc
-
-	ld b, a
-	ld [Buffer1], a
-	call Random
-
-	cp b
-	ld a, 0
 	jr z, .catch_without_fail
-	jr nc, .fail_to_catch
-
+	call CalculateModifiedCatchRate
+	ld hl, hProduct
+	ld a, [hli]
+	ld b, a
+	ld a, [hli]
+	or [hl]
+	or b
+	jr z, .notCaught
 .catch_without_fail
 	ld a, [EnemyMonSpecies]
-
-.fail_to_catch
 	ld [wWildMon], a
+.notCaught
+	ld a, [hProduct + 3]
+	and a
+	jr nz, .notZero
+	inc a
+.notZero
+	ld [wCatchMon_CatchRate], a
+	call IsCriticalCapture
+	ld [wCatchMon_Critical], a
 	ld c, 20
 	call DelayFrames
 
-	ld a, [CurItem]
-	cp POKE_BALL + 1 ; Assumes Master/Ultra/Great come before
-	jr c, .not_kurt_ball
-	ld a, POKE_BALL
-.not_kurt_ball
+	ld a, [wCurItem]
 	ld [wBattleAnimParam], a
 
 	ld de, ANIM_THROW_POKE_BALL
@@ -412,56 +329,45 @@ ParkBall: ; e8a2
 	ld [FXAnimIDHi], a
 	xor a
 	ld [hBattleTurn], a
-	ld [Buffer2], a
+	ld [wCatchMon_NumShakes], a
 	ld [wNumHits], a
 	predef PlayBattleAnim
 
 	ld a, [wWildMon]
 	and a
 	jr nz, .caught
-	ld a, [Buffer2]
-	cp $1
+	ld a, [wCatchMon_NumShakes]
+	dec a
+	ld [wLastBallShakes], a
 	ld hl, Text_NoShake
-	jp z, .shake_and_break_free
-	cp $2
+	jp z, .printBrokeFreeText
+	dec a
 	ld hl, Text_OneShake
-	jp z, .shake_and_break_free
-	cp $3
+	jp z, .printBrokeFreeText
+	dec a
 	ld hl, Text_TwoShakes
-	jp z, .shake_and_break_free
-	cp $4
+	jp z, .printBrokeFreeText
+	dec a
 	ld hl, Text_ThreeShakes
-	jp z, .shake_and_break_free
+	jp z, .printBrokeFreeText
 .caught
-
 	ld hl, EnemyMonStatus
 	ld a, [hli]
-	push af
+	push af ; save status
 	inc hl
 	ld a, [hli]
+	ld b, a
+	ld c, [hl]
+	push bc ; save hp
+	ld a, [EnemyMonItem]
+	push af ; save item
+	ld hl, wEnemySubStatus5
+	ld a, [hl] ; save status
 	push af
-	ld a, [hl]
-	push af
-	push hl
-	ld hl, EnemyMonItem
-	ld a, [hl]
-	push af
-	push hl
-	ld hl, EnemySubStatus5
-	ld a, [hl]
-	push af
-	set SUBSTATUS_TRANSFORMED, [hl]
 	bit SUBSTATUS_TRANSFORMED, a
-	jr nz, .ditto
-	jr .not_ditto
-
-.ditto
-	ld a, DITTO
-	ld [TempEnemyMonSpecies], a
-	jr .load_data
-
-.not_ditto
 	set SUBSTATUS_TRANSFORMED, [hl]
+	jr nz, .load_data
+
 	ld hl, wEnemyBackupDVs
 	ld a, [EnemyMonDVs]
 	ld [hli], a
@@ -470,69 +376,70 @@ ParkBall: ; e8a2
 
 .load_data
 	ld a, [TempEnemyMonSpecies]
-	ld [CurPartySpecies], a
+	ld [wCurPartySpecies], a
 	ld a, [EnemyMonLevel]
 	ld [CurPartyLevel], a
 	callba LoadEnemyMon
 
 	pop af
-	ld [EnemySubStatus5], a
+	ld [wEnemySubStatus5], a
 
-	pop hl
+	pop af
+	ld [EnemyMonItem], a
+	pop bc
+	ld hl, EnemyMonHP + 1 ; restore saved HP
+	ld a, c
+	ld [hld], a
+	ld a, b
+	ld [hld], a
+	dec hl ; hl = enemy status
 	pop af
 	ld [hl], a
-	pop hl
-	pop af
-	ld [hld], a
-	pop af
-	ld [hld], a
-	dec hl
-	pop af
-	ld [hl], a
 
-	ld hl, EnemySubStatus5
-	bit SUBSTATUS_TRANSFORMED, [hl]
+	ld a, [wEnemySubStatus5]
+	bit SUBSTATUS_TRANSFORMED, a
 	jr nz, .Transformed
 	ld hl, wWildMonMoves
 	ld de, EnemyMonMoves
 	ld bc, NUM_MOVES
-	call CopyBytes
+	push bc
+	rst CopyBytes
 
 	ld hl, wWildMonPP
 	ld de, EnemyMonPP
-	ld bc, NUM_MOVES
-	call CopyBytes
-.Transformed:
+	pop bc
+	rst CopyBytes
+.Transformed
 
-	ld a, [EnemyMonSpecies]
-	ld [wWildMon], a
-	ld [CurPartySpecies], a
-	ld [wd265], a
-	ld a, [BattleType]
+	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
 	jp z, .FinishTutorial
 
-	callba MobileFn_10607f
-
 	ld hl, Text_GotchaMonWasCaught
 	call PrintText
-
+	ld c, 8
+	call FadeOBJToWhite
 	call ClearSprites
 
-	ld a, [wd265]
+	callba CatchPokemon_GiveExperience
+
+	ld a, [EnemyMonLevel]
+	ld [CurPartyLevel], a
+	ld a, [EnemyMonSpecies]
+	ld [wWildMon], a
+	ld [wCurPartySpecies], a
+	ld [wd265], a
+
 	dec a
 	call CheckCaughtMon
-
-	ld a, c
 	push af
 	ld a, [wd265]
 	dec a
 	call SetSeenAndCaughtMon
 	pop af
-	and a
 	jr nz, .skip_pokedex
 
-	call CheckReceivedDex
+	CheckEngine ENGINE_POKEDEX
 	jr z, .skip_pokedex
 
 	ld hl, Text_AddedToPokedex
@@ -545,80 +452,126 @@ ParkBall: ; e8a2
 	predef NewPokedexEntry
 
 .skip_pokedex
-	ld a, [BattleType]
-	cp BATTLETYPE_CONTEST
-	jp z, .catch_bug_contest_mon
+	ld a, [wBattleType]
 	cp BATTLETYPE_CELEBI
 	jr nz, .not_celebi
 	ld hl, wBattleResult
 	set 6, [hl]
 .not_celebi
 
-	ld a, [PartyCount]
+	ld a, [wPartyCount]
 	cp PARTY_LENGTH
-	jr z, .SendToPC
+	jp z, .SendToPC
 
 	xor a ; PARTYMON
-	ld [MonType], a
+	ld [wMonType], a
 	call ClearSprites
 
 	predef TryAddMonToParty
 
 	callba SetCaughtData
 
-	ld a, [CurItem]
+	ld a, [wCurItem]
+	cp SHINY_BALL
+	jr z, .shiny_ball_partymon
 	cp FRIEND_BALL
 	jr nz, .SkipPartyMonFriendBall
 
-	ld a, [PartyCount]
+	ld a, [wPartyCount]
 	dec a
 	ld hl, PartyMon1Happiness
 	ld bc, PARTYMON_STRUCT_LENGTH
-	call AddNTimes
+	rst AddNTimes
 
 	ld a, FRIEND_BALL_HAPPINESS
 	ld [hl], a
-.SkipPartyMonFriendBall:
+	jr .SkipPartyMonFriendBall
+
+.shiny_ball_partymon
+	ld a, [wPartyCount]
+	dec a
+	ld hl, wPartyMon1
+	ld bc, PARTYMON_STRUCT_LENGTH
+	rst AddNTimes
+	ld b, h
+	ld c, l
+
+	ld hl, MON_DVS
+	add hl, bc
+	ld a, [hl]
+	and $f0
+	or $2a
+	ld [hli], a
+	ln a, 10, 10
+	ld [hl], a
+	ld hl, MON_MAXHP
+	add hl, bc
+	ld d, h
+	ld e, l
+	ld hl, MON_STAT_EXP - 1
+	add hl, bc
+	ld b, 1
+	predef CalcPkmnStats
+
+	ld a, $AA ;So it appears shiny in nickname menu
+	ld hl, TempMon + $15
+	ld [hli], a
+	ld [hl], a
+
+.SkipPartyMonFriendBall
 
 	ld hl, Text_AskNicknameNewlyCaughtMon
 	call PrintText
 
-	ld a, [CurPartySpecies]
+	ld a, [wCurPartySpecies]
 	ld [wd265], a
 	call GetPokemonName
 
 	call YesNoBox
 	jp c, .return_from_capture
 
-	ld a, [PartyCount]
+	ld a, [wPartyCount]
 	dec a
-	ld [CurPartyMon], a
-	ld hl, PartyMonNicknames
+	ld [wCurPartyMon], a
+	ld hl, wPartyMonNicknames
 	ld bc, PKMN_NAME_LENGTH
-	call AddNTimes
+	rst AddNTimes
 
 	ld d, h
 	ld e, l
 	push de
 	xor a ; PARTYMON
-	ld [MonType], a
+	ld [wMonType], a
 	ld b, 0
 	callba NamingScreen
 
-	call RotateThreePalettesRight
+	ld c, 1
+	call FadeToLightestColor
 
 	call LoadStandardFont
 
 	pop hl
-	ld de, StringBuffer1
+	ld de, wStringBuffer1
 	call InitName
 
 	jp .return_from_capture
 
-.SendToPC:
+.SendToPC
+	; ld a, BANK(sBoxCount)
+	; call GetSRAMBank
+
+	; ld a, [sBoxCount]
+	; cp MONS_PER_BOX
+	; call CloseSRAM
+	; jr nz, .DontSwitchBoxes
+	; ld a, [wCatchMonSwitchBox]
+	; ld e, a
+	; callba ChangeBoxNoSaveGame
+; .DontSwitchBoxes
+
 	call ClearSprites
 
-	predef SentPkmnIntoBox
+	callba SentPkmnIntoBox
 
 	callba SetBoxMonCaughtData
 
@@ -630,20 +583,31 @@ ParkBall: ; e8a2
 	jr nz, .BoxNotFullYet
 	ld hl, wBattleResult
 	set 7, [hl]
-.BoxNotFullYet:
-	ld a, [CurItem]
+.BoxNotFullYet
+	ld a, [wCurItem]
+	cp SHINY_BALL
+	jr z, .shiny_ball_boxmon
 	cp FRIEND_BALL
 	jr nz, .SkipBoxMonFriendBall
-	; Bug: overwrites the happiness of the first mon in the box!
+
 	ld a, FRIEND_BALL_HAPPINESS
 	ld [sBoxMon1Happiness], a
-.SkipBoxMonFriendBall:
+	jr .SkipBoxMonFriendBall
+
+.shiny_ball_boxmon
+	ld hl, sBoxMon1DVs
+	ld a, [hl]
+	and $f0
+	or $2a
+	ld [hli], a
+	ld [hl], 10 << 4 | 10
+.SkipBoxMonFriendBall
 	call CloseSRAM
 
 	ld hl, Text_AskNicknameNewlyCaughtMon
 	call PrintText
 
-	ld a, [CurPartySpecies]
+	ld a, [wCurPartySpecies]
 	ld [wd265], a
 	call GetPokemonName
 
@@ -651,11 +615,11 @@ ParkBall: ; e8a2
 	jr c, .SkipBoxMonNickname
 
 	xor a
-	ld [CurPartyMon], a
+	ld b, a
+	ld [wCurPartyMon], a
 	ld a, BOXMON
-	ld [MonType], a
+	ld [wMonType], a
 	ld de, wMonOrItemNameBuffer
-	ld b, $0
 	callba NamingScreen
 
 	ld a, BANK(sBoxMonNicknames)
@@ -664,51 +628,75 @@ ParkBall: ; e8a2
 	ld hl, wMonOrItemNameBuffer
 	ld de, sBoxMonNicknames
 	ld bc, PKMN_NAME_LENGTH
-	call CopyBytes
+	rst CopyBytes
 
 	ld hl, sBoxMonNicknames
-	ld de, StringBuffer1
+	ld de, wStringBuffer1
 	call InitName
 
 	call CloseSRAM
 
-.SkipBoxMonNickname:
+.SkipBoxMonNickname
 	ld a, BANK(sBoxMonNicknames)
 	call GetSRAMBank
 
 	ld hl, sBoxMonNicknames
 	ld de, wMonOrItemNameBuffer
 	ld bc, PKMN_NAME_LENGTH
-	call CopyBytes
+	rst CopyBytes
 
 	call CloseSRAM
+
+	callba CopyCurBoxName
 
 	ld hl, Text_SentToBillsPC
 	call PrintText
 
-	call RotateThreePalettesRight
+	ld c, 1
+	call FadeToLightestColor
 	call LoadStandardFont
 	jr .return_from_capture
 
-.catch_bug_contest_mon
-	callba BugContest_SetCaughtContestMon
-	jr .return_from_capture
-
-.FinishTutorial:
+.FinishTutorial
+	pop af
 	ld hl, Text_GotchaMonWasCaught
+	jr .skip_anim
 
-.shake_and_break_free
+.printBrokeFreeText
+	push hl
+	ld b, SCGB_BATTLE_COLORS
+	predef GetSGBLayout
+	call SetPalettes
+	ld a, [EnemyMonSpecies]
+	ld [wCurPartySpecies], a
+	ld a, [EnemyMonStatus]
+	and (1 << FRZ) | SLP
+	jr nz, .skip_cry
+	call CheckBattleScene
+	jr c, .cry_no_anim
+	hlcoord 12, 0
+	lb de, 0, ANIM_MON_SLOW
+	predef AnimateFrontpic
+	jr .skip_cry
+
+.cry_no_anim
+	ld a, $f
+	ld [CryTracks], a
+	ld a, [EnemyMonSpecies]
+	call PlayStereoCry
+
+.skip_cry
+	pop hl
+.skip_anim
 	call PrintText
 	call ClearSprites
 
 .return_from_capture
-	ld a, [BattleType]
+	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
 	ret z
 	cp BATTLETYPE_DEBUG
 	ret z
-	cp BATTLETYPE_CONTEST
-	jr z, .used_park_ball
 
 	ld a, [wWildMon]
 	and a
@@ -719,487 +707,346 @@ ParkBall: ; e8a2
 
 .toss
 	ld hl, NumItems
-	inc a
+	ld a, 1
 	ld [wItemQuantityChangeBuffer], a
 	jp TossItem
 
-.used_park_ball
-	ld hl, wParkBallsRemaining
-	dec [hl]
-	ret
-; ec0a
+CalculateModifiedCatchRate:
+; use gen 4's catch rate formula which is less buggy
+; (((3M - 2H) * C * B) / 3M) * S
+; M = max HP
+; H = cur HP
+; C = catch rate
+; B = ball bonus
+; S = status
 
+	ld a, [EnemyMonCatchRate]
+	ld [hMultiplier], a
+
+; first, calculate 3M - 2H
+	ld hl, EnemyMonHP
+	ld a, [hli]
+	ld b, a
+	ld a, [hli]
+	ld c, a
+	ld a, [hli]
+	ld d, a
+	ld e, [hl]
+; bc = curHP
+; de = maxHP
+	sla c
+	rl b
+; bc = curHP * 2
+	ld h, d
+	ld l, e
+	add hl, de
+	add hl, de
+	ld d, h
+	ld e, l
+; de = maxHP * 3
+
+	ld hl, hMultiplicand + 2
+	ld a, e
+	sub c
+	ld [hld], a
+	ld a, d
+	sbc b
+	ld [hld], a
+	xor a
+	ld [hld], a
+	ld [hl], a
+	predef Multiply
+
+	push de
+	ld a, [wCurItem]
+	ld c, a
+	ld hl, BallMultiplierFunctionTable
+	ld e, 3
+	call IsInArray
+	call c, CallLocalPointer_AfterIsInArray
+	pop de
+	ld a, e
+	ld [hDivisor + 1], a
+	ld a, d
+	ld [hDivisor], a
+	predef DivideLong
+
+; Use Gen 4 status bonus
+	ld a, [EnemyMonStatus]
+	and (1 << FRZ) | SLP
+	call nz, SleepFreezeStatusMultiplier
+	ld a, [EnemyMonStatus]
+	and (1 << PSN) | (1 << BRN) | (1 << PAR)
+	call nz, PoisonBurnParalyzeStatusMultiplier
+
+	; during the park minigame, catch rate is increased
+	CheckEngine ENGINE_PARK_MINIGAME
+	ret z
+
+; fallthrough
+GreatBallMultiplier:
+PoisonBurnParalyzeStatusMultiplier:
+ParkMinigameMultiplier:
+; multiply catch rate by 1.5
+	ld hl, hProduct
+	ld a, [hli]
+	srl a
+	ld b, a
+	ld a, [hli]
+	rra
+	ld c, a
+	ld a, [hli]
+	rra
+	ld d, a
+	ld a, [hl]
+	ld e, a
+	rra
+	add e
+	ld [hld], a
+	ld a, [hl]
+	adc d
+	ld [hld], a
+	ld a, [hl]
+	adc c
+	ld [hld], a
+	ld a, [hl]
+	adc b
+	ld [hl], a
+	ret
 
 BallMultiplierFunctionTable:
 ; table of routines that increase or decrease the catch rate based on
 ; which ball is used in a certain situation.
-	dbw ULTRA_BALL,  UltraBallMultiplier
-	dbw GREAT_BALL,  GreatBallMultiplier
-	dbw SAFARI_BALL, SafariBallMultiplier ; Safari Ball, leftover from RBY
-	dbw HEAVY_BALL,  HeavyBallMultiplier
-	dbw LEVEL_BALL,  LevelBallMultiplier
-	dbw LURE_BALL,   LureBallMultiplier
-	dbw FAST_BALL,   FastBallMultiplier
-	dbw MOON_BALL,   MoonBallMultiplier
-	dbw LOVE_BALL,   LoveBallMultiplier
-	dbw PARK_BALL,   ParkBallMultiplier
+	dbw ULTRA_BALL,    UltraBallMultiplier
+	dbw GREAT_BALL,    GreatBallMultiplier
+	dbw DIVE_BALL,     DiveBallMultiplier
+	dbw FAST_BALL,     FastBallMultiplier
+	dbw QUICK_BALL,    QuickBallMultiplier
+	dbw DUSK_BALL,     DuskBallMultiplier
+	dbw REPEAT_BALL,   RepeatBallMultiplier
+	dbw TIMER_BALL,    TimerBallMultiplier
+	dbw EAGULOU_BALL,  GreatBallMultiplier
+	dbw SHINY_BALL,    UltraBallMultiplier
 	db $ff
 
-UltraBallMultiplier:
-; multiply catch rate by 2
-	sla b
-	ret nc
-	ld b, $ff
-	ret
-
-SafariBallMultiplier:
-GreatBallMultiplier:
-ParkBallMultiplier:
-; multiply catch rate by 1.5
-	ld a, b
-	srl a
-	add b
-	ld b, a
-	ret nc
-	ld b, $ff
-	ret
-
-GetPokedexEntryBank:
-	push hl
-	push de
+RepeatBallMultiplier:
 	ld a, [EnemyMonSpecies]
-	rlca
-	rlca
-	and 3
-	ld hl, .PokedexEntryBanks
-	ld d, 0
-	ld e, a
-	add hl, de
-	ld a, [hl]
-	pop de
-	pop hl
-	ret
-
-.PokedexEntryBanks:
-
-GLOBAL PokedexEntries1
-GLOBAL PokedexEntries2
-GLOBAL PokedexEntries3
-GLOBAL PokedexEntries4
-
-	db BANK(PokedexEntries1)
-	db BANK(PokedexEntries2)
-	db BANK(PokedexEntries3)
-	db BANK(PokedexEntries4)
-
-HeavyBallMultiplier:
-; subtract 20 from catch rate if weight < 102.4 kg
-; else add 0 to catch rate if weight < 204.8 kg
-; else add 20 to catch rate if weight < 307.2 kg
-; else add 30 to catch rate if weight < 409.6 kg
-; else add 40 to catch rate (never happens)
-	ld a, [EnemyMonSpecies]
-	ld hl, PokedexDataPointerTable
 	dec a
-	ld e, a
-	ld d, 0
-	add hl, de
-	add hl, de
-	ld a, BANK(PokedexDataPointerTable)
-	call GetFarHalfword
+	call CheckCaughtMon
+	ret z
+	ld a, 6
+	jr MultiplyCatchRate
 
-.SkipText:
-	call GetPokedexEntryBank
-	call GetFarByte
-	inc hl
-	cp "@"
-	jr nz, .SkipText
+DuskBallMultiplier:
+	ld a, [wPermission]
+	cp CAVE
+	jr z, .multiply
+	cp DUNGEON
+	jr z, .multiply
+	ld a, [TimeOfDay]
+	cp NITE
+	ret c ; night or darkness
+.multiply
+	ld a, 7
+	call MultiplyCatchRate
+	ld a, 2
+	; fallthrough
 
-	call GetPokedexEntryBank
-	push bc
-	inc hl
-	inc hl
-	call GetFarHalfword
+DivideCatchRate:
+	ld [hDivisor], a
+	ld b, 4
+	predef_jump Divide
 
-	srl h
-	rr l
-	ld b, h
-	ld c, l
-
-	rept 4
-	srl b
-	rr c
-	endr
-	call .subbc
-
-	srl b
-	rr c
-	call .subbc
-
-	ld a, h
-	pop bc
-	jr .compare
-
-.subbc
-	; subtract bc from hl
-	push bc
-	ld a, b
-	cpl
-	ld b, a
-	ld a, c
-	cpl
-	ld c, a
-	inc bc
-	add hl, bc
-	pop bc
-	ret
-
-.compare
-	ld c, a
-	cp 1024 >> 8 ; 102.4 kg
-	jr c, .lightmon
-
-	ld hl, .WeightsTable
-.lookup
-	ld a, c
-	cp [hl]
-	jr c, .heavymon
-	inc hl
-	inc hl
-	jr .lookup
-
-.heavymon
-	inc hl
-	ld a, b
-	add [hl]
-	ld b, a
-	ret nc
-	ld b, $ff
-	ret
-
-.lightmon
-	ld a, b
-	sub 20
-	ld b, a
-	ret nc
-	ld b, $1
-	ret
-
-.WeightsTable:
-; weight factor, boost
-	db 2048 >> 8, 0
-	db 3072 >> 8, 20
-	db 4096 >> 8, 30
-	db 65280 >> 8, 40
-
-LureBallMultiplier:
-; multiply catch rate by 3 if this is a fishing rod battle
-	ld a, [BattleType]
-	cp BATTLETYPE_FISH
-	ret nz
-
-	ld a, b
-	add a
-	jr c, .max
-
-	add b
-	jr nc, .done
-.max
-	ld a, $ff
-.done
-	ld b, a
-	ret
-
-MoonBallMultiplier:
-; This function is buggy.
-; Intent:  multiply catch rate by 4 if mon evolves with moon stone
-; Reality: no boost
-
-GLOBAL EvosAttacks
-GLOBAL EvosAttacksPointers
-
-	push bc
-	ld a, [TempEnemyMonSpecies]
-	dec a
-	ld c, a
-	ld b, 0
-	ld hl, EvosAttacksPointers
-	add hl, bc
-	add hl, bc
-	ld a, BANK(EvosAttacksPointers)
-	call GetFarHalfword
-	pop bc
-
-	push bc
-	ld a, BANK(EvosAttacks)
-	call GetFarByte
-	cp EVOLVE_ITEM
-	pop bc
-	ret nz
-
-	inc hl
-	inc hl
-	inc hl
-
-; Moon Stone's constant from Pokémon Red is used.
-; No Pokémon evolve with Burn Heal,
-; so Moon Balls always have a catch rate of 1×.
-	push bc
-	ld a, BANK(EvosAttacks)
-	call GetFarByte
-	cp MOON_STONE_RED ; BURN_HEAL
-	pop bc
-	ret nz
-
-	sla b
-	jr c, .max
-	sla b
-	jr nc, .done
-.max
-	ld b, $ff
-.done
-	ret
-
-LoveBallMultiplier:
-; This function is buggy.
-; Intent:  multiply catch rate by 8 if mons are of same species, different sex
-; Reality: multiply catch rate by 8 if mons are of same species, same sex
-
-	; does species match?
-	ld a, [TempEnemyMonSpecies]
-	ld c, a
-	ld a, [TempBattleMonSpecies]
-	cp c
-	ret nz
-
-	; check player mon species
-	push bc
-	ld a, [TempBattleMonSpecies]
-	ld [CurPartySpecies], a
-	xor a ; PARTYMON
-	ld [MonType], a
-	ld a, [CurBattleMon]
-	ld [CurPartyMon], a
-	callba GetGender
-	jr c, .done1 ; no effect on genderless
-
-	ld d, 0 ; male
-	jr nz, .playermale
-	inc d   ; female
-.playermale
-
-	; check wild mon species
-	push de
-	ld a, [TempEnemyMonSpecies]
-	ld [CurPartySpecies], a
-	ld a, WILDMON
-	ld [MonType], a
-	callba GetGender
-	jr c, .done2 ; no effect on genderless
-
-	ld d, 0 ; male
-	jr nz, .wildmale
-	inc d   ; female
-.wildmale
-
-	ld a, d
-	pop de
-	cp d
-	pop bc
-	ret nz ; for the intended effect, this should be “ret z”
-
-	sla b
-	jr c, .max
-	sla b
-	jr c, .max
-	sla b
-	ret nc
-.max
-	ld b, $ff
-	ret
-
-.done2
-	pop de
-
-.done1
-	pop bc
-	ret
+TimerBallMultiplier:
+	ld a, [wBattleTurns]
+	cp 21
+	jr nc, QuadrupleCatchRate
+	add 7
+	call MultiplyCatchRate
+	ld a, 7
+	jr DivideCatchRate
 
 FastBallMultiplier:
-; This function is buggy.
-; Intent:  multiply catch rate by 4 if enemy mon is in one of the three
-;          FleeMons tables.
-; Reality: multiply catch rate by 4 if enemy mon is one of the first three in
-;          the first FleeMons table.
-	ld a, [TempEnemyMonSpecies]
-	ld c, a
-	ld hl, FleeMons
-	ld d, 3
+	ld a, [EnemyMonBaseStats + 3]
+	cp 100
+	ret c
 
+QuadrupleCatchRate:
+	ld a, 4
+	jr MultiplyCatchRate
+
+QuickBallMultiplier:
+	ld a, [wBattleTurns]
+	and a
+	ret nz
+	ld a, 5
+	jr MultiplyCatchRate
+
+SleepFreezeStatusMultiplier:
+UltraBallMultiplier:
+DoubleCatchRate:
+; multiply catch rate by 2
+	ld a, 2
+	; fallthrough
+
+MultiplyCatchRate:
+	ld [hMultiplier], a
+	predef_jump Multiply
+
+DiveBallMultiplier:
+; multiply catch rate by 3 if this is a fishing rod battle
+	ld a, [wBattleType]
+	cp BATTLETYPE_FISH
+	jr z, .tripleCatchRate
+	ld a, [PlayerState]
+	cp PLAYER_SURF
+	jr z, .tripleCatchRate
+	cp PLAYER_SURF_PIKA
+	ret nz
+.tripleCatchRate
+	ld a, 3
+	jr MultiplyCatchRate
+
+IsCriticalCapture:
+; Critical capture is based on how many Pokemon you've caught.
+; This formula is adapted to the smaller Pokedex in Gen 2.
+	ld hl, PokedexCaught
+	ld b, EndPokedexCaught - PokedexCaught
+	call CountSetBits ; returns to a, c, and wd265
+	cp $ff
+	jr z, .max
+	ld b, 0
+	ld hl, .CriticalCatchMultipliers
 .loop
-	ld a, BANK(FleeMons)
-	call GetFarByte
-
+	cp [hl]
+	jr c, .okay
 	inc hl
-	cp -1
-	jr z, .next
-	cp c
-	jr nz, .next ; for the intended effect, this should be “jr nz, .loop”
-	sla b
-	jr c, .max
-
-	sla b
-	ret nc
+	inc b
+	jr .loop
 
 .max
-	ld b, $ff
-	ret
+	ld a, 5
+	jr .multiply
 
-.next
-	dec d
-	jr nz, .loop
-	ret
-
-LevelBallMultiplier:
-; multiply catch rate by 8 if player mon level / 4 > enemy mon level
-; multiply catch rate by 4 if player mon level / 2 > enemy mon level
-; multiply catch rate by 2 if player mon level > enemy mon level
-	ld a, [BattleMonLevel]
+.okay
+	ld a, b
+	and a
+	ret z
+.multiply
+	ld [hMultiplier], a
+	predef Multiply
+	ld a, 12
+	ld [hDivisor], a
+	ld b, 4
+	predef Divide
+	ld hl, hQuotient
+	ld a, [hli]
+	or [hl]
+	ld a, $1
+	ret nz
+	ld a, [hQuotient + 2]
+	and a
+	ret z
 	ld c, a
-	ld a, [EnemyMonLevel]
+	call Random
 	cp c
-	ret nc ; if player is lower level, we're done here
-	sla b
-	jr c, .max
-
-	srl c
-	cp c
-	ret nc ; if player/2 is lower level, we're done here
-	sla b
-	jr c, .max
-
-	srl c
-	cp c
-	ret nc ; if player/4 is lower level, we're done here
-	sla b
-	ret nc
-
-.max
-	ld b, $ff
+	ld a, 1
+	ret c
+	xor a
 	ret
 
-; These two texts were carried over from gen 1.
-; They are not used in gen 2, and are dummied out.
+.CriticalCatchMultipliers
+	; 0.0, 0.5, 1.0, 1.5, 2.0, 2.5
+	db 31, 101, 151, 201, 231, 255
 
-Text_RBY_CatchMarowak: ; 0xedab
-	; It dodged the thrown BALL! This #MON can't be caught!
-	text_jump UnknownText_0x1c5a5a
-	db "@"
-; 0xedb0
-
-Text_RBY_NoShake: ; 0xedb0
-	; You missed the #MON!
-	text_jump UnknownText_0x1c5a90
-	db "@"
-; 0xedb5
-
-Text_NoShake: ; 0xedb5
-	; Oh no! The #MON broke free!
+Text_NoShake:
+	; Oh no! The #mon broke free!
 	text_jump UnknownText_0x1c5aa6
-	db "@"
-; 0xedba
 
-Text_OneShake: ; 0xedba
+Text_OneShake:
 	; Aww! It appeared to be caught!
 	text_jump UnknownText_0x1c5ac3
-	db "@"
-; 0xedbf
 
-Text_TwoShakes: ; 0xedbf
+Text_TwoShakes:
 	; Aargh! Almost had it!
 	text_jump UnknownText_0x1c5ae3
-	db "@"
-; 0xedc4
 
-Text_ThreeShakes: ; 0xedc4
+Text_ThreeShakes:
 	; Shoot! It was so close too!
 	text_jump UnknownText_0x1c5afa
-	db "@"
-; 0xedc9
 
-Text_GotchaMonWasCaught: ; 0xedc9
+Text_GotchaMonWasCaught:
 	; Gotcha! @ was caught!@ @
-	text_jump UnknownText_0x1c5b17
+	text_far UnknownText_0x1c5b17
 	start_asm
-	call WaitSFX
 	push bc
 	ld de, MUSIC_NONE
 	call PlayMusic
 	call DelayFrame
+	ld de, SFX_CAUGHT_MON
+	call PlayWaitSFX
 	ld de, MUSIC_CAPTURE
 	call PlayMusic
 	pop bc
 	ld hl, TextJump_Waitbutton
 	ret
-; ede6
 
-TextJump_Waitbutton: ; 0xede6
+TextJump_Waitbutton:
 	; @
-	text_jump Text_Waitbutton_2
-	db "@"
-; 0xedeb
+	text ""
+	prompt
 
-Text_SentToBillsPC: ; 0xedeb
+Text_SentToBillsPC:
 	; was sent to BILL's PC.
-	text_jump UnknownText_0x1c5b38
-	db "@"
-; 0xedf0
+	text_far UnknownText_0x1c5b38
+	start_asm
+	ld a, BANK(sBoxCount)
+	call GetSRAMBank
+	ld a, [sBoxCount]
+	cp MONS_PER_BOX
+	call CloseSRAM
+	ld hl, .terminator
+	ret nz
+	ld hl, .continue
+	ret
 
-Text_AddedToPokedex: ; 0xedf0
-	; 's data was newly added to the #DEX.@ @
-	text_jump UnknownText_0x1c5b53
-	db "@"
-; 0xedf5
+.continue
+	text_far JustFilledBoxText
 
-Text_AskNicknameNewlyCaughtMon: ; 0xedf5
+.terminator
+	prompt
+
+Text_AddedToPokedex:
+	; 's data was newly added to the #dex.@ @
+	text_far UnknownText_0x1c5b53
+	start_asm
+	ld de, SFX_SLOT_MACHINE_START
+	jp Text_PlaySFXAndPrompt
+
+Text_AskNicknameNewlyCaughtMon:
 	; Give a nickname to @ ?
 	text_jump UnknownText_0x1c5b7f
-	db "@"
-; 0xedfa
 
-ReturnToBattle_UseBall: ; edfa (3:6dfa)
-	callba _ReturnToBattle_UseBall
-	ret
+ReturnToBattle_UseBall:
+	jpba _ReturnToBattle_UseBall
 
-TownMap: ; ee01
-	callba PokegearMap
-	ret
-; ee08
+TownMap:
+	jpba PokegearMap
 
+Bicycle:
+	jpba BikeFunction
 
-Bicycle: ; ee08
-	callba BikeFunction
-	ret
-; ee0f
-
-
-MoonStone:
-FireStone:
-Thunderstone:
-WaterStone:
-LeafStone:
-SunStone: ; ee0f
+EvolutionItem:
 	ld b, PARTYMENUACTION_EVO_STONE
-	call UseItem_SelectMon
-
-	jp c, .DecidedNotToUse
-
+	call UseItem_InitMonSelection
+	callba PartyMenuSelect
+	jr c, .decidedNotToUse
 	ld a, MON_ITEM
 	call GetPartyParamLocation
 
 	ld a, [hl]
 	cp EVERSTONE
-	jr z, .NoEffect
+	jr z, .noEffect
 
 	ld a, $1
 	ld [wForceEvolution], a
@@ -1207,30 +1054,20 @@ SunStone: ; ee0f
 
 	ld a, [wMonTriedToEvolve]
 	and a
-	jr z, .NoEffect
-
-	jp UseDisposableItem
-
-.NoEffect:
+	jp nz, UseDisposableItem
+.noEffect
 	call WontHaveAnyEffectMessage
-
-.DecidedNotToUse:
+.decidedNotToUse
 	xor a
 	ld [wItemEffectSucceeded], a
 	ret
-; ee3d
 
-
-HPUp:
-Protein:
-Iron:
-Carbos:
-Calcium: ; ee3d
+VitaminItem:
 	ld b, PARTYMENUACTION_HEALING_ITEM
 	call UseItem_SelectMon
+; function end
 
-	jp c, RareCandy_StatBooster_ExitMenu
-
+_VitaminItem:
 	call RareCandy_StatBooster_GetParameters
 
 	call GetStatExpRelativePointer
@@ -1241,7 +1078,7 @@ Calcium: ; ee3d
 	add hl, bc
 	ld a, [hl]
 	cp 100
-	jr nc, NoEffectMessage
+	jr nc, VitaminNoEffectMessage
 
 	add 10
 	ld [hl], a
@@ -1254,9 +1091,9 @@ Calcium: ; ee3d
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	ld de, StringBuffer2
+	ld de, wStringBuffer2
 	ld bc, ITEM_NAME_LENGTH
-	call CopyBytes
+	rst CopyBytes
 
 	call Play_SFX_FULL_HEAL
 
@@ -1268,102 +1105,51 @@ Calcium: ; ee3d
 
 	jp UseDisposableItem
 
-
-NoEffectMessage: ; ee83
+VitaminNoEffectMessage:
 	ld hl, WontHaveAnyEffectText
-	call PrintText
-	jp ClearPalettes
-; ee8c
+	jp PrintText
 
-
-UpdateStatsAfterItem: ; ee8c
-	ld a, MON_MAXHP
-	call GetPartyParamLocation
-	ld d, h
-	ld e, l
-	ld a, MON_STAT_EXP - 1
-	call GetPartyParamLocation
-	ld b, $1
-	predef_jump CalcPkmnStats
-; ee9f
-
-RareCandy_StatBooster_ExitMenu: ; ee9f
-	xor a
-	ld [wItemEffectSucceeded], a
-	jp ClearPalettes
-; eea6
-
-
-Text_StatRose: ; 0xeea6
+Text_StatRose:
 	; 's @  rose.
 	text_jump UnknownText_0x1c5b9a
-	db "@"
-; 0xeeab
 
-
-StatStrings: ; eeab
+StatStrings:
 	dw .health
 	dw .attack
 	dw .defense
 	dw .speed
 	dw .special
 
-.health  db "HEALTH@"
-.attack  db "ATTACK@"
-.defense db "DEFENSE@"
-.speed   db "SPEED@"
-.special db "SPECIAL@"
-; eed9
+.health  db "Health@"
+.attack  db "Attack@"
+.defense db "Defense@"
+.speed   db "Speed@"
+.special db "Special@"
 
-
-GetStatExpRelativePointer: ; eed9
-	ld a, [CurItem]
-	ld hl, Table_eeeb
-.next
-	cp [hl]
+GetStatExpRelativePointer:
+	ld a, [wCurItem]
+	ld hl, VitaminStatExpOffsets
+	ld e, 2
+	call IsInArray
 	inc hl
-	jr z, .got_it
-	inc hl
-	jr .next
-
-.got_it
-	ld a, [hl]
-	ld c, a
+	ld c, [hl]
 	ld b, 0
 	ret
-; eeeb
 
-Table_eeeb: ; eeeb
-	db HP_UP,    MON_HP_EXP - MON_STAT_EXP
+VitaminStatExpOffsets:
+	db HP_UP,   MON_HP_EXP  - MON_STAT_EXP
 	db PROTEIN, MON_ATK_EXP - MON_STAT_EXP
 	db IRON,    MON_DEF_EXP - MON_STAT_EXP
 	db CARBOS,  MON_SPD_EXP - MON_STAT_EXP
 	db CALCIUM, MON_SPC_EXP - MON_STAT_EXP
-; eef5
+	db $ff
 
-
-RareCandy_StatBooster_GetParameters: ; eef5
-	ld a, [CurPartySpecies]
-	ld [CurSpecies], a
-	ld [wd265], a
-	ld a, MON_LEVEL
-	call GetPartyParamLocation
-	ld a, [hl]
-	ld [CurPartyLevel], a
-	call GetBaseData
-	ld a, [CurPartyMon]
-	ld hl, PartyMonNicknames
-	call GetNick
-	ret
-; 0xef14
-
-
-RareCandy: ; ef14
+RareCandy:
 	ld b, PARTYMENUACTION_HEALING_ITEM
 	call UseItem_SelectMon
+; function end
 
-	jp c, RareCandy_StatBooster_ExitMenu
-
+_RareCandy:
 	call RareCandy_StatBooster_GetParameters
 
 	ld a, MON_LEVEL
@@ -1371,7 +1157,7 @@ RareCandy: ; ef14
 
 	ld a, [hl]
 	cp MAX_LEVEL
-	jp nc, NoEffectMessage
+	jp nc, VitaminNoEffectMessage
 
 	inc a
 	ld [hl], a
@@ -1406,10 +1192,9 @@ RareCandy: ; ef14
 	ld a, [hld]
 	sub c
 	ld c, a
-	ld a, [hl]
+	ld a, [hld]
 	sbc b
 	ld b, a
-	dec hl
 	ld a, [hl]
 	add c
 	ld [hld], a
@@ -1422,23 +1207,22 @@ RareCandy: ; ef14
 	call ItemActionText
 
 	xor a ; PARTYMON
-	ld [MonType], a
+	ld [wMonType], a
 	predef CopyPkmnToTempMon
 
 	hlcoord 9, 0
-	ld b, 10
-	ld c, 9
+	lb bc, 10, 9
 	call TextBox
 
 	hlcoord 11, 1
-	ld bc, $0004
+	ld bc, $4
 	predef PrintTempMonStats
 
 	call WaitPressAorB_BlinkCursor
 
 	xor a ; PARTYMON
-	ld [MonType], a
-	ld a, [CurPartySpecies]
+	ld [wMonType], a
+	ld a, [wCurPartySpecies]
 	ld [wd265], a
 	predef LearnLevelMoves
 
@@ -1447,54 +1231,57 @@ RareCandy: ; ef14
 	callba EvolvePokemon
 
 	jp UseDisposableItem
-; efad
 
+RareCandy_StatBooster_GetParameters:
+	ld a, [wCurPartySpecies]
+	ld [wCurSpecies], a
+	ld [wd265], a
+	ld a, MON_LEVEL
+	call GetPartyParamLocation
+	ld a, [hl]
+	ld [CurPartyLevel], a
+	call GetBaseData
+	ld a, [wCurPartyMon]
+	ld hl, wPartyMonNicknames
+	jp GetNick
 
-HealPowder: ; efad
+UpdateStatsAfterItem:
+	ld a, MON_MAXHP
+	call GetPartyParamLocation
+	ld d, h
+	ld e, l
+	ld a, MON_STAT_EXP - 1
+	call GetPartyParamLocation
+	ld b, $1
+	predef_jump CalcPkmnStats
+
+HealPowder:
 	ld b, PARTYMENUACTION_HEALING_ITEM
 	call UseItem_SelectMon
+; function end
 
-	jp c, StatusHealer_ExitMenu
-
+_HealPowder:
 	call UseStatusHealer
-
-	cp $0
-	jr nz, .asm_efc9
+	and a
+	jp nz, WontHaveAnyEffectMessage
 	ld c, HAPPINESS_BITTERPOWDER
+
+; fallthrough
+ChangeHappinessAndPrintLooksBitterMessage:
 	callba ChangeHappiness
+	jp LooksBitterMessage
 
-	call LooksBitterMessage
-
-	ld a, $0
-
-.asm_efc9
-	jp StatusHealer_Jumptable
-; efcc
-
-
-Antidote:
-BurnHeal:
-IceHeal:
-Awakening:
-ParlyzHeal:
-FullHeal:
-Psncureberry:
-Przcureberry:
-BurntBerry:
-IceBerry:
-MintBerry:
-Miracleberry: ; efcc
+StatusCureItem:
 	ld b, PARTYMENUACTION_HEALING_ITEM
 	call UseItem_SelectMon
-	jp c, StatusHealer_ExitMenu
 
-FullyHealStatus: ; efd4
+_StatusCureItem:
 	call UseStatusHealer
-	jp StatusHealer_Jumptable
-; efda
+	and a
+	ret z
+	jp WontHaveAnyEffectMessage
 
-
-UseStatusHealer: ; efda (3:6fda)
+UseStatusHealer:
 	call IsMonFainted
 	ld a, $1
 	ret z
@@ -1510,20 +1297,21 @@ UseStatusHealer: ; efda (3:6fda)
 	ld b, PARTYMENUTEXT_HEAL_CONFUSION
 .good
 	xor a
+	ld [hli], a
 	ld [hl], a
 	ld a, b
-	ld [PartyMenuActionText], a
+	ld [wPartyMenuActionText], a
 	call HealStatus
 	call Play_SFX_FULL_HEAL
 	call ItemActionTextWaitButton
 	call UseDisposableItem
-	ld a, $0
+	xor a
 	ret
 
-IsItemUsedOnConfusedMon: ; f009 (3:7009)
+IsItemUsedOnConfusedMon:
 	call IsItemUsedOnBattleMon
 	jr nc, .nope
-	ld a, [PlayerSubStatus3]
+	ld a, [wPlayerSubStatus3]
 	bit SUBSTATUS_CONFUSED, a
 	jr z, .nope
 	ld a, c
@@ -1536,7 +1324,7 @@ IsItemUsedOnConfusedMon: ; f009 (3:7009)
 	and a
 	ret
 
-BattlemonRestoreHealth: ; f01e (3:701e)
+BattlemonRestoreHealth:
 	call IsItemUsedOnBattleMon
 	ret nc
 	ld a, MON_HP
@@ -1547,20 +1335,20 @@ BattlemonRestoreHealth: ; f01e (3:701e)
 	ld [BattleMonHP + 1], a
 	ret
 
-HealStatus: ; f030 (3:7030)
+HealStatus:
 	call IsItemUsedOnBattleMon
 	ret nc
 	xor a
 	ld [BattleMonStatus], a
-	ld hl, PlayerSubStatus5
-	res SUBSTATUS_TOXIC, [hl]
-	ld hl, PlayerSubStatus1
+	ld hl, BattleMonSemistatus
+	res SEMISTATUS_TOXIC, [hl]
+	ld hl, wPlayerSubStatus1
 	res SUBSTATUS_NIGHTMARE, [hl]
 	call GetItemHealingAction
 	ld a, c
 	cp %11111111
 	jr nz, .not_full_heal
-	ld hl, PlayerSubStatus3
+	ld hl, wPlayerSubStatus3
 	res SUBSTATUS_CONFUSED, [hl]
 .not_full_heal
 	push bc
@@ -1568,9 +1356,9 @@ HealStatus: ; f030 (3:7030)
 	pop bc
 	ret
 
-GetItemHealingAction: ; f058 (3:7058)
+GetItemHealingAction:
 	push hl
-	ld a, [CurItem]
+	ld a, [wCurItem]
 	ld hl, .healingactions
 	ld bc, 3
 .next
@@ -1588,9 +1376,8 @@ GetItemHealingAction: ; f058 (3:7058)
 	cp %11111111
 	pop hl
 	ret
-; f071 (3:7071)
 
-.healingactions ; f071
+.healingactions
 ; item, party menu action text, status
 	db ANTIDOTE,     PARTYMENUTEXT_HEAL_PSN, 1 << PSN
 	db BURN_HEAL,    PARTYMENUTEXT_HEAL_BRN, 1 << BRN
@@ -1600,57 +1387,39 @@ GetItemHealingAction: ; f058 (3:7058)
 	db FULL_HEAL,    PARTYMENUTEXT_HEAL_ALL, %11111111
 	db FULL_RESTORE, PARTYMENUTEXT_HEAL_ALL, %11111111
 	db HEAL_POWDER,  PARTYMENUTEXT_HEAL_ALL, %11111111
-	db PSNCUREBERRY, PARTYMENUTEXT_HEAL_PSN, 1 << PSN
-	db PRZCUREBERRY, PARTYMENUTEXT_HEAL_PAR, 1 << PAR
-	db BURNT_BERRY,  PARTYMENUTEXT_HEAL_FRZ, 1 << FRZ
-	db ICE_BERRY,    PARTYMENUTEXT_HEAL_BRN, 1 << BRN
-	db MINT_BERRY,   PARTYMENUTEXT_HEAL_SLP, SLP
-	db MIRACLEBERRY, PARTYMENUTEXT_HEAL_ALL, %11111111
+	db PECHA_BERRY,  PARTYMENUTEXT_HEAL_PSN, 1 << PSN
+	db CHERI_BERRY,  PARTYMENUTEXT_HEAL_PAR, 1 << PAR
+	db ASPEAR_BERRY, PARTYMENUTEXT_HEAL_FRZ, 1 << FRZ
+	db RAWST_BERRY,  PARTYMENUTEXT_HEAL_BRN, 1 << BRN
+	db CHESTO_BERRY, PARTYMENUTEXT_HEAL_SLP, SLP
+	db LUM_BERRY,    PARTYMENUTEXT_HEAL_ALL, %11111111
 	db -1, 0, 0
-; f09e
 
-StatusHealer_Jumptable: ; f09e (3:709e)
-	ld hl, .dw
-	rst JumpTable
-	ret
-
-.dw ; f0a3 (3:70a3)
-	dw StatusHealer_ClearPalettes
-	dw StatusHealer_NoEffect
-	dw StatusHealer_ExitMenu
-
-
-RevivalHerb: ; f0a9
+RevivalHerb:
 	ld b, PARTYMENUACTION_HEALING_ITEM
 	call UseItem_SelectMon
-	jp c, StatusHealer_ExitMenu
+; end of function
 
+_RevivalHerb:
 	call RevivePokemon
-	cp 0
-	jr nz, .asm_f0c5
+	and a
+	jp nz, WontHaveAnyEffectMessage
 
 	ld c, HAPPINESS_REVIVALHERB
-	callba ChangeHappiness
-	call LooksBitterMessage
-	ld a, 0
+	jp ChangeHappinessAndPrintLooksBitterMessage
 
-.asm_f0c5
-	jp StatusHealer_Jumptable
-; f0c8
-
-
-Revive:
-MaxRevive: ; f0c8
+ReviveItem:
 	ld b, PARTYMENUACTION_HEALING_ITEM
 	call UseItem_SelectMon
-	jp c, StatusHealer_ExitMenu
+; function end
 
+_ReviveItem:
 	call RevivePokemon
-	jp StatusHealer_Jumptable
-; f0d6
+	and a
+	ret z
+	jp WontHaveAnyEffectMessage
 
-
-RevivePokemon: ; f0d6
+RevivePokemon:
 	call IsMonFainted
 	ld a, 1
 	ret nz
@@ -1658,26 +1427,25 @@ RevivePokemon: ; f0d6
 	and a
 	jr z, .skip_to_revive
 
-	ld a, [CurPartyMon]
+	ld a, [wCurPartyMon]
 	ld c, a
-	ld d, 0
 	ld hl, wBattleParticipantsIncludingFainted
 	ld b, CHECK_FLAG
-	predef FlagPredef
+	predef FlagAction
 	ld a, c
 	and a
 	jr z, .skip_to_revive
 
-	ld a, [CurPartyMon]
+	ld a, [wCurPartyMon]
 	ld c, a
 	ld hl, wBattleParticipantsNotFainted
 	ld b, SET_FLAG
-	predef FlagPredef
+	predef FlagAction
 
 .skip_to_revive
 	xor a
 	ld [Danger], a
-	ld a, [CurItem]
+	ld a, [wCurItem]
 	cp REVIVE
 	jr z, .revive_half_hp
 
@@ -1690,34 +1458,24 @@ RevivePokemon: ; f0d6
 .finish_revive
 	call HealHP_SFX_GFX
 	ld a, PARTYMENUTEXT_REVIVE
-	ld [PartyMenuActionText], a
+	ld [wPartyMenuActionText], a
 	call ItemActionTextWaitButton
 	call UseDisposableItem
-	ld a, 0
+	xor a
 	ret
-; f128
 
-
-FullRestore: ; f128
+FullRestore:
 	ld b, PARTYMENUACTION_HEALING_ITEM
 	call UseItem_SelectMon
-	jp c, StatusHealer_ExitMenu
+; function end
 
+_FullRestore:
 	call IsMonFainted
-	jp z, StatusHealer_NoEffect
+	jp z, WontHaveAnyEffectMessage
 
 	call IsMonAtFullHealth
-	jr c, .NotAtFullHealth
-
-	jp FullyHealStatus
-
-.NotAtFullHealth:
-	call .FullRestore
-	jp StatusHealer_Jumptable
-; f144
-
-
-.FullRestore: ; f144
+	jp nc, .useStatusHealer
+; full restore
 	xor a
 	ld [Danger], a
 	call ReviveFullHP
@@ -1730,90 +1488,48 @@ FullRestore: ; f128
 	call BattlemonRestoreHealth
 	call HealHP_SFX_GFX
 	ld a, PARTYMENUTEXT_HEAL_HP
-	ld [PartyMenuActionText], a
+	ld [wPartyMenuActionText], a
 	call ItemActionTextWaitButton
-	call UseDisposableItem
-	ld a, 0
-	ret
-; f16a
+	jp UseDisposableItem
+.useStatusHealer
+	call UseStatusHealer
+	and a
+	ret z
+	jp WontHaveAnyEffectMessage
 
-
-BitterBerry: ; f16a
-	ld hl, PlayerSubStatus3
+BitterBerry:
+	ld hl, wPlayerSubStatus3
 	bit SUBSTATUS_CONFUSED, [hl]
-	ld a, 1
-	jr z, .done
-
+	jr z, .noEffect
 	res SUBSTATUS_CONFUSED, [hl]
 	xor a
 	ld [hBattleTurn], a
 	call UseItemText
-
 	ld hl, ConfusedNoMoreText
 	call StdBattleTextBox
+	jr .clearPalettes
+.noEffect
+	call WontHaveAnyEffectMessage
+.clearPalettes
+	jp ClearPalettes
 
-	ld a, 0
-
-.done
-	jp StatusHealer_Jumptable
-; f186
-
-
-MaxPotion:
-HyperPotion:
-SuperPotion:
-Potion:
-FreshWater:
-SodaPop:
-Lemonade:
-MoomooMilk:
-Ragecandybar:
-BerryJuice:
-Berry:
-GoldBerry: ; f186
-	call ItemRestoreHP
-	jp StatusHealer_Jumptable
-; f18c
-
-
-Energypowder: ; f18c
-	ld c, HAPPINESS_BITTERPOWDER
-	jr EnergypowderEnergyRootCommon
-; f190
-
-EnergyRoot: ; f190
-	ld c, HAPPINESS_ENERGYROOT
-; f192
-
-EnergypowderEnergyRootCommon: ; f192
-	push bc
-	call ItemRestoreHP
-	pop bc
-	cp 0
-	jr nz, .skip_happiness
-
-	callba ChangeHappiness
-	call LooksBitterMessage
-	ld a, 0
-
-.skip_happiness
-	jp StatusHealer_Jumptable
-; f1a9
-
-
-ItemRestoreHP: ; f1a9 (3:71a9)
+RecoverHPItem:
 	ld b, PARTYMENUACTION_HEALING_ITEM
 	call UseItem_SelectMon
-	ld a, 2
-	ret c
+; function end
 
-	call IsMonFainted
-	ld a, 1
+_RecoverHPItem:
+	call ItemRestoreHP
+	and a
 	ret z
+	jp WontHaveAnyEffectMessage
+
+ItemRestoreHP:
+	call IsMonFainted
+	jr z, .fail
 
 	call IsMonAtFullHealth
-	ld a, 1
-	ret nc
+	jr nc, .fail
 
 	xor a
 	ld [Danger], a
@@ -1822,120 +1538,184 @@ ItemRestoreHP: ; f1a9 (3:71a9)
 	call BattlemonRestoreHealth
 	call HealHP_SFX_GFX
 	ld a, PARTYMENUTEXT_HEAL_HP
-	ld [PartyMenuActionText], a
+	ld [wPartyMenuActionText], a
 	call ItemActionTextWaitButton
 	call UseDisposableItem
-	ld a, 0
+	xor a
+	ret
+.fail
+	ld a, 1
 	ret
 
-HealHP_SFX_GFX: ; f1db (3:71db)
+HealHP_SFX_GFX:
 	push de
 	ld de, SFX_POTION
 	call WaitPlaySFX
 	pop de
-	ld a, [CurPartyMon]
+	ld a, [wCurPartyMon]
 	hlcoord 11, 0
 	ld bc, SCREEN_WIDTH * 2
-	call AddNTimes
+	rst AddNTimes
 	ld a, $2
 	ld [wWhichHPBar], a
 	predef_jump AnimateHPBar
 
-UseItem_SelectMon: ; f1f9 (3:71f9)
-	call .SelectMon
-	ret c
+HerbelMedicine_HealHP:
+	ld b, PARTYMENUACTION_HEALING_ITEM
+	call UseItem_SelectMon
+; function end
 
-	ld a, [CurPartySpecies]
-	cp EGG
-	jr nz, .not_egg
-
-	call CantUseOnEggMessage
-	scf
-	ret
-
-.not_egg
+_HerbelMedicine_HealHP:
+	call ItemRestoreHP
 	and a
-	ret
+	jp nz, WontHaveAnyEffectMessage
+	ld a, [wCurItem]
+	cp ENERGYPOWDER
+	ld c, HAPPINESS_BITTERPOWDER
+	jr z, .gotHappinessModifier
+	ld c, HAPPINESS_ENERGYROOT
+.gotHappinessModifier
+	jp ChangeHappinessAndPrintLooksBitterMessage
 
-.SelectMon: ; f20b (3:720b)
+UseItem_SelectMon:
+	pop hl
+	ld a, l
+	ld [wPartyMenuItemEffectPointer], a
+	ld a, h
+	ld [wPartyMenuItemEffectPointer + 1], a
+	call UseItem_InitMonSelection
+.loop
+	callba PartyMenuSelect
+	jp c, .exitedPartyMenu
+	ld a, [wCurPartySpecies]
+	cp EGG
+	jr z, .canNotUseOnEgg
+	ld a, [wBattleMode]
+	and a
+	jr nz, .oneUse
+	ld hl, wPartyMenuItemEffectPointer
+	call CallLocalPointer
+	ld hl, NumItems
+	call CheckItem
+	jr nc, .outOfItems
+.redrawPartyMenu
+	ld a, [wSavedPartyMenuActionText]
+	ld [wPartyMenuActionText], a
+	ld a, [wCurItem]
+	cp RARE_CANDY
+	jr z, .reInitEverything
+	cp ETHER
+	jr z, .reInitMenu
+	cp PP_UP
+	jr z, .reInitMenu
+	cp MAX_ETHER
+	jr nz, .notMenuCreatingItems
+.reInitMenu
+	callba InitPartyMenuWithCancel
+.notMenuCreatingItems
+	callba RedrawPartyMenu
+	jr .loop
+.reInitEverything
+	ld a, [wMonTriedToEvolve]
+	and a
+	jr z, .reInitMenu
+	call ClearPalettes
+	call SetUpMonSelectionPartyMenu
+	jr .loop
+.canNotUseOnEgg
+	call CantUseOnEggMessage
+	jr .loop
+.outOfItems
+	ld a, [wCurItem]
+	ld [wd265], a
+	call GetItemName
+	call CopyName1
+	ld hl, .YouUsedYourLastItemText
+	call PrintText
+	jr .clearPalettes
+.oneUse
+	ld hl, wPartyMenuItemEffectPointer
+	call CallLocalPointer
+; hardcode for ether/max ether
+	ld a, [wCurItem]
+	cp ETHER
+	jr z, .checkForFailure
+	cp MAX_ETHER
+	jr nz, .clearPalettes
+.checkForFailure
+	ld a, [wItemEffectSucceeded]
+	dec a
+	jr z, .redrawPartyMenu
+	dec a
+	jr nz, .clearPalettes
+	ld a, 1
+	jr .writeToItemEffectSucceededAndExit
+.exitedPartyMenu
+	xor a
+.writeToItemEffectSucceededAndExit
+	ld [wItemEffectSucceeded], a
+.clearPalettes
+	jp ClearPalettes
+
+.YouUsedYourLastItemText
+	text_jump YouUsedYourLastItemText
+
+UseItem_InitMonSelection:
 	ld a, b
-	ld [PartyMenuActionText], a
+	ld [wPartyMenuActionText], a
+	ld [wSavedPartyMenuActionText], a
+InitMonSelection_Softboiled:
 	push hl
 	push de
 	push bc
 	call ClearBGPalettes
-	call ChoosePkmnToUseItemOn
+	call SetUpMonSelectionPartyMenu
 	pop bc
 	pop de
 	pop hl
 	ret
 
-ChoosePkmnToUseItemOn: ; f21c (3:721c)
-	callba LoadPartyMenuGFX
-	callba InitPartyMenuWithCancel
-	callba InitPartyMenuGFX
-	callba WritePartyMenuTilemap
-	callba PrintPartyMenuText
-	call WaitBGMap
+SetUpMonSelectionPartyMenu:
+	callba InitPartyMenuLayout
+	call ApplyTilemapInVBlank
 	call SetPalettes
-	call DelayFrame
-	callba PartyMenuSelect
-	ret
+	jp DelayFrame
 
-ItemActionText: ; f24a (3:724a)
-	ld [PartyMenuActionText], a
-	ld a, [CurPartySpecies]
+ItemActionText:
+	ld [wPartyMenuActionText], a
+	ld a, [wCurPartySpecies]
 	push af
-	ld a, [CurPartyMon]
+	ld a, [wCurPartyMon]
 	push af
 	push hl
 	push de
 	push bc
 	callba WritePartyMenuTilemap
 	callba PrintPartyMenuActionText
-	call WaitBGMap
+	call ApplyTilemapInVBlank
 	call SetPalettes
 	call DelayFrame
 	pop bc
 	pop de
 	pop hl
 	pop af
-	ld [CurPartyMon], a
+	ld [wCurPartyMon], a
 	pop af
-	ld [CurPartySpecies], a
+	ld [wCurPartySpecies], a
 	ret
 
-ItemActionTextWaitButton: ; f279 (3:7279)
-	xor a
-	ld [hBGMapMode], a
-	hlcoord 0, 0
-	ld bc, TileMapEnd - TileMap
-	ld a, " "
-	call ByteFill
-	ld a, [PartyMenuActionText]
+ItemActionTextWaitButton:
+	ld a, [wPartyMenuActionText]
 	call ItemActionText
-	ld a, $1
-	ld [hBGMapMode], a
-	ld c, 50
+	ld c, 10
 	call DelayFrames
-	jp WaitPressAorB_BlinkCursor
+	jp ButtonSound
 
-StatusHealer_NoEffect: ; f299 (3:7299)
-	call WontHaveAnyEffectMessage
-	jr StatusHealer_ClearPalettes
-
-StatusHealer_ExitMenu: ; f29e (3:729e)
-	xor a
-	ld [wItemEffectSucceeded], a
-StatusHealer_ClearPalettes: ; f2a2 (3:72a2)
-	call ClearPalettes
-	ret
-
-IsItemUsedOnBattleMon: ; f2a6 (3:72a6)
+IsItemUsedOnBattleMon:
 	ld a, [wBattleMode]
 	and a
 	ret z
-	ld a, [CurPartyMon]
+	ld a, [wCurPartyMon]
 	push hl
 	ld hl, CurBattleMon
 	cp [hl]
@@ -1948,15 +1728,17 @@ IsItemUsedOnBattleMon: ; f2a6 (3:72a6)
 	xor a
 	ret
 
-ReviveHalfHP: ; f2ba (3:72ba)
+ReviveHalfHP:
 	call LoadHPFromBuffer1
 	srl d
 	rr e
 	jr ContinueRevive
 
-ReviveFullHP: ; f2c3 (3:72c3)
+ReviveFullHP:
 	call LoadHPFromBuffer1
-ContinueRevive: ; f2c6 (3:72c6)
+	; fallthrough
+
+ContinueRevive:
 	ld a, MON_HP
 	call GetPartyParamLocation
 	ld [hl], d
@@ -1964,7 +1746,7 @@ ContinueRevive: ; f2c6 (3:72c6)
 	ld [hl], e
 	jp LoadCurHPIntoBuffer5
 
-RestoreHealth: ; f2d1 (3:72d1)
+RestoreHealth:
 	ld a, MON_HP + 1
 	call GetPartyParamLocation
 	ld a, [hl]
@@ -1987,13 +1769,11 @@ RestoreHealth: ; f2d1 (3:72d1)
 	dec hl
 	ld a, [de]
 	sbc [hl]
-	jr c, .finish
+	ret c
 .full_hp
-	call ReviveFullHP
-.finish
-	ret
+	jp ReviveFullHP
 
-RemoveHP: ; f2f9 (3:72f9)
+RemoveHP:
 	ld a, MON_HP + 1
 	call GetPartyParamLocation
 	ld a, [hl]
@@ -2007,10 +1787,9 @@ RemoveHP: ; f2f9 (3:72f9)
 	ld [hld], a
 	ld [hl], a
 .okay
-	call LoadCurHPIntoBuffer5
-	ret
+	jp LoadCurHPIntoBuffer5
 
-IsMonFainted: ; f30d (3:730d)
+IsMonFainted:
 	push de
 	call LoadMaxHPToBuffer1
 	call LoadCurHPToBuffer3
@@ -2020,7 +1799,7 @@ IsMonFainted: ; f30d (3:730d)
 	pop de
 	ret
 
-IsMonAtFullHealth: ; f31b (3:731b)
+IsMonAtFullHealth:
 	call LoadHPFromBuffer3
 	ld h, d
 	ld l, e
@@ -2031,78 +1810,75 @@ IsMonAtFullHealth: ; f31b (3:731b)
 	sbc d
 	ret
 
-LoadCurHPIntoBuffer5: ; f328 (3:7328)
+LoadCurHPIntoBuffer5:
 	ld a, MON_HP
 	call GetPartyParamLocation
 	ld a, [hli]
-	ld [Buffer6], a
+	ld [wCurHPAnimNewHP + 1], a
 	ld a, [hl]
-	ld [Buffer5], a
+	ld [wCurHPAnimNewHP], a
 	ret
-; f336 (3:7336)
 
-LoadHPIntoBuffer5: ; f336
+LoadHPIntoBuffer5:
 	ld a, d
-	ld [Buffer6], a
+	ld [wCurHPAnimNewHP + 1], a
 	ld a, e
-	ld [Buffer5], a
+	ld [wCurHPAnimNewHP], a
 	ret
-; f33f
 
-LoadHPFromBuffer5: ; f33f
-	ld a, [Buffer6]
+LoadHPFromBuffer5:
+	ld a, [wCurHPAnimNewHP + 1]
 	ld d, a
-	ld a, [Buffer5]
+	ld a, [wCurHPAnimNewHP]
 	ld e, a
 	ret
-; f348
 
-LoadCurHPToBuffer3: ; f348 (3:7348)
+LoadCurHPToBuffer3:
 	ld a, MON_HP
 	call GetPartyParamLocation
 	ld a, [hli]
-	ld [Buffer4], a
+	ld [wCurHPAnimOldHP + 1], a
 	ld a, [hl]
-	ld [Buffer3], a
+	ld [wCurHPAnimOldHP], a
 	ret
 
-LoadHPFromBuffer3: ; f356 (3:7356)
-	ld a, [Buffer4]
+LoadHPFromBuffer3:
+	ld a, [wCurHPAnimOldHP + 1]
 	ld d, a
-	ld a, [Buffer3]
+	ld a, [wCurHPAnimOldHP]
 	ld e, a
 	ret
 
-LoadMaxHPToBuffer1: ; f35f (3:735f)
+LoadMaxHPToBuffer1:
 	push hl
 	ld a, MON_MAXHP
 	call GetPartyParamLocation
 	ld a, [hli]
-	ld [Buffer2], a
+	ld [wCurHPAnimMaxHP + 1], a
 	ld a, [hl]
-	ld [Buffer1], a
+	ld [wCurHPAnimMaxHP], a
 	pop hl
 	ret
 
-LoadHPFromBuffer1: ; f36f (3:736f)
-	ld a, [Buffer2]
+LoadHPFromBuffer1:
+	ld a, [wCurHPAnimMaxHP + 1]
 	ld d, a
-	ld a, [Buffer1]
+	ld a, [wCurHPAnimMaxHP]
 	ld e, a
 	ret
 
-GetOneFifthMaxHP: ; f378 (3:7378)
+GetOneFifthMaxHP:
 	push bc
 	ld a, MON_MAXHP
 	call GetPartyParamLocation
 	ld a, [hli]
-	ld [hDividend + 0], a
+	ld [hDividend], a
 	ld a, [hl]
 	ld [hDividend + 1], a
 	ld a, 5
 	ld [hDivisor], a
 	ld b, 2
-	call Divide
+	predef Divide
 	ld a, [hQuotient + 1]
 	ld d, a
 	ld a, [hQuotient + 2]
@@ -2110,9 +1886,12 @@ GetOneFifthMaxHP: ; f378 (3:7378)
 	pop bc
 	ret
 
-GetHealingItemAmount: ; f395 (3:7395)
+GetHealingItemAmount:
 	push hl
-	ld a, [CurItem]
+	ld a, [wCurItem]
+	cp SITRUS_BERRY
+	jr z, .QuarterMaxHP
+
 	ld hl, .Healing
 	ld d, a
 .next
@@ -2125,7 +1904,7 @@ GetHealingItemAmount: ; f395 (3:7395)
 	inc hl
 	jr .next
 
-.NotFound:
+.NotFound
 	scf
 .done
 	ld e, [hl]
@@ -2133,9 +1912,33 @@ GetHealingItemAmount: ; f395 (3:7395)
 	ld d, [hl]
 	pop hl
 	ret
-; f3af (3:73af)
 
-.Healing: ; f3af
+.QuarterMaxHP
+	ld a, [wCurPartyMon]
+	ld hl, PartyMon1MaxHP
+	and a
+	jr z, .got_max_hp
+	ld de, PARTYMON_STRUCT_LENGTH
+.add_n_times_de
+	add hl, de
+	dec a
+	jr nz, .add_n_times_de
+.got_max_hp
+	ld a, [hli]
+	ld d, a
+	ld e, [hl]
+	pop hl
+	srl d
+	rr e
+	srl d
+	rr e
+	ld a, d
+	or e
+	ret nz
+	inc e
+	ret
+
+.Healing
 	dbw FRESH_WATER,   50
 	dbw SODA_POP,      60
 	dbw LEMONADE,      80
@@ -2145,16 +1948,16 @@ GetHealingItemAmount: ; f395 (3:7395)
 	dbw MAX_POTION,   999
 	dbw FULL_RESTORE, 999
 	dbw MOOMOO_MILK,  100
-	dbw BERRY,         10
-	dbw GOLD_BERRY,    30
+	dbw ORAN_BERRY,    10
+	dbw BERRY_JUICE,   20
+	dbw BURGER,        80
+	dbw FRIES,         30
+	dbw KEG_OF_BEER,   50
 	dbw ENERGYPOWDER,  50
 	dbw ENERGY_ROOT,  200
-	dbw RAGECANDYBAR,  20
-	dbw BERRY_JUICE,   20
 	dbw -1,             0
-; f3df
 
-Softboiled_MilkDrinkFunction: ; f3df (3:73df)
+Softboiled_MilkDrinkFunction:
 ; Softboiled/Milk Drink in the field
 	ld a, [wPartyMenuCursor]
 	dec a
@@ -2162,7 +1965,7 @@ Softboiled_MilkDrinkFunction: ; f3df (3:73df)
 	call .SelectMilkDrinkRecipient ; select pokemon
 	jr c, .skip
 	ld a, b
-	ld [CurPartyMon], a
+	ld [wCurPartyMon], a
 	call IsMonFainted
 	call GetOneFifthMaxHP
 	call RemoveHP
@@ -2171,7 +1974,7 @@ Softboiled_MilkDrinkFunction: ; f3df (3:73df)
 	pop bc
 	call GetOneFifthMaxHP
 	ld a, c
-	ld [CurPartyMon], a
+	ld [wCurPartyMon], a
 	call IsMonFainted
 	call RestoreHealth
 	call HealHP_SFX_GFX
@@ -2184,14 +1987,15 @@ Softboiled_MilkDrinkFunction: ; f3df (3:73df)
 	ld [wPartyMenuCursor], a
 	ret
 
-.SelectMilkDrinkRecipient: ; f419 (3:7419)
+.SelectMilkDrinkRecipient
 .loop
 	push bc
 	ld a, PARTYMENUACTION_HEALING_ITEM
-	ld [PartyMenuActionText], a
-	call ChoosePkmnToUseItemOn
+	ld [wPartyMenuActionText], a
+	call InitMonSelection_Softboiled
+	callba PartyMenuSelect
 	pop bc
-	jr c, .set_carry
+	ret c
 	ld a, [wPartyMenuCursor]
 	dec a
 	ld c, a
@@ -2199,16 +2003,12 @@ Softboiled_MilkDrinkFunction: ; f3df (3:73df)
 	cp c
 	jr z, .cant_use ; chose the same mon as user
 	ld a, c
-	ld [CurPartyMon], a
+	ld [wCurPartyMon], a
 	call IsMonFainted
 	jr z, .cant_use
 	call IsMonAtFullHealth
 	jr nc, .cant_use
 	xor a
-	ret
-
-.set_carry
-	scf
 	ret
 
 .cant_use
@@ -2217,69 +2017,62 @@ Softboiled_MilkDrinkFunction: ; f3df (3:73df)
 	call MenuTextBoxBackup
 	pop bc
 	jr .loop
-; f44a (3:744a)
 
-.Text_CantBeUsed: ; 0xf44a
-	; That can't be used on this #MON.
+.Text_CantBeUsed
+	; That can't be used on this #mon.
 	text_jump UnknownText_0x1c5bac
-	db "@"
-; 0xf44f
 
-
-EscapeRope: ; f44f
+EscapeRope:
 	xor a
 	ld [wItemEffectSucceeded], a
 	callba EscapeRopeFunction
 
 	ld a, [wItemEffectSucceeded]
 	cp 1
-	call z, UseDisposableItem
+	jp z, UseDisposableItem
 	ret
-; f462
 
-
-SuperRepel: ; f462
-	ld b, 200
+SuperRepel:
+	ld b, 200 / 2
 	jr UseRepel
-; f466
 
-MaxRepel: ; f466
-	ld b, 250
+MaxRepel:
+	ld b, 300 / 2
 	jr UseRepel
-; f466
 
-Repel: ; f46a
-	ld b, 100
-; f46c
+Repel:
+	ld b, 100 / 2
+	; fallthrough
 
-UseRepel: ; f46c
-	ld a, [wRepelEffect]
-	and a
+UseRepel:
+	ld hl, wRepelEffect
+	ld a, [hli]
+	or [hl]
 	ld hl, TextJump_RepelUsedEarlierIsStillInEffect
 	jp nz, PrintText
 
+	xor a
+	sla b
+	rla
+	ld [wRepelEffect + 1], a
 	ld a, b
 	ld [wRepelEffect], a
+	ld a, [wCurItem]
+	ld [wLastRepelUsed], a
 	jp UseItemText
 
-
-TextJump_RepelUsedEarlierIsStillInEffect: ; 0xf47d
+TextJump_RepelUsedEarlierIsStillInEffect:
 	; The REPEL used earlier is still in effect.
 	text_jump Text_RepelUsedEarlierIsStillInEffect
-	db "@"
-; 0xf482
 
-
-XAccuracy: ; f482
-	ld hl, PlayerSubStatus4
+XAccuracy:
+	ld hl, wPlayerSubStatus4
 	bit SUBSTATUS_X_ACCURACY, [hl]
 	jp nz, WontHaveAnyEffect_NotUsedMessage
 	set SUBSTATUS_X_ACCURACY, [hl]
 	jp UseItemText
-; f48f
 
-
-PokeDoll: ; f48f
+PokeDoll:
 	ld a, [wBattleMode]
 	dec a
 	jr nz, .asm_f4a6
@@ -2295,34 +2088,25 @@ PokeDoll: ; f48f
 	xor a
 	ld [wItemEffectSucceeded], a
 	ret
-; f4ab
 
-
-GuardSpec: ; f4ab
-	ld hl, PlayerSubStatus4
+GuardSpec:
+	ld hl, wPlayerSubStatus4
 	bit SUBSTATUS_MIST, [hl]
 	jp nz, WontHaveAnyEffect_NotUsedMessage
 	set SUBSTATUS_MIST, [hl]
 	jp UseItemText
-; f4b8
 
-
-DireHit: ; f4b8
-	ld hl, PlayerSubStatus4
+DireHit:
+	ld hl, wPlayerSubStatus4
 	bit SUBSTATUS_FOCUS_ENERGY, [hl]
 	jp nz, WontHaveAnyEffect_NotUsedMessage
 	set SUBSTATUS_FOCUS_ENERGY, [hl]
 	jp UseItemText
-; f4c5
 
-
-XAttack:
-XDefend:
-XSpeed:
-XSpecial: ; f4c5
+XBoostItem:
 	call UseItemText
 
-	ld a, [CurItem]
+	ld a, [wCurItem]
 	ld hl, .x_item_table
 
 .loop
@@ -2346,323 +2130,57 @@ XSpecial: ; f4c5
 	callba BattleCommand_StatUpFailText
 
 	ld a, [CurBattleMon]
-	ld [CurPartyMon], a
+	ld [wCurPartyMon], a
 	ld c, HAPPINESS_USEDXITEM
-	callba ChangeHappiness
-	ret
-; f504
+	jpba ChangeHappiness
 
-.x_item_table ; f504
-	db X_ATTACK,  ATTACK
-	db X_DEFEND,  DEFENSE
-	db X_SPEED,   SPEED
-	db X_SPECIAL, SP_ATTACK
-; f50c
+.x_item_table
+	db X_ATTACK,   ATTACK
+	db X_DEFEND,   DEFENSE
+	db X_SPEED,    SPEED
+	db X_SPECIAL,  SP_ATTACK
+	db X_SP_DEF,   SP_DEFENSE
+	db X_ACCURACY, ACCURACY
 
-
-PokeFlute: ; f50c
-	ld a, [wBattleMode]
-	and a
-	jr nz, .dummy
-.dummy
-
-	xor a
-	ld [wd002], a
-
-	ld b, $ff ^ SLP
-
-	ld hl, PartyMon1Status
-	call .CureSleep
-
-	ld a, [wBattleMode]
-	cp WILD_BATTLE
-	jr z, .skip_otrainer
-	ld hl, OTPartyMon1Status
-	call .CureSleep
-.skip_otrainer
-
-	ld hl, BattleMonStatus
-	ld a, [hl]
-	and b
-	ld [hl], a
-	ld hl, EnemyMonStatus
-	ld a, [hl]
-	and b
-	ld [hl], a
-
-	ld a, [wd002]
-	and a
-	ld hl, .CatchyTune
-	jp z, PrintText
-	ld hl, .PlayedTheFlute
-	call PrintText
-
-	ld a, [Danger]
-	and $80
-	jr nz, .dummy2
-.dummy2
-	ld hl, .AllSleepingMonWokeUp
-	jp PrintText
-
-
-.CureSleep:
-	ld de, PARTYMON_STRUCT_LENGTH
-	ld c, PARTY_LENGTH
-
-.loop
-	ld a, [hl]
-	push af
-	and SLP
-	jr z, .not_asleep
-	ld a, 1
-	ld [wd002], a
-.not_asleep
-	pop af
-	and b
-	ld [hl], a
-	add hl, de
-	dec c
-	jr nz, .loop
-	ret
-; f56c
-
-
-.CatchyTune: ; 0xf56c
-	; Played the # FLUTE. Now, that's a catchy tune!
-	text_jump UnknownText_0x1c5bf9
-	db "@"
-; 0xf571
-
-.AllSleepingMonWokeUp: ; 0xf571
-	; All sleeping #MON woke up.
-	text_jump UnknownText_0x1c5c28
-	db "@"
-; 0xf576
-
-.PlayedTheFlute: ; 0xf576
-	; played the # FLUTE.@ @
-	text_jump UnknownText_0x1c5c44
-	start_asm
-	ld a, [wBattleMode]
-	and a
-	jr nz, .battle
-
-	push de
-	ld de, SFX_POKEFLUTE
-	call WaitPlaySFX
-	call WaitSFX
-	pop de
-
-.battle
-	jp PokeFluteTerminatorCharacter
-; f58f
-
-
-BlueCard: ; f58f
-	ld hl, .bluecardtext
-	jp MenuTextBoxWaitButton
-
-.bluecardtext
-	text_jump UnknownText_0x1c5c5e
-	db "@"
-; f59a
-
-
-CoinCase: ; f59a
+CoinCase:
 	ld hl, .coincasetext
 	jp MenuTextBoxWaitButton
 
 .coincasetext
 	text_jump UnknownText_0x1c5c7b
-	db "@"
-; f5a5
 
-
-OldRod: ; f5a5
+OldRod:
 	ld e, $0
-	jr UseRod
-; f5a9
+	jr _FishFunction
 
-GoodRod: ; f5a9
+GoodRod:
 	ld e, $1
-	jr UseRod
-; f5ad
+	jr _FishFunction
 
-SuperRod: ; f5ad
+SuperRod:
 	ld e, $2
-	jr UseRod
-; f5b1
 
-UseRod: ; f5b1
-	callba FishFunction
-	ret
-; f5b8
+_FishFunction:
+	jpba FishFunction
 
+Itemfinder:
+	jpba ItemFinder
 
-Itemfinder: ; f5b8
-	callba ItemFinder
-	ret
-; f5bf
-
-
-MaxElixer:
-PPUp:
-Ether:
-MaxEther:
-Elixer:
-Mysteryberry: ; f5bf
-	ld a, [CurItem]
-	ld [wd002], a
-
-.loop
-	; Party Screen opens to choose on which Pkmn to use the Item
+ElixirItem:
 	ld b, PARTYMENUACTION_HEALING_ITEM
 	call UseItem_SelectMon
-	jp c, PPRestoreItem_Cancel
+; end of function
 
-.loop2
-	ld a, [wd002]
-	cp MAX_ELIXER
-	jp z, Elixer_RestorePPofAllMoves
-	cp ELIXER
-	jp z, Elixer_RestorePPofAllMoves
-
-	ld hl, TextJump_RaiseThePPOfWhichMove
-	ld a, [wd002]
-	cp PP_UP
-	jr z, .ppup
-	ld hl, TextJump_RestoreThePPOfWhichMove
-
-.ppup
-	call PrintText
-
-	ld a, [CurMoveNum]
-	push af
-	xor a
-	ld [CurMoveNum], a
-	ld a, $2
-	ld [wMoveSelectionMenuType], a
-	callba MoveSelectionScreen
-	pop bc
-
-	ld a, b
-	ld [CurMoveNum], a
-	jr nz, .loop
-	ld hl, PartyMon1Moves
-	ld bc, PARTYMON_STRUCT_LENGTH
-	call GetMthMoveOfNthPartymon
-
-	push hl
-	ld a, [hl]
-	ld [wd265], a
-	call GetMoveName
-	call CopyName1
-	pop hl
-
-	ld a, [wd002]
-	cp PP_UP
-	jp nz, Not_PP_Up
-
-	ld a, [hl]
-	cp SKETCH
-	jr z, .CantUsePPUpOnSketch
-
-	ld bc, $0015
-	add hl, bc
-	ld a, [hl]
-	cp 3 << 6 ; have 3 PP Ups already been used?
-	jr c, .do_ppup
-
-.CantUsePPUpOnSketch:
-.pp_is_maxed_out
-	ld hl, TextJump_PPIsMaxedOut
-	call PrintText
-	jr .loop2
-
-.do_ppup
-	ld a, [hl]
-	add 1 << 6 ; increase PP Up count by 1
-	ld [hl], a
-	ld a, $1
-	ld [wd265], a
-	call ApplyPPUp
-	call Play_SFX_FULL_HEAL
-
-	ld hl, TextJump_PPsIncreased
-	call PrintText
-
-FinishPPRestore: ; f64c
-	call ClearPalettes
-	jp UseDisposableItem
-; f652
-
-BattleRestorePP: ; f652
-	ld a, [wBattleMode]
-	and a
-	jr z, .not_in_battle
-	ld a, [CurPartyMon]
-	ld b, a
-	ld a, [CurBattleMon]
-	cp b
-	jr nz, .not_in_battle
-	ld a, [PlayerSubStatus5]
-	bit SUBSTATUS_TRANSFORMED, a
-	jr nz, .not_in_battle
-	call .UpdateBattleMonPP
-
-.not_in_battle
-	call Play_SFX_FULL_HEAL
-	ld hl, UnknownText_0xf739
-	call PrintText
-	jr FinishPPRestore
-
-.UpdateBattleMonPP:
-	ld a, [CurPartyMon]
-	ld hl, PartyMon1Moves
-	ld bc, PARTYMON_STRUCT_LENGTH
-	call AddNTimes
-	ld de, BattleMonMoves
-	ld b, NUM_MOVES
-.loop
-	ld a, [de]
-	and a
-	jr z, .done
-	cp [hl]
-	jr nz, .next
-	push hl
-	push de
-	push bc
-	rept NUM_MOVES + 2 ; BattleMonPP - BattleMonMoves
-	inc de
-	endr
-	ld bc, MON_PP - MON_MOVES
-	add hl, bc
-	ld a, [hl]
-	ld [de], a
-	pop bc
-	pop de
-	pop hl
-
-.next
-	inc hl
-	inc de
-	dec b
-	jr nz, .loop
-
-.done
-	ret
-; f6a7
-
-Not_PP_Up: ; f6a7
-	call RestorePP
-	jr nz, BattleRestorePP
-	jp PPRestoreItem_NoEffect
-; f6af
-
-Elixer_RestorePPofAllMoves: ; f6af
-	xor a
+_ElixirItem:
+	ld a, [wCurItem]
+	ld [wd002], a
 	ld hl, wMenuCursorY
-	ld [hli], a
+	ld a, [hli]
+	ld c, [hl]
+	ld b, a
+	push bc
+	xor a
+	ld [hld], a
 	ld [hl], a
 	ld b, NUM_MOVES
 .moveLoop
@@ -2678,7 +2196,6 @@ Elixer_RestorePPofAllMoves: ; f6af
 	jr z, .next
 	ld hl, wMenuCursorX
 	inc [hl]
-
 .next
 	ld hl, wMenuCursorY
 	inc [hl]
@@ -2687,21 +2204,124 @@ Elixer_RestorePPofAllMoves: ; f6af
 	jr nz, .moveLoop
 	ld a, [wMenuCursorX]
 	and a
+	pop bc
+	ld a, b
+	ld [wMenuCursorY], a
+	ld a, c
+	ld [wMenuCursorX], a
 	jp nz, BattleRestorePP
+	jp WontHaveAnyEffectMessage
 
-PPRestoreItem_NoEffect: ; f6dd
-	call WontHaveAnyEffectMessage
+PPUP:
+	ld b, PARTYMENUACTION_HEALING_ITEM
+	call UseItem_SelectMon
+	; NOT fallthrough
 
-PPRestoreItem_Cancel: ; f6e0
-	call ClearPalettes
-	xor a
+_PPUP:
+	ld hl, TextJump_RaiseThePPOfWhichMove
+.loop
+	call PrintPPMessageAndSelectMove
+	ret nz
+	ld bc, $0015
+	add hl, bc
+	ld a, [hl]
+	cp 3 << 6 ; have 3 PP Ups already been used?
+	jr nc, .used3PPUps
+	ld a, [hl]
+	add 1 << 6 ; increase PP Up count by 1
+	ld [hl], a
+	ld a, $1
+	ld [wd265], a
+	call ApplyPPUp
+	call Play_SFX_FULL_HEAL
+	ld hl, TextJump_PPsIncreased
+	call PrintText
+	jp UseDisposableItem
+.used3PPUps
+	ld hl, TextJump_PPIsMaxedOut
+	call PrintText
+	jr .loop
+
+RecoverPPItem:
+	ld b, PARTYMENUACTION_HEALING_ITEM
+	call UseItem_SelectMon
+; function end
+
+_RecoverPPItem:
+	ld a, [wCurItem]
+	ld [wd002], a
+	ld hl, TextJump_RestoreThePPOfWhichMove
+	call PrintPPMessageAndSelectMove
+	ret nz
+	call RestorePP
+	jp z, WontHaveAnyEffectMessage
+	call BattleRestorePP
+	ld a, 2
 	ld [wItemEffectSucceeded], a
 	ret
-; f6e8
 
-RestorePP: ; f6e8
+BattleRestorePP:
+	ld a, [wBattleMode]
+	and a
+	jr z, .not_in_battle
+	ld a, [wCurPartyMon]
+	ld b, a
+	ld a, [CurBattleMon]
+	cp b
+	jr nz, .not_in_battle
+	ld a, [wPlayerSubStatus5]
+	bit SUBSTATUS_TRANSFORMED, a
+	jr nz, .not_in_battle
+	call .UpdateBattleMonPP
+
+.not_in_battle
+	call Play_SFX_FULL_HEAL
+	ld hl, UnknownText_0xf739
+	call PrintText
+	jp UseDisposableItem
+
+.UpdateBattleMonPP
+	ld a, [wCurPartyMon]
+	ld hl, PartyMon1Moves
+	ld bc, PARTYMON_STRUCT_LENGTH
+	rst AddNTimes
+	ld de, BattleMonMoves
+	ld b, NUM_MOVES
+.loop
+	ld a, [de]
+	and a
+	ret z
+	cp [hl]
+	jr nz, .next
+	push hl
+	push de
+	push bc
+
+	push hl
+	ld hl, BattleMonPP - BattleMonMoves
+	add hl, de
+	ld d, h
+	ld e, l
+	pop hl
+
+	ld bc, MON_PP - MON_MOVES
+	add hl, bc
+	ld a, [hl]
+	ld [de], a
+	pop bc
+	pop de
+	pop hl
+
+.next
+	inc hl
+	inc de
+	dec b
+	jr nz, .loop
+	ret
+
+RestorePP:
 	xor a ; PARTYMON
-	ld [MonType], a
+	ld [wMonType], a
 	call GetMaxPPOfMove
 	ld hl, PartyMon1PP
 	ld bc, PARTYMON_STRUCT_LENGTH
@@ -2714,13 +2334,13 @@ RestorePP: ; f6e8
 	jr nc, .dont_restore
 
 	ld a, [wd002]
-	cp MAX_ELIXER
+	cp MAX_ELIXIR
 	jr z, .restore_all
 	cp MAX_ETHER
 	jr z, .restore_all
 
 	ld c, 5
-	cp MYSTERYBERRY
+	cp LEPPA_BERRY
 	jr z, .restore_some
 
 	ld c, 10
@@ -2743,205 +2363,299 @@ RestorePP: ; f6e8
 .dont_restore
 	xor a
 	ret
-; f725
 
-TextJump_RaiseThePPOfWhichMove: ; 0xf725
+PrintPPMessageAndSelectMove:
+	ld a, [CurMoveNum]
+	push af
+	xor a
+	ld [CurMoveNum], a
+	ld a, $2
+	ld [wMoveSelectionMenuType], a
+	callba MoveSelectionScreen
+	pop bc
+
+	ld a, b
+	ld [CurMoveNum], a
+	ret nz
+	ld hl, PartyMon1Moves
+	ld bc, PARTYMON_STRUCT_LENGTH
+	call GetMthMoveOfNthPartymon
+
+	push hl
+	ld a, [hl]
+	ld [wd265], a
+	call GetMoveName
+	call CopyName1
+	pop hl
+	xor a
+	ret
+
+TextJump_RaiseThePPOfWhichMove:
 	; Raise the PP of which move?
 	text_jump Text_RaiseThePPOfWhichMove
-	db "@"
-; 0xf72a
 
-TextJump_RestoreThePPOfWhichMove: ; 0xf72a
+TextJump_RestoreThePPOfWhichMove:
 	; Restore the PP of which move?
 	text_jump Text_RestoreThePPOfWhichMove
-	db "@"
-; 0xf72f
 
-TextJump_PPIsMaxedOut: ; 0xf72f
+TextJump_PPIsMaxedOut:
 	; 's PP is maxed out.
 	text_jump Text_PPIsMaxedOut
-	db "@"
-; 0xf734
 
-TextJump_PPsIncreased: ; 0xf734
+TextJump_PPsIncreased:
 	; 's PP increased.
 	text_jump Text_PPsIncreased
-	db "@"
-; 0xf739
 
-UnknownText_0xf739: ; 0xf739
+UnknownText_0xf739:
 	; PP was restored.
 	text_jump UnknownText_0x1c5cf1
-	db "@"
-; 0xf73e
 
-
-Squirtbottle: ; f73e
-	callba _Squirtbottle
-	ret
-; f745
-
-
-CardKey: ; f745
-	callba _CardKey
-	ret
-; f74c
-
-
-BasementKey: ; f74c
-	callba _BasementKey
-	ret
-; f753
-
-
-SacredAsh: ; f753
+SacredAsh:
 	callba _SacredAsh
 	ld a, [wItemEffectSucceeded]
 	cp $1
 	ret nz
-	call UseDisposableItem
-	ret
-; f763
-
-
-NormalBox: ; f763
-	ld c, DECOFLAG_SILVER_TROPHY_DOLL
-	jr OpenBox
-; f767
-
-GorgeousBox: ; f767
-	ld c, DECOFLAG_GOLD_TROPHY_DOLL
-OpenBox: ; f769
-	callba SetSpecificDecorationFlag
-
-	ld hl, .text
-	call PrintText
-
 	jp UseDisposableItem
-; f778
 
-.text ; 0xf778
-	; There was a trophy inside!
-	text_jump UnknownText_0x1c5d03
-	db "@"
-; 0xf77d
+BlueFluteEffect:
+	ld a, [BattleMonStatus]
+	and SLP
+	jr nz, .atLeastOneMonAsleep
+	ld a, [EnemyMonStatus]
+	and SLP
+	jp z, InBattleFlute_PrintCatchyTuneText
+.atLeastOneMonAsleep
+	ld hl, BattleMonStatus
+	ld a, [hl]
+	and $f8
+	ld [hl], a
 
-Brightpowder:
-Item19:
-LuckyPunch:
-MetalPowder:
-Nugget:
-Item2D:
-Item32:
-ExpShare:
-SilverLeaf:
-RedScale:
-Secretpotion:
-SSTicket:
-MysteryEgg:
-ClearBell:
-SilverWing:
-QuickClaw:
-GoldLeaf:
-SoftSand:
-SharpBeak:
-PoisonBarb:
-KingsRock:
-RedApricorn:
-Tinymushroom:
-BigMushroom:
-Silverpowder:
-BluApricorn:
-Item5A:
-AmuletCoin:
-YlwApricorn:
-GrnApricorn:
-CleanseTag:
-MysticWater:
-Twistedspoon:
-WhtApricorn:
-Blackbelt:
-BlkApricorn:
-Item64:
-PnkApricorn:
-Blackglasses:
-Slowpoketail:
-PinkBow:
-Stick:
-SmokeBall:
-Nevermeltice:
-Magnet:
-Pearl:
-BigPearl:
-Everstone:
-SpellTag:
-GsBall:
-MiracleSeed:
-ThickClub:
-FocusBand:
-Item78:
-HardStone:
-LuckyEgg:
-MachinePart:
-EggTicket:
-LostItem:
-Stardust:
-StarPiece:
-Pass:
-Item87:
-Item88:
-Item89:
-Charcoal:
-ScopeLens:
-Item8D:
-Item8E:
-MetalCoat:
-DragonFang:
-Item91:
-Leftovers:
-Item93:
-Item94:
-Item95:
-DragonScale:
-BerserkGene:
-Item99:
-Item9A:
-Item9B:
-FlowerMail:
-ItemA2:
-LightBall:
-PolkadotBow:
-ItemAB:
-UpGrade:
-ItemB0:
-RainbowWing:
-ItemB3:
-TeruSama: ; f77d
-	jp IsntTheTimeMessage
-; f780
+	ld hl, EnemyMonStatus
+	ld a, [hl]
+	and $f8
+	ld [hl], a
 
+	call UsedFluteText
+	ld hl, .WokeUpText
+	jp PrintText
 
-Play_SFX_FULL_HEAL: ; f780
+.WokeUpText:
+	text_jump AllWokeUpText
+
+RedFluteEffect:
+	ld a, [wPlayerSubStatus1]
+	bit SUBSTATUS_IN_LOVE, a
+	jr nz, .atLeastOneMonInfatuated
+	ld a, [wEnemySubStatus1]
+	bit SUBSTATUS_IN_LOVE, a
+	jp z, InBattleFlute_PrintCatchyTuneText
+.atLeastOneMonInfatuated
+	ld hl, wPlayerSubStatus1
+	res SUBSTATUS_IN_LOVE, [hl]
+	ld hl, wEnemySubStatus1
+	res SUBSTATUS_IN_LOVE, [hl]
+	call UseItemTextNoToss
+	ld hl, .SnappedOutText
+	jp PrintText
+
+.SnappedOutText:
+	text_jump AllCameToSensesText
+
+YellowFluteEffect:
+	ld hl, wPlayerSubStatus3
+	bit SUBSTATUS_CONFUSED, [hl]
+	jr nz, .atLeastOneMonConfused
+	ld hl, wEnemySubStatus3
+	bit SUBSTATUS_CONFUSED, [hl]
+	jp z, InBattleFlute_PrintCatchyTuneText ; Both are false so do nothing.
+	ld hl, wPlayerSubStatus3 ; Reload player status.
+.atLeastOneMonConfused
+	res SUBSTATUS_CONFUSED, [hl]
+	ld hl, wEnemySubStatus3
+	res SUBSTATUS_CONFUSED, [hl]
+	call UsedFluteText
+	ld hl, .SnappedOutText
+	jp PrintText
+
+.SnappedOutText:
+	text_jump AllConfusedNoMoreText
+
+OrangeFluteEffect:
+	ld hl, Weather
+	ld a, [hli]
+	and a
+	jp z, InBattleFlute_PrintCatchyTuneText
+	ld [hl], 1
+	call UseItemTextNoToss
+	jpba HandleWeather
+
+GreenFluteEffect:
+	ld a, [wPlayerSubStatus1]
+	bit SUBSTATUS_NIGHTMARE, a
+	jr nz, .atLeastOneMonHasNightmareOrLeechSeed
+	ld a, [wEnemySubStatus1]
+	bit SUBSTATUS_NIGHTMARE, a
+	jr nz, .atLeastOneMonHasNightmareOrLeechSeed
+	ld a, [wPlayerSubStatus4]
+	bit SUBSTATUS_LEECH_SEED, a
+	jr nz, .atLeastOneMonHasNightmareOrLeechSeed
+	ld a, [wEnemySubStatus4]
+	bit SUBSTATUS_LEECH_SEED, a
+	jp z, InBattleFlute_PrintCatchyTuneText
+.atLeastOneMonHasNightmareOrLeechSeed
+	call UsedFluteText
+
+	ld hl, wPlayerSubStatus1
+	res SUBSTATUS_NIGHTMARE, [hl]
+	ld hl, wPlayerSubStatus4
+	res SUBSTATUS_LEECH_SEED, [hl]
+	ld hl, wEnemySubStatus1
+	res SUBSTATUS_NIGHTMARE, [hl]
+	ld hl, wEnemySubStatus4
+	res SUBSTATUS_LEECH_SEED, [hl]
+
+	ld hl, .EndNightmaresLeechSeedText
+	jp PrintText
+
+.EndNightmaresLeechSeedText
+	text_jump EndNightmaresLeechSeedText
+
+PurpleFluteEffect:
+	ld hl, wPlayerScreens
+	ld a, [hli]
+	and (1 << SCREENS_REFLECT) | (1 << SCREENS_LIGHT_SCREEN)
+	jr nz, .erase
+	ld a, [hl] ; enemy screens
+	and (1 << SCREENS_REFLECT) | (1 << SCREENS_LIGHT_SCREEN)
+	jp z, InBattleFlute_PrintCatchyTuneText
+.erase
+	ld hl, wPlayerScreens
+	ld a, [hl]
+	and ((1 << SCREENS_REFLECT) | (1 << SCREENS_LIGHT_SCREEN)) ^ $ff
+	ld [hli], a
+	ld a, [hl]
+	and ((1 << SCREENS_REFLECT) | (1 << SCREENS_LIGHT_SCREEN)) ^ $ff
+	ld [hli], a
+
+	inc hl
+	xor a
+	ld [hli], a
+	ld [hli], a
+	inc hl
+	inc hl
+	ld [hli], a
+	ld [hli], a
+
+	ld hl, .EndPurpleFluteText
+	jp PrintText
+
+.EndPurpleFluteText:
+	text_jump EndWallsText
+
+InBattleFlute_PrintCatchyTuneText:
+	ld hl, PlayedTheFluteText
+	call PrintText
+	ld hl, .NowThatsACatchyTuneText
+	jp PrintText
+
+.NowThatsACatchyTuneText
+	text_jump NowThatsACatchyTuneText
+
+UsedFluteText:
+	ld hl, PlayedTheFluteText
+	call PrintText
+	ld de, SFX_POKEFLUTE
+	call WaitPlaySFX
+	jp WaitSFX
+
+PlayedTheFluteText:
+	text_jump _PlayedTheFluteText
+
+BlackFluteEffect:
+; half encounter rate if white flute isn't in effect
+; normalize encounter rate if white flute is in effect
+	ld hl, wEncounterRateStage
+	ld a, [hl]
+	and a
+	jr z, EncounterRateFlute_NothingHappened
+	dec [hl]
+	jr EncounterRateFlute_UseFlute
+
+WhiteFluteEffect:
+	ld hl, wEncounterRateStage
+	ld a, [hl]
+	cp 2
+	jr nc, EncounterRateFlute_NothingHappened
+	inc [hl]
+	; fallthrough
+
+EncounterRateFlute_UseFlute:
+	callba LoadWildMonData_KeepFlutes
+	ld hl, PlayedTheFluteText
+	call PrintText
+	ld a, [wEncounterRateStage]
+	and a
+	ld hl, .PokemonLessLikelyToAppearText
+	jr z, .gotText
+	dec a
+	ld hl, .PokemonMoreLikelyToAppearText
+	jr nz, .gotText
+	ld a, [wCurItem]
+	cp BLACK_FLUTE
+	ld hl, .PokemonWillAppearAsNormal_BlackFluteText
+	jr z, .gotText
+	ld hl, .PokemonWillAppearAsNormal_WhiteFluteText
+.gotText
+	jp PrintText
+
+.PokemonLessLikelyToAppearText
+	text_jump PokemonLessLikelyToAppearText
+
+.PokemonMoreLikelyToAppearText
+	text_jump PokemonMoreLikelyToAppearText
+
+.PokemonWillAppearAsNormal_BlackFluteText
+	text_jump PokemonWillAppearAsNormal_BlackFluteText
+
+.PokemonWillAppearAsNormal_WhiteFluteText
+	text_jump PokemonWillAppearAsNormal_WhiteFluteText
+
+EncounterRateFlute_NothingHappened:
+	ld hl, PlayedTheFluteText
+	call PrintText
+	ld hl, .PokemonUnaffectedByFluteText
+	call PrintText
+	ld a, $2
+	ld [wItemEffectSucceeded], a
+	ret
+
+.PokemonUnaffectedByFluteText
+	text_jump PokemonUnaffectedByFluteText
+
+Play_SFX_FULL_HEAL:
 	push de
 	ld de, SFX_FULL_HEAL
 	call WaitPlaySFX
 	pop de
 	ret
-; f789
 
-UseItemText: ; f789
+UseItemTextNoToss:
 	ld hl, UsedItemText
 	call PrintText
 	call Play_SFX_FULL_HEAL
-	call WaitPressAorB_BlinkCursor
-UseDisposableItem: ; f795
+	jp WaitPressAorB_BlinkCursor
+
+UseItemText:
+	call UseItemTextNoToss
+	; fallthrough
+
+UseDisposableItem:
 	ld hl, NumItems
 	ld a, 1
 	ld [wItemQuantityChangeBuffer], a
 	jp TossItem
-; f7a0
 
-UseBallInTrainerBattle: ; f7a0
+UseBallInTrainerBattle:
 	call ReturnToBattle_UseBall
 	ld de, ANIM_THROW_POKE_BALL
 	ld a, e
@@ -2952,158 +2666,125 @@ UseBallInTrainerBattle: ; f7a0
 	ld [wBattleAnimParam], a
 	ld [hBattleTurn], a
 	ld [wNumHits], a
+	ld [wCatchMon_Critical], a
 	predef PlayBattleAnim
 	ld hl, BlockedTheBallText
 	call PrintText
 	ld hl, DontBeAThiefText
-	call PrintText
-	jr UseDisposableItem
-; f7ca
+	jp PrintText
 
-WontHaveAnyEffect_NotUsedMessage: ; f7ca
+WontHaveAnyEffect_NotUsedMessage:
 	ld hl, WontHaveAnyEffectText
 	call PrintText
 
-	; Item wasn't used.
-	ld a, $2
-	ld [wItemEffectSucceeded], a
-	ret
-; f7d6
+	jr ItemWasNotUsed
 
-LooksBitterMessage: ; f7d6
+LooksBitterMessage:
 	ld hl, LooksBitterText
 	jp PrintText
-; f7dc
 
-Ball_BoxIsFullMessage: ; f7dc
+Ball_BoxIsFullMessage:
 	ld hl, Ball_BoxIsFullText
 	call PrintText
 
+ItemWasNotUsed:
+Ball_DidntUse:
 	; Item wasn't used.
 	ld a, $2
 	ld [wItemEffectSucceeded], a
 	ret
-; f7e8
 
-CantUseOnEggMessage: ; f7e8
+CantUseOnEggMessage:
 	ld hl, CantUseOnEggText
 	jr CantUseItemMessage
 
-IsntTheTimeMessage: ; f7ed
+ItemDoesNothing:
 	ld hl, IsntTheTimeText
 	jr CantUseItemMessage
 
-WontHaveAnyEffectMessage: ; f7f2
+WontHaveAnyEffectMessage:
 	ld hl, WontHaveAnyEffectText
 	jr CantUseItemMessage
 
-BelongsToSomeoneElseMessage: ; f7f7
+BelongsToSomeoneElseMessage:
 	ld hl, BelongsToSomeoneElseText
 	jr CantUseItemMessage
 
-CyclingIsntAllowedMessage: ; f7fc
+CyclingIsntAllowedMessage:
 	ld hl, CyclingIsntAllowedText
 	jr CantUseItemMessage
 
-CantGetOnYourBikeMessage: ; f801
+CantGetOnYourBikeMessage:
 	ld hl, CantGetOnYourBikeText
 
-CantUseItemMessage: ; f804
+CantUseItemMessage:
 ; Item couldn't be used.
 	xor a
 	ld [wItemEffectSucceeded], a
 	jp PrintText
-; f80b
 
-LooksBitterText: ; 0xf80b
+LooksBitterText:
 	; It looks bitter…
 	text_jump UnknownText_0x1c5d3e
-	db "@"
-; 0xf810
 
-CantUseOnEggText: ; 0xf810
+CantUseOnEggText:
 	; That can't be used on an EGG.
 	text_jump UnknownText_0x1c5d50
-	db "@"
-; 0xf815
 
-IsntTheTimeText: ; 0xf815
+IsntTheTimeText:
 	; OAK:  ! This isn't the time to use that!
 	text_jump UnknownText_0x1c5d6e
-	db "@"
-; 0xf81a
 
-BelongsToSomeoneElseText: ; 0xf81a
+BelongsToSomeoneElseText:
 	; That belongs to someone else!
 	text_jump UnknownText_0x1c5d97
-	db "@"
-; 0xf81f
 
-WontHaveAnyEffectText: ; 0xf81f
+WontHaveAnyEffectText:
 	; It won't have any effect.
 	text_jump UnknownText_0x1c5db6
-	db "@"
-; 0xf824
 
-BlockedTheBallText: ; 0xf824
+BlockedTheBallText:
 	; The trainer blocked the BALL!
 	text_jump UnknownText_0x1c5dd0
-	db "@"
-; 0xf829
 
-DontBeAThiefText: ; 0xf829
+DontBeAThiefText:
 	; Don't be a thief!
 	text_jump UnknownText_0x1c5def
-	db "@"
-; 0xf82e
 
-CyclingIsntAllowedText: ; 0xf82e
+CyclingIsntAllowedText:
 	; Cycling isn't allowed here.
 	text_jump UnknownText_0x1c5e01
-	db "@"
-; 0xf833
 
-CantGetOnYourBikeText: ; 0xf833
+CantGetOnYourBikeText:
 	; Can't get on your @  now.
 	text_jump UnknownText_0x1c5e1d
-	db "@"
-; 0xf838
 
-Ball_BoxIsFullText: ; 0xf838
-	; The #MON BOX is full. That can't be used now.
+Ball_BoxIsFullText:
+	; The #mon BOX is full. That can't be used now.
 	text_jump UnknownText_0x1c5e3a
-	db "@"
-; 0xf83d
 
-UsedItemText: ; 0xf83d
+UsedItemText:
 	; used the@ .
 	text_jump UnknownText_0x1c5e68
-	db "@"
-; 0xf842
 
-GotOnTheItemText: ; 0xf842
+GotOnTheItemText:
 	; got on the@ .
 	text_jump UnknownText_0x1c5e7b
-	db "@"
-; 0xf847
 
-GotOffTheItemText: ; 0xf847
+GotOffTheItemText:
 	; got off@ the @ .
 	text_jump UnknownText_0x1c5e90
-	db "@"
-; 0xf84c
 
-
-ApplyPPUp: ; f84c
+ApplyPPUp:
 	ld a, MON_MOVES
 	call GetPartyParamLocation
 	push hl
-	ld de, Buffer1
+	ld de, wPPUpPPBuffer
 	predef FillPP
 	pop hl
 	ld bc, MON_PP - MON_MOVES
 	add hl, bc
-	ld de, Buffer1
+	ld de, wPPUpPPBuffer
 	ld b, 0
 .loop
 	inc b
@@ -3121,68 +2802,59 @@ ApplyPPUp: ; f84c
 .use
 	ld a, [hl]
 	and 3 << 6
-	ld a, [de] ; wasted cycle
 	call nz, ComputeMaxPP
 
 .skip
 	inc hl
 	inc de
 	jr .loop
-; f881
 
-
-
-ComputeMaxPP: ; f881
+ComputeMaxPP:
 	push bc
 	; Divide the base PP by 5.
 	ld a, [de]
-	ld [hDividend + 3], a
-	xor a
-	ld [hDividend], a
-	ld [hDividend + 1], a
-	ld [hDividend + 2], a
-	ld a, 5
-	ld [hDivisor], a
-	ld b, 4
-	call Divide
-	; Get the number of PP, which are bits 6 and 7 of the PP value stored in RAM.
+	ld c, 5
+	call SimpleDivide
+	ld a, b
+	ld [hQuotient + 2], a ; we'll keep using this as a buffer
+	; Get the number of PP Ups, which are bits 6 and 7 of the PP value stored in RAM.
 	ld a, [hl]
 	ld b, a
-	swap a
-	and $f
-	srl a
-	srl a
+	rlca
+	rlca
+	and 3
 	ld c, a
 	; If this value is 0, we are done
 	and a
 	jr z, .NoPPUp
 
 .loop
-	; Normally, a move with 40 PP would have 64 PP with three PP Ups.
-	; Since this would overflow into bit 6, we prevent that from happening
-	; by decreasing the extra amount of PP each PP Up provides, resulting
-	; in a maximum of 61.
+	ld a, b
+	push af
 	ld a, [hQuotient + 2]
-	cp $8
-	jr c, .okay
-	ld a, $7
-
-.okay
-	add b
+	add a, b
 	ld b, a
+	pop af
+	or 63
+	sub b
+	cp 64
+	jr c, .no_carry_into_PP_ups
+	add a, b
+	or 63
+	ld b, a
+.no_carry_into_PP_ups
 	ld a, [wd265]
 	dec a
 	jr z, .NoPPUp
 	dec c
 	jr nz, .loop
 
-.NoPPUp:
+.NoPPUp
 	ld [hl], b
 	pop bc
 	ret
-; f8b9
 
-RestoreAllPP: ; f8b9
+RestoreAllPP:
 	ld a, MON_PP
 	call GetPartyParamLocation
 	push hl
@@ -3191,7 +2863,7 @@ RestoreAllPP: ; f8b9
 	pop de
 	xor a ; PARTYMON
 	ld [wMenuCursorY], a
-	ld [MonType], a
+	ld [wMonType], a
 	ld c, NUM_MOVES
 .loop
 	ld a, [hli]
@@ -3216,16 +2888,15 @@ RestoreAllPP: ; f8b9
 	dec c
 	jr nz, .loop
 	ret
-; f8ec
 
+GetMaxPPOfMove:
+	ld hl, wStringBuffer1
+	ld a, [hli]
+	ld l, [hl]
+	ld h, a
+	push hl
 
-GetMaxPPOfMove: ; f8ec
-	ld a, [StringBuffer1 + 0]
-	push af
-	ld a, [StringBuffer1 + 1]
-	push af
-
-	ld a, [MonType]
+	ld a, [wMonType]
 	and a
 
 	ld hl, PartyMon1Moves
@@ -3240,13 +2911,12 @@ GetMaxPPOfMove: ; f8ec
 	dec a
 	jr z, .got_nonpartymon ; BOXMON
 
-	ld hl, TempMonMoves ; Wasted cycles
 	dec a
-	jr z, .got_nonpartymon ; TEMPMON
+	jr z, .got_nonpartymon ; BREEDMON
 
 	ld hl, BattleMonMoves ; WILDMON
 
-.got_nonpartymon ; BOXMON, TEMPMON, WILDMON
+.got_nonpartymon ; BOXMON, BREEDMON, WILDMON
 	call GetMthMoveOfCurrentMon
 	jr .gotdatmove
 
@@ -3260,17 +2930,17 @@ GetMaxPPOfMove: ; f8ec
 	push hl
 	ld hl, Moves + MOVE_PP
 	ld bc, MOVE_LENGTH
-	call AddNTimes
+	rst AddNTimes
 	ld a, BANK(Moves)
 	call GetFarByte
 	ld b, a
-	ld de, StringBuffer1
+	ld de, wStringBuffer1
 	ld [de], a
 	pop hl
 
 	push bc
 	ld bc, MON_PP - MON_MOVES
-	ld a, [MonType]
+	ld a, [wMonType]
 	cp WILDMON
 	jr nz, .notwild
 	ld bc, EnemyMonPP - EnemyMonMoves
@@ -3281,33 +2951,51 @@ GetMaxPPOfMove: ; f8ec
 	pop bc
 
 	or b
-	ld hl, StringBuffer1 + 1
+	ld hl, wStringBuffer1 + 1
 	ld [hl], a
 	xor a
 	ld [wd265], a
-	ld a, b ; this gets lost anyway
 	call ComputeMaxPP
 	ld a, [hl]
 	and (1 << 6) - 1
 	ld [wd265], a
 
-	pop af
-	ld [StringBuffer1 + 1], a
-	pop af
-	ld [StringBuffer1 + 0], a
+	pop bc
+	ld hl, wStringBuffer1
+	ld a, b
+	ld [hli], a
+	ld [hl], c
 	ret
-; f963
 
-GetMthMoveOfNthPartymon: ; f963
-	ld a, [CurPartyMon]
-	call AddNTimes
+GetMthMoveOfNthPartymon:
+	ld a, [wCurPartyMon]
+	rst AddNTimes
+	; fallthrough
 
-GetMthMoveOfCurrentMon: ; f969
+GetMthMoveOfCurrentMon:
 	ld a, [wMenuCursorY]
 	ld c, a
 	ld b, 0
 	add hl, bc
 	ret
-; f971
 
-INCLUDE "items/pokeball_wobble.asm"
+SootSackEffect:
+	ld hl, .sootsacktext
+	jp MenuTextBoxWaitButton
+
+.sootsacktext
+	text_jump SootSackText
+
+OrphanCardEffect:
+	ld hl, .orphancardtext
+	jp MenuTextBoxWaitButton
+
+.orphancardtext
+	text_jump OrphanPointsText
+
+FossilCaseEffect:
+	ld hl, .fossilcasetext
+	jp MenuTextBoxWaitButton
+
+.fossilcasetext
+	text_jump FossilCaseText

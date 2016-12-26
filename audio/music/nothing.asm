@@ -1,8 +1,9 @@
 Music_Nothing: ; e91a3
-	musicheader 4, 1, Music_Nothing_Ch1
-	musicheader 1, 2, Music_Nothing_Ch2
-	musicheader 1, 3, Music_Nothing_Ch3
-	musicheader 1, 4, Music_Nothing_Ch4
+	channelcount 4
+	channel 1, Music_Nothing_Ch1
+	channel 2, Music_Nothing_Ch2
+	channel 3, Music_Nothing_Ch3
+	channel 4, Music_Nothing_Ch4
 ; e91af
 
 Music_Nothing_Ch1: ; e91af

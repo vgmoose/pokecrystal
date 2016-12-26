@@ -1,60 +1,53 @@
-Script_ForcedMovement:: ; 0x1253d
+Script_ForcedMovement::
 	checkcode VAR_FACING
-	if_equal DOWN, .down
-	if_equal UP, .up
-	if_equal LEFT, .left
-	if_equal RIGHT, .right
-	end
-; 0x12550
+	sif >, 3
+		end
+	anonjumptable
+	dw .down
+	dw .up
+	dw .left
+	dw .right
 
-.up ; 0x12550
+.up
 	applymovement PLAYER, .MovementData_up
 	end
-; 0x12555
 
-.down ; 0x12555
+.down
 	applymovement PLAYER, .MovementData_down
 	end
-; 0x1255a
 
-.right ; 0x1255a
+.right
 	applymovement PLAYER, .MovementData_right
 	end
-; 0x1255f
 
-.left ; 0x1255f
+.left
 	applymovement PLAYER, .MovementData_left
 	end
-; 0x12564
 
-.MovementData_up: ; 0x12564
+.MovementData_up
 	step_dig 16
-	turn_in DOWN
+	turn_in_down
 	step_dig 16
-	turn_head DOWN
+	turn_head_down
 	step_end
-; 0x1256b
 
-.MovementData_down: ; 0x1256b
+.MovementData_down
 	step_dig 16
-	turn_in UP
+	turn_in_up
 	step_dig 16
-	turn_head UP
+	turn_head_up
 	step_end
-; 0x12572
 
-.MovementData_right: ; 0x12572
+.MovementData_right
 	step_dig 16
-	turn_in LEFT
+	turn_in_left
 	step_dig 16
-	turn_head LEFT
+	turn_head_left
 	step_end
-; 0x12579
 
-.MovementData_left: ; 0x12579
+.MovementData_left
 	step_dig 16
-	turn_in RIGHT
+	turn_in_right
 	step_dig 16
-	turn_head RIGHT
+	turn_head_right
 	step_end
-; 0x12580

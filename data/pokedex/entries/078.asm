@@ -1,10 +1,15 @@
-; RapidashPokedexEntry: ; 0x1b855e
-	db "FIRE HORSE@" ; species name
-	dw 507, 2090 ; height, width
+	ctxt "Fire Horse" ; species name
+	done
+	dw 507, 2090 ; height, weight
 
-	db   "It just loves to"
+	db .page2 - .page1
+.page1
+	ctxt "It just loves to"
 	next "gallop. The faster"
 	next "it goes, the long-"
-	page "er the swaying"
+	done
+.page2
+	ctxt "er the swaying"
 	next "flames of its mane"
-	next "will become.@"
+	next "will become."
+	done

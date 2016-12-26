@@ -33,6 +33,7 @@ HiJumpKick:
 QuickAttack:
 MachPunch:
 Extremespeed:
+GhostHammer:
 NormalHit:
 	checkobedience
 	usedmovetext
@@ -40,7 +41,7 @@ NormalHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	hittarget
@@ -50,6 +51,7 @@ NormalHit:
 	supereffectivetext
 	checkdestinybond
 	buildopponentrage
+	defrostfoe
 	kingsrock
 	endmove
 
@@ -64,6 +66,7 @@ DoSleep:
 	doturn
 	checkhit
 	checksafeguard
+	checkpowder
 	sleeptarget
 	endmove
 
@@ -78,7 +81,7 @@ PoisonHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -103,7 +106,7 @@ LeechHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	hittarget
@@ -128,7 +131,7 @@ BurnHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -139,6 +142,7 @@ BurnHit:
 	supereffectivetext
 	checkdestinybond
 	buildopponentrage
+	defrostfoe
 	burntarget
 	endmove
 
@@ -153,7 +157,7 @@ FreezeHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -165,6 +169,14 @@ FreezeHit:
 	checkdestinybond
 	buildopponentrage
 	freezetarget
+	endmove
+
+PainSplit:
+	checkobedience
+	usedmovetext
+	doturn
+	checkhit
+	painsplit
 	endmove
 
 Thunderpunch:
@@ -182,7 +194,7 @@ ParalyzeHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -204,7 +216,7 @@ Explosion:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	selfdestruct
@@ -225,7 +237,7 @@ DreamEater:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	hittarget
@@ -622,6 +634,7 @@ EvasionDown2:
 	endmove
 
 AuroraBeam:
+MeteorMash:
 AttackDownHit:
 	checkobedience
 	usedmovetext
@@ -629,7 +642,7 @@ AttackDownHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -644,9 +657,9 @@ AttackDownHit:
 	statdownmessage
 	endmove
 
-Acid:
 IronTail:
 RockSmash:
+Crunch:
 DefenseDownHit:
 	checkobedience
 	usedmovetext
@@ -654,7 +667,7 @@ DefenseDownHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -681,7 +694,7 @@ SpeedDownHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -703,7 +716,7 @@ SpecialAttackDownHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -719,8 +732,8 @@ SpecialAttackDownHit:
 	endmove
 
 PsychicM:
-Crunch:
 ShadowBall:
+Acid:
 SpecialDefenseDownHit:
 	checkobedience
 	usedmovetext
@@ -728,7 +741,7 @@ SpecialDefenseDownHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -752,7 +765,7 @@ AccuracyDownHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -774,7 +787,7 @@ EvasionDownHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -797,7 +810,7 @@ DefenseUpHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -820,7 +833,7 @@ AttackUpHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -843,7 +856,7 @@ AllUpHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -855,27 +868,6 @@ AllUpHit:
 	checkdestinybond
 	buildopponentrage
 	allstatsup
-	endmove
-
-PayDay:
-	checkobedience
-	usedmovetext
-	doturn
-	critical
-	damagestats
-	damagecalc
-	stab
-	damagevariation
-	checkhit
-	hittarget
-	failuretext
-	checkfaint
-	criticaltext
-	supereffectivetext
-	payday
-	checkdestinybond
-	buildopponentrage
-	kingsrock
 	endmove
 
 Conversion:
@@ -892,22 +884,6 @@ Haze:
 	resetstats
 	endmove
 
-Bide:
-	storeenergy
-	checkobedience
-	doturn
-	usedmovetext
-	unleashenergy
-	resettypematchup
-	checkhit
-	hittarget
-	effect0xa5
-	checkfaint
-	checkdestinybond
-	buildopponentrage
-	kingsrock
-	endmove
-
 Thrash:
 PetalDance:
 Outrage:
@@ -921,7 +897,7 @@ Rampage:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	clearmissdamage
 	hittarget
@@ -963,7 +939,7 @@ MultiHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	clearmissdamage
 	hittargetnosub
@@ -991,7 +967,7 @@ PoisonMultiHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	clearmissdamage
 	hittargetnosub
@@ -1022,7 +998,7 @@ FlinchHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -1036,24 +1012,6 @@ FlinchHit:
 	flinchtarget
 	endmove
 
-Guillotine:
-HornDrill:
-Fissure:
-OHKOHit:
-	checkobedience
-	usedmovetext
-	doturn
-	stab
-	ohko
-	hittarget
-	failuretext
-	checkfaint
-	criticaltext
-	supereffectivetext
-	checkdestinybond
-	buildopponentrage
-	endmove
-
 TakeDown:
 DoubleEdge:
 Submission:
@@ -1065,7 +1023,7 @@ RecoilHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	hittarget
@@ -1117,7 +1075,7 @@ ConfuseHit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -1165,7 +1123,7 @@ TriAttack:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	hittarget
@@ -1186,9 +1144,20 @@ DoPoison:
 	usedmovetext
 	doturn
 	checkhit
-	stab
+	typematchup
 	checksafeguard
+	checkpowder
 	poison
+	endmove
+
+WillOWisp:
+	checkobedience
+	usedmovetext
+	doturn
+	checkhit
+	typematchup
+	checksafeguard
+	burn
 	endmove
 
 StunSpore:
@@ -1198,9 +1167,10 @@ DoParalyze:
 	checkobedience
 	usedmovetext
 	doturn
-	stab
+	typematchup
 	checkhit
 	checksafeguard
+	checkpowder
 	paralyze
 	endmove
 
@@ -1213,7 +1183,7 @@ SkyAttack:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -1242,7 +1212,7 @@ HyperBeam:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	hittarget
@@ -1262,9 +1232,8 @@ Rage:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	checkhit
-	ragedamage
 	damagevariation
 	hittarget
 	failuretext
@@ -1275,14 +1244,6 @@ Rage:
 	checkdestinybond
 	buildopponentrage
 	kingsrock
-	endmove
-
-Mimic:
-	checkobedience
-	usedmovetext
-	doturn
-	checkhit
-	mimic
 	endmove
 
 Metronome:
@@ -1324,7 +1285,7 @@ RazorWind:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	hittarget
@@ -1347,7 +1308,7 @@ Dig:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	hittargetnosub
@@ -1373,7 +1334,7 @@ Whirlpool:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	clearmissdamage
 	hittarget
@@ -1386,9 +1347,6 @@ Whirlpool:
 	traptarget
 	endmove
 
-SuperFang:
-Sonicboom:
-DragonRage:
 SeismicToss:
 NightShade:
 Psywave:
@@ -1413,7 +1371,7 @@ Reversal:
 	usedmovetext
 	doturn
 	constantdamage
-	stab
+	typematchup
 	checkhit
 	hittarget
 	failuretext
@@ -1445,37 +1403,6 @@ Encore:
 	encore
 	endmove
 
-PainSplit:
-	checkobedience
-	usedmovetext
-	doturn
-	checkhit
-	painsplit
-	endmove
-
-Snore:
-	checkobedience
-	usedmovetext
-	doturn
-	critical
-	damagestats
-	damagecalc
-	stab
-	damagevariation
-	checkhit
-	effectchance
-	snore
-	hittarget
-	failuretext
-	checkfaint
-	criticaltext
-	supereffectivetext
-	checkdestinybond
-	buildopponentrage
-	flinchtarget
-	kingsrock
-	endmove
-
 Conversion2:
 	checkobedience
 	usedmovetext
@@ -1491,13 +1418,6 @@ LockOn:
 	doturn
 	checkhit
 	lockon
-	endmove
-
-Sketch:
-	checkobedience
-	usedmovetext
-	doturn
-	sketch
 	endmove
 
 DefrostOpponent:
@@ -1536,7 +1456,7 @@ FalseSwipe:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	falseswipe
 	checkhit
@@ -1557,32 +1477,11 @@ HealBell:
 	healbell
 	endmove
 
-TripleKick:
+BellyDrum:
 	checkobedience
 	usedmovetext
 	doturn
-	startloop
-	lowersub
-	checkhit
-	critical
-	damagestats
-	damagecalc
-	triplekick
-	stab
-	damagevariation
-	clearmissdamage
-	hittargetnosub
-	failuretext
-	checkfaint
-	criticaltext
-	cleartext
-	supereffectivelooptext
-	checkdestinybond
-	buildopponentrage
-	kickcounter
-	endloop
-	raisesub
-	kingsrock
+	bellydrum
 	endmove
 
 Thief:
@@ -1592,7 +1491,7 @@ Thief:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -1629,7 +1528,7 @@ FlameWheel:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -1641,6 +1540,7 @@ FlameWheel:
 	defrost
 	checkdestinybond
 	buildopponentrage
+	defrostfoe
 	burntarget
 	endmove
 
@@ -1703,7 +1603,7 @@ Rollout:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	checkhit
 	rolloutpower
 	damagevariation
@@ -1742,7 +1642,7 @@ FuryCutter:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	checkhit
 	furycutter
 	damagevariation
@@ -1772,31 +1672,10 @@ Return:
 	damagestats
 	happinesspower
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	hittarget
-	failuretext
-	checkfaint
-	criticaltext
-	supereffectivetext
-	checkdestinybond
-	buildopponentrage
-	kingsrock
-	endmove
-
-Present:
-	checkobedience
-	usedmovetext
-	doturn
-	checkhit
-	critical
-	damagestats
-	present
-	damagecalc
-	stab
-	damagevariation
-	clearmissdamage
 	failuretext
 	checkfaint
 	criticaltext
@@ -1814,7 +1693,7 @@ Frustration:
 	damagestats
 	frustrationpower
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	hittarget
@@ -1841,7 +1720,7 @@ SacredFire:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	effectchance
@@ -1853,6 +1732,7 @@ SacredFire:
 	defrost
 	checkdestinybond
 	buildopponentrage
+	defrostfoe
 	burntarget
 	endmove
 
@@ -1864,7 +1744,7 @@ Magnitude:
 	damagestats
 	getmagnitude
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	doubleundergrounddamage
@@ -1892,7 +1772,7 @@ Pursuit:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	pursuit
 	checkhit
@@ -1913,7 +1793,7 @@ RapidSpin:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	hittarget
@@ -1955,7 +1835,7 @@ HiddenPower:
 	critical
 	hiddenpower
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	hittarget
@@ -1982,68 +1862,6 @@ SunnyDay:
 	startsun
 	endmove
 
-FakeOut:
-	checkobedience
-	usedmovetext
-	doturn
-	checkhit
-	fakeout
-	hittarget
-	failuretext
-	endmove
-
-BellyDrum:
-	checkobedience
-	usedmovetext
-	doturn
-	bellydrum
-	endmove
-
-PsychUp:
-	checkobedience
-	usedmovetext
-	doturn
-	psychup
-	endmove
-
-MirrorCoat:
-	checkobedience
-	usedmovetext
-	doturn
-	mirrorcoat
-	hittarget
-	failuretext
-	checkfaint
-	checkdestinybond
-	buildopponentrage
-	kingsrock
-	endmove
-
-SkullBash:
-	checkcharge
-	checkobedience
-	doturn
-	charge
-	usedmovetext
-	critical
-	damagestats
-	damagecalc
-	stab
-	damagevariation
-	checkhit
-	hittarget
-	failuretext
-	checkfaint
-	criticaltext
-	supereffectivetext
-	checkdestinybond
-	buildopponentrage
-	kingsrock
-	endturn
-	defenseup
-	statupmessage
-	endmove
-
 Twister:
 	checkobedience
 	usedmovetext
@@ -2051,7 +1869,7 @@ Twister:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	doubleflyingdamage
 	checkhit
@@ -2073,7 +1891,7 @@ Earthquake:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	doubleundergrounddamage
 	checkhit
@@ -2092,10 +1910,14 @@ FutureSight:
 	checkobedience
 	usedmovetext
 	doturn
+	futuresight
+; move effect ends here
+
+.use_future_sight
 	damagestats
 	damagecalc
-	futuresight
-	damagevariation ; skip here if last turn
+	typematchup
+	damagevariation
 	checkhit
 	hittargetnosub
 	failuretext
@@ -2111,7 +1933,7 @@ Gust:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	doubleflyingdamage
 	checkhit
@@ -2131,7 +1953,7 @@ Stomp:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	doubleminimizedamage
 	checkhit
@@ -2156,7 +1978,7 @@ Solarbeam:
 	critical
 	damagestats
 	damagecalc
-	stab
+	typematchup
 	damagevariation
 	checkhit
 	hittarget
@@ -2179,7 +2001,7 @@ Thunder:
 	thunderaccuracy
 	checkhit
 	effectchance
-	stab
+	typematchup
 	damagevariation
 	hittarget
 	failuretext
@@ -2198,33 +2020,6 @@ Teleport:
 	teleport
 	endmove
 
-BeatUp:
-	checkobedience
-	usedmovetext
-	movedelay
-	doturn
-	startloop
-	lowersub
-	checkhit
-	critical
-	beatup
-	damagecalc
-	damagevariation
-	clearmissdamage
-	hittargetnosub
-	failuretext
-	checkfaint
-	criticaltext
-	cleartext
-	supereffectivetext
-	checkdestinybond
-	buildopponentrage
-	endloop
-	effect0xa8
-	raisesub
-	kingsrock
-	endmove
-
 DefenseCurl:
 	checkobedience
 	usedmovetext
@@ -2236,4 +2031,260 @@ DefenseCurl:
 	raisesub
 	statupmessage
 	statupfailtext
+	endmove
+
+FinalChance:
+	checkobedience
+	usedmovetext
+	doturn
+	finalchance
+	endmove
+
+CalmMind:
+	checkobedience
+	usedmovetext
+	doturn
+	lowersub
+	statupanim
+	calmmind
+	raisesub
+	endmove
+
+DragonDance:
+	checkobedience
+	usedmovetext
+	doturn
+	lowersub
+	statupanim
+	dragondance
+	raisesub
+	endmove
+
+GrowthMoveEffect:
+	checkobedience
+	usedmovetext
+	doturn
+	lowersub
+	statupanim
+	growth
+	raisesub
+	endmove
+
+CosmicPower:
+	checkobedience
+	usedmovetext
+	doturn
+	lowersub
+	statupanim
+	cosmicpower
+	raisesub
+	endmove
+
+BulkUp:
+	checkobedience
+	usedmovetext
+	doturn
+	lowersub
+	statupanim
+	bulkup
+	raisesub
+	endmove
+
+Hail:
+	checkobedience
+	usedmovetext
+	doturn
+	starthail
+	endmove
+
+LavaPool:
+	checkobedience
+	usedmovetext
+	doturn
+	lavapool
+	endmove
+
+Metallurgy:
+	checkobedience
+	usedmovetext
+	doturn
+	metallurgy
+	endmove
+
+Vaporize:
+	checkobedience
+	usedmovetext
+	doturn
+	vaporize
+	endmove
+
+Hurricane:
+	checkobedience
+	usedmovetext
+	doturn
+	critical
+	damagestats
+	damagecalc
+	typematchup
+	damagevariation
+	checkhit
+	effectchance
+	hittarget
+	failuretext
+	checkfaint
+	criticaltext
+	supereffectivetext
+	checkdestinybond
+	buildopponentrage
+	startrain
+	endmove
+
+Tornado:
+	checkobedience
+	usedmovetext
+	doturn
+	critical
+	damagestats
+	damagecalc
+	typematchup
+	damagevariation
+	checkhit
+	effectchance
+	hittarget
+	failuretext
+	checkfaint
+	criticaltext
+	supereffectivetext
+	checkdestinybond
+	buildopponentrage
+	startsandstorm
+	endmove
+
+PrismSpray:
+	checkobedience
+	usedmovetext
+	doturn
+	prismspray
+	critical
+	damagestats
+	damagecalc
+	typematchup
+	damagevariation
+	checkhit
+	effectchance
+	hittarget
+	failuretext
+	checkfaint
+	criticaltext
+	supereffectivetext
+	checkdestinybond
+	buildopponentrage
+	endmove
+
+SpringBuds:
+	checkobedience
+	usedmovetext
+	doturn
+	critical
+	damagestats
+	damagecalc
+	typematchup
+	damagevariation
+	checkhit
+	effectchance
+	hittarget
+	failuretext
+	checkfaint
+	criticaltext
+	supereffectivetext
+	checkdestinybond
+	buildopponentrage
+	leechseed
+	endmove
+
+FreezeBurn:
+	checkobedience
+	usedmovetext
+	doturn
+	critical
+	damagestats
+	damagecalc
+	typematchup
+	damagevariation
+	checkhit
+	hittarget
+	failuretext
+	checkfaint
+	criticaltext
+	supereffectivetext
+	checkdestinybond
+	buildopponentrage
+	freezeburnchance
+	endmove
+
+NaturePower:
+	checkobedience
+	usedmovetext
+	doturn
+	naturepower
+	critical
+	damagestats
+	damagecalc
+	typematchup
+	damagevariation
+	checkhit
+	hittarget
+	failuretext
+	checkfaint
+	criticaltext
+	supereffectivetext
+	checkdestinybond
+	buildopponentrage
+	kingsrock
+	endmove
+
+FlareBlitz:
+	checkobedience
+	usedmovetext
+	doturn
+	critical
+	damagestats
+	damagecalc
+	typematchup
+	damagevariation
+	checkhit
+	effectchance
+	hittarget
+	failuretext
+	checkfaint
+	criticaltext
+	supereffectivetext
+	recoil
+	defrost
+	checkdestinybond
+	buildopponentrage
+	defrostfoe
+	burntarget
+	kingsrock
+	endmove
+
+LaughingGasEffect:
+	checkobedience
+	usedmovetext
+	doturn
+	critical
+	damagestats
+	damagecalc
+	typematchup
+	damagevariation
+	checkhit
+	effectchance
+	hittarget
+	failuretext
+	checkfaint
+	criticaltext
+	supereffectivetext
+	checkdestinybond
+	buildopponentrage
+	laughinggas
 	endmove

@@ -1,10 +1,15 @@
-; EnteiPokedexEntry: ; 0x1d15dd
-	db "VOLCANO@" ; species name
-	dw 607, 4370 ; height, width
+	ctxt "Sea Basin" ; species name
+	done
+	dw 1409, 7760 ; height, weight
 
-	db   "This brawny"
-	next "#MON courses"
-	next "around the earth,"
-	page "spouting flames"
-	next "hotter than a"
-	next "volcano's magma.@"
+	db .page2 - .page1
+.page1
+	ctxt "It is said to have"
+	next "widened the seas"
+	next "by causing"
+	done
+.page2
+	ctxt "downpours. It had"
+	next "been asleep in a"
+	next "marine trench."
+	done

@@ -75,14 +75,14 @@ tradeanim_do_givemon_scroll: macro
 	db tradeanim_do_givemon_scroll_command ; 1c
 endm
 
-	enum tradeanim_frontpic_scroll_command
-tradeanim_frontpic_scroll: macro
-	db tradeanim_frontpic_scroll_command ; 1d
+	enum tradeanim_1d_command
+tradeanim_1d: macro
+	db tradeanim_1d_command ; 1d
 endm
 
-	enum tradeanim_textbox_scroll_command
-tradeanim_textbox_scroll: macro
-	db tradeanim_textbox_scroll_command ; 1e
+	enum tradeanim_1e_command
+tradeanim_1e: macro
+	db tradeanim_1e_command ; 1e
 endm
 
 	enum tradeanim_scroll_out_right_command
@@ -162,92 +162,4 @@ endm
 	enum tradeanim_wait_180_if_ot_egg_command
 tradeanim_wait_180_if_ot_egg: macro
 	db tradeanim_wait_180_if_ot_egg_command ; 2f
-endm
-
-
-; Mobile
-	enum_start 1
-
-	enum mobiletradeanim_showgivemon_command
-mobiletradeanim_showgivemon: macro
-	db mobiletradeanim_showgivemon_command ; 01
-endm
-
-	enum mobiletradeanim_02_command
-mobiletradeanim_02: macro
-	db mobiletradeanim_02_command ; 02
-endm
-
-	enum mobiletradeanim_sendmon_command
-mobiletradeanim_sendmon: macro
-	db mobiletradeanim_sendmon_command ; 03
-endm
-
-__enum__ set $05
-
-	enum mobiletradeanim_05_command
-mobiletradeanim_05: macro
-	db mobiletradeanim_05_command ; 05
-endm
-
-	enum mobiletradeanim_06_command
-mobiletradeanim_06: macro
-	db mobiletradeanim_06_command ; 06
-endm
-
-	enum mobiletradeanim_07_command
-mobiletradeanim_07: macro
-	db mobiletradeanim_07_command ; 07
-endm
-
-	enum mobiletradeanim_receivemon_command
-mobiletradeanim_receivemon: macro
-	db mobiletradeanim_receivemon_command ; 08
-endm
-
-__enum__ set $0b
-
-	enum mobiletradeanim_showgetmon_command
-mobiletradeanim_showgetmon: macro
-	db mobiletradeanim_showgetmon_command ; 0b
-endm
-
-	enum mobiletradeanim_end_command
-mobiletradeanim_end: macro
-	db mobiletradeanim_end_command ; 0c
-endm
-
-	enum mobiletradeanim_showgtsgivemon_command
-mobiletradeanim_showgtsgivemon: macro
-	db mobiletradeanim_showgtsgivemon_command ; 0d
-endm
-
-	enum mobiletradeanim_showgtsgetmon_command
-mobiletradeanim_showgtsgetmon: macro
-	db mobiletradeanim_showgtsgetmon_command ; 0e
-endm
-
-	enum mobiletradeanim_0f_command
-mobiletradeanim_0f: macro
-	db mobiletradeanim_0f_command ; 0f
-endm
-
-	enum mobiletradeanim_10_command
-mobiletradeanim_10: macro
-	db mobiletradeanim_10_command ; 10
-endm
-
-	enum mobiletradeanim_11_command
-mobiletradeanim_11: macro
-	db mobiletradeanim_11_command ; 11
-endm
-
-	enum mobiletradeanim_12_command
-mobiletradeanim_12: macro
-	db mobiletradeanim_12_command ; 12
-endm
-
-	enum mobiletradeanim_showoddegg_command
-mobiletradeanim_showoddegg: macro
-	db mobiletradeanim_showoddegg_command ; 13
 endm

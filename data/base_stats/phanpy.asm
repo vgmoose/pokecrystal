@@ -1,22 +1,17 @@
-	db PHANPY ; 231
-
-	db  90,  60,  60,  40,  40,  40
-	;   hp  atk  def  spd  sat  sdf
-
+	db PHANPY
+	db 90, 60, 60, 40, 40, 40
 	db GROUND, GROUND
-	db 120 ; catch rate
-	db 124 ; base exp
-	db NO_ITEM ; item 1
-	db NO_ITEM ; item 2
-	db 127 ; gender
-	db 100 ; unknown
-	db 20 ; step cycles to hatch
-	db 5 ; unknown
-	dn 5, 5 ; frontpic dimensions
-	db 0, 0, 0, 0 ; padding
-	db MEDIUM_FAST ; growth rate
-	dn FIELD, FIELD ; egg groups
+	db 120 ;catch rate
+	db 124 ;exp rate
+	db NO_ITEM
+	db SMOOTH_ROCK
+	db 127 ;gender
+	db 100 ;unknown
+	db 20 ;egg cycles
+	db 5 ;unknown
+	dn 5, 5 ;picture dimensions
+	db ABILITY_PICKUP, ABILITY_PICKUP ;abilities
+	db 0, 0 ;padding
+	db MEDIUM_FAST ;growth rate
+	dn FIELD, FIELD ;egg groups
 
-	; tmhm
-	tmhm HEADBUTT, CURSE, ROLLOUT, ROAR, TOXIC, ROCK_SMASH, HIDDEN_POWER, SUNNY_DAY, SNORE, PROTECT, ENDURE, FRUSTRATION, EARTHQUAKE, RETURN, MUD_SLAP, DOUBLE_TEAM, SWAGGER, SLEEP_TALK, SANDSTORM, DEFENSE_CURL, REST, ATTRACT, STRENGTH
-	; end

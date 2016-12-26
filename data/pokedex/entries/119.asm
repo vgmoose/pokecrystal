@@ -1,10 +1,15 @@
-; SeakingPokedexEntry: ; 0x1b9690
-	db "GOLDFISH@" ; species name
-	dw 403, 860 ; height, width
+	ctxt "Goldfish" ; species name
+	done
+	dw 403, 860 ; height, weight
 
-	db   "When autumn comes,"
+	db .page2 - .page1
+.page1
+	ctxt "When autumn comes,"
 	next "the males patrol"
 	next "the area around"
-	page "their nests in"
+	done
+.page2
+	ctxt "their nests in"
 	next "order to protect"
-	next "their offspring.@"
+	next "their offspring."
+	done

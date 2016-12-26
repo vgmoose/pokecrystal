@@ -1,10 +1,15 @@
-; BeedrillPokedexEntry: ; 0x181c8a
-	db "POISON BEE@" ; species name
-	dw 303, 650 ; height, width
+	ctxt "Coal" ; species name
+	done
+	dw 108, 1772 ; height, weight
 
-	db   "It uses sharp,"
-	next "poisonous stings"
-	next "to defeat prey,"
-	page "then takes the"
-	next "victim back to its"
-	next "nest for food.@"
+	db .page2 - .page1
+.page1
+	ctxt "You find abandoned"
+	next "coal mines full of"
+	next "them."
+	done
+.page2
+	ctxt "They always dig"
+	next "tirelessly in"
+	next "search of coal."
+	done

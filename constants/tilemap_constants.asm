@@ -5,42 +5,59 @@ WATRTILE EQU 15
 TALK     EQU  1 << 4
 
 const_value SET 1
-	const TILESET_JOHTO_1              ; 01
-	const TILESET_JOHTO_2              ; 02
-	const TILESET_KANTO                ; 03
-	const TILESET_BATTLE_TOWER_OUTSIDE ; 04
-	const TILESET_HOUSE_1              ; 05
-	const TILESET_KRISS_HOUSE          ; 06
-	const TILESET_POKECENTER           ; 07
-	const TILESET_GATE                 ; 08
-	const TILESET_PORT                 ; 09
-	const TILESET_LAB                  ; 0a
-	const TILESET_POWER_PLANT          ; 0b
-	const TILESET_MART                 ; 0c
-	const TILESET_CELADON_MANSION      ; 0d
-	const TILESET_GAME_CORNER          ; 0e
-	const TILESET_GYM_1                ; 0f
-	const TILESET_KURT_HOUSE           ; 10
-	const TILESET_TRAIN_STATION        ; 11
-	const TILESET_OLIVINE_GYM          ; 12
-	const TILESET_LIGHTHOUSE           ; 13
-	const TILESET_KRISS_HOUSE_2F       ; 14
-	const TILESET_POKECOM_CENTER       ; 15
-	const TILESET_BATTLE_TOWER         ; 16
-	const TILESET_SPROUT_TOWER         ; 17
-	const TILESET_CAVE                 ; 18
-	const TILESET_PARK                 ; 19
-	const TILESET_RUINS_OF_ALPH        ; 1a
-	const TILESET_RADIO_TOWER          ; 1b
-	const TILESET_UNDERGROUND          ; 1c
-	const TILESET_ICE_PATH             ; 1d
-	const TILESET_WHIRL_ISLANDS        ; 1e
-	const TILESET_ILEX_FOREST          ; 1f
-	const TILESET_32                   ; 20
-	const TILESET_HO_OH_WORD_ROOM      ; 21
-	const TILESET_KABUTO_WORD_ROOM     ; 22
-	const TILESET_OMANYTE_WORD_ROOM    ; 23
-	const TILESET_AERODACTYL_WORD_ROOM ; 24
+	const TILESET_NALJO_1 ;1
+	const TILESET_NALJO_2 ;2
+	const TILESET_RIJON ;3
+	const TILESET_HOUSE_1 ;4
+	const TILESET_HOUSE_2 ;5
+	const TILESET_POKECENTER ;6
+	const TILESET_GATE_JOHTO ;7
+	const TILESET_PORT ;8
+	const TILESET_LAB ;9
+	const TILESET_POWER_PLANT ;a
+	const TILESET_MART ;b
+	const TILESET_MANSION ;c
+	const TILESET_GAME_CORNER ;d
+	const TILESET_GYM ;e
+	const TILESET_KURT_HOUSE ;f
+	const TILESET_TRAIN_STATION ;10
+	const TILESET_LIGHTHOUSE ;11
+	const TILESET_NALJO_RUINS ;12
+	const TILESET_HOUSE_3 ;13
+	const TILESET_TOWER ;14
+	const TILESET_CAVE ;15
+	const TILESET_PARK ;16
+	const TILESET_PRISON_ROOMS ;17
+	const TILESET_18 ;18
+	const TILESET_UNDERGROUND ;19
+	const TILESET_ICE_PATH ;1a
+	const TILESET_CAVE_KANTO ;1b
+	const TILESET_FOREST ;1c
+	const TILESET_GATE_KANTO ;1d
+	const TILESET_TRAINER_HOUSE ;1e
+	const TILESET_1F ;1f
+	const TILESET_SIDESCROLL ;20
+	const TILESET_MAGMA_CAVERNS ;21
+	const TILESET_JOHTO ;22
+	const TILESET_KANTO ;23
+	const TILESET_PACHISI ;24
+	const TILESET_HAUNTED_FOREST ;25
+	const TILESET_HAUNTED_MANSION ;26
+	const TILESET_PSYCHEDELIC ;27
+	const TILESET_GYM_CADENCE ;28
+	const TILESET_GYM_BROOKLYN ;29
+	const TILESET_MAGIKARP_CAVERNS ;2a
+	const TILESET_PRISON_MAIN ;2b
+	const TILESET_ILEX_FOREST ;2c
+	const TILESET_TUNOD ;2d
+	const TILESET_GATE ;2e
+	const TILESET_CHAMPION_ROOM ;2f
+	const TILESET_CAVE2 ;30
+	const TILESET_CAVE3 ;31 
+	const TILESET_CAVE4 ;32
+	const TILESET_CAVE5 ;33
+	const TILESET_CAVE6 ;34
+	const TILESET_CAVE7 ;35
 
 	const_def
 	const PAL_BG_GRAY

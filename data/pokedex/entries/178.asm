@@ -1,10 +1,15 @@
-; XatuPokedexEntry: ; 0x1cd4e9
-	db "MYSTIC@" ; species name
-	dw 411, 330 ; height, width
+	ctxt "Mystic" ; species name
+	done
+	dw 411, 330 ; height, weight
 
-	db   "Once it begins to"
+	db .page2 - .page1
+.page1
+	ctxt "Once it begins to"
 	next "meditate at sun-"
 	next "rise, the entire"
-	page "day will pass"
+	done
+.page2
+	ctxt "day will pass"
 	next "before it will"
-	next "move again.@"
+	next "move again."
+	done

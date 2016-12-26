@@ -1,13 +1,11 @@
-
-HandleNewMap: ; 1045b0
-	call Clearwc7e8
+RunCallback_05_03:
 	call ResetMapBufferEventFlags
 	call ResetFlashIfOutOfCave
 	call GetCurrentMapTrigger
 	call ResetBikeFlags
 	ld a, MAPCALLBACK_NEWMAP
 	call RunMapCallback
-InitCommandQueue: ; 1045c4
+RunCallback_03:
 	callba ClearCmdQueue
 	ld a, MAPCALLBACK_CMDQUEUE
 	call RunMapCallback
@@ -15,21 +13,56 @@ InitCommandQueue: ; 1045c4
 	ld [wMapTimeOfDay], a
 	ret
 
-
-EnterMapConnection: ; 1045d6
+EnterMapConnection:
 ; Return carry if a connection has been entered.
 	ld a, [wPlayerStepDirection]
 	and a
-	jp z, .south
-	cp UP
-	jp z, .north
-	cp LEFT
-	jp z, .west
-	cp RIGHT
-	jp z, .east
+	jp z, EnterSouthConnection
+	dec a
+	jr z, EnterNorthConnection
+	dec a
+	jr z, EnterWestConnection
+	dec a
+	ret nz
+	; fallthrough
+
+EnterEastConnection:
+	ld a, [EastConnectedMapGroup]
+	ld [MapGroup], a
+	ld a, [EastConnectedMapNumber]
+	ld [MapNumber], a
+	ld a, [EastConnectionStripXOffset]
+	ld [XCoord], a
+	ld a, [EastConnectionStripYOffset]
+	ld hl, YCoord
+	add [hl]
+	ld [hl], a
+	ld c, a
+	ld hl, EastConnectionWindow
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+	srl c
+	jr z, .skip_to_load
+	ld a, [EastConnectedMapWidth]
+	add 6
+	ld e, a
+	ld d, 0
+
+.loop
+	add hl, de
+	dec c
+	jr nz, .loop
+
+.skip_to_load
+	ld a, l
+	ld [wOverworldMapAnchor], a
+	ld a, h
+	ld [wOverworldMapAnchor + 1], a
+	scf
 	ret
 
-.west
+EnterWestConnection:
 	ld a, [WestConnectedMapGroup]
 	ld [MapGroup], a
 	ld a, [WestConnectedMapNumber]
@@ -62,44 +95,10 @@ EnterMapConnection: ; 1045d6
 	ld [wOverworldMapAnchor], a
 	ld a, h
 	ld [wOverworldMapAnchor + 1], a
-	jp .done
+	scf
+	ret
 
-.east
-	ld a, [EastConnectedMapGroup]
-	ld [MapGroup], a
-	ld a, [EastConnectedMapNumber]
-	ld [MapNumber], a
-	ld a, [EastConnectionStripXOffset]
-	ld [XCoord], a
-	ld a, [EastConnectionStripYOffset]
-	ld hl, YCoord
-	add [hl]
-	ld [hl], a
-	ld c, a
-	ld hl, EastConnectionWindow
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	srl c
-	jr z, .skip_to_load2
-	ld a, [EastConnectedMapWidth]
-	add 6
-	ld e, a
-	ld d, 0
-
-.loop2
-	add hl, de
-	dec c
-	jr nz, .loop2
-
-.skip_to_load2
-	ld a, l
-	ld [wOverworldMapAnchor], a
-	ld a, h
-	ld [wOverworldMapAnchor + 1], a
-	jp .done
-
-.north
+EnterNorthConnection:
 	ld a, [NorthConnectedMapGroup]
 	ld [MapGroup], a
 	ld a, [NorthConnectedMapNumber]
@@ -122,9 +121,10 @@ EnterMapConnection: ; 1045d6
 	ld [wOverworldMapAnchor], a
 	ld a, h
 	ld [wOverworldMapAnchor + 1], a
-	jp .done
+	scf
+	ret
 
-.south
+EnterSouthConnection:
 	ld a, [SouthConnectedMapGroup]
 	ld [MapGroup], a
 	ld a, [SouthConnectedMapNumber]
@@ -147,12 +147,10 @@ EnterMapConnection: ; 1045d6
 	ld [wOverworldMapAnchor], a
 	ld a, h
 	ld [wOverworldMapAnchor + 1], a
-.done
 	scf
 	ret
-; 1046c6
 
-LoadWarpData: ; 1046c6
+LoadWarpData:
 	call .SaveDigWarp
 	call .SetSpawn
 	ld a, [wNextWarp]
@@ -163,7 +161,7 @@ LoadWarpData: ; 1046c6
 	ld [MapNumber], a
 	ret
 
-.SaveDigWarp: ; 1046df (41:46df)
+.SaveDigWarp
 	call GetMapPermission
 	call CheckOutdoorMap
 	ret nz
@@ -174,15 +172,6 @@ LoadWarpData: ; 1046c6
 	call GetAnyMapPermission
 	call CheckIndoorMap
 	ret nz
-	ld a, [wPrevMapGroup]
-	cp GROUP_MOUNT_MOON_SQUARE
-	jr nz, .not_mt_moon_or_tin_tower
-	ld a, [wPrevMapNumber]
-	cp MAP_MOUNT_MOON_SQUARE
-	ret z
-	cp MAP_TIN_TOWER_ROOF
-	ret z
-.not_mt_moon_or_tin_tower
 	ld a, [wPrevWarp]
 	ld [wDigWarp], a
 	ld a, [wPrevMapGroup]
@@ -191,7 +180,7 @@ LoadWarpData: ; 1046c6
 	ld [wDigMapNumber], a
 	ret
 
-.SetSpawn: ; 104718 (41:4718)
+.SetSpawn
 	call GetMapPermission
 	call CheckOutdoorMap
 	ret nz
@@ -199,28 +188,22 @@ LoadWarpData: ; 1046c6
 	ld b, a
 	ld a, [wNextMapNumber]
 	ld c, a
+	push bc
 	call GetAnyMapPermission
 	call CheckIndoorMap
+	pop bc
 	ret nz
-	ld a, [wNextMapGroup]
-	ld b, a
-	ld a, [wNextMapNumber]
-	ld c, a
 	call GetAnyMapTileset
 	ld a, c
 	cp TILESET_POKECENTER
-	jr z, .pokecenter_pokecom
-	cp TILESET_POKECOM_CENTER
-	jr z, .pokecenter_pokecom
-	ret
-.pokecenter_pokecom
+	ret nz
 	ld a, [wPrevMapGroup]
 	ld [wLastSpawnMapGroup], a
 	ld a, [wPrevMapNumber]
 	ld [wLastSpawnMapNumber], a
 	ret
 
-LoadMapTimeOfDay: ; 104750
+LoadMapTimeOfDay:
 	ld hl, VramState
 	res 6, [hl]
 	ld a, $1
@@ -228,49 +211,15 @@ LoadMapTimeOfDay: ; 104750
 	callba ReplaceTimeOfDayPals
 	callba UpdateTimeOfDayPal
 	call OverworldTextModeSwitch
-	call .ClearBGMap
-	call .PushAttrMap
-	ret
+	call Function104770
 
-.ClearBGMap: ; 104770 (41:4770)
-	ld a, VBGMap0 / $100
-	ld [wBGMapAnchor + 1], a
-	xor a
-	ld [wBGMapAnchor], a
-	ld [hSCY], a
-	ld [hSCX], a
-	callba ApplyBGMapAnchorToObjects
-
-	ld a, [rVBK]
-	push af
-	ld a, $1
-	ld [rVBK], a
-
-	xor a
-	ld bc, VBGMap1 - VBGMap0
-	hlbgcoord 0, 0
-	call ByteFill
-
-	pop af
-	ld [rVBK], a
-
-	ld a, $60
-	ld bc, VBGMap1 - VBGMap0
-	hlbgcoord 0, 0
-	call ByteFill
-	ret
-
-.PushAttrMap: ; 1047a3 (41:47a3)
 	decoord 0, 0
 	call .copy
-	ld a, [hCGB]
-	and a
-	ret z
 
 	decoord 0, 0, AttrMap
 	ld a, $1
 	ld [rVBK], a
-.copy
+.copy:
 	hlbgcoord 0, 0
 	ld c, SCREEN_WIDTH
 	ld b, SCREEN_HEIGHT
@@ -291,26 +240,57 @@ LoadMapTimeOfDay: ; 104750
 	ld [rVBK], a
 	ret
 
-LoadGraphics: ; 1047cf
+Function104770:
+	ld a, VBGMap0 / $100
+	ld [wBGMapAnchor + 1], a
+	xor a
+	ld [wBGMapAnchor], a
+	ld [hSCY], a
+	ld [hSCX], a
+	callba ReanchorOverworldSprites
+	ld a, [rVBK]
+	push af
+	ld a, $1
+	ld [rVBK], a
+	xor a
+	ld bc, VBGMap1 - VBGMap0
+	hlbgcoord 0, 0
+	call ByteFill
+	pop af
+	ld [rVBK], a
+	ld a, $60
+	ld bc, VBGMap1 - VBGMap0
+	hlbgcoord 0, 0
+	jp ByteFill
+
+LoadGraphics:
 	call LoadTilesetHeader
+LoadGraphicsNoHeader:
 	call LoadTileset
 	xor a
 	ld [hMapAnims], a
 	xor a
 	ld [hTileAnimFrame], a
 	callba RefreshSprites
-	call LoadFontsExtra
-	callba LoadOverworldFont
+	jp LoadFontsExtra
+
+LoadMapPalettes:
+	ld b, SCGB_MAPPALS
+	predef_jump GetSGBLayout
+
+PrismNoMapSign::
+	ld a, $90
+	ld [rWY], a
+	ld [hWY], a
+	xor a
+	ld [wLCDCPointer], a
+	ld [hBGMapMode], a
 	ret
 
-LoadMapPalettes: ; 1047eb
-	ld b, SCGB_MAPPALS
-	jp GetSGBLayout
-; 1047f0
-
-RefreshMapSprites: ; 1047f0
+RefreshMapSprites:
 	call ClearSprites
-	callba ReturnFromMapSetupScript
+	; call PrismNoMapSign
+	callba QueueLandmarkSignAnim
 	call GetMovementPermissions
 	callba RefreshPlayerSprite
 	callba CheckReplaceKrisSprite
@@ -319,14 +299,14 @@ RefreshMapSprites: ; 1047f0
 	jr nz, .skip
 	ld hl, VramState
 	set 0, [hl]
-	call SafeUpdateSprites
+	call Function2e31
 .skip
 	ld a, [wPlayerSpriteSetupFlags]
 	and %00011100
 	ld [wPlayerSpriteSetupFlags], a
 	ret
 
-CheckMovingOffEdgeOfMap:: ; 104820 (41:4820)
+CheckMovingOffEdgeOfMap::
 	ld a, [wPlayerStepDirection]
 	cp STANDING
 	ret z
@@ -362,7 +342,7 @@ CheckMovingOffEdgeOfMap:: ; 104820 (41:4820)
 
 .left
 	ld a, [PlayerStandingMapX]
-	sub 4
+	sub $4
 	cp -1
 	jr z, .ok
 	and a
@@ -383,8 +363,7 @@ CheckMovingOffEdgeOfMap:: ; 104820 (41:4820)
 	scf
 	ret
 
-
-GetCoordOfUpperLeftCorner:: ; 10486d
+GetCoordOfUpperLeftCorner::
 	ld hl, OverworldMap
 	ld a, [XCoord]
 	bit 0, a
@@ -417,7 +396,7 @@ GetCoordOfUpperLeftCorner:: ; 10486d
 	srl a
 
 .resume2
-	call AddNTimes
+	rst AddNTimes
 	ld a, l
 	ld [wOverworldMapAnchor], a
 	ld a, h
@@ -429,4 +408,3 @@ GetCoordOfUpperLeftCorner:: ; 10486d
 	and $1
 	ld [wMetatileStandingX], a
 	ret
-; 1048ba

@@ -1,66 +1,55 @@
-const_value set 2
-	const BATTLETOWERELEVATOR_RECEPTIONIST
-
 BattleTowerElevator_MapScriptHeader:
-.MapTriggers:
-	db 2
-
 	; triggers
+	db 2
 	maptrigger .Trigger0
 	maptrigger .Trigger1
 
-.MapCallbacks:
+	; callbacks
 	db 0
 
 .Trigger0:
-	priorityjump .RideElevator
-	dotrigger $1
-
+	priorityjump .Script
 .Trigger1:
 	end
 
-.RideElevator:
-	follow BATTLETOWERELEVATOR_RECEPTIONIST, PLAYER
-	applymovement BATTLETOWERELEVATOR_RECEPTIONIST, MovementData_BattleTowerElevatorReceptionistWalksIn
-	applymovement PLAYER, MovementData_BattleTowerElevatorPlayerWalksIn
-	writebyte BATTLETOWERACTION_0A
-	special BattleTowerAction
+.Script:
+	follow $2, $0
+	applymovement $2, BattleTowerMovement_ReceptionistEntersElevator
+	stopfollow
+	spriteface $0, DOWN
 	playsound SFX_ELEVATOR
 	earthquake 60
 	waitsfx
-	follow BATTLETOWERELEVATOR_RECEPTIONIST, PLAYER
-	applymovement BATTLETOWERELEVATOR_RECEPTIONIST, MovementData_BattleTowerElevatorExitElevator
+	follow $2, $0
+	applymovement $2, BattleTowerMovement_ReceptionistExitsElevator
 	stopfollow
+	disappear $2
 	warpsound
-	disappear BATTLETOWERELEVATOR_RECEPTIONIST
-	applymovement PLAYER, MovementData_BattleTowerElevatorExitElevator
-	warpcheck
+	applymovement $0, BattleTowerMovement_PlayerStepsDown
+	dotrigger $1
+	warpsound
+	warp BATTLE_TOWER_HALLWAY, 6, 0
 	end
 
-MovementData_BattleTowerElevatorReceptionistWalksIn:
-	step RIGHT
-	turn_head DOWN
+BattleTowerMovement_ReceptionistEntersElevator:
+	step_right
+	turn_head_down
 	step_end
 
-MovementData_BattleTowerElevatorPlayerWalksIn:
-	turn_head DOWN
+BattleTowerMovement_ReceptionistExitsElevator:
+BattleTowerMovement_PlayerStepsDown:
+	step_down
 	step_end
 
-BattleTowerElevator_MapEventHeader:
-	; filler
-	db 0, 0
+BattleTowerElevator_MapEventHeader:: db 0, 0
 
-.Warps:
-	db 2
-	warp_def $3, $1, 1, BATTLE_TOWER_HALLWAY
-	warp_def $3, $2, 1, BATTLE_TOWER_HALLWAY
+.Warps: db 2
+	warp_def 3, 1, 3, BATTLE_TOWER_ENTRANCE
+	warp_def 3, 2, 1, BATTLE_TOWER_HALLWAY
 
-.XYTriggers:
-	db 0
+.CoordEvents: db 0
 
-.Signposts:
-	db 0
+.BGEvents: db 0
 
-.PersonEvents:
-	db 1
-	person_event SPRITE_RECEPTIONIST, 2, 1, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, PERSONTYPE_SCRIPT, 0, MovementData_BattleTowerElevatorReceptionistWalksIn, -1
+.ObjectEvents: db 1
+	person_event SPRITE_RECEPTIONIST, 2, 1, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_OW_BLUE, 0, 0, ObjectEvent, -1

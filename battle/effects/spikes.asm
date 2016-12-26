@@ -1,21 +1,23 @@
 BattleCommand_Spikes: ; 37683
 ; spikes
 
-	ld hl, EnemyScreens
+	ld hl, wEnemyScreens
 	ld a, [hBattleTurn]
 	and a
-	jr z, .asm_3768e
-	ld hl, PlayerScreens
-.asm_3768e
+	jr z, .okay
+	ld hl, wPlayerScreens
+.okay
 
 ; Fails if spikes are already down!
 
-	bit SCREENS_SPIKES, [hl]
-	jr nz, .failed
+	ld a, [hl]
+	and $3
+	cp 3
+	jr z, .failed
 
 ; Nothing else stops it from working.
 
-	set SCREENS_SPIKES, [hl]
+	inc [hl]
 
 	call AnimateCurrentMove
 
@@ -25,3 +27,23 @@ BattleCommand_Spikes: ; 37683
 .failed
 	jp FailSpikes
 ; 376a0
+
+BattleCommand_LavaPool:
+; lavapool
+	ld hl, wEnemyScreens
+	ld a, [hBattleTurn]
+	and a
+	jr z, .okay
+	ld hl, wPlayerScreens
+.okay
+	bit SCREENS_LAVA_POOL, [hl]
+	jr nz, .failed
+	set SCREENS_LAVA_POOL, [hl]
+
+	call AnimateCurrentMove
+
+	ld hl, LavaPoolText
+	jp StdBattleTextBox
+
+.failed
+	jp FailLavaPool

@@ -1,39 +1,23 @@
 ; Functions relating to the timer interrupt and the real-time-clock.
 
-
-AskTimer:: ; 591
-	push af
-	ld a, [hMobile]
-	and a
-	jr z, .not_mobile
-	call Timer
-
-.not_mobile
-	pop af
-	reti
-; 59c
-
-
-LatchClock:: ; 59c
+LatchClock::
 ; latch clock counter data
 	ld a, 0
 	ld [MBC3LatchClock], a
 	ld a, 1
 	ld [MBC3LatchClock], a
 	ret
-; 5a7
 
-
-UpdateTime:: ; 5a7
+UpdateTime::
+	CheckEngine ENGINE_TIME_ENABLED
+	ret z
+ForceUpdateTime::
 	call GetClock
 	call FixDays
 	call FixTime
-	callba GetTimeOfDay
-	ret
-; 5b7
+	jpba GetTimeOfDay
 
-
-GetClock:: ; 5b7
+GetClock::
 ; store clock data in hRTCDayHi-hRTCSeconds
 
 ; enable clock r/w
@@ -48,20 +32,17 @@ GetClock:: ; 5b7
 
 	ld [hl], RTC_S
 	ld a, [de]
-	maskbits 60
-	and x
+	and $3f
 	ld [hRTCSeconds], a
 
 	ld [hl], RTC_M
 	ld a, [de]
-	maskbits 60
-	and x
+	and $3f
 	ld [hRTCMinutes], a
 
 	ld [hl], RTC_H
 	ld a, [de]
-	maskbits 24
-	and x
+	and $1f
 	ld [hRTCHours], a
 
 	ld [hl], RTC_DL
@@ -73,77 +54,35 @@ GetClock:: ; 5b7
 	ld [hRTCDayHi], a
 
 ; unlatch clock / disable clock r/w
-	call CloseSRAM
-	ret
-; 5e8
+	jp CloseSRAM
 
+FixDays::
+	ld a, SRAM_ENABLE
+	ld [MBC3SRamEnable], a
 
-FixDays:: ; 5e8
-; fix day count
-; mod by 140
+	call LatchClock
+	ld hl, MBC3SRamBank
+	ld de, MBC3RTC
 
-; check if day count > 255 (bit 8 set)
-	ld a, [hRTCDayHi] ; DH
-	bit 0, a
-	jr z, .daylo
-; reset dh (bit 8)
-	res 0, a
-	ld [hRTCDayHi], a ; DH
-
-; mod 140
-; mod twice since bit 8 (DH) was set
-	ld a, [hRTCDayLo] ; DL
-.modh
-	sub 140
-	jr nc, .modh
-.modl
-	sub 140
-	jr nc, .modl
-	add 140
-
-; update dl
-	ld [hRTCDayLo], a ; DL
-
-; flag for sRTCStatusFlags
-	ld a, %01000000
-	jr .set
-
-.daylo
-; quit if fewer than 140 days have passed
-	ld a, [hRTCDayLo] ; DL
-	cp 140
-	jr c, .quit
-
-; mod 140
-.mod
-	sub 140
-	jr nc, .mod
-	add 140
-
-; update dl
-	ld [hRTCDayLo], a ; DL
-
-; flag for sRTCStatusFlags
-	ld a, %00100000
-
-.set
-; update clock with modded day value
-	push af
-	call SetClock
-	pop af
-	scf
-	ret
-
-.quit
+	ld [hl], RTC_DL
 	xor a
-	ret
-; 61d
+	ld [de], a
 
+	ld [hl], RTC_DH
+	ld a, [de]
+	and $c0 ; keep overflow flag and running flag for something else
+	ld [de], a
 
-FixTime:: ; 61d
+	jp CloseSRAM
+
+FixTime::
 ; add ingame time (set at newgame) to current time
-;				  day     hr    min    sec
-; store time in CurDay, hHours, hMinutes, hSeconds
+;                   yr       mo       day     hr       min       sec
+; store time in CurYear, CurMonth, CurDay, hHours, hMinutes, hSeconds
+
+	ld a, [hRTCDayHi] ; DH
+	bit 7, a
+	ret nz ; don't update if rtc overflowed
 
 ; second
 	ld a, [hRTCSeconds] ; S
@@ -157,7 +96,7 @@ FixTime:: ; 61d
 	ld [hSeconds], a
 
 ; minute
-	ccf ; carry is set, so turn it off
+	ccf ; rotate carry
 	ld a, [hRTCMinutes] ; M
 	ld c, a
 	ld a, [StartMinute]
@@ -169,7 +108,7 @@ FixTime:: ; 61d
 	ld [hMinutes], a
 
 ; hour
-	ccf ; carry is set, so turn it off
+	ccf ; rotate carry
 	ld a, [hRTCHours] ; H
 	ld c, a
 	ld a, [StartHour]
@@ -179,48 +118,122 @@ FixTime:: ; 61d
 	add 24
 .updatehr
 	ld [hHours], a
-
-; day
-	ccf ; carry is set, so turn it off
-	ld a, [hRTCDayLo] ; DL
-	ld c, a
 	ld a, [StartDay]
-	adc c
-	ld [CurDay], a
-	ret
-; 658
-
-SetTimeOfDay:: ; 658
+	ld bc, 0
+	jr nc, .hroverflow
+	and a
+	jr z, .skiphr
 	xor a
-	ld [StringBuffer2], a
-	ld a, $0 ; useless
-	ld [StringBuffer2 + 3], a
+	ld [StartDay], a
+	dec bc
+	jr .skiphr
+.hroverflow
+	and a
+	jr nz, .skiphr
+	ld a, 1
+	ld [StartDay], a
+	inc bc
+
+.skiphr
+; day
+	ld a, [hRTCDayHi] ; DH
+	and 1
+	ld e, a
+	ld a, [hRTCDayLo] ; DL
+	add c
+	ld c, a
+	ld a, e
+	adc b
+	ld b, a
+	ld a, [CurDay]
+	add c
+	ld c, a
+	jr nc, .nocarry
+	inc b
+.nocarry
+	ld a, [CurMonth]
+	ld e, a
+	ld d, 0
+	ld a, [CurYear]
+	call IsLeapYear
+	ld hl, MaxDatesCommon
+	jr nc, .common
+	ld hl, MaxDatesLeap
+.common
+	add hl, de
+.monthdecloop
+	ld a, b
+	and a
+	ld a, c
+	jr z, .notzero
+	sub [hl]
+	ld c, a
+	jr nc, .nocarry2
+	dec b
+.nocarry2
+	inc hl
+	inc e
+	ld a, e
+	cp 12
+	jr c, .monthdecloop
+	ld a, [CurYear]
+	inc a
+	ld [CurYear], a
+	call IsLeapYear
+	ld hl, MaxDatesCommon
+	jr nc, .common2
+	ld hl, MaxDatesLeap
+.common2
+	ld e, 0
+	jr .monthdecloop
+.notzero
+	sub [hl]
+	ld c, a
+	jr nc, .nocarry
+.monthdecdone
+	add [hl]
+	ld [CurDay], a
+	ld a, e
+	ld [CurMonth], a
+	ret
+
+MaxDatesCommon::
+	; jan feb mar apr may jun jul aug sep oct nov dec
+	db 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+MaxDatesLeap::
+	db 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+
+IsLeapYear::
+; return carry if year 2000+a is a leap year
+; in the Gregorian calendar, 2100 and 2200 are not leap years
+	cp 100
+	ret z
+	cp 200
+	ret z
+	and 3
+	ret nz
+	scf
+	ret
+
+SetTimeOfDay::
+	xor a
+	ld [wStringBuffer2], a ; days
+	ld [wStringBuffer2 + 3], a ; seconds
 	jr InitTime
 
-SetDayOfWeek:: ; 663
+SetDayOfWeek::
 	call UpdateTime
 	ld a, [hHours]
-	ld [StringBuffer2 + 1], a
+	ld [wStringBuffer2 + 1], a ; hours
 	ld a, [hMinutes]
-	ld [StringBuffer2 + 2], a
+	ld [wStringBuffer2 + 2], a ; minutes
 	ld a, [hSeconds]
-	ld [StringBuffer2 + 3], a
-	jr InitTime ; useless
+	ld [wStringBuffer2 + 3], a ; seconds
 
-InitTime:: ; 677
-	callba _InitTime
-	ret
-; 67e
+InitTime::
+	jpba _InitTime
 
-
-
-PanicResetClock:: ; 67e
-	call .ClearhRTC
-	call SetClock
-	ret
-; 685
-
-.ClearhRTC: ; 685
+ClearhRTC:
 	xor a
 	ld [hRTCSeconds], a
 	ld [hRTCMinutes], a
@@ -228,10 +241,11 @@ PanicResetClock:: ; 67e
 	ld [hRTCDayLo], a
 	ld [hRTCDayHi], a
 	ret
-; 691
 
+PanicResetClock::
+	call ClearhRTC
 
-SetClock:: ; 691
+SetClock::
 ; set clock data from hram
 
 ; enable clock r/w
@@ -244,13 +258,6 @@ SetClock:: ; 691
 	call LatchClock
 	ld hl, MBC3SRamBank
 	ld de, MBC3RTC
-
-; seems to be a halt check that got partially commented out
-; this block is totally pointless
-	ld [hl], RTC_DH
-	ld a, [de]
-	bit 6, a ; halt
-	ld [de], a
 
 ; seconds
 	ld [hl], RTC_S
@@ -275,12 +282,9 @@ SetClock:: ; 691
 	ld [de], a
 
 ; cleanup
-	call CloseSRAM ; unlatch clock, disable clock r/w
-	ret
-; 6c4
+	jp CloseSRAM ; unlatch clock, disable clock r/w
 
-
-ClearRTCStatus:: ; 6c4
+ClearRTCStatus::
 ; clear sRTCStatusFlags
 	xor a
 	push af
@@ -288,11 +292,9 @@ ClearRTCStatus:: ; 6c4
 	call GetSRAMBank
 	pop af
 	ld [sRTCStatusFlags], a
-	call CloseSRAM
-	ret
-; 6d3
+	jp CloseSRAM
 
-RecordRTCStatus:: ; 6d3
+RecordRTCStatus::
 ; append flags to sRTCStatusFlags
 	ld hl, sRTCStatusFlags
 	push af
@@ -301,15 +303,11 @@ RecordRTCStatus:: ; 6d3
 	pop af
 	or [hl]
 	ld [hl], a
-	call CloseSRAM
-	ret
-; 6e3
+	jp CloseSRAM
 
-CheckRTCStatus:: ; 6e3
+CheckRTCStatus::
 ; check sRTCStatusFlags
 	ld a, BANK(sRTCStatusFlags)
 	call GetSRAMBank
 	ld a, [sRTCStatusFlags]
-	call CloseSRAM
-	ret
-; 6ef
+	jp CloseSRAM

@@ -1,4 +1,4 @@
-ReinitBattleAnimFrameset: ; ce7bf (33:67bf)
+ReinitBattleAnimFrameset:
 	ld hl, BATTLEANIMSTRUCT_FRAMESET_ID
 	add hl, bc
 	ld [hl], a
@@ -10,7 +10,7 @@ ReinitBattleAnimFrameset: ; ce7bf (33:67bf)
 	ld [hl], -1
 	ret
 
-GetBattleAnimFrame: ; ce7d1
+GetBattleAnimFrame:
 .loop
 	ld hl, BATTLEANIMSTRUCT_DURATION
 	add hl, bc
@@ -72,9 +72,7 @@ GetBattleAnimFrame: ; ce7d1
 	ld [hl], a
 	jr .loop
 
-; ce823
-
-.GetPointer: ; ce823
+.GetPointer
 	ld hl, BATTLEANIMSTRUCT_FRAMESET_ID
 	add hl, bc
 	ld e, [hl]
@@ -93,9 +91,7 @@ GetBattleAnimFrame: ; ce7d1
 	add hl, de
 	ret
 
-; ce83c
-
-GetBattleAnimOAMPointer: ; ce83c
+GetBattleAnimOAMPointer:
 	ld l, a
 	ld h, 0
 	ld de, BattleAnimOAMData
@@ -104,9 +100,7 @@ GetBattleAnimOAMPointer: ; ce83c
 	add hl, de
 	ret
 
-; ce846
-
-LoadBattleAnimObj: ; ce846 (33:6846)
+LoadBattleAnimObj:
 	push hl
 	ld l, a
 	ld h, 0
@@ -114,17 +108,64 @@ LoadBattleAnimObj: ; ce846 (33:6846)
 	add hl, hl
 	ld de, AnimObjGFX
 	add hl, de
-	ld c, [hl]
-	inc hl
-	ld b, [hl]
-	inc hl
+	ld a, [hli]
+	ld c, a
+	ld a, [hli]
+	ld b, a
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
+	ld a, b
+	or c
+	jr z, .pokeBall
 	pop de
 	push bc
 	call DecompressRequest2bpp
 	pop bc
 	ret
+.pokeBall
+	ld c, 10
+	ld a, [rSVBK]
+	push af
+	ld a, BANK(wCurItem)
+	ld [rSVBK], a
+	ld a, [wCurItem]
+	ld e, a
+	pop af
+	ld [rSVBK], a
+	ld a, e
 
-; ce85e (33:685e)
+; fallthrough
+GetBallGFX_continue:
+	ld hl, PokeBallArray
+	call IsInSingularArray
+	jr c, .pokeBallExists
+	ld b, 3
+.pokeBallExists
+	ld l, b
+	ld h, 0
+	add hl, hl
+	add hl, hl
+	add hl, hl
+	add hl, hl
+	ld d, h
+	ld e, l
+	add hl, hl
+	add hl, hl
+	add hl, de
+	add hl, hl
+	ld de, PokeballGFX
+	add hl, de
+	ld b, BANK(PokeballGFX)
+	ld d, h
+	ld e, l
+	pop hl
+	call Request2bpp
+	ld c, 10
+	ret
+
+BagMenu_GetBallGFX:
+	push hl
+	ld c, 2
+	ld a, [wMenuSelection]
+	jr GetBallGFX_continue

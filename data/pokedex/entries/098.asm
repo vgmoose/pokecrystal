@@ -1,10 +1,15 @@
-; KrabbyPokedexEntry: ; 0x1b8ddd
-	db "RIVER CRAB@" ; species name
-	dw 104, 140 ; height, width
+	ctxt "Vibration" ; species name
+	done
+	dw 307, 337 ; height, weight
 
-	db   "If it is unable"
-	next "to find food, it"
-	next "will absorb"
-	page "nutrients by"
-	next "swallowing a"
-	next "mouthful of sand.@"
+	db .page2 - .page1
+.page1
+	ctxt "It vibrates its"
+	next "wings vigorously,"
+	next "creating ultra-"
+	done
+.page2
+	ctxt "sonic waves that"
+	next "cause serious"
+	next "headaches."
+	done

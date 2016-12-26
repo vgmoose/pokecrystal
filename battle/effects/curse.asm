@@ -40,14 +40,16 @@ BattleCommand_Curse: ; 37588
 ; Raise Attack and Defense, and lower Speed.
 
 	ld a, $1
-	ld [wKickCounter], a
+	ld [wBattleAnimParam], a
 	call AnimateCurrentMove
-	ld a, SPEED
-	call LowerStat
-	call BattleCommand_SwitchTurn
+	call SwitchTurn
+	ld a, BATTLE_VARS_MOVE_ANIM
+	call GetBattleVarAddr
+	ld [hl], CURSE
+	call BattleCommand_SpeedDown
 	call BattleCommand_StatDownMessage
 	call ResetMiss
-	call BattleCommand_SwitchTurn
+	call SwitchTurn
 	call BattleCommand_AttackUp
 	call BattleCommand_StatUpMessage
 	call ResetMiss
@@ -72,10 +74,8 @@ BattleCommand_Curse: ; 37588
 
 	set SUBSTATUS_CURSE, [hl]
 	call AnimateCurrentMove
-	ld hl, GetHalfMaxHP
-	call CallBattleCore
-	ld hl, SubtractHPFromUser
-	call CallBattleCore
+	callba GetHalfMaxHP
+	callba SubtractHPFromUser
 	call UpdateUserInParty
 	ld hl, PutACurseText
 	jp StdBattleTextBox

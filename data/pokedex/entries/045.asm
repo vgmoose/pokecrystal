@@ -1,10 +1,15 @@
-; VileplumePokedexEntry: ; 0x182918
-	db "FLOWER@" ; species name
-	dw 311, 410 ; height, width
+	ctxt "Iron Armor" ; species name
+	done
+	dw 611, 7937 ; height, weight
 
-	db   "By shaking its big"
-	next "petals, it scat-"
-	next "ters toxic pollen"
-	page "into the air,"
-	next "turning the air"
-	next "yellow.@"
+	db .page2 - .page1
+.page1
+	ctxt "You can tell its"
+	next "age by the length"
+	next "of its iron horns."
+	done
+.page2
+	ctxt "It claims an" 
+	next "entire mountain"
+	next "as its territory."
+	done

@@ -1,7 +1,8 @@
 Music_LookYoungster: ; f66c3
-	musicheader 3, 1, Music_LookYoungster_Ch1
-	musicheader 1, 2, Music_LookYoungster_Ch2
-	musicheader 1, 3, Music_LookYoungster_Ch3
+	channelcount 3
+	channel 1, Music_LookYoungster_Ch1
+	channel 2, Music_LookYoungster_Ch2
+	channel 3, Music_LookYoungster_Ch3
 ; f66cc
 
 Music_LookYoungster_Ch1: ; f66cc

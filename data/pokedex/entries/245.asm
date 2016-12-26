@@ -1,10 +1,15 @@
-; SuicunePokedexEntry: ; 0x1d1642
-	db "AURORA@" ; species name
-	dw 607, 4120 ; height, width
+	ctxt "Sky High" ; species name
+	done
+	dw 2300, 4552 ; height, weight
 
-	db   "This divine"
-	next "#MON blows"
-	next "around the world,"
-	page "always in search"
-	next "of a pure"
-	next "reservoir.@"
+	db .page2 - .page1
+.page1
+	ctxt "It cannot be seen"
+	next "from ground level"
+	next "since it lives"
+	done
+.page2
+	ctxt "far up above the"
+	next "clouds in the"
+	next "ozone layer."
+	done

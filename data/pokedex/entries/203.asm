@@ -1,10 +1,15 @@
-; GirafarigPokedexEntry: ; 0x1d0446
-	db "LONG NECK@" ; species name
-	dw 411, 910 ; height, width
+	ctxt "Humming" ; species name
+	done
+	dw 307, 454 ; height, weight
 
-	db   "When it is in"
-	next "danger, its tail"
-	next "uses some sort of"
-	page "mysterious powers"
-	next "to drive away the"
-	next "enemy.@"
+	db .page2 - .page1
+.page1
+	ctxt "If it bonds with a"
+	next "person, it will"
+	next "gently envelop the"
+	done
+.page2
+	ctxt "friend with its"
+	next "soft wings, then"
+	next "hum."
+	done

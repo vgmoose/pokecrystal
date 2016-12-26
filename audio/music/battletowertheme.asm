@@ -1,12 +1,13 @@
 Music_BattleTowerTheme: ; 178889
-	musicheader 4, 1, Music_BattleTowerTheme_Ch1
-	musicheader 1, 2, Music_BattleTowerTheme_Ch2
-	musicheader 1, 3, Music_BattleTowerTheme_Ch3
-	musicheader 1, 4, Music_BattleTowerTheme_Ch4
+	channelcount 4
+	channel 1, Music_BattleTowerTheme_Ch1
+	channel 2, Music_BattleTowerTheme_Ch2
+	channel 3, Music_BattleTowerTheme_Ch3
+	channel 4, Music_BattleTowerTheme_Ch4
 ; 178895
 
 Music_BattleTowerTheme_Ch1: ; 178895
-	tempo 141
+	tempo 160
 	volume $77
 	tone $0001
 	vibrato $12, $34

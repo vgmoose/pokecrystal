@@ -111,6 +111,24 @@ def filepath_rules(filepath):
     return args
 
 
+def export_png_to_pal(png_path, **kwargs):
+    arguments = gfx.read_filename_arguments(png_path)
+    arguments.update(kwargs)
+
+    image, arguments = gfx.png_to_2bpp(png_path, **arguments)
+
+    palette = arguments.get('palette')
+    palette_path = arguments.get('pal_file')
+    if not palette_path:
+        palette_path = os.path.splitext(png_path)[0] + '.pal'
+    print palette_path
+    gfx.export_palette(palette, palette_path)
+
+def to_pal(filename, **kwargs):
+    name, ext = os.path.splitext(filename)
+    if ext == '.png': export_png_to_pal(filename, **kwargs)
+    else: raise Exception('Don\'t know how to convert {} to pal'.format(ext, filename))
+
 def to_1bpp(filename, **kwargs):
     name, ext = os.path.splitext(filename)
     if   ext == '.1bpp': pass
@@ -119,6 +137,7 @@ def to_1bpp(filename, **kwargs):
     elif ext == '.lz':
         decompress(filename, **kwargs)
         to_1bpp(name, **kwargs)
+    else: raise Exception('Don\'t know how to convert {} to 1bpp'.format(ext, filename))
 
 def to_2bpp(filename, **kwargs):
     name, ext = os.path.splitext(filename)
@@ -128,6 +147,7 @@ def to_2bpp(filename, **kwargs):
     elif ext == '.lz':
         decompress(filename, **kwargs)
         to_2bpp(name, **kwargs)
+    else: raise Exception('Don\'t know how to convert {} to 2bpp'.format(ext, filename))
 
 def to_png(filename, **kwargs):
     name, ext = os.path.splitext(filename)
@@ -137,6 +157,7 @@ def to_png(filename, **kwargs):
     elif ext == '.lz':
         decompress(filename, **kwargs)
         to_png(name, **kwargs)
+    else: raise Exception('Don\'t know how to convert {} to png'.format(ext, filename))
 
 def compress(filename, **kwargs):
     data = open(filename, 'rb').read()
@@ -156,15 +177,16 @@ methods = {
     'png':  to_png,
     'lz':   compress,
     'unlz': decompress,
+    'pal':  to_pal,
 }
 
 def main(method_name, filenames=None):
-    if filenames is None: filenames = []
-    for filename in filenames:
+    method = methods.get(method_name)
+    if not method:
+        raise Exception('unknown method: {}'.format(method_name))
+    for filename in filenames or []:
         args = filepath_rules(filename)
-        method = methods.get(method_name)
-        if method:
-            method(filename, **args)
+        method(filename, **args)
 
 def get_args():
     ap = argparse.ArgumentParser()

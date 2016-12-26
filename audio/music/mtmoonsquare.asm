@@ -1,6 +1,7 @@
 Music_MtMoonSquare: ; f4815
-	musicheader 2, 1, Music_MtMoonSquare_Ch1
-	musicheader 1, 2, Music_MtMoonSquare_Ch2
+	channelcount 2
+	channel 1, Music_MtMoonSquare_Ch1
+	channel 2, Music_MtMoonSquare_Ch2
 ; f481b
 
 Music_MtMoonSquare_Ch1: ; f481b

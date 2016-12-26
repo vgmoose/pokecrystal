@@ -1,10 +1,15 @@
-; GloomPokedexEntry: ; 0x1828a6
-	db "WEED@" ; species name
-	dw 207, 190 ; height, width
+	ctxt "Iron Armor" ; species name
+	done
+	dw 211, 2646 ; height, weight
 
-	db   "The smell from its"
-	next "drool-like syrup"
-	next "and the pollen on"
-	page "its petals is so"
-	next "bad, it may make"
-	next "opponents faint.@"
+	db .page2 - .page1
+.page1
+	ctxt "For food, it digs"
+	next "up iron ore. It"
+	next "smashes its steely"
+	done
+.page2
+	ctxt "body against"
+	next "others to fight"
+	next "over territory."
+	done

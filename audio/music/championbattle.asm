@@ -1,7 +1,8 @@
 Music_ChampionBattle: ; ea9c1
-	musicheader 3, 1, Music_ChampionBattle_Ch1
-	musicheader 1, 2, Music_ChampionBattle_Ch2
-	musicheader 1, 3, Music_ChampionBattle_Ch3
+	channelcount 3
+	channel 1, Music_ChampionBattle_Ch1
+	channel 2, Music_ChampionBattle_Ch2
+	channel 3, Music_ChampionBattle_Ch3
 ; ea9ca
 
 Music_ChampionBattle_Ch1: ; ea9ca

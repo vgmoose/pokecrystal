@@ -1,27 +1,25 @@
-HealMachineAnim: ; 12324
+HealMachineAnim:
 	; If you have no Pokemon, don't change the buffer.  This can lead to some glitchy effects if you have no Pokemon.
-	ld a, [PartyCount]
+	ld a, [wPartyCount]
 	and a
 	ret z
-	; The location of the healing machine relative to the player is stored in ScriptVar.
+	; The location of the healing machine relative to the player is stored in hScriptVar.
 	; 0: Up and left (Pokemon Center)
 	; 1: Left (Elm's Lab)
 	; 2: Up (Hall of Fame)
-	ld a, [ScriptVar]
-	ld [Buffer1], a
+	ld a, [hScriptVar]
+	ld [wHealMachineAnimType], a
 	ld a, [rOBP1]
-	ld [Buffer2], a
-	call .DoJumptableFunctions
-	ld a, [Buffer2]
-	call DmgToCgbObjPal1
-	ret
-; 1233e
+	ld [wHealMachineOBPBackup], a
+	call .RunScript
+	ld a, [wHealMachineOBPBackup]
+	jp DmgToCgbObjPal1
 
-.DoJumptableFunctions: ; 1233e
+.RunScript
 	xor a
-	ld [Buffer3], a
+	ld [wHealMachineRoutineIDX], a
 .jumpable_loop
-	ld a, [Buffer1]
+	ld a, [wHealMachineAnimType]
 	ld e, a
 	ld d, 0
 	ld hl, .Pointers
@@ -30,72 +28,60 @@ HealMachineAnim: ; 12324
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	ld a, [Buffer3]
+	ld a, [wHealMachineRoutineIDX]
 	ld e, a
 	inc a
-	ld [Buffer3], a
+	ld [wHealMachineRoutineIDX], a
 	add hl, de
 	ld a, [hl]
 	cp 5
-	jr z, .finish
-	ld hl, .Jumptable
-	rst JumpTable
+	ret z
+	jumptable .Jumptable
 	jr .jumpable_loop
 
-.finish
-	ret
-; 12365
-
-.Pointers: ; 12365
+.Pointers
 	dw .Pokecenter
 	dw .ElmLab
 	dw .HallOfFame
-; 1236b
 
-.Pokecenter: ; 1236b
+.Pokecenter
+.ElmLab
 	db 0, 1, 3, 5
-.ElmLab: ; 1236f
-	db 0, 1, 3, 5
-.HallOfFame: ; 12373
+.HallOfFame
 	db 0, 2, 4, 5
-; 12377
 
-.Jumptable: ; 12377
+.Jumptable
 	dw .LoadGFX
 	dw .PC_LoadBallsOntoMachine
 	dw .HOF_LoadBallsOntoMachine
 	dw .PlayHealMusic
 	dw .HOF_PlaySFX
-	dw .dummy_5 ; never encountered
-; 12383
 
-.LoadGFX: ; 12383
+.LoadGFX
 	call .LoadPalettes
 	ld de, .HealMachineGFX
 	ld hl, VTiles0 tile $7c
 	lb bc, BANK(.HealMachineGFX), $2
-	call Request2bpp
-	ret
-; 12393
+	jp Request2bpp
 
-.PC_LoadBallsOntoMachine: ; 12393
+.PC_LoadBallsOntoMachine
 	ld hl, Sprites + $80
 	ld de, .PC_ElmsLab_OAM
 	call .PlaceHealingMachineTile
 	call .PlaceHealingMachineTile
 	jr .LoadBallsOntoMachine
 
-.HOF_LoadBallsOntoMachine: ; 123a1
+.HOF_LoadBallsOntoMachine
 	ld hl, Sprites + $80
 	ld de, .HOF_OAM
 
-.LoadBallsOntoMachine: ; 123a7
-	ld a, [PartyCount]
+.LoadBallsOntoMachine
+	ld a, [wPartyCount]
 	ld b, a
 .party_loop
 	call .PlaceHealingMachineTile
 	push de
-	ld de, SFX_SECOND_PART_OF_ITEMFINDER
+	ld de, SFX_SECOND_PART_OF_TOKENFINDER
 	call PlaySFX
 	pop de
 	ld c, 30
@@ -103,29 +89,21 @@ HealMachineAnim: ; 12324
 	dec b
 	jr nz, .party_loop
 	ret
-; 123bf
 
-.PlayHealMusic: ; 123bf
-	ld de, MUSIC_HEAL
-	call PlayMusic
+.PlayHealMusic
+	ld de, SFX_HEAL_POKEMON
+	call PlaySFX
 	jp .FlashPalettes8Times
-; 123c8
 
-.HOF_PlaySFX: ; 123c8
+.HOF_PlaySFX
 	ld de, SFX_GAME_FREAK_LOGO_GS
 	call PlaySFX
 	call .FlashPalettes8Times
 	call WaitSFX
 	ld de, SFX_BOOT_PC
-	call PlaySFX
-	ret
-; 123db
+	jp PlaySFX
 
-.dummy_5 ; 123db
-	ret
-; 123dc
-
-.PC_ElmsLab_OAM: ; 123dc
+.PC_ElmsLab_OAM
 	dsprite   4, 0,   4, 2, $7c, $16
 	dsprite   4, 0,   4, 6, $7c, $16
 	dsprite   4, 6,   4, 0, $7d, $16
@@ -134,29 +112,18 @@ HealMachineAnim: ; 12324
 	dsprite   5, 3,   5, 0, $7d, $36 ; xflip
 	dsprite   6, 0,   4, 0, $7d, $16
 	dsprite   6, 0,   5, 0, $7d, $36 ; xflip
-; 123fc
 
-.HealMachineGFX: ; 123fc
-INCBIN "gfx/unknown/0123fc.2bpp"
-; 1241c
+.HealMachineGFX: INCBIN "gfx/misc/heal_machine.2bpp"
 
-.HOF_OAM: ; 1241c
-	dsprite   7, 4,  10, 1, $7d, $16
-	dsprite   7, 4,  10, 6, $7d, $16
-	dsprite   7, 3,   9, 5, $7d, $16
-	dsprite   7, 3,  11, 2, $7d, $16
-	dsprite   7, 1,   9, 1, $7d, $16
-	dsprite   7, 1,  11, 5, $7d, $16
-; 12434
+.HOF_OAM
+	dsprite   5, 5,   9, 0, $7d, $16
+	dsprite   5, 5,   9, 6, $7d, $16
+	dsprite   6, 2,   9, 0, $7d, $16
+	dsprite   6, 2,   9, 6, $7d, $16
+	dsprite   6, 7,   9, 0, $7d, $16
+	dsprite   6, 7,   9, 6, $7d, $16
 
-.LoadPalettes: ; 12434
-	call IsCGB
-	jr nz, .cgb
-	ld a, %11100000
-	ld [rOBP1], a
-	ret
-
-.cgb
+.LoadPalettes
 	ld hl, .palettes
 	ld de, OBPals + 8 * 6
 	ld bc, 8
@@ -165,16 +132,14 @@ INCBIN "gfx/unknown/0123fc.2bpp"
 	ld a, $1
 	ld [hCGBPalUpdate], a
 	ret
-; 12451
 
-.palettes ; 12451
+.palettes
 	RGB 31, 31, 31
 	RGB 31, 19, 10
 	RGB 31, 07, 01
 	RGB 00, 00, 00
-; 12459
 
-.FlashPalettes8Times: ; 12459
+.FlashPalettes8Times
 	ld c, $8
 .palette_loop
 	push bc
@@ -185,17 +150,8 @@ INCBIN "gfx/unknown/0123fc.2bpp"
 	dec c
 	jr nz, .palette_loop
 	ret
-; 12469
 
-.FlashPalettes: ; 12469
-	call IsCGB
-	jr nz, .go
-	ld a, [rOBP1]
-	xor %00101000
-	ld [rOBP1], a
-	ret
-
-.go
+.FlashPalettes
 	ld a, [rSVBK]
 	push af
 	ld a, $5
@@ -235,11 +191,10 @@ INCBIN "gfx/unknown/0123fc.2bpp"
 	ld a, $1
 	ld [hCGBPalUpdate], a
 	ret
-; 124a3
 
-.PlaceHealingMachineTile: ; 124a3
+.PlaceHealingMachineTile
 	push bc
-	ld a, [Buffer1]
+	ld a, [wHealMachineAnimType]
 	bcpixel 2, 4
 	cp $1 ; ElmsLab
 	jr z, .okay
@@ -262,4 +217,3 @@ INCBIN "gfx/unknown/0123fc.2bpp"
 	ld [hli], a
 	pop bc
 	ret
-; 124c1

@@ -1,10 +1,15 @@
-; PoliwagPokedexEntry: ; 0x182f91
-	db "TADPOLE@" ; species name
-	dw 200, 270 ; height, width
+	ctxt "Tadpole" ; species name
+	done
+	dw 200, 270 ; height, weight
 
-	db   "The swirl on its"
+	db .page2 - .page1
+.page1
+	ctxt "The swirl on its"
 	next "belly is its"
 	next "insides showing"
-	page "through the skin."
+	done
+.page2
+	ctxt "through the skin."
 	next "It looks clearer"
-	next "after it eats.@"
+	next "after it eats."
+	done

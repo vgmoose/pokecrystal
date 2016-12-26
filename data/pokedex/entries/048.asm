@@ -1,10 +1,15 @@
-; VenonatPokedexEntry: ; 0x182a53
-	db "INSECT@" ; species name
-	dw 303, 660 ; height, width
+	ctxt "Insect" ; species name
+	done
+	dw 303, 660 ; height, weight
 
-	db   "The small bugs it"
+	db .page2 - .page1
+.page1
+	ctxt "The small bugs it"
 	next "eats appear only"
 	next "at night, so it"
-	page "sleeps in a hole"
+	done
+.page2
+	ctxt "sleeps in a hole"
 	next "in a tree until"
-	next "night falls.@"
+	next "night falls."
+	done

@@ -1,8 +1,9 @@
 Music_Credits: ; 1f31c
-	musicheader 4, 1, Music_Credits_Ch1
-	musicheader 1, 2, Music_Credits_Ch2
-	musicheader 1, 3, Music_Credits_Ch3
-	musicheader 1, 4, Music_Credits_Ch4
+	channelcount 4
+	channel 1, Music_Credits_Ch1
+	channel 2, Music_Credits_Ch2
+	channel 3, Music_Credits_Ch3
+	channel 4, Music_Credits_Ch4
 ; 1f328
 
 Music_Credits_Ch1: ; 1f328
@@ -142,12 +143,12 @@ Music_Credits_Ch1: ; 1f328
 	note E_, 7
 	octave 3
 	note __, 1
-	pitchoffset 0, D_
+	forceoctave $2
 	callchannel Music_Credits_branch_1f483
 	callchannel Music_Credits_branch_1f4ed
 	callchannel Music_Credits_branch_1f4f8
 	callchannel Music_Credits_branch_1f559
-	pitchoffset 0, C_
+	forceoctave $0
 	octave 3
 	note A_, 12
 	notetype $8, $a7
@@ -664,11 +665,11 @@ Music_Credits_Ch2: ; 1f58d
 	note A_, 4
 	note G_, 4
 	notetype $6, $c7
-	pitchoffset 0, D_
+	forceoctave $2
 	callchannel Music_Credits_branch_1f6cb
 	callchannel Music_Credits_branch_1f73f
 	callchannel Music_Credits_branch_1f748
-	pitchoffset 0, C_
+	forceoctave $0
 	octave 5
 	note C#, 1
 	note D_, 11
@@ -1139,15 +1140,15 @@ Music_Credits_Ch3: ; 1f772
 	note F_, 1
 	note F#, 7
 	note G_, 8
-	pitchoffset 0, D_
+	forceoctave $2
 	callchannel Music_Credits_branch_1f8aa
 	callchannel Music_Credits_branch_1f8db
-	pitchoffset 1, D_
+	forceoctave $12
 	callchannel Music_Credits_branch_1f8e7
-	pitchoffset 0, D_
+	forceoctave $2
 	callchannel Music_Credits_branch_1f934
 	callchannel Music_Credits_branch_1f94b
-	pitchoffset 0, C_
+	forceoctave $0
 	octave 6
 	note C#, 2
 	octave 5

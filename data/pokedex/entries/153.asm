@@ -1,10 +1,15 @@
-; BayleefPokedexEntry: ; 0x1cc9e9
-	db "LEAF@" ; species name
-	dw 311, 350 ; height, width
+	ctxt "Leaf" ; species name
+	done
+	dw 311, 350 ; height, weight
 
-	db   "The scent that"
+	db .page2 - .page1
+.page1
+	ctxt "The scent that"
 	next "wafts from the"
 	next "leaves on its neck"
-	page "causes anyone who"
+	done
+.page2
+	ctxt "causes anyone who"
 	next "smells it to"
-	next "become energetic.@"
+	next "become energetic."
+	done

@@ -1,8 +1,9 @@
 Music_MobileCenter: ; 17961d
-	musicheader 4, 1, Music_MobileCenter_Ch1
-	musicheader 1, 2, Music_MobileCenter_Ch2
-	musicheader 1, 3, Music_MobileCenter_Ch3
-	musicheader 1, 4, Music_MobileCenter_Ch4
+	channelcount 4
+	channel 1, Music_MobileCenter_Ch1
+	channel 2, Music_MobileCenter_Ch2
+	channel 3, Music_MobileCenter_Ch3
+	channel 4, Music_MobileCenter_Ch4
 ; 179629
 
 Music_MobileCenter_Ch1: ; 179629

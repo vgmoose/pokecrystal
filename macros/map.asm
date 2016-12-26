@@ -47,8 +47,12 @@ xy_trigger: macro
 	db \3 ; x
 	db \4 ; unknown1
 	dw \5 ; script
-	db \6 ; unknown2
-	db \7 ; unknown3
+	IF _NARG == 6
+		dw \6 ; event
+	ELSE
+		db \6 ; unknown2
+		db \7 ; unknown3
+	ENDC
 	endm
 
 warp_def: macro
@@ -92,7 +96,7 @@ if "\1" == "north"
 ;\6: strip length
 ;\7: this map id
 	map \2
-	dw \3_BlockData + \2_WIDTH * (\2_HEIGHT - 3) + \5
+	dw wDecompressScratch + \2_WIDTH * (\2_HEIGHT - 3) + \5
 	dw OverworldMap + \4 + 3
 	db \6
 	db \2_WIDTH
@@ -109,7 +113,7 @@ if "\1" == "south"
 ;\6: strip length
 ;\7: this map id
 	map \2
-	dw \3_BlockData + \5
+	dw wDecompressScratch + \5
 	dw OverworldMap + (\7_HEIGHT + 3) * (\7_WIDTH + 6) + \4 + 3
 	db \6
 	db \2_WIDTH
@@ -126,7 +130,7 @@ if "\1" == "west"
 ;\6: strip length
 ;\7: this map id
 	map \2
-	dw \3_BlockData + (\2_WIDTH * \5) + \2_WIDTH - 3
+	dw wDecompressScratch + (\2_WIDTH * \5) + \2_WIDTH - 3
 	dw OverworldMap + (\7_WIDTH + 6) * (\4 + 3)
 	db \6
 	db \2_WIDTH
@@ -143,7 +147,7 @@ if "\1" == "east"
 ;\6: strip length
 ;\7: this map id
 	map \2
-	dw \3_BlockData + (\2_WIDTH * \5)
+	dw wDecompressScratch + (\2_WIDTH * \5)
 	dw OverworldMap + (\7_WIDTH + 6) * (\4 + 3 + 1) - 3
 	db \6
 	db \2_WIDTH

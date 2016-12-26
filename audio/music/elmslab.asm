@@ -1,8 +1,9 @@
 Music_ElmsLab: ; ea040
-	musicheader 4, 1, Music_ElmsLab_Ch1
-	musicheader 1, 2, Music_ElmsLab_Ch2
-	musicheader 1, 3, Music_ElmsLab_Ch3
-	musicheader 1, 4, Music_ElmsLab_Ch4
+	channelcount 4
+	channel 1, Music_ElmsLab_Ch1
+	channel 2, Music_ElmsLab_Ch2
+	channel 3, Music_ElmsLab_Ch3
+	channel 4, Music_ElmsLab_Ch4
 ; ea04c
 
 Music_ElmsLab_Ch1: ; ea04c

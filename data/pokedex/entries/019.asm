@@ -1,10 +1,15 @@
-; RattataPokedexEntry: ; 0x181e3d
-	db "RAT@" ; species name
-	dw 100, 80 ; height, width
+	ctxt "Swallow" ; species name
+	done
+	dw 100, 51 ; height, weight
 
-	db   "This #MON's"
-	next "impressive vital-"
-	next "ity allows it to"
-	page "live anywhere. It"
-	next "also multiplies"
-	next "very quickly.@"
+	db .page2 - .page1
+.page1
+	ctxt "It has a gutsy"
+	next "spirit that makes"
+	next "it bravely take on"
+	done
+.page2
+	ctxt "tough foes. It"
+	next "flies in search of"
+	next "warm climates."
+	done

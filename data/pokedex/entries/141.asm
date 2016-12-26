@@ -1,10 +1,15 @@
-; KabutopsPokedexEntry: ; 0x1cc507
-	db "SHELLFISH@" ; species name
-	dw 403, 890 ; height, width
+	ctxt "Old Shrimp" ; species name
+	done
+	dw 204, 276 ; height, weight
 
-	db   "It was able to"
-	next "swim quickly thro-"
-	next "ugh the water by"
-	page "compactly folding"
-	next "up its razor-sharp"
-	next "sickles.@"
+	db .page2 - .page1
+.page1
+	ctxt "An ancestral"
+	next "#mon that lived"
+	next "in the ocean. Over"
+	done
+.page2
+	ctxt "time, its eight"
+	next "feet transformed"
+	next "into wings."
+	done

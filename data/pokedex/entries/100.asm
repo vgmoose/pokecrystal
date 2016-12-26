@@ -1,10 +1,15 @@
-; VoltorbPokedexEntry: ; 0x1b8eb0
-	db "BALL@" ; species name
-	dw 108, 230 ; height, width
+	ctxt "Guts" ; species name
+	done
+	dw 303, 1905 ; height, weight
 
-	db   "During the study"
-	next "of this #MON,"
-	next "it was discovered"
-	page "that its compo-"
-	next "nents are not"
-	next "found in nature.@"
+	db .page2 - .page1
+.page1
+	ctxt "It toughens its"
+	next "body by slamming"
+	next "into thick trees." 
+	done
+.page2
+	ctxt "Many snapped trees"
+	next "can be found near"
+	next "its nest."
+	done

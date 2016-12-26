@@ -11,8 +11,8 @@ endc
 anim_obj: macro
 	db anim_obj_command
 	db \1 ; obj
-	db (\2 << 3) + \3 ; x
-	db (\4 << 3) + \5 ; y
+	db ((\2) << 3) + (\3) ; x
+	db ((\4) << 3) + (\5) ; y
 	db \6 ; param
 	endm
 
@@ -143,14 +143,19 @@ anim_clearobjs: macro
 	db anim_clearobjs_command
 	endm
 
-	enum anim_beatup_command ; e6
-anim_beatup: macro
-	db anim_beatup_command
+	enum anim_0xe6_command ; f6
+anim_0xe6: macro
+	db anim_0xe6_command
 	endm
 
-	enum anim_0xe7_command ; e7
-anim_0xe7: macro
-	db anim_0xe7_command
+	enum anim_insobj_command ; e7
+anim_insobj: macro
+	db anim_insobj_command
+	db \1
+	db \2 ; obj
+	db (\3 << 3) + \4 ; x
+	db (\5 << 3) + \6 ; y
+	db \7 ; param
 	endm
 
 	enum anim_updateactorpic_command ; e8
@@ -163,19 +168,20 @@ anim_minimize: macro
 	db anim_minimize_command
 	endm
 
-	enum anim_0xea_command ; ea
-anim_0xea: macro
-	db anim_0xea_command
+	enum anim_jumpifpmode_command ; ea
+anim_jumpifpmode: macro
+	db anim_jumpifpmode_command
+	dw \1 ; address
 	endm
 
-	enum anim_0xeb_command ; eb
-anim_0xeb: macro
-	db anim_0xeb_command
+	enum anim_checkcriticalcapture_command ; eb
+anim_checkcriticalcapture: macro
+	db anim_checkcriticalcapture_command
 	endm
 
-	enum anim_0xec_command ; ec
-anim_0xec: macro
-	db anim_0xec_command
+	enum anim_shakedelay_command ; ec
+anim_shakedelay: macro
+	db anim_shakedelay_command
 	endm
 
 	enum anim_0xed_command ; ed
@@ -183,9 +189,9 @@ anim_0xed: macro
 	db anim_0xed_command
 	endm
 
-	enum anim_if_param_and_command ; ee
-anim_if_param_and: macro
-	db anim_if_param_and_command
+	enum anim_jumpand_command ; ee
+anim_jumpand: macro
+	db anim_jumpand_command
 	db \1 ; value
 	dw \2 ; address
 	endm
@@ -208,19 +214,31 @@ anim_bgeffect: macro
 	enum anim_bgp_command ; f1
 anim_bgp: macro
 	db anim_bgp_command
+if _NARG > 1
+	db ((\1) << 6) | ((\2) << 4) | ((\3) << 2) | ((\4) << 0)
+else
 	db \1 ; colors
+endc
 	endm
 
 	enum anim_obp0_command ; f2
 anim_obp0: macro
 	db anim_obp0_command
+if _NARG > 1
+	db ((\1) << 6) | ((\2) << 4) | ((\3) << 2) | ((\4) << 0)
+else
 	db \1 ; colors
+endc
 	endm
 
 	enum anim_obp1_command ; f3
 anim_obp1: macro
 	db anim_obp1_command
+if _NARG > 1
+	db ((\1) << 6) | ((\2) << 4) | ((\3) << 2) | ((\4) << 0)
+else
 	db \1 ; colors
+endc
 	endm
 
 	enum anim_clearsprites_command ; f4
@@ -228,9 +246,9 @@ anim_clearsprites: macro
 	db anim_clearsprites_command
 	endm
 
-	enum anim_0xf5_command ; f5
-anim_0xf5: macro
-	db anim_0xf5_command
+	enum anim_darkenball_command ; f5
+anim_darkenball: macro
+	db anim_darkenball_command
 	endm
 
 	enum anim_0xf6_command ; f6
@@ -238,14 +256,14 @@ anim_0xf6: macro
 	db anim_0xf6_command
 	endm
 
-	enum anim_0xf7_command ; f7
-anim_0xf7: macro
-	db anim_0xf7_command
+	enum anim_clearfirstbgeffect_command ; f7
+anim_clearfirstbgeffect: macro
+	db anim_clearfirstbgeffect_command
 	endm
 
-	enum anim_if_param_equal_command ; f8
-anim_if_param_equal: macro
-	db anim_if_param_equal_command
+	enum anim_jumpif_command ; f8
+anim_jumpif: macro
+	db anim_jumpif_command
 	db \1 ; value
 	dw \2 ; address
 	endm
@@ -261,9 +279,9 @@ anim_incvar: macro
 	db anim_incvar_command
 	endm
 
-	enum anim_if_var_equal_command ; fb
-anim_if_var_equal: macro
-	db anim_if_var_equal_command
+	enum anim_jumpvar_command ; fb
+anim_jumpvar: macro
+	db anim_jumpvar_command
 	db \1 ; value
 	dw \2 ; address
 	endm

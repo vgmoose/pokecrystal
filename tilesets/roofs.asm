@@ -1,5 +1,4 @@
-
-LoadMapGroupRoof:: ; 1c000
+LoadMapGroupRoof::
 	ld a, [MapGroup]
 	ld e, a
 	ld d, 0
@@ -9,15 +8,11 @@ LoadMapGroupRoof:: ; 1c000
 	cp $ff
 	ret z
 	ld hl, Roofs
-	ld bc, $90
-	call AddNTimes
+	ld bc, 9 tiles
 	ld de, VTiles2 tile $0a
-	ld bc, $90
-	call CopyBytes
-	ret
-; 1c021
+	jp CopyNthStruct
 
-MapGroupRoofs: ; 1c021i
+MapGroupRoofs:
 	db -1 ; group 1
 	db  3 ; group 2
 	db  2 ; group 3
@@ -44,13 +39,13 @@ MapGroupRoofs: ; 1c021i
 	db -1 ; group 24
 	db  0 ; group 25
 	db -1 ; group 26
-	db  0 ; group 27
-; 1c03c
+	db -1 
+	db -1 
 
-Roofs: ; 1c03c
+
+Roofs:
 INCBIN "gfx/tilesets/roofs/0.2bpp"
 INCBIN "gfx/tilesets/roofs/1.2bpp"
 INCBIN "gfx/tilesets/roofs/2.2bpp"
 INCBIN "gfx/tilesets/roofs/3.2bpp"
 INCBIN "gfx/tilesets/roofs/4.2bpp"
-; 1c30c

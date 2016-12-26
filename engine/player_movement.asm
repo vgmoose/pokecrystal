@@ -1,7 +1,7 @@
 DoPlayerMovement:: ; 80000
 
 	call .GetDPad
-	ld a, movement_step_sleep
+	ld a, movement_step_sleep_1
 	ld [MovementAnimation], a
 	xor a
 	ld [wd041], a
@@ -11,14 +11,14 @@ DoPlayerMovement:: ; 80000
 	ld [wPlayerNextMovement], a
 	ret
 
-.GetDPad:
+.GetDPad
 
 	ld a, [hJoyDown]
 	ld [CurInput], a
 
 ; Standing downhill instead moves down.
 
-	ld hl, BikeFlags
+	ld hl, wBikeFlags
 	bit 2, [hl] ; downhill
 	ret z
 
@@ -32,20 +32,20 @@ DoPlayerMovement:: ; 80000
 	ret
 ; 8002d
 
-.TranslateIntoMovement:
+.TranslateIntoMovement
 	ld a, [PlayerState]
-	cp PLAYER_NORMAL
+	and a ; PLAYER_NORMAL
 	jr z, .Normal
-	cp PLAYER_SURF
-	jr z, .Surf
-	cp PLAYER_SURF_PIKA
-	jr z, .Surf
-	cp PLAYER_BIKE
-	jr z, .Normal
-	cp PLAYER_SLIP
-	jr z, .Ice
+	rlca ; PLAYER_BIKE
+	jr c, .Normal
+	rlca ; PLAYER_SLIP
+	jr c, .Ice
+	rlca ; PLAYER_SURF
+	jr c, .Surf
+	rlca ; PLAYER_SURF_PIKA
+	jr c, .Surf
 
-.Normal:
+.Normal
 	call .CheckForced
 	call .GetAction
 	call .CheckTile
@@ -60,7 +60,7 @@ DoPlayerMovement:: ; 80000
 	ret c
 	jr .NotMoving
 
-.Surf:
+.Surf
 	call .CheckForced
 	call .GetAction
 	call .CheckTile
@@ -71,7 +71,7 @@ DoPlayerMovement:: ; 80000
 	ret c
 	jr .NotMoving
 
-.Ice:
+.Ice
 	call .CheckForced
 	call .GetAction
 	call .CheckTile
@@ -88,12 +88,12 @@ DoPlayerMovement:: ; 80000
 	cp STANDING
 	jr z, .HitWall
 	call .BumpSound
-.HitWall:
+.HitWall
 	call .StandInPlace
 	xor a
 	ret
 
-.NotMoving:
+.NotMoving
 	ld a, [WalkingDirection]
 	cp STANDING
 	jr z, .Standing
@@ -102,13 +102,16 @@ DoPlayerMovement:: ; 80000
 	ld a, [EngineBuffer4]
 	and a
 	jr nz, .CantMove
+	ld a, [wTileset]
+	cp TILESET_SIDESCROLL
+	jr z, .Standing
 	call .BumpSound
-.CantMove:
+.CantMove
 	call ._WalkInPlace
 	xor a
 	ret
 
-.Standing:
+.Standing
 	call .StandInPlace
 	xor a
 	ret
@@ -233,8 +236,10 @@ DoPlayerMovement:: ; 80000
 ; If the player is turning, change direction first. This also lets
 ; the player change facing without moving by tapping a direction.
 
-	ld a, [wPlayerTurningDirection]
-	cp 0
+	call .CheckTurnStep
+	jr z, .still_turning
+	ld a, [wPlayerMovementDirection]
+	and a
 	jr nz, .not_turning
 	ld a, [WalkingDirection]
 	cp STANDING
@@ -250,7 +255,13 @@ DoPlayerMovement:: ; 80000
 
 	ld a, STEP_TURN
 	call .DoStep
+.turning
 	ld a, 2
+	scf
+	ret
+
+.still_turning
+	xor a
 	scf
 	ret
 
@@ -285,7 +296,7 @@ DoPlayerMovement:: ; 80000
 	call .BikeCheck
 	jr nz, .walk
 
-	ld hl, BikeFlags
+	ld hl, wBikeFlags
 	bit 2, [hl] ; downhill
 	jr z, .fast
 
@@ -305,6 +316,12 @@ DoPlayerMovement:: ; 80000
 	ret
 
 .walk
+	CheckEngine ENGINE_POKEMON_MODE
+	jr nz, .no_run
+	ld a, [CurInput]
+	and B_BUTTON
+	jr nz, .run
+.no_run
 	ld a, STEP_WALK
 	call .DoStep
 	scf
@@ -316,8 +333,17 @@ DoPlayerMovement:: ; 80000
 	scf
 	ret
 
-; unused?
-	xor a
+.run
+	ld a, STEP_RUN
+	call .DoStep
+	push af
+	ld a, [WalkingDirection]
+	cp STANDING
+	jr z, .skip_trainer
+	call CheckTrainerRun
+.skip_trainer
+	pop af
+	scf
 	ret
 
 .bump
@@ -341,13 +367,13 @@ DoPlayerMovement:: ; 80000
 	ld a, [wd040]
 	and a
 	jr nz, .ExitWater
-
+.DontExitWater
 	ld a, STEP_WALK
 	call .DoStep
 	scf
 	ret
 
-.ExitWater:
+.ExitWater
 	call .GetOutOfWater
 	call PlayMapMusic
 	ld a, STEP_WALK
@@ -361,6 +387,18 @@ DoPlayerMovement:: ; 80000
 	ret
 ; 801f3
 
+.CheckTurnStep
+	ld a, [wPlayerMovement]
+	and $fc
+	cp movement_turn_step_down
+	ret nz
+	ld a, [wPlayerMovement]
+	and $3
+	ld e, a
+	ld a, [WalkingDirection]
+	cp e
+	ret
+
 .TryJump: ; 801f3
 	ld a, [PlayerStandingTile]
 	ld e, a
@@ -372,7 +410,7 @@ DoPlayerMovement:: ; 80000
 	and 7
 	ld e, a
 	ld d, 0
-	ld hl, .data_8021e
+	ld hl, .JumpDirections
 	add hl, de
 	ld a, [FacingDirection]
 	and [hl]
@@ -386,11 +424,11 @@ DoPlayerMovement:: ; 80000
 	scf
 	ret
 
-.DontJump:
+.DontJump
 	xor a
 	ret
 
-.data_8021e
+.JumpDirections
 	db FACE_RIGHT
 	db FACE_LEFT
 	db FACE_UP
@@ -442,11 +480,11 @@ DoPlayerMovement:: ; 80000
 	xor a
 	ret
 
-.EdgeWarps:
+.EdgeWarps
 	db $70, $78, $76, $7e
 ; 8025f
 
-.DoStep:
+.DoStep
 	ld e, a
 	ld d, 0
 	ld hl, .Steps
@@ -465,15 +503,15 @@ DoPlayerMovement:: ; 80000
 	ld a, [hl]
 	ld [MovementAnimation], a
 
-	ld hl, .FinishFacing
+	ld hl, .InPlace
 	add hl, de
 	ld a, [hl]
-	ld [wPlayerTurningDirection], a
+	ld [wPlayerMovementDirection], a
 
 	ld a, 4
 	ret
 
-.Steps:
+.Steps
 	dw .SlowStep
 	dw .NormalStep
 	dw .FastStep
@@ -481,65 +519,69 @@ DoPlayerMovement:: ; 80000
 	dw .SlideStep
 	dw .TurningStep
 	dw .BackJumpStep
-	dw .FinishFacing
+	dw .InPlace
+	dw .Run
 
-.SlowStep:
-	slow_step DOWN
-	slow_step UP
-	slow_step LEFT
-	slow_step RIGHT
-.NormalStep:
-	step DOWN
-	step UP
-	step LEFT
-	step RIGHT
-.FastStep:
-	big_step DOWN
-	big_step UP
-	big_step LEFT
-	big_step RIGHT
-.JumpStep:
-	jump_step DOWN
-	jump_step UP
-	jump_step LEFT
-	jump_step RIGHT
-.SlideStep:
-	fast_slide_step DOWN
-	fast_slide_step UP
-	fast_slide_step LEFT
-	fast_slide_step RIGHT
-.BackJumpStep:
-	jump_step UP
-	jump_step DOWN
-	jump_step RIGHT
-	jump_step LEFT
-.TurningStep:
-	turn_step DOWN
-	turn_step UP
-	turn_step LEFT
-	turn_step RIGHT
-.FinishFacing:
-	db $80 + DOWN
-	db $80 + UP
-	db $80 + LEFT
-	db $80 + RIGHT
+.SlowStep
+	slow_step_down
+	slow_step_up
+	slow_step_left
+	slow_step_right
+.NormalStep
+	step_down
+	step_up
+	step_left
+	step_right
+.FastStep
+	big_step_down
+	big_step_up
+	big_step_left
+	big_step_right
+.JumpStep
+	jump_step_down
+	jump_step_up
+	jump_step_left
+	jump_step_right
+.SlideStep
+	fast_slide_step_down
+	fast_slide_step_up
+	fast_slide_step_left
+	fast_slide_step_right
+.BackJumpStep
+	jump_step_up
+	jump_step_down
+	jump_step_right
+	jump_step_left
+.TurningStep
+	turn_step_down
+	turn_step_up
+	turn_step_left
+	turn_step_right
+.InPlace
+	db $80 + movement_turn_head_down
+	db $80 + movement_turn_head_up
+	db $80 + movement_turn_head_left
+	db $80 + movement_turn_head_right
+.Run
+	run_step_down
+	run_step_up
+	run_step_left
+	run_step_right
 ; 802b3
 
 .StandInPlace: ; 802b3
-	ld a, 0
-	ld [wPlayerTurningDirection], a
-	ld a, movement_step_sleep
+	ld a, movement_step_sleep_1
 	ld [MovementAnimation], a
 	xor a
+	ld [wPlayerMovementDirection], a
 	ret
 ; 802bf
 
 ._WalkInPlace: ; 802bf
-	ld a, 0
-	ld [wPlayerTurningDirection], a
 	ld a, movement_step_bump
 	ld [MovementAnimation], a
 	xor a
+	ld [wPlayerMovementDirection], a
 	ret
 ; 802cb
 
@@ -549,8 +591,8 @@ DoPlayerMovement:: ; 80000
 	call CheckStandingOnIce
 	ret nc
 
-	ld a, [wPlayerTurningDirection]
-	cp 0
+	ld a, [wPlayerMovementDirection]
+	and a
 	ret z
 
 	and 3
@@ -666,7 +708,7 @@ DoPlayerMovement:: ; 80000
 
 .CheckStrengthBoulder: ; 8036f
 
-	ld hl, BikeFlags
+	ld hl, wBikeFlags
 	bit 0, [hl] ; using strength
 	jr z, .not_boulder
 
@@ -719,7 +761,7 @@ DoPlayerMovement:: ; 80000
 	xor a
 	ret
 
-.NotWalkable:
+.NotWalkable
 	scf
 	ret
 ; 803b4
@@ -741,7 +783,7 @@ DoPlayerMovement:: ; 80000
 	and a
 	ret
 
-.NotSurfable:
+.NotSurfable
 	scf
 	ret
 ; 803ca
@@ -779,32 +821,30 @@ DoPlayerMovement:: ; 80000
 
 	jr .Neither
 
-.Water:
+.Water
 	xor a
 	ret
 
-.Land:
+.Land
 	ld a, 1
 	and a
 	ret
 
-.Neither:
+.Neither
 	scf
 	ret
 ; 803ee
 
 .BumpSound: ; 803ee
-
 	call CheckSFX
 	ret c
 	ld de, SFX_BUMP
-	call PlaySFX
-	ret
+	jp PlaySFX
 ; 803f9
 
 .GetOutOfWater: ; 803f9
 	push bc
-	ld a, PLAYER_NORMAL
+	xor a ; PLAYER_NORMAL
 	ld [PlayerState], a
 	call ReplaceKrisSprite ; UpdateSprites
 	pop bc
@@ -812,8 +852,8 @@ DoPlayerMovement:: ; 80000
 ; 80404
 
 CheckStandingOnIce:: ; 80404
-	ld a, [wPlayerTurningDirection]
-	cp 0
+	ld a, [wPlayerMovementDirection]
+	and a
 	jr z, .not_ice
 	cp $f0
 	jr z, .not_ice
@@ -833,14 +873,163 @@ CheckStandingOnIce:: ; 80404
 	ret
 ; 80422
 
-StopPlayerForEvent:: ; 80422
-	ld hl, wPlayerNextMovement
-	ld a, movement_step_sleep
-	cp [hl]
-	ret z
+CheckTrainerRun:
+; Check if any trainer on the map sees the player.
 
+; Skip the player object.
+	ld a, 1
+	ld de, MapObjects + OBJECT_LENGTH
+
+.loop
+
+; Have them face the player if the object:
+
+	push af
+	push de
+
+; Has a sprite
+	ld hl, MAPOBJECT_SPRITE
+	add hl, de
+	ld a, [hl]
+	and a
+	jr z, .next
+
+; Is a trainer
+	ld hl, MAPOBJECT_COLOR
+	add hl, de
+	ld a, [hl]
+	and $f
+	cp PERSONTYPE_TRAINER
+	jr nz, .next
+; Is visible on the map
+	ld hl, MAPOBJECT_OBJECT_STRUCT_ID
+	add hl, de
+	ld a, [hl]
+	cp -1
+	jr z, .next
+
+; Spins around
+	ld hl, MAPOBJECT_MOVEMENT
+	add hl, de
+	ld a, [hl]
+	cp $3
+	jr z, .spinner
+	cp $a
+	jr z, .spinner
+	cp $1e
+	jr z, .spinner
+	cp $1f
+	jr nz, .next
+
+.spinner
+
+; You're within their sight range
+	ld hl, MAPOBJECT_OBJECT_STRUCT_ID
+	add hl, de
+	ld a, [hl]
+	call GetObjectStruct
+	call AnyFacingPlayerDistance_bc
+	ld hl, MAPOBJECT_PARAMETER
+	add hl, de
+	ld a, [hl]
+	cp c
+	jr c, .next
+
+; Get them to face you
+	ld a, b
+	push af
+	ld hl, MAPOBJECT_OBJECT_STRUCT_ID
+	add hl, de
+	ld a, [hl]
+	call GetObjectStruct
+	pop af
+	call SetSpriteDirection
+	ld hl, OBJECT_STEP_DURATION
+	add hl, bc
+	ld a, [hl]
+	cp $40
+	jr nc, .next
+	ld a, $40
 	ld [hl], a
-	ld a, 0
-	ld [wPlayerTurningDirection], a
+
+.next
+	pop de
+	ld hl, OBJECT_LENGTH
+	add hl, de
+	ld d, h
+	ld e, l
+
+	pop af
+	inc a
+	cp NUM_OBJECTS
+	jr nz, .loop
+	xor a
 	ret
-; 80430
+
+AnyFacingPlayerDistance_bc::
+; Returns distance in c and direction in b.
+	push de
+	call .AnyFacingPlayerDistance
+	ld b, d
+	ld c, e
+	pop de
+	ret
+
+.AnyFacingPlayerDistance
+	ld hl, OBJECT_NEXT_MAP_X ; x
+	add hl, bc
+	ld d, [hl]
+
+	ld hl, OBJECT_NEXT_MAP_Y ; y
+	add hl, bc
+	ld e, [hl]
+
+	ld a, [hJoypadDown]
+	bit 7, a
+	jr nz, .down
+	bit 6, a
+	jr nz, .up
+	bit 5, a
+	jr nz, .left
+	bit 4, a
+	jr nz, .right
+.down
+	lb bc, 1, 0
+	jr .got_vector
+.up
+	lb bc, -1, 0
+	jr .got_vector
+.left
+	lb bc, 0, -1
+	jr .got_vector
+.right
+	lb bc, 0, 1
+.got_vector
+
+	ld a, [PlayerStandingMapX]
+	add c
+	sub d
+	ld l, OW_RIGHT
+	jr nc, .check_y
+	cpl
+	inc a
+	ld l, OW_LEFT
+.check_y
+	ld d, a
+	ld a, [PlayerStandingMapY]
+	add b
+	sub e
+	ld h, OW_DOWN
+	jr nc, .compare
+	cpl
+	inc a
+	ld h, OW_UP
+.compare
+	cp d
+	ld e, a
+	ld a, d
+	ld d, h
+	ret nc
+	ld e, a
+	ld d, l
+	ret

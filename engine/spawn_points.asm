@@ -1,47 +1,50 @@
-
-SpawnPoints: ; 0x152ab
+SpawnPoints:
 
 spawn: MACRO
-; map, y, x
+; map, X, Y
 	map \1
 	db \2, \3
 ENDM
+	spawn INTRO_OUTSIDE,                  8,  3
+	spawn CAPER_CITY,                    17, 10
+	spawn OXALIS_CITY,                   37, 14
+	spawn SPURGE_CITY,                   33, 24
+	spawn HEATH_VILLAGE,                 17, 10
+	spawn LAUREL_CITY,                   23, 28
+	spawn TORENIA_CITY,                  13, 12
+	spawn PHACELIA_TOWN,                 15, 10
+	spawn ACANIA_DOCKS,                   7, 16
+	spawn SAXIFRAGE_ISLAND,              25, 12
+	spawn PHLOX_TOWN,                    13, 18
+	spawn ROUTE_86,                      10, 10
+	spawn SEASHORE_CITY,                 23, 26
+	spawn GRAVEL_TOWN,                   12, 12
+	spawn MERSON_CITY,                   15, 34
+	spawn HAYWARD_CITY,                  27, 24
+	spawn OWSAURI_CITY,                  33, 24
+	spawn MORAGA_TOWN,                   39,  8
+	spawn JAERU_CITY,                    15, 28
+	spawn BOTAN_CITY,                     6, 26
+	spawn CASTRO_VALLEY,                 21, 16
+	spawn EAGULOU_CITY,                  15, 12 
+	spawn RIJON_LEAGUE_OUTSIDE,          10,  6
+	spawn ROUTE_67,                      43,  8
+	spawn AZALEA_TOWN,                   15, 10
+	spawn GOLDENROD_CITY,                15, 24
+	spawn SAFFRON_CITY,                  15, 38
+	spawn SOUTHERLY_CITY,                20, 16
+	spawn BATTLE_TOWER_ENTRANCE,          3,  5
+	spawn SPURGE_GYM_1F,                  4,  4
+	spawn ACQUA_START,                   28, 35 ;After getting in the minecart
+	spawn ACQUA_TUTORIAL,                30, 42 ;If you faint while Larvitar
+	spawn LAUREL_FOREST_POKEMON_ONLY,     4, 56 ;Faint in Pokemon only area
+	spawn ROUTE_77,                       5, 70 ;Pokecenter
+	spawn ROUTE_81,                       6, 48 ;Pokecenter
+	spawn PRISON_F1,                     20,  5 ;Faint in Prison
+	spawn MYSTERY_ZONE,					 17,  8 
+	spawn N_A,                           -1, -1
 
-	spawn KRISS_HOUSE_2F,              3,  3
-	spawn VIRIDIAN_POKECENTER_1F,      5,  3
-
-	spawn PALLET_TOWN,                 5,  6
-	spawn VIRIDIAN_CITY,              23, 26
-	spawn PEWTER_CITY,                13, 26
-	spawn CERULEAN_CITY,              19, 22
-	spawn ROUTE_10_NORTH,             11,  2
-	spawn VERMILION_CITY,              9,  6
-	spawn LAVENDER_TOWN,               5,  6
-	spawn SAFFRON_CITY,                9, 30
-	spawn CELADON_CITY,               29, 10
-	spawn FUCHSIA_CITY,               19, 28
-	spawn CINNABAR_ISLAND,            11, 12
-	spawn ROUTE_23,                    9,  6
-
-	spawn NEW_BARK_TOWN,              13,  6
-	spawn CHERRYGROVE_CITY,           29,  4
-	spawn VIOLET_CITY,                31, 26
-	spawn ROUTE_32,                   11, 74
-	spawn AZALEA_TOWN,                15, 10
-	spawn CIANWOOD_CITY,              23, 44
-	spawn GOLDENROD_CITY,             15, 28
-	spawn OLIVINE_CITY,               13, 22
-	spawn ECRUTEAK_CITY,              23, 28
-	spawn MAHOGANY_TOWN,              15, 14
-	spawn LAKE_OF_RAGE,               21, 29
-	spawn BLACKTHORN_CITY,            21, 30
-	spawn SILVER_CAVE_OUTSIDE,        23, 20
-	spawn FAST_SHIP_CABINS_SW_SSW_NW,  6,  2
-	spawn N_A,                        -1, -1
-
-
-
-LoadSpawnPoint: ; 1531f
+LoadSpawnPoint:
 	; loads the spawn point in wd001
 	push hl
 	push de
@@ -50,9 +53,8 @@ LoadSpawnPoint: ; 1531f
 	jr z, .spawn_n_a
 	ld l, a
 	ld h, 0
-rept 2 ; multiply hl by 4
-	add hl,hl
-endr
+	add hl, hl
+	add hl, hl
 	ld de, SpawnPoints
 	add hl, de
 	ld a, [hli]
@@ -67,10 +69,8 @@ endr
 	pop de
 	pop hl
 	ret
-; 15344
 
-
-IsSpawnPoint: ; 15344
+IsSpawnPoint:
 ; Checks if the map loaded in de is a spawn point.  Returns carry if it's a spawn point.
 	ld hl, SpawnPoints
 	ld c, 0
@@ -86,11 +86,12 @@ IsSpawnPoint: ; 15344
 	jr z, .yes
 
 .next
-	push bc
-	ld bc, 4 ; length of a spawn table entry
-	add hl, bc
-	pop bc
 	inc c
+	ld a, 4
+	add l
+	ld l, a
+	jr nc, .loop
+	inc h
 	jr .loop
 
 .nope
@@ -100,4 +101,3 @@ IsSpawnPoint: ; 15344
 .yes
 	scf
 	ret
-; 15363

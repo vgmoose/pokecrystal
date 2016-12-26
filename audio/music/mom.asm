@@ -1,7 +1,8 @@
 Music_Mom: ; f6bf2
-	musicheader 3, 2, Music_Mom_Ch2
-	musicheader 1, 3, Music_Mom_Ch3
-	musicheader 1, 4, Music_Mom_Ch4
+	channelcount 3
+	channel 2, Music_Mom_Ch2
+	channel 3, Music_Mom_Ch3
+	channel 4, Music_Mom_Ch4
 ; f6bfb
 
 Music_Mom_Ch2: ; f6bfb

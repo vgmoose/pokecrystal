@@ -1,7 +1,8 @@
 Music_PokemonLullaby: ; f6d79
-	musicheader 3, 1, Music_PokemonLullaby_Ch1
-	musicheader 1, 2, Music_PokemonLullaby_Ch2
-	musicheader 1, 3, Music_PokemonLullaby_Ch3
+	channelcount 3
+	channel 1, Music_PokemonLullaby_Ch1
+	channel 2, Music_PokemonLullaby_Ch2
+	channel 3, Music_PokemonLullaby_Ch3
 ; f6d82
 
 Music_PokemonLullaby_Ch1: ; f6d82

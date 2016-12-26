@@ -1,10 +1,15 @@
-; ClefairyPokedexEntry: ; 0x1824c8
-	db "FAIRY@" ; species name
-	dw 200, 170 ; height, width
+	ctxt "Firefly" ; species name
+	done
+	dw 204, 390 ; height, weight
 
-	db   "Though rarely"
-	next "seen, it becomes"
-	next "easier to spot,"
-	page "for some reason,"
-	next "on the night of a "
-	next "full moon.@"
+	db .page2 - .page1
+.page1
+	ctxt "It communicates"
+	next "with others by"
+	next "lighting up its"
+	done
+.page2
+	ctxt "rear at night."
+	next "It loves Illumise's"
+	next "sweet aroma."
+	done

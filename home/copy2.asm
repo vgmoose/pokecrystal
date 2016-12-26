@@ -1,135 +1,156 @@
-CopyBytes:: ; 0x3026
+CopyDataUntil::
+; Copy hl to de until hl == bc
+
+; In other words, the source data is
+; from hl up to but not including bc,
+; and the destination is de.
+	ld a, c
+	sub l
+	ld c, a
+	ld a, b
+	sbc h
+	ld b, a
+	inc bc
+	jr _CopyBytes
+
+CopyNthStruct::
+	rst AddNTimes
+	jr _CopyBytes
+
+FarCopyBytes::
+; copy bc bytes from a:hl to de
+	call StackCallInBankA
+
+; fallthrough
+_CopyBytes::
 ; copy bc bytes from hl to de
 	inc b  ; we bail the moment b hits 0, so include the last run
 	inc c  ; same thing; include last byte
-	jr .HandleLoop
-.CopyByte:
+	jr .handleLoop
+.loop
 	ld a, [hli]
 	ld [de], a
 	inc de
-.HandleLoop:
+.handleLoop
 	dec c
-	jr nz, .CopyByte
+	jr nz, .loop
 	dec b
-	jr nz, .CopyByte
+	jr nz, .loop
 	ret
 
-SwapBytes:: ; 0x3034
-; swap bc bytes between hl and de
-.Loop:
-	; stash [hl] away on the stack
-	ld a, [hl]
-	push af
-
-	; copy a byte from [de] to [hl]
-	ld a, [de]
-	ld [hli], a
-
-	; retrieve the previous value of [hl]; put it in [de]
-	pop af
-	ld [de], a
-	inc de
-
-	; handle loop stuff
-	dec bc
-	ld a, b
-	or c
-	jr nz, .Loop
-	ret
-
-ByteFill:: ; 0x3041
+ByteFill::
 ; fill bc bytes with the value of a, starting at hl
 	inc b  ; we bail the moment b hits 0, so include the last run
 	inc c  ; same thing; include last byte
 	jr .HandleLoop
-.PutByte:
+.PutByte
 	ld [hli], a
-.HandleLoop:
+.HandleLoop
 	dec c
 	jr nz, .PutByte
 	dec b
 	jr nz, .PutByte
 	ret
 
-GetFarByte:: ; 0x304d
+GetFarByteDE::
+	push hl
+	ld h, d
+	ld l, e
+	call GetFarByte
+	pop hl
+	ret
+
+GetFarByte::
 ; retrieve a single byte from a:hl, and return it in a.
 	; bankswitch to new bank
-	ld [hBuffer], a
-	ld a, [hROMBank]
-	push af
-	ld a, [hBuffer]
-	rst Bankswitch
-
-	; get byte from new bank
+	call StackCallInBankA
+.Function:
 	ld a, [hl]
-	ld [hBuffer], a
-
-	; bankswitch to previous bank
-	pop af
-	rst Bankswitch
-
-	; return retrieved value in a
-	ld a, [hBuffer]
 	ret
 
-GetFarHalfword:: ; 0x305d
+GetFarWRAMByte::
+	call StackCallInWRAMBankA
+.Function:
+	ld a, [hl]
+	ret
+
+GetFarByteHalfword::
+; retrieve a byte + halfword combination from a:hl and return in a:hl
+	call StackCallInBankA
+.Function:
+	ld a, [hli]
+	push af
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+	pop af
+	ret
+
+GetFarHalfword::
 ; retrieve a halfword from a:hl, and return it in hl.
-	; bankswitch to new bank
-	ld [hBuffer], a
-	ld a, [hROMBank]
-	push af
-	ld a, [hBuffer]
-	rst Bankswitch
+	call StackCallInBankA
+.Function:
+	jr GetFarHalfword_read
 
-	; get halfword from new bank, put it in hl
+GetFarWRAMWord::
+	call StackCallInWRAMBankA
+GetFarHalfword_read:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-
-	; bankswitch to previous bank and return
-	pop af
-	rst Bankswitch
 	ret
-; 0x306b
 
-FarCopyWRAM:: ; 306b
+FarCopyWRAM::
+	call StackCallInWRAMBankA
+
+.Function:
+	rst CopyBytes
+	ret
+
+DoubleFarCopyWRAM::
+; low nybble of a: source bank
+; high nybble of a: dest bank
+; hl: source addr
+; de: dest addr
+; bc: copy size
 	ld [hBuffer], a
+	and $f
+	ld [hBuffer2], a
+	ld a, [hBuffer]
+	swap a
+	and $f
+	ld [hBuffer3], a
+; hBuffer2 = source
+; hBuffer3 = dest
+
 	ld a, [rSVBK]
 	push af
-	ld a, [hBuffer]
-	ld [rSVBK], a
-
-	call CopyBytes
-
-	pop af
-	ld [rSVBK], a
-	ret
-; 307b
-
-GetFarWRAMByte:: ; 307b
-	ld [hBuffer], a
-	ld a, [rSVBK]
-	push af
-	ld a, [hBuffer]
-	ld [rSVBK], a
-	ld a, [hl]
-	ld [hBuffer], a
-	pop af
-	ld [rSVBK], a
-	ld a, [hBuffer]
-	ret
-; 308d
-
-GetFarWRAMWord:: ; 308d
-	ld [hBuffer], a
-	ld a, [rSVBK]
-	push af
-	ld a, [hBuffer]
+	inc b
+	inc c
+	dec c
+	jr nz, .noDecB
+	dec b
+.noDecB
+	ld a, b
+	ld [hLoopCounter], a
+.loop
+	ld a, [hBuffer2]
 	ld [rSVBK], a
 	ld a, [hli]
-	ld h, [hl]
-	ld l, a
+	ld b, a
+	ld a, [hBuffer3]
+	ld [rSVBK], a
+	ld a, b
+	ld [de], a
+	inc de
+.handleLoop
+	dec c
+	jr nz, .loop
+	ld a, [hLoopCounter]
+	dec a
+	ld [hLoopCounter], a
+	jr nz, .loop
+
 	pop af
 	ld [rSVBK], a
 	ret
-; 309d

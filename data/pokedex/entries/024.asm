@@ -1,10 +1,15 @@
-; ArbokPokedexEntry: ; 0x18203d
-	db "COBRA@" ; species name
-	dw 1106, 1430 ; height, width
+	ctxt "Rabbit" ; species name
+	done
+	dw 311, 734 ; height, weight
 
-	db   "To intimidate"
-	next "foes, it spreads"
-	next "its chest wide and"
-	page "makes eerie sounds"
-	next "by expelling air"
-	next "from its mouth.@"
+	db .page2 - .page1
+.page1
+	ctxt "The ears appear to"
+	next "be delicate. If"
+	next "they are touched"
+	done
+.page2
+	ctxt "roughly, it kicks"
+	next "with its graceful"
+	next "legs."
+	done

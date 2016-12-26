@@ -1,10 +1,15 @@
-; StantlerPokedexEntry: ; 0x1d1174
-	db "BIG HORN@" ; species name
-	dw 407, 1570 ; height, width
+	ctxt "Virtual" ; species name
+	done
+	dw 211, 750 ; height, weight
 
-	db   "The round balls"
-	next "found on the"
-	next "fallen antlers can"
-	page "be ground into a"
-	next "powder that aids"
-	next "in sleeping.@"
+	db .page2 - .page1
+.page1
+	ctxt "Its programming"
+	next "was modified to"
+	next "enable work in"
+	done
+.page2
+	ctxt "alien dimensions." 
+	next "It did not work"
+	next "as planned."
+	done

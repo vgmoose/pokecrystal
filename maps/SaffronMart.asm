@@ -1,59 +1,63 @@
-const_value set 2
-	const SAFFRONMART_CLERK
-	const SAFFRONMART_COOLTRAINER_M
-	const SAFFRONMART_COOLTRAINER_F
-
-SaffronMart_MapScriptHeader:
-.MapTriggers:
+SaffronMart_MapScriptHeader;trigger count
+	db 0
+ ;callback count
 	db 0
 
-.MapCallbacks:
-	db 0
-
-ClerkScript_0x18a3bf:
+SaffronMartNPC1:
+	faceplayer
 	opentext
-	pokemart MARTTYPE_STANDARD, MART_SAFFRON
+	pokemart 0, 13
 	closetext
 	end
 
-CooltrainerMScript_0x18a3c6:
-	jumptextfaceplayer UnknownText_0x18a3cc
+SaffronMartNPC2:
+	jumptextfaceplayer SaffronMartNPC2_Text_1479b7
 
-CooltrainerFScript_0x18a3c9:
-	jumptextfaceplayer UnknownText_0x18a3f3
+SaffronMartNPC3:
+	jumptextfaceplayer SaffronMartNPC3_Text_147a67
 
-UnknownText_0x18a3cc:
-	text "There's a big"
-	line "RADIO TOWER in"
-	cont "LAVENDER."
+SaffronMartNPC2_Text_1479b7:
+	ctxt "A Trainer called"
+	line "Gold once visited"
+
+	para "Saffron and he"
+	line "showed me how to"
+	cont "be stronger."
+
+	para "I was able to"
+	line "defeat the leader"
+
+	para "of the Fighting"
+	line "Dojo, but Sabrina"
+
+	para "is still too much"
+	line "for me!"
 	done
 
-UnknownText_0x18a3f3:
-	text "I want to become"
-	line "stronger, but I'm"
-	cont "not good yet…"
+SaffronMartNPC3_Text_147a67:
+	ctxt "It's always"
+	line "exciting to meet"
 
-	para "Could you show me"
-	line "how sometime?"
+	para "visitors from"
+	line "faraway regions."
 	done
 
-SaffronMart_MapEventHeader:
-	; filler
+SaffronMart_MapEventHeader ;filler
 	db 0, 0
 
-.Warps:
+;warps
 	db 2
-	warp_def $7, $2, 3, SAFFRON_CITY
-	warp_def $7, $3, 3, SAFFRON_CITY
+	warp_def $7, $6, 5, SAFFRON_CITY
+	warp_def $7, $7, 5, SAFFRON_CITY
 
-.XYTriggers:
+	;xy triggers
 	db 0
 
-.Signposts:
+	;signposts
 	db 0
 
-.PersonEvents:
+	;people-events
 	db 3
-	person_event SPRITE_CLERK, 3, 1, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, PERSONTYPE_SCRIPT, 0, ClerkScript_0x18a3bf, -1
-	person_event SPRITE_COOLTRAINER_M, 2, 7, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, (1 << 3) | PAL_OW_BROWN, PERSONTYPE_SCRIPT, 0, CooltrainerMScript_0x18a3c6, -1
-	person_event SPRITE_COOLTRAINER_F, 6, 7, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 0, 1, -1, -1, (1 << 3) | PAL_OW_GREEN, PERSONTYPE_SCRIPT, 0, CooltrainerFScript_0x18a3c9, -1
+	person_event SPRITE_CLERK, 3, 6, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_OW_RED, 0, 0, SaffronMartNPC1, -1
+	person_event SPRITE_COOLTRAINER_F, 6, 9, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 0, 0, -1, -1, 8 + PAL_OW_GREEN, 0, 0, SaffronMartNPC2, -1
+	person_event SPRITE_LASS, 3, 1, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_OW_RED, 0, 0, SaffronMartNPC3, -1

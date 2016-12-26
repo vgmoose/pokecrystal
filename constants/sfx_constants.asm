@@ -18,7 +18,7 @@
 	const SFX_CHOOSE_PC_OPTION            ; 0f
 	const SFX_ESCAPE_ROPE                 ; 10
 	const SFX_PUSH_BUTTON                 ; 11
-	const SFX_SECOND_PART_OF_ITEMFINDER   ; 12
+	const SFX_SECOND_PART_OF_TOKENFINDER  ; 12
 	const SFX_WARP_TO                     ; 13
 	const SFX_WARP_FROM                   ; 14
 	const SFX_CHANGE_DEX_MODE             ; 15
@@ -126,7 +126,7 @@
 	const SFX_SNORE                       ; 7b
 	const SFX_SWEET_KISS                  ; 7c
 	const SFX_SWEET_KISS_2                ; 7d
-	const SFX_BELLY_DRUM                  ; 7e
+	const SFX_UNKNOWN_7E                  ; 7e
 	const SFX_UNKNOWN_7F                  ; 7f
 	const SFX_SLUDGE_BOMB                 ; 80
 	const SFX_FORESIGHT                   ; 81
@@ -208,3 +208,9 @@
 	const SFX_TWO_PC_BEEPS                ; cc
 	const SFX_4_NOTE_DITTY                ; cd
 	const SFX_TWINKLE                     ; ce
+
+	const SFX_TCG2_DIDDLY_5               ; cf
+	const SFX_DONATION                    ; d0
+	const SFX_HEAL_POKEMON                ; d1
+
+NUM_SFX EQU const_value

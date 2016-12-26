@@ -1,5 +1,5 @@
 AIChooseMove: ; 440ce
-; Score each move in EnemyMonMoves starting from Buffer1. Lower is better.
+; Score each move in EnemyMonMoves starting from wAIMoveScores. Lower is better.
 ; Pick the move with the lowest score.
 
 ; Wildmons attack at random.
@@ -12,13 +12,13 @@ AIChooseMove: ; 440ce
 	ret nz
 
 ; No use picking a move if there's no choice.
-	callba CheckEnemyLockedIn
+	callba CheckSubStatus_RechargeChargedRampageBideRollout
 	ret nz
 
 
 ; The default score is 20. Unusable moves are given a score of 80.
 	ld a, 20
-	ld hl, Buffer1
+	ld hl, wAIMoveScores
 	ld [hli], a
 	ld [hli], a
 	ld [hli], a
@@ -31,24 +31,25 @@ AIChooseMove: ; 440ce
 
 	ld hl, EnemyMonMoves
 	ld c, 0
-.CheckDisabledMove:
+.CheckDisabledMove
 	cp [hl]
 	jr z, .ScoreDisabledMove
 	inc c
 	inc hl
 	jr .CheckDisabledMove
-.ScoreDisabledMove:
-	ld hl, Buffer1
+
+.ScoreDisabledMove
+	ld hl, wAIMoveScores
 	ld b, 0
 	add hl, bc
 	ld [hl], 80
 
 ; Don't pick moves with 0 PP.
-.CheckPP:
-	ld hl, Buffer1 - 1
+.CheckPP
+	ld hl, wAIMoveScores - 1
 	ld de, EnemyMonPP
 	ld b, 0
-.CheckMovePP:
+.CheckMovePP
 	inc b
 	ld a, b
 	cp EnemyMonMovesEnd - EnemyMonMoves + 1
@@ -63,10 +64,10 @@ AIChooseMove: ; 440ce
 
 
 ; Apply AI scoring layers depending on the trainer class.
-.ApplyLayers:
+.ApplyLayers
 	ld hl, TrainerClassAttributes + TRNATTR_AI_MOVE_WEIGHTS
 
-	; If we have a battle in BattleTower just load the Attributes of the first TrainerClass (Falkner)
+	; If we have a battle in BattleTower just load the Attributes of the first TrainerClass (Josiah)
 	; so we have always the same AI, regardless of the loaded class of trainer
 	ld a, [InBattleTowerBattle]
 	bit 0, a
@@ -75,55 +76,39 @@ AIChooseMove: ; 440ce
 	ld a, [TrainerClass]
 	dec a
 	ld bc, 7 ; Trainer2AI - Trainer1AI
-	call AddNTimes
-
+	rst AddNTimes
 .battle_tower_skip
-	lb bc, CHECK_FLAG, 0
-	push bc
+	ld a, BANK(TrainerClassAttributes)
+	call GetFarHalfword
+; hl = flags
+	ld c, 0
+.checkLayerLoop
+	srl h
+	rr l
+	jr nc, .noAttribute
 	push hl
-
-.CheckLayer:
-	pop hl
-	pop bc
-
-	ld a, c
-	cp 16 ; up to 16 scoring layers
-	jr z, .DecrementScores
-
 	push bc
-	ld d, BANK(TrainerClassAttributes)
-	predef FlagPredef
-	ld d, c
-	pop bc
-
-	inc c
-	push bc
-	push hl
-
-	ld a, d
-	and a
-	jr z, .CheckLayer
-
 	ld hl, AIScoringPointers
-	dec c
 	ld b, 0
 	add hl, bc
 	add hl, bc
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
 	ld a, BANK(AIScoring)
-	call FarCall_hl
-
-	jr .CheckLayer
+	call FarCall_Pointer
+	pop bc
+	pop hl
+.noAttribute
+	inc c
+	ld a, c
+	cp 16
+	jr c, .checkLayerLoop
 
 ; Decrement the scores of all moves one by one until one reaches 0.
-.DecrementScores:
-	ld hl, Buffer1
+.DecrementScores
+	ld hl, wAIMoveScores
 	ld de, EnemyMonMoves
 	ld c, EnemyMonMovesEnd - EnemyMonMoves
 
-.DecrementNextScore:
+.DecrementNextScore
 	; If the enemy has no moves, this will infinite.
 	ld a, [de]
 	inc de
@@ -144,7 +129,7 @@ AIChooseMove: ; 440ce
 ; In order to avoid bias towards the moves located first in memory, increment the scores
 ; that were decremented one more time than the rest (in case there was a tie).
 ; This means that the minimum score will be 1.
-.PickLowestScoreMoves:
+.PickLowestScoreMoves
 	ld a, c
 
 .move_loop
@@ -154,7 +139,7 @@ AIChooseMove: ; 440ce
 	cp NUM_MOVES + 1
 	jr nz, .move_loop
 
-	ld hl, Buffer1
+	ld hl, wAIMoveScores
 	ld de, EnemyMonMoves
 	ld c, NUM_MOVES
 
@@ -183,8 +168,8 @@ AIChooseMove: ; 440ce
 	jr nz, .loop2
 
 ; Randomly choose one of the moves with a score of 1
-.ChooseMove:
-	ld hl, Buffer1
+.ChooseMove
+	ld hl, wAIMoveScores
 	call Random
 	and 3
 	ld c, a

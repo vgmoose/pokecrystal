@@ -1,10 +1,15 @@
-; KangaskhanPokedexEntry: ; 0x1b94f6
-	db "PARENT@" ; species name
-	dw 703, 1760 ; height, width
+	ctxt "Parent" ; species name
+	done
+	dw 703, 1760 ; height, weight
 
-	db   "To avoid"
+	db .page2 - .page1
+.page1
+	ctxt "To avoid"
 	next "crushing the"
 	next "baby it carries in"
-	page "its pouch, it"
+	done
+.page2
+	ctxt "its pouch, it"
 	next "always sleeps"
-	next "standing up.@"
+	next "standing up."
+	done

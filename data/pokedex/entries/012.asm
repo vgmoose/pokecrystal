@@ -1,10 +1,15 @@
-; ButterfreePokedexEntry: ; 0x181b45
-	db "BUTTERFLY@" ; species name
-	dw 307, 710 ; height, width
+	ctxt "Butterfly" ; species name
+	done
+	dw 307, 710 ; height, weight
 
-	db   "It flits from"
+	db .page2 - .page1
+.page1
+	ctxt "It flits from"
 	next "flower to flower,"
 	next "collecting honey."
-	page "It can even"
+	done
+.page2
+	ctxt "It can even"
 	next "identify distant"
-	next "flowers in bloom.@"
+	next "flowers in bloom."
+	done

@@ -1,10 +1,15 @@
-; PrimeapePokedexEntry: ; 0x182e39
-	db "PIG MONKEY@" ; species name
-	dw 303, 710 ; height, width
+	ctxt "Shield" ; species name
+	done
+	dw 403, 3296 ; height, weight
 
-	db   "It will beat up"
-	next "anyone who makes"
-	next "it mad, even if it"
-	page "has to chase them"
-	next "until the end of"
-	next "the world.@"
+	db .page2 - .page1
+.page1
+	ctxt "When they lined up"
+	next "side by side, no"
+	next "foe could break"
+	done
+.page2
+	ctxt "through. They"
+	next "shielded their"
+	next "young in that way."
+	done

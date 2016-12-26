@@ -1,10 +1,15 @@
-; JynxPokedexEntry: ; 0x1b98c5
-	db "HUMANSHAPE@" ; species name
-	dw 407, 900 ; height, width
+	ctxt "Longevity" ; species name
+	done
+	dw 303, 516 ; height, weight
 
-	db   "It has several"
-	next "different cry pat-"
-	next "terns, each of"
-	page "which seems to"
-	next "have its own"
-	next "meaning.@"
+	db .page2 - .page1
+.page1
+	ctxt "Discovered by"
+	next "chance during deep"
+	next "sea explorations,"
+	done
+.page2
+	ctxt "it has not changed"
+	next "since ancient"
+	next "times."
+	done

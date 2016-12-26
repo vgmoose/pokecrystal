@@ -1,10 +1,16 @@
-; StarmiePokedexEntry: ; 0x1b9776
-	db "MYSTERIOUS@" ; species name
-	dw 307, 1760 ; height, width
+	ctxt "Jolly" ; species name
+	done
+	dw 311, 716 ; height, weight
 
-	db   "It is said that it"
-	next "uses the seven-"
-	next "colored core of"
-	page "its body to send"
-	next "electric waves"
-	next "into outer space.@"
+	db .page2 - .page1
+.page1
+	ctxt "It is nocturnal"
+	next "and becomes active"
+	next "at nightfall. It"
+	done
+.page2
+	ctxt "feeds on aquatic"
+	next "mosses that grow"
+	next "in the riverbed."
+	done
+	

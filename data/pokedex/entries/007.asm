@@ -1,10 +1,15 @@
-; SquirtlePokedexEntry: ; 0x181926
-	db "TINYTURTLE@" ; species name
-	dw 108, 200 ; height, width
+	ctxt "Tinyturtle" ; species name
+	done
+	dw 108, 200 ; height, weight
 
-	db   "When it feels"
+	db .page2 - .page1
+.page1
+	ctxt "When it feels"
 	next "threatened, it"
 	next "draws its legs"
-	page "inside its shell"
+	done
+.page2
+	ctxt "inside its shell"
 	next "and sprays water"
-	next "from its mouth.@"
+	next "from its mouth."
+	done

@@ -1,10 +1,15 @@
-; EspeonPokedexEntry: ; 0x1d0155
-	db "SUN@" ; species name
-	dw 211, 580 ; height, width
+	ctxt "Sun" ; species name
+	done
+	dw 211, 580 ; height, weight
 
-	db   "The tip of its"
+	db .page2 - .page1
+.page1
+	ctxt "The tip of its"
 	next "forked tail"
 	next "quivers when it is"
-	page "predicting its"
+	done
+.page2
+	ctxt "predicting its"
 	next "opponent's next"
-	next "move.@"
+	next "move."
+	done

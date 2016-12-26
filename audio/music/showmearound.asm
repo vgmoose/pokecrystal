@@ -1,8 +1,9 @@
 Music_ShowMeAround: ; edbd8
-	musicheader 4, 1, Music_ShowMeAround_Ch1
-	musicheader 1, 2, Music_ShowMeAround_Ch2
-	musicheader 1, 3, Music_ShowMeAround_Ch3
-	musicheader 1, 4, Music_ShowMeAround_Ch4
+	channelcount 4
+	channel 1, Music_ShowMeAround_Ch1
+	channel 2, Music_ShowMeAround_Ch2
+	channel 3, Music_ShowMeAround_Ch3
+	channel 4, Music_ShowMeAround_Ch4
 ; edbe4
 
 Music_ShowMeAround_Ch1: ; edbe4

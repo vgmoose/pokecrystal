@@ -1,35 +1,36 @@
 BattleIntroSlidingPics: ; 4e980
+	ld hl, rIE
+	set LCD_STAT, [hl]
 	ld a, [rSVBK]
 	push af
 	ld a, $5
 	ld [rSVBK], a
 	call .subfunction1
-	ld a, rSCX - $ff00
-	ld [hLCDCPointer], a
+	ld a, rSCX & $ff
+	ld [wLCDCPointer], a
 	call .subfunction2
 	xor a
-	ld [hLCDCPointer], a
+	ld [wLCDCPointer], a
 	pop af
 	ld [rSVBK], a
+	ld hl, rIE
+	res LCD_STAT, [hl]
 	ret
 ; 4e998
 
-.subfunction1 ; 4e998
+.subfunction1: ; 4e998
 	call .subfunction4
 	ld a, $90
 	ld [hSCX], a
 	ld a, %11100100
 	call DmgToCgbBGPals
 	lb de, %11100100, %11100100
-	call DmgToCgbObjPals
-	ret
+	jp DmgToCgbObjPals
 ; 4e9ab
 
-.subfunction2 ; 4e9ab
-	ld d, $90
-	ld e, $72
-	ld a, $48
-	inc a
+.subfunction2: ; 4e9ab
+	lb de, $90, $72
+	ld a, $49
 .loop1
 	push af
 .loop2
@@ -59,7 +60,7 @@ BattleIntroSlidingPics: ; 4e980
 	ret
 ; 4e9d6
 
-.subfunction3 ; 4e9d6
+.subfunction3: ; 4e9d6
 	ld hl, Sprites + 1 ; x pixel
 	ld c, $12 ; 18
 	ld de, $4
@@ -72,16 +73,15 @@ BattleIntroSlidingPics: ; 4e980
 	ret
 ; 4e9e5
 
-.subfunction4 ; 4e9e5
-	ld hl, LYOverrides
+.subfunction4: ; 4e9e5
+	ld hl, wLYOverrides
 	ld a, $90
 	ld bc, SCREEN_HEIGHT_PX
-	call ByteFill
-	ret
+	jp ByteFill
 ; 4e9f1
 
-.subfunction5 ; 4e9f1
-	ld hl, LYOverrides
+.subfunction5: ; 4e9f1
+	ld hl, wLYOverrides
 	ld a, d
 	ld c, $3e ; 62
 .loop4

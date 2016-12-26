@@ -1,10 +1,15 @@
-; SeadraPokedexEntry: ; 0x1b95b8
-	db "DRAGON@" ; species name
-	dw 311, 550 ; height, width
+	ctxt "Deceiver" ; species name
+	done
+	dw 200, 254 ; height, weight
 
-	db   "The male raises"
-	next "the young. If it"
-	next "is approached, it"
-	page "uses its toxic"
-	next "spikes to fend off"
-	next "the intruder.@"
+	db .page2 - .page1
+.page1
+	ctxt "It chomps with its"
+	next "gaping mouth. Its"
+	next "huge jaws are"
+	done
+.page2
+	ctxt "actually steel"
+	next "horns that have"
+	next "been transformed."
+	done

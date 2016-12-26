@@ -1,10 +1,15 @@
-; AlakazamPokedexEntry: ; 0x1b8000
-	db "PSI@" ; species name
-	dw 411, 1060 ; height, width
+	ctxt "Psi" ; species name
+	done
+	dw 411, 1060 ; height, weight
 
-	db   "It has an IQ of"
+	db .page2 - .page1
+.page1
+	ctxt "It has an IQ of"
 	next "5000. It calcu-"
 	next "lates many things"
-	page "in order to gain"
+	done
+.page2
+	ctxt "in order to gain"
 	next "the edge in every"
-	next "battle.@"
+	next "battle."
+	done

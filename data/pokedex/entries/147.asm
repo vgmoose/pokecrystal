@@ -1,10 +1,15 @@
-; DratiniPokedexEntry: ; 0x1cc761
-	db "DRAGON@" ; species name
-	dw 511, 70 ; height, width
+	ctxt "Iron Ball" ; species name
+	done
+	dw 200, 2099 ; height, weight
 
-	db   "It sheds many lay-"
-	next "ers of skin as it"
-	next "grows larger. Dur-"
-	page "ing this process,"
-	next "it is protected by"
-	next "a rapid waterfall.@"
+	db .page2 - .page1
+.page1
+	ctxt "It converses with"
+	next "others by using"
+	next "magnetic pulses."
+	done
+.page2
+	ctxt "In a swarm, they"
+	next "move in perfect"
+	next "unison."
+	done

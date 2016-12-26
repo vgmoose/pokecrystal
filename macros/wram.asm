@@ -31,7 +31,7 @@ ENDM
 party_struct: MACRO
 	box_struct \1
 \1Status::         db
-\1Unused::         db
+\1Semistatus::     db
 \1HP::             dw
 \1MaxHP::          dw
 \1Stats:: ; big endian
@@ -77,27 +77,28 @@ ENDM
 
 
 battle_struct: MACRO
-\1Species::   db
-\1Item::      db
-\1Moves::     ds NUM_MOVES
+\1Species::    db
+\1Item::       db
+\1Moves::      ds NUM_MOVES
 \1MovesEnd::
-\1DVs::       ds 2
-\1PP::        ds NUM_MOVES
-\1Happiness:: db
-\1Level::     db
-\1Status::    ds 2
-\1HP::        dw
-\1MaxHP::     dw
+\1DVs::        ds 2
+\1PP::         ds NUM_MOVES
+\1Happiness::  db
+\1Level::      db
+\1Status::     db
+\1Semistatus:: db
+\1HP::         dw
+\1MaxHP::      dw
 \1Stats:: ; big endian
-\1Attack::    dw
-\1Defense::   dw
-\1Speed::     dw
-\1SpclAtk::   dw
-\1SpclDef::   dw
+\1Attack::     dw
+\1Defense::    dw
+\1Speed::      dw
+\1SpclAtk::    dw
+\1SpclDef::    dw
 \1StatsEnd::
 \1Type::
-\1Type1::     db
-\1Type2::     db
+\1Type1::      db
+\1Type2::      db
 \1StructEnd::
 ENDM
 
@@ -134,47 +135,58 @@ channel_struct: MACRO
 \1FrequencyHi::       db
 \1Pitch::             db ; 0:rest 1-c:note
 \1Octave::            db ; 7-0 (0 is highest)
-\1PitchOffset::    db ; raises existing octaves (to repeat phrases)
+\1StartingOctave::    db ; raises existing octaves (to repeat phrases)
 \1NoteDuration::      db ; frames remaining for the current note
-\1Field0x16::         ds 1 ; c117
-                      ds 1 ; c118
+\1DestFrequency:: ; used in tone porta
+\1DestFrequencyLo::   db
+\1DestFrequencyHi::   db
 \1LoopCount::         db
 \1Tempo::             dw
 \1Tracks::            db ; hi:left lo:right
-\1SFXDutyLoop::         ds 1 ; c11d
+\1Field0x1c::         db ; c11d
 \1VibratoDelayCount:: db ; initialized by \1VibratoDelay
 \1VibratoDelay::      db ; number of frames a note plays until vibrato starts
 \1VibratoExtent::     db
 \1VibratoRate::       db ; hi:frames for each alt lo:frames to the next alt
-\1PitchWheelTarget::  dw ; frequency endpoint for pitch wheel
-\1PitchWheelAmount::  db ; c124
-\1PitchWheelAmountFraction::   db ; c125
-\1Field0x25::         ds 1 ; c126
-                      ds 1 ; c127
+\1Arpeggio::          db
+\1PortaSteps::        db
+\1PortaCount::        db
+                      ds 3
 \1CryPitch::          dw
-\1Field0x29::         ds 1
-\1Field0x2a::         ds 2
-\1Field0x2c::         ds 1
+\1Field0x16::         db
+\1Field0x21::         db
+\1Field0x22::         db
+\1Field0x23::         db
 \1NoteLength::        db ; frames per 16th note
-\1Field0x2e::         ds 1 ; c12f
-\1Field0x2f::         ds 1 ; c130
-\1Field0x30::         ds 1 ; c131
-                      ds 1 ; c132
+\1Field0x24::         db ; c12f
+\1Field0x25::         db ; c130
+\1Field0x30::         db ; c131
+\1Field0x31::         db ; c132
+ENDM
+
+btmon_struct: MACRO
+\1Species:: db
+\1Item:: db
+\1Moves:: ds NUM_MOVES
+\1StatExp::
+\1HPExp:: ds 2
+\1AttackExp:: ds 2
+\1DefenseExp:: ds 2
+\1SpeedExp:: ds 2
+\1SpecialExp:: ds 2
+\1DVs:: dw
+\1StatsEnd::
+
+\1Name:: ds PKMN_NAME_LENGTH
+\1End::
 ENDM
 
 battle_tower_struct: MACRO
 \1Name:: ds NAME_LENGTH +- 1
 \1TrainerClass:: ds 1
-\1Pkmn1:: party_struct \1Pkmn1
-\1Pkmn1Name:: ds PKMN_NAME_LENGTH
-\1Pkmn1NameEnd::
-\1Pkmn2:: party_struct \1Pkmn2
-\1Pkmn2Name:: ds PKMN_NAME_LENGTH
-\1Pkmn2NameEnd::
-\1Pkmn3:: party_struct \1Pkmn3
-\1Pkmn3Name:: ds PKMN_NAME_LENGTH
-\1Pkmn3NameEnd::
-\1TrainerData:: ds BATTLETOWER_TRAINERDATALENGTH
+\1Pkmn1:: btmon_struct \1Pkmn1
+\1Pkmn2:: btmon_struct \1Pkmn2
+\1Pkmn3:: btmon_struct \1Pkmn3
 \1TrainerEnd::
 endm
 
@@ -196,21 +208,6 @@ hof_mon: MACRO
 \1Level:: ds 1
 \1Nickname:: ds PKMN_NAME_LENGTH +- 1
 \1End::
-endm
-
-roam_struct: MACRO
-\1Species::   db
-\1Level::     db
-\1MapGroup::  db
-\1MapNumber:: db
-\1HP::        ds 1
-\1DVs::       ds 2
-ENDM
-
-bugcontestwinner: macro
-\1PersonID:: ds 1
-\1Mon:: ds 1
-\1Score:: ds 2
 endm
 
 hall_of_fame: MACRO
@@ -262,113 +259,4 @@ slot_reel: MACRO
 \1Slot0d::       ds 1
 \1Slot0e::       ds 1
 \1Slot0f::       ds 1
-endm
-
-object_struct: MACRO
-\1Struct::
-\1Sprite:: ds 1
-\1MapObjectIndex:: ds 1
-\1SpriteTile:: ds 1
-\1MovementType:: ds 1
-\1Flags:: ds 2
-\1Palette:: ds 1
-\1Walking:: ds 1
-\1Direction:: ds 1
-\1StepType:: ds 1
-\1StepDuration:: ds 1
-\1Action:: ds 1
-\1ObjectStepFrame:: ds 1
-\1Facing:: ds 1
-\1StandingTile:: ds 1 ; collision
-\1LastTile:: ds 1     ; collision
-\1StandingMapX:: ds 1
-\1StandingMapY:: ds 1
-\1LastMapX:: ds 1
-\1LastMapY:: ds 1
-\1ObjectInitX:: ds 1
-\1ObjectInitY:: ds 1
-\1Radius:: ds 1
-\1SpriteX:: ds 1
-\1SpriteY:: ds 1
-\1SpriteXOffset:: ds 1
-\1SpriteYOffset:: ds 1
-\1MovementByteIndex:: ds 1
-\1Object28:: ds 1
-\1Object29:: ds 1
-\1Object30:: ds 1
-\1Object31:: ds 1
-\1Range:: ds 1
-	ds 7
-\1StructEnd::
-ENDM
-
-map_object: MACRO
-\1Object::
-\1ObjectStructID::  ds 1
-\1ObjectSprite::    ds 1
-\1ObjectYCoord::    ds 1
-\1ObjectXCoord::    ds 1
-\1ObjectMovement::  ds 1
-\1ObjectRadius::    ds 1
-\1ObjectHour::      ds 1
-\1ObjectTimeOfDay:: ds 1
-\1ObjectColor::     ds 1
-\1ObjectRange::     ds 1
-\1ObjectScript::    ds 2
-\1ObjectEventFlag:: ds 2
-	ds 2
-endm
-
-sprite_anim_struct: MACRO
-\1Index:: ds 1          ; 0
-\1FramesetID:: ds 1     ; 1
-\1AnimSeqID:: ds 1      ; 2
-\1TileID:: ds 1         ; 3
-\1XCoord:: ds 1         ; 4
-\1YCoord:: ds 1         ; 5
-\1XOffset:: ds 1        ; 6
-\1YOffset:: ds 1        ; 7
-\1Duration:: ds 1       ; 8
-\1DurationOffset:: ds 1 ; 9
-\1FrameIndex:: ds 1     ; a
-\1Sprite0b:: ds 1
-\1Sprite0c:: ds 1
-\1Sprite0d:: ds 1
-\1Sprite0e:: ds 1
-\1Sprite0f:: ds 1
-ENDM
-
-battle_anim_struct: MACRO
-; Placeholder until we can figure out what it all means
-\1_Index::  ds 1
-\1_Anim01:: ds 1
-\1_Anim02:: ds 1
-\1_FramesetIndex:: ds 1
-\1_FunctionIndex:: ds 1
-\1_Anim05:: ds 1
-\1_TileID:: ds 1
-\1_XCoord:: ds 1
-\1_YCoord:: ds 1
-\1_XOffset:: ds 1
-\1_YOffset:: ds 1
-\1_Anim0b:: ds 1
-\1_Anim0c:: ds 1
-\1_Anim0d:: ds 1
-\1_AnonJumptableIndex:: ds 1
-\1_Anim0f:: ds 1
-\1_Anim10:: ds 1
-\1_Anim11:: ds 1
-\1_Anim12:: ds 1
-\1_Anim13:: ds 1
-\1_Anim14:: ds 1
-\1_Anim15:: ds 1
-\1_Anim16:: ds 1
-\1_Anim17:: ds 1
-endm
-
-battle_bg_effect: MACRO
-\1_Function:: ds 1
-\1_01:: ds 1
-\1_02:: ds 1
-\1_03:: ds 1
 endm

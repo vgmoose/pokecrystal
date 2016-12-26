@@ -1,6 +1,6 @@
 ; Currently, must be in the same bank as the sound engine.
 
-PlayTrainerEncounterMusic:: ; e900a
+PlayTrainerEncounterMusic::
 ; input: e = trainer type
 	; turn fade off
 	xor a
@@ -17,80 +17,87 @@ PlayTrainerEncounterMusic:: ; e900a
 	ld hl, TrainerEncounterMusic
 	add hl, de
 	ld e, [hl]
-	call PlayMusic
-	ret
-; e9027
+	jp PlayMusic
 
-TrainerEncounterMusic: ; e9027
-	db MUSIC_HIKER_ENCOUNTER
-	db MUSIC_YOUNGSTER_ENCOUNTER	; falkner
-	db MUSIC_LASS_ENCOUNTER			; whitney
-	db MUSIC_YOUNGSTER_ENCOUNTER	; bugsy
-	db MUSIC_OFFICER_ENCOUNTER		; morty
-	db MUSIC_OFFICER_ENCOUNTER		; pryce
-	db MUSIC_LASS_ENCOUNTER			; jasmine
-	db MUSIC_OFFICER_ENCOUNTER		; chuck
-	db MUSIC_BEAUTY_ENCOUNTER		; clair
-	db MUSIC_RIVAL_ENCOUNTER		; rival1
-	db MUSIC_HIKER_ENCOUNTER		; pokemon_prof
-	db MUSIC_HIKER_ENCOUNTER		; will
-	db MUSIC_HIKER_ENCOUNTER		; cal
-	db MUSIC_OFFICER_ENCOUNTER		; bruno
-	db MUSIC_HIKER_ENCOUNTER		; karen
-	db MUSIC_HIKER_ENCOUNTER		; koga
-	db MUSIC_OFFICER_ENCOUNTER		; champion
-	db MUSIC_YOUNGSTER_ENCOUNTER	; brock
-	db MUSIC_LASS_ENCOUNTER			; misty
-	db MUSIC_OFFICER_ENCOUNTER		; lt_surge
-	db MUSIC_ROCKET_ENCOUNTER		; scientist
-	db MUSIC_OFFICER_ENCOUNTER		; erika
-	db MUSIC_YOUNGSTER_ENCOUNTER	; youngster
-	db MUSIC_YOUNGSTER_ENCOUNTER	; schoolboy
-	db MUSIC_YOUNGSTER_ENCOUNTER	; bird_keeper
-	db MUSIC_LASS_ENCOUNTER			; lass
-	db MUSIC_LASS_ENCOUNTER			; janine
-	db MUSIC_HIKER_ENCOUNTER		; cooltrainerm
-	db MUSIC_BEAUTY_ENCOUNTER		; cooltrainerf
-	db MUSIC_BEAUTY_ENCOUNTER		; beauty
-	db MUSIC_POKEMANIAC_ENCOUNTER	; pokemaniac
-	db MUSIC_ROCKET_ENCOUNTER		; gruntm
-	db MUSIC_HIKER_ENCOUNTER		; gentleman
-	db MUSIC_BEAUTY_ENCOUNTER		; skier
-	db MUSIC_BEAUTY_ENCOUNTER		; teacher
-	db MUSIC_BEAUTY_ENCOUNTER		; sabrina
-	db MUSIC_YOUNGSTER_ENCOUNTER	; bug_catcher
-	db MUSIC_HIKER_ENCOUNTER		; fisher
-	db MUSIC_HIKER_ENCOUNTER		; swimmerm
-	db MUSIC_BEAUTY_ENCOUNTER		; swimmerf
-	db MUSIC_HIKER_ENCOUNTER		; sailor
-	db MUSIC_POKEMANIAC_ENCOUNTER	; super_nerd
-	db MUSIC_RIVAL_ENCOUNTER		; rival2
-	db MUSIC_HIKER_ENCOUNTER		; guitarist
-	db MUSIC_HIKER_ENCOUNTER		; hiker
-	db MUSIC_HIKER_ENCOUNTER		; biker
-	db MUSIC_OFFICER_ENCOUNTER		; blaine
-	db MUSIC_POKEMANIAC_ENCOUNTER	; burglar
-	db MUSIC_HIKER_ENCOUNTER		; firebreather
-	db MUSIC_POKEMANIAC_ENCOUNTER	; juggler
-	db MUSIC_HIKER_ENCOUNTER		; blackbelt_t
-	db MUSIC_ROCKET_ENCOUNTER		; executivem
-	db MUSIC_YOUNGSTER_ENCOUNTER	; psychic_t
-	db MUSIC_LASS_ENCOUNTER			; picnicker
-	db MUSIC_YOUNGSTER_ENCOUNTER	; camper
-	db MUSIC_ROCKET_ENCOUNTER		; executivef
-	db MUSIC_SAGE_ENCOUNTER			; sage
-	db MUSIC_SAGE_ENCOUNTER			; medium
-	db MUSIC_HIKER_ENCOUNTER		; boarder
-	db MUSIC_HIKER_ENCOUNTER		; pokefanm
-	db MUSIC_KIMONO_ENCOUNTER		; kimono_girl
-	db MUSIC_LASS_ENCOUNTER			; twins
-	db MUSIC_BEAUTY_ENCOUNTER		; pokefanf
-	db MUSIC_HIKER_ENCOUNTER		; red
-	db MUSIC_RIVAL_ENCOUNTER		; blue
-	db MUSIC_HIKER_ENCOUNTER		; officer
-	db MUSIC_ROCKET_ENCOUNTER		; gruntf
-	db MUSIC_HIKER_ENCOUNTER		; mysticalman
-	db MUSIC_HIKER_ENCOUNTER
-	db MUSIC_HIKER_ENCOUNTER
-	db MUSIC_HIKER_ENCOUNTER
-; e906e
+TrainerEncounterMusic:
+	db MUSIC_HIKER_ENCOUNTER                  ; TRAINER_NONE
+	db MUSIC_YOUNGSTER_ENCOUNTER              ; JOSIAH
+	db MUSIC_LASS_ENCOUNTER                   ; BROOKLYN
+	db MUSIC_YOUNGSTER_ENCOUNTER              ; RINJI
+	db MUSIC_OFFICER_ENCOUNTER                ; EDISON
+	db MUSIC_OFFICER_ENCOUNTER                ; AYAKA
+	db MUSIC_LASS_ENCOUNTER                   ; CADENCE
+	db MUSIC_OFFICER_ENCOUNTER                ; ANDRE
+	db MUSIC_BEAUTY_ENCOUNTER                 ; BRUCE
+	db MUSIC_RIVAL_ENCOUNTER                  ; RIVAL1
+	db MUSIC_HIKER_ENCOUNTER                  ; MURA
+	db MUSIC_HIKER_ENCOUNTER                  ; YUKI
+	db MUSIC_HIKER_ENCOUNTER                  ; KOJI
+	db MUSIC_OFFICER_ENCOUNTER                ; DAICHI
+	db MUSIC_HIKER_ENCOUNTER                  ; DELINQUENTF
+	db MUSIC_HIKER_ENCOUNTER                  ; SORA
+	db MUSIC_OFFICER_ENCOUNTER                ; CHAMPION
+	db MUSIC_ENCOUNTER_PRISM_TOUGH_TRAINER    ; PATROLLER
+	db MUSIC_ROCKET_ENCOUNTER                 ; SCIENTIST
+	db MUSIC_YOUNGSTER_ENCOUNTER              ; YOUNGSTER
+	db MUSIC_YOUNGSTER_ENCOUNTER              ; SCHOOLBOY
+	db MUSIC_ENCOUNTER_PRISM_TOUGH_TRAINER    ; BIRD_KEEPER
+	db MUSIC_ENCOUNTER_PRISM_FEMALE_TRAINER   ; LASS
+	db MUSIC_LASS_ENCOUNTER                   ; CHEERLEADER
+	db MUSIC_HIKER_ENCOUNTER                  ; COOLTRAINERM
+	db MUSIC_BEAUTY_ENCOUNTER                 ; COOLTRAINERF
+	db MUSIC_BEAUTY_ENCOUNTER                 ; BEAUTY
+	db MUSIC_POKEMANIAC_ENCOUNTER             ; POKEMANIAC
+	db MUSIC_ROCKET_ENCOUNTER                 ; GRUNTM
+	db MUSIC_HIKER_ENCOUNTER                  ; GENTLEMAN
+	db MUSIC_BEAUTY_ENCOUNTER                 ; SKIER
+	db MUSIC_ENCOUNTER_PRISM_FEMALE_TRAINER_2 ; TEACHER
+	db MUSIC_BEAUTY_ENCOUNTER                 ; SHERYL
+	db MUSIC_YOUNGSTER_ENCOUNTER              ; BUG_CATCHER
+	db MUSIC_HIKER_ENCOUNTER                  ; FISHER
+	db MUSIC_HIKER_ENCOUNTER                  ; SWIMMERM
+	db MUSIC_ENCOUNTER_PRISM_FEMALE_TRAINER_2 ; SWIMMERF
+	db MUSIC_ENCOUNTER_PRISM_TOUGH_TRAINER    ; SAILOR
+	db MUSIC_ENCOUNTER_PRISM_TRAINER          ; SUPER_NERD
+	db MUSIC_RIVAL_ENCOUNTER                  ; SILVER
+	db MUSIC_HIKER_ENCOUNTER                  ; GUITARIST
+	db MUSIC_HIKER_ENCOUNTER                  ; HIKER
+	db MUSIC_HIKER_ENCOUNTER                  ; BIKER
+	db MUSIC_OFFICER_ENCOUNTER                ; JOE
+	db MUSIC_POKEMANIAC_ENCOUNTER             ; BURGLAR
+	db MUSIC_HIKER_ENCOUNTER                  ; FIREBREATHER
+	db MUSIC_POKEMANIAC_ENCOUNTER             ; JUGGLER
+	db MUSIC_HIKER_ENCOUNTER                  ; BLACKBELT_T
+	db MUSIC_YOUNGSTER_ENCOUNTER              ; PSYCHIC_T
+	db MUSIC_LASS_ENCOUNTER                   ; PICNICKER
+	db MUSIC_YOUNGSTER_ENCOUNTER              ; CAMPER
+	db MUSIC_SAGE_ENCOUNTER                   ; SAGE
+	db MUSIC_SAGE_ENCOUNTER                   ; MEDIUM
+	db MUSIC_ENCOUNTER_PRISM_TRAINER          ; BOARDER
+	db MUSIC_HIKER_ENCOUNTER                  ; POKEFANM
+	db MUSIC_KIMONO_ENCOUNTER                 ; DELINQUENTM
+	db MUSIC_LASS_ENCOUNTER                   ; TWINS
+	db MUSIC_ENCOUNTER_PRISM_FEMALE_TRAINER   ; POKEFANF
+	db MUSIC_HIKER_ENCOUNTER                  ; RED
+	db MUSIC_RIVAL_ENCOUNTER                  ; BLUE
+	db MUSIC_HIKER_ENCOUNTER                  ; OFFICER
+	db MUSIC_ROCKET_ENCOUNTER                 ; MINER
+	db MUSIC_HIKER_ENCOUNTER                  ; KARPMAN
+	db MUSIC_HIKER_ENCOUNTER                  ; ARCADEPC_GROUP
+	db MUSIC_HIKER_ENCOUNTER                  ; LILY
+	db MUSIC_HIKER_ENCOUNTER                  ; LOIS
+	db MUSIC_HIKER_ENCOUNTER                  ; SPARKY
+	db MUSIC_HIKER_ENCOUNTER                  ; GOLD
+	db MUSIC_HIKER_ENCOUNTER                  ; GIOVANNI
+	db MUSIC_HIKER_ENCOUNTER                  ; ERNEST
+	db MUSIC_HIKER_ENCOUNTER                  ; TRAINERKRIS
+	db MUSIC_KIMONO_ENCOUNTER                 ; KIMONO_GIRL
+	db MUSIC_HIKER_ENCOUNTER                  ; BUGSY
+	db MUSIC_HIKER_ENCOUNTER                  ; WHITNEY
+	db MUSIC_HIKER_ENCOUNTER                  ; SABRINA
+	db MUSIC_HIKER_ENCOUNTER                  ; CANDELA
+	db MUSIC_HIKER_ENCOUNTER                  ; BLANCHE
+	db MUSIC_HIKER_ENCOUNTER                  ; SPARK_T
+	db MUSIC_HIKER_ENCOUNTER                  ; BROWN
+	db MUSIC_HIKER_ENCOUNTER                  ; GUITARISTF
+	db MUSIC_HIKER_ENCOUNTER                  ; CAL

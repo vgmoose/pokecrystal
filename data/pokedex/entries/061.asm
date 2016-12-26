@@ -1,10 +1,15 @@
-; PoliwhirlPokedexEntry: ; 0x182ffd
-	db "TADPOLE@" ; species name
-	dw 303, 440 ; height, width
+	ctxt "Tadpole" ; species name
+	done
+	dw 303, 440 ; height, weight
 
-	db   "Though it is"
+	db .page2 - .page1
+.page1
+	ctxt "Though it is"
 	next "skilled at walk-"
 	next "ing, it prefers to"
-	page "live underwater"
+	done
+.page2
+	ctxt "live underwater"
 	next "where there is"
-	next "less danger.@"
+	next "less danger."
+	done

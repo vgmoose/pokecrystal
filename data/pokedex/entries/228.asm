@@ -1,10 +1,15 @@
-; HoundourPokedexEntry: ; 0x1d0eff
-	db "DARK@" ; species name
-	dw 200, 240 ; height, width
+	ctxt "Dark" ; species name
+	done
+	dw 200, 240 ; height, weight
 
-	db   "Around dawn, its"
+	db .page2 - .page1
+.page1
+	ctxt "Around dawn, its"
 	next "ominous howl"
 	next "echoes through the"
-	page "area to announce"
+	done
+.page2
+	ctxt "area to announce"
 	next "that this is its"
-	next "territory.@"
+	next "territory."
+	done

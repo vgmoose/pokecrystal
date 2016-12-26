@@ -1,84 +1,29 @@
-_2DMenu_:: ; 2400e
-	ld hl, CopyMenuData2
-	ld a, [wMenuData2_2DMenuItemStringsBank]
-	rst FarCall
-
-	call Draw2DMenu
-	call UpdateSprites
-	call ApplyTilemap
-	call Get2DMenuSelection
-	ret
-; 24022
-
-_InterpretBattleMenu:: ; 24022
-	ld hl, CopyMenuData2
-	ld a, [wMenuData2_2DMenuItemStringsBank]
-	rst FarCall
-
-	call Draw2DMenu
-	callba MobileTextBorder
-	call UpdateSprites
-	call ApplyTilemap
-	call Get2DMenuSelection
-	ret
-; 2403c
-
-_InterpretMobileMenu:: ; 2403c
-	ld hl, CopyMenuData2
-	ld a, [wMenuData2_2DMenuItemStringsBank]
-	rst FarCall
-
-	call Draw2DMenu
-	callba MobileTextBorder
-	call UpdateSprites
-	call ApplyTilemap
-	call Init2DMenuCursorPosition
-	ld hl, w2DMenuFlags1
-	set 7, [hl]
-.loop
-	call DelayFrame
-	callba Function10032e
-	ld a, [wcd2b]
-	and a
-	jr nz, .quit
-	call MobileMenuJoypad
-	ld a, [wMenuJoypadFilter]
-	and c
-	jr z, .loop
-	call Mobile_GetMenuSelection
-	ret
-
-.quit
-	ld a, [w2DMenuNumCols]
-	ld c, a
-	ld a, [w2DMenuNumRows]
-	call SimpleMultiply
-	ld [wMenuCursorBuffer], a
-	and a
-	ret
-; 24085
-
-
-
 Draw2DMenu: ; 24085
 	xor a
 	ld [hBGMapMode], a
 	call MenuBox
-	call Place2DMenuItemStrings
-	ret
-; 2408f
+	jp Place2DMenuItemStrings
+
+_2DMenu_:: ; 2400e
+	ld hl, CopyMenuData2
+	ld a, [wMenuData2_2DMenuItemStringsBank]
+	call FarCall_hl
+
+	call Draw2DMenu
+	call UpdateSprites
+	call ApplyTilemap
+; 24022
 
 Get2DMenuSelection: ; 2408f
 	call Init2DMenuCursorPosition
-	call StaticMenuJoypad
+	call DoMenuJoypadLoop
 	call MenuClickSound
-Mobile_GetMenuSelection: ; 24098
 	ld a, [wMenuData2Flags]
 	bit 1, a
 	jr z, .skip
 	call GetMenuJoypad
 	bit SELECT_F, a
-	jr nz, .quit1
+	jr nz, .quit
 
 .skip
 	ld a, [wMenuData2Flags]
@@ -86,7 +31,7 @@ Mobile_GetMenuSelection: ; 24098
 	jr nz, .skip2
 	call GetMenuJoypad
 	bit B_BUTTON_F, a
-	jr nz, .quit2
+	jr nz, .quit
 
 .skip2
 	ld a, [w2DMenuNumCols]
@@ -101,11 +46,7 @@ Mobile_GetMenuSelection: ; 24098
 	and a
 	ret
 
-.quit1
-	scf
-	ret
-
-.quit2
+.quit
 	scf
 	ret
 ; 240cd
@@ -162,8 +103,7 @@ Place2DMenuItemStrings: ; 240db
 	or h
 	ret z
 	ld a, [wMenuData2_2DMenuFunctionBank]
-	rst FarCall
-	ret
+	jp FarCall_hl
 ; 2411a
 
 
@@ -260,9 +200,7 @@ Init2DMenuCursorPosition: ; 2411a (9:411a)
 ; 241a8
 
 
-_StaticMenuJoypad:: ; 241a8
-	call Place2DMenuCursor
-_ScrollingMenuJoypad:: ; 241ab
+_DoMenuJoypadLoop:: ; 241a8
 	ld hl, w2DMenuFlags2
 	res 7, [hl]
 	ld a, [hBGMapMode]
@@ -273,69 +211,9 @@ _ScrollingMenuJoypad:: ; 241ab
 	ret
 ; 241ba
 
-MobileMenuJoypad: ; 241ba
-	ld hl, w2DMenuFlags2
-	res 7, [hl]
-	ld a, [hBGMapMode]
-	push af
-	call Move2DMenuCursor
-	call Do2DMenuRTCJoypad
-	jr nc, .skip_joypad
-	call _2DMenuInterpretJoypad
-.skip_joypad
-	pop af
-	ld [hBGMapMode], a
-	call GetMenuJoypad
-	ld c, a
-	ret
-; 241d5
-
-
-Function241d5: ; 241d5
-; Unreferenced
-	call Place2DMenuCursor
-.loop
-	call Move2DMenuCursor
-	call HDMATransferTileMapToWRAMBank3 ; BUG: This function is in another bank.
-	                    ; Pointer in current bank (9) is bogus.
-	call .loop2
-	jr nc, .done
-	call _2DMenuInterpretJoypad
-	jr c, .done
-	ld a, [w2DMenuFlags1]
-	bit 7, a
-	jr nz, .done
-	call GetMenuJoypad
-	ld c, a
-	ld a, [wMenuJoypadFilter]
-	and c
-	jr z, .loop
-
-.done
-	ret
-
-.loop2
-	call Menu_WasButtonPressed
-	ret c
-	ld c, 1
-	ld b, 3
-	call AdvanceMobileInactivityTimerAndCheckExpired ; BUG: This function is in another bank.
-	                    ; Pointer in current bank (9) is bogus.
-	ret c
-	callba Function100337
-	ret c
-	ld a, [w2DMenuFlags1]
-	bit 7, a
-	jr z, .loop2
-	and a
-	ret
-; 24216
-
-
 MenuJoypadLoop: ; 24216
-.loop
 	call Move2DMenuCursor
-	call .BGMap_OAM
+	call UpdateMenuBGMap_OAM
 	call Do2DMenuRTCJoypad
 	jr nc, .done
 	call _2DMenuInterpretJoypad
@@ -347,18 +225,26 @@ MenuJoypadLoop: ; 24216
 	ld b, a
 	ld a, [wMenuJoypadFilter]
 	and b
-	jr z, .loop
-
+	jr z, MenuJoypadLoop
 .done
-	ret
+	jp Move2DMenuCursor
 ; 24238
 
-.BGMap_OAM: ; 24238
+UpdateMenuBGMap_OAM: ; 24238
 	ld a, [hOAMUpdate]
 	push af
 	ld a, $1
 	ld [hOAMUpdate], a
-	call WaitBGMap
+	ld a, [w2DMenuFlags1]
+	bit 6, a
+	jr nz, .delayTwoFrames
+	call ApplyTilemapInVBlank
+	jr .done
+.delayTwoFrames
+	ld a, $1
+	ld [hBGMapMode], a
+	call DelayFrame
+.done
 	pop af
 	ld [hOAMUpdate], a
 	xor a
@@ -367,7 +253,10 @@ MenuJoypadLoop: ; 24216
 ; 24249
 
 Do2DMenuRTCJoypad: ; 24249
+	jr .handleLoop
 .loopRTC
+	call DelayFrame
+.handleLoop
 	call RTC
 	call Menu_WasButtonPressed
 	ret c
@@ -382,8 +271,11 @@ Menu_WasButtonPressed: ; 24259
 	ld a, [w2DMenuFlags1]
 	bit 6, a
 	jr z, .skip_to_joypad
-	callab PlaySpriteAnimationsAndDelayFrame
-
+	ld a, $1
+	ld [hBGMapMode], a
+	callba PlaySpriteAnimationsAndDelayFrame
+	xor a
+	ld [hBGMapMode], a
 .skip_to_joypad
 	call JoyTextDelay
 	call GetMenuJoypad
@@ -414,7 +306,7 @@ _2DMenuInterpretJoypad: ; 24270
 	and a
 	ret
 
-.set_bit_7 ; 24299
+.set_bit_7: ; 24299
 	ld hl, w2DMenuFlags2
 	set 7, [hl]
 	scf
@@ -515,7 +407,7 @@ _2DMenuInterpretJoypad: ; 24270
 	ret
 ; 24318
 
-.a_b_start_select ; 24318
+.a_b_start_select: ; 24318
 	xor a
 	ret
 ; 2431a
@@ -539,22 +431,23 @@ Place2DMenuCursor: ; 24329
 	ld a, [w2DMenuCursorOffsets]
 	swap a
 	and $f
+	jr z, .got_row
 	ld c, a
 	ld a, [wMenuCursorY]
 	ld b, a
 	xor a
-	dec b
-	jr z, .got_row
+	jr .handleLoop
 .row_loop
 	add c
+.handleLoop
 	dec b
 	jr nz, .row_loop
-
 .got_row
 	ld c, SCREEN_WIDTH
-	call AddNTimes
+	rst AddNTimes
 	ld a, [w2DMenuCursorOffsets]
 	and $f
+	jr z, .got_col
 	ld c, a
 	ld a, [wMenuCursorX]
 	ld b, a
@@ -565,7 +458,6 @@ Place2DMenuCursor: ; 24329
 	add c
 	dec b
 	jr nz, .col_loop
-
 .got_col
 	ld c, a
 	add hl, bc
@@ -581,7 +473,6 @@ Place2DMenuCursor: ; 24329
 	ld a, h
 	ld [wCursorCurrentTile + 1], a
 	ret
-; 24374
 
 _PushWindow:: ; 24374
 	ld a, [rSVBK]
@@ -619,9 +510,9 @@ _PushWindow:: ; 24374
 	ld h, [hl]
 	ld l, a
 	set 0, [hl]
-	call MenuBoxCoord2Tile
+	call PushWindow_MenuBoxCoordToTile
 	call .copy
-	call MenuBoxCoord2Attr
+	call PushWindow_MenuBoxCoordToAttr
 	call .copy
 	jr .done
 
@@ -635,7 +526,6 @@ _PushWindow:: ; 24374
 
 .done
 	pop hl
-	call .ret ; empty function
 	ld a, h
 	ld [de], a
 	dec de
@@ -654,11 +544,8 @@ _PushWindow:: ; 24374
 	ret
 ; 243cd
 
-.copy ; 243cd
-	call GetMenuBoxDims
-	inc b
-	inc c
-	call .ret ; empty function
+.copy: ; 243cd
+	call GetTileBackupMenuBoxDims
 
 .row
 	push bc
@@ -680,9 +567,6 @@ _PushWindow:: ; 24374
 
 	ret
 ; 243e7
-
-.ret ; 243e7
-	ret
 ; 243e8
 
 _ExitMenu:: ; 243e8
@@ -725,51 +609,15 @@ _ExitMenu:: ; 243e8
 	ret
 ; 24423
 
-Function24423: ; 24423
-; Unreferenced
-	ld a, [VramState]
-	bit 0, a
-	ret z
-	xor a
-	call GetSRAMBank
-	hlcoord 0, 0
-	ld de, sScratch
-	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
-	call CopyBytes
-	call CloseSRAM
-	call OverworldTextModeSwitch
-	xor a
-	call GetSRAMBank
-	ld hl, sScratch
-	decoord 0, 0
-	ld bc, SCREEN_WIDTH * SCREEN_HEIGHT
-.loop
-	ld a, [hl]
-	cp $61
-	jr c, .next
-	ld [de], a
-.next
-	inc hl
-	inc de
-	dec bc
-	ld a, c
-	or b
-	jr nz, .loop
-	call CloseSRAM
-	ret
-; 2445d
-
 Error_Cant_ExitMenu: ; 2445d
 	ld hl, .Text_NoWindowsAvailableForPopping
 	call PrintText
-	call WaitBGMap
-.InfiniteLoop:
-	jr .InfiniteLoop
+	call ApplyTilemapInVBlank
+	jr @
 ; 24468
 
 .Text_NoWindowsAvailableForPopping: ; 24468
 	text_jump UnknownText_0x1c46b7
-	db "@"
 ; 2446d
 
 _InitVerticalMenuCursor:: ; 2446d

@@ -1,10 +1,15 @@
-; BellossomPokedexEntry: ; 0x1cd69a
-	db "FLOWER@" ; species name
-	dw 104, 130 ; height, width
+	ctxt "Jubilee" ; species name
+	done
+	dw 411, 838 ; height, weight
 
-	db   "When these dance"
-	next "together, their"
-	next "petals rub against"
-	page "each other,"
-	next "making pretty,"
-	next "relaxing sounds.@"
+	db .page2 - .page1
+.page1
+	ctxt "It will never"
+	next "appear where there"
+	next "is strife."
+	done
+.page2
+	ctxt "Its sightings have"
+	next "become rare"
+	next "recently."
+	done

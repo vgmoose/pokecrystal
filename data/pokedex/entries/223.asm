@@ -1,10 +1,15 @@
-; RemoraidPokedexEntry: ; 0x1d0cd3
-	db "JET@" ; species name
-	dw 200, 260 ; height, width
+	ctxt "Cave" ; species name
+	done
+	dw 407, 1235 ; height, weight
 
-	db   "To escape from an"
-	next "attacker, it may"
-	next "shoot water out of"
-	page "its mouth, then"
-	next "use that force to"
-	next "swim backward.@"
+	db .page2 - .page1
+.page1
+	ctxt "It habitually digs"
+	next "up and hoards gems"
+	next "in its nest. Its"
+	done
+.page2
+	ctxt "loot is constantly"
+	next "targeted by"
+	next "thieves."
+	done

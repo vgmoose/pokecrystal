@@ -1,10 +1,15 @@
-; TogepiPokedexEntry: ; 0x1cd396
-	db "SPIKE BALL@" ; species name
-	dw 100, 30 ; height, width
+	ctxt "Spike Ball" ; species name
+	done
+	dw 100, 30 ; height, weight
 
-	db   "It is considered"
+	db .page2 - .page1
+.page1
+	ctxt "It is considered"
 	next "to be a symbol of"
 	next "good luck. Its"
-	page "shell is said to"
+	done
+.page2
+	ctxt "shell is said to"
 	next "be filled with"
-	next "happiness.@"
+	next "happiness."
+	done

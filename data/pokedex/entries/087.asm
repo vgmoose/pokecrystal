@@ -1,10 +1,15 @@
-; DewgongPokedexEntry: ; 0x1b8934
-	db "SEA LION@" ; species name
-	dw 507, 2650 ; height, width
+	ctxt "Forbidden" ; species name
+	done
+	dw 303, 2381 ; height, weight
 
-	db   "It sleeps under"
-	next "shallow ocean"
-	next "waters during the"
-	page "day, then looks"
-	next "for food at night"
-	next "when it's cold.@"
+	db .page2 - .page1
+.page1
+	ctxt "It was bound to a"
+	next "fissure in an Odd"
+	next "Keystone as"
+	done
+.page2
+	ctxt "punishment for"
+	next "misdeeds 500 years"
+	next "ago."
+	done

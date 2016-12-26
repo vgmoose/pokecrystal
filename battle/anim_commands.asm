@@ -1,7 +1,8 @@
 ; Battle animation command interpreter.
 
-
-PlayBattleAnim: ; cc0d6
+PlayBattleAnim:
+	ld hl, rIE
+	set LCD_STAT, [hl]
 
 	ld a, [rSVBK]
 	push af
@@ -13,33 +14,24 @@ PlayBattleAnim: ; cc0d6
 
 	pop af
 	ld [rSVBK], a
+
+	ld hl, rIE
+	res LCD_STAT, [hl]
 	ret
-; cc0e4
 
-_PlayBattleAnim: ; cc0e4
-
-	ld c, 6
-.wait
-	call BattleAnimDelayFrame
-	dec c
-	jr nz, .wait
+_PlayBattleAnim:
+	ld c, 4
+	call DelayFrames
 
 	call BattleAnimAssignPals
 	call BattleAnimRequestPals
-	call BattleAnimDelayFrame
+	call DelayFrame
 
-	ld c, 1
-	ld a, [rKEY1]
-	bit 7, a
-	jr nz, .asm_cc0ff
-	ld c, 3
-
-.asm_cc0ff
 	ld hl, hVBlank
 	ld a, [hl]
 	push af
 
-	ld [hl], c
+	ld [hl], 3
 	call BattleAnimRunScript
 
 	pop af
@@ -48,20 +40,17 @@ _PlayBattleAnim: ; cc0e4
 	ld a, $1
 	ld [hBGMapMode], a
 
-	call BattleAnimDelayFrame
-	call BattleAnimDelayFrame
-	call BattleAnimDelayFrame
-	call WaitSFX
-	ret
-; cc11c
+	ld c, 3
+	call DelayFrames
 
-BattleAnimRunScript: ; cc11c
+	jp WaitSFX
 
+BattleAnimRunScript:
 	ld a, [FXAnimIDHi]
 	and a
 	jr nz, .hi_byte
 
-	callba CheckBattleScene
+	call CheckBattleScene
 	jr c, .disabled
 
 	call BattleAnimClearHud
@@ -73,7 +62,7 @@ BattleAnimRunScript: ; cc11c
 	xor a
 	ld [hSCX], a
 	ld [hSCY], a
-	call BattleAnimDelayFrame
+	call DelayFrame
 	call BattleAnimRestoreHuds
 
 .disabled
@@ -96,20 +85,21 @@ BattleAnimRunScript: ; cc11c
 	call RunBattleAnimScript
 
 .done
-	call BattleAnim_RevertPals
-	ret
-; cc163
+	jp BattleAnim_RevertPals
 
-RunBattleAnimScript: ; cc163
-
+RunBattleAnimScript:
 	call ClearBattleAnims
 
 .playframe
 	call RunBattleAnimCommand
-	call _ExecuteBGEffects
+	callba ExecuteBGEffects
 	call BattleAnim_UpdateOAM_All
-	call PushLYOverrides
+	call RequestLYOverrides
 	call BattleAnimRequestPals
+
+	ld a, [hDEDCryFlag]
+	and a
+	jr nz, .playDED
 
 ; Speed up Rollout's animation.
 	ld a, [FXAnimIDHi]
@@ -132,34 +122,88 @@ RunBattleAnimScript: ; cc163
 	jr nz, .find
 
 .not_rollout
-	call BattleAnimDelayFrame
+	call DelayFrame
 
 .done
 	ld a, [BattleAnimFlags]
 	bit 0, a
 	jr z, .playframe
 
-	call BattleAnim_ClearCGB_OAMFlags
-	ret
-; cc1a1
+	jp BattleAnim_ClearOAM
 
-BattleAnimClearHud: ; cc1a1
+.playDED
+	ld a, $2
+	ld [hRunPicAnim], a
+	ld a, [FXAnimIDLo]
+	cp ROAR
+	jr nz, .playCry
+	ld a, [rSVBK]
+	push af
+	ld a, BANK(wPokeAnimCoord)
+	ld [rSVBK], a
+	ld a, [hBattleTurn]
+	and a
+	coord de, 12, 0
+	ld bc, VBGMap0 + 12
+	jr z, .gotRoarCoords
+	coord de, 0, 5
+	ld bc, VBGMap0 + 5 * BG_MAP_WIDTH
+.gotRoarCoords
+	ld hl, wPokeAnimCoord
+	ld a, e
+	ld [hli], a
+	ld [hl], d
+	ld hl, wPokeAnimDestination
+	ld a, c
+	ld [hli], a
+	ld [hl], b
+	pop af
+	ld [rSVBK], a
+.playCry
+	ld a, [hDEDCryFlag]
+	call _PlayCry
+	xor a
+	ld [hRunPicAnim], a
+	jr .done
 
-	call BattleAnimDelayFrame
+RunOneFrameOfGrowlOrRoarAnim:
+	call RunBattleAnimCommand
+	callba ExecuteBGEffects
+	call BattleAnim_UpdateOAM_All
+	call BattleAnimRequestPals
+	ld a, [BattleAnimFlags]
+	bit 0, a
+	ret z
+	xor a
+	ld [hRunPicAnim], a
+
+; fallthrough
+BattleAnim_ClearOAM:
+	ld a, [BattleAnimFlags]
+	bit 3, a
+	call z, ClearSprites
+	xor a
+	ld [hLYOverridesStart], a
+	ld [hLYOverridesEnd], a
+	ld [wLCDCPointer], a
+	ld hl, wLYOverrides
+	ld bc, wLYOverridesEnd - wLYOverrides
+	call ByteFill
+	ld hl, LYOverridesBackup
+	ld bc, LYOverridesBackupEnd - LYOverridesBackup
+	jp ByteFill
+
+BattleAnimClearHud:
+	call DelayFrame
 	call WaitTop
 	call ClearActorHud
 	ld a, $1
 	ld [hBGMapMode], a
-	call BattleAnimDelayFrame
-	call BattleAnimDelayFrame
-	call BattleAnimDelayFrame
-	call WaitTop
-	ret
-; cc1bb
+	call Delay2
+	jp WaitTop
 
-BattleAnimRestoreHuds: ; cc1bb
-
-	call BattleAnimDelayFrame
+BattleAnimRestoreHuds:
+	call DelayFrame
 	call WaitTop
 
 	ld a, [rSVBK]
@@ -167,28 +211,17 @@ BattleAnimRestoreHuds: ; cc1bb
 	ld a, $1
 	ld [rSVBK], a
 
-	ld hl, UpdateBattleHuds
-	ld a, BANK(UpdatePlayerHUD)
-	rst FarCall ; Why the heck is this a callab?
+	call UpdateBattleHuds
 
 	pop af
 	ld [rSVBK], a
 
 	ld a, $1
 	ld [hBGMapMode], a
-	call BattleAnimDelayFrame
-	call BattleAnimDelayFrame
-	call BattleAnimDelayFrame
-	call WaitTop
-	ret
-; cc1e2
+	call Delay2
+	jp WaitTop
 
-BattleAnimRequestPals: ; cc1e2
-
-	ld a, [hCGB]
-	and a
-	ret z
-
+BattleAnimRequestPals:
 	ld a, [rBGP]
 	ld b, a
 	ld a, [wBGP]
@@ -199,113 +232,29 @@ BattleAnimRequestPals: ; cc1e2
 	ld b, a
 	ld a, [wOBP0]
 	cp b
-	call nz, BattleAnim_SetOBPals
+	jp nz, BattleAnim_SetOBPals
 	ret
-; cc1fb
 
-BattleAnimDelayFrame: ; cc1fb
-; Like DelayFrame but wastes battery life.
-
-	ld a, 1
-	ld [VBlankOccurred], a
-.wait
-	ld a, [VBlankOccurred]
-	and a
-	jr nz, .wait
-	ret
-; cc207
-
-ClearActorHud: ; cc207
-
+ClearActorHud:
 	ld a, [hBattleTurn]
 	and a
 	jr z, .player
 
 	hlcoord 1, 0
 	lb bc, 4, 10
-	call ClearBox
-	ret
+	jp ClearBox
 
 .player
 	hlcoord 9, 7
 	lb bc, 5, 11
-	call ClearBox
-	ret
-; cc220
+	jp ClearBox
 
-Functioncc220: ; cc220
-; Appears to be unused.
-	xor a
-	ld [hBGMapMode], a
-	ld a, (VBGMap0 tile $28) % $100
-	ld [hBGMapAddress], a
-	ld a, (VBGMap0 tile $28) / $100
-	ld [hBGMapAddress + 1], a
-	call WaitBGMap2
-	ld a, $60
-	ld [hWY], a
-	xor a
-	ld [hBGMapAddress], a
-	ld a, VBGMap0 / $100
-	ld [hBGMapAddress + 1], a
-	call BattleAnimDelayFrame
-	ret
-; cc23d
-
-
-BattleAnim_ClearCGB_OAMFlags: ; cc23d
-
-	ld a, [BattleAnimFlags]
-	bit 3, a
-	jr z, .delete
-
-	ld hl, Sprites + 3
-	ld c, (SpritesEnd - Sprites) / 4
-.loop
-	ld a, [hl]
-	and $f0
-	ld [hli], a
-	inc hl
-	inc hl
-	inc hl
-	dec c
-	jr nz, .loop
-	ret
-
-.delete
-	ld hl, Sprites
-	ld c, SpritesEnd - Sprites
-	xor a
-.loop2
-	ld [hli], a
-	dec c
-	jr nz, .loop2
-	ret
-; cc25f
-
-RunBattleAnimCommand: ; cc25f
+RunBattleAnimCommand:
 	call .CheckTimer
 	ret nc
-	call .RunScript
-	ret
-; cc267
 
-.CheckTimer: ; cc267
-	ld a, [BattleAnimDuration]
-	and a
-	jr z, .done
-
-	dec a
-	ld [BattleAnimDuration], a
-	and a
-	ret
-
-.done
-	scf
-	ret
-; cc275
-
-.RunScript: ; cc275
+; fallthrough
+.RunScript:
 .loop
 	call GetBattleAnimByte
 
@@ -329,29 +278,32 @@ RunBattleAnimCommand: ; cc25f
 
 .do_anim
 	call .DoCommand
-
-	jr .loop
+	ld a, [hDEDCryFlag]
+	and a
+	jr z, .loop
+	ret
 ; cc293
 
-.DoCommand: ; cc293
+.CheckTimer
+	ld a, [BattleAnimDuration]
+	and a
+	jr z, .done
+
+	sub 1 ;clears carry (since a > 0)
+	ld [BattleAnimDuration], a
+	ret
+
+.done
+	scf
+	ret
+
+.DoCommand
 ; Execute battle animation command in [BattleAnimByte].
 	ld a, [BattleAnimByte]
 	sub $d0
+	jumptable
 
-	ld e, a
-	ld d, 0
-	ld hl, BattleAnimCommands
-	add hl, de
-	add hl, de
-
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	jp [hl]
-; cc2a4
-
-
-BattleAnimCommands:: ; cc2a4 (33:42a4)
+BattleAnimCommands::
 	dw BattleAnimCmd_Obj
 	dw BattleAnimCmd_1GFX
 	dw BattleAnimCmd_2GFX
@@ -374,41 +326,96 @@ BattleAnimCommands:: ; cc2a4 (33:42a4)
 	dw BattleAnimCmd_OAMOn
 	dw BattleAnimCmd_OAMOff
 	dw BattleAnimCmd_ClearObjs
-	dw BattleAnimCmd_BeatUp
-	dw BattleAnimCmd_E7
+	dw BattleAnimCmd_E6 ; dummy
+	dw BattleAnimCmd_InsObj
 	dw BattleAnimCmd_UpdateActorPic
 	dw BattleAnimCmd_Minimize
-	dw BattleAnimCmd_EA ; dummy
-	dw BattleAnimCmd_EB ; dummy
-	dw BattleAnimCmd_EC ; dummy
+	dw BattleAnimCmd_JumpIfPMode
+	dw BattleAnimCmd_CheckCriticalCapture
+	dw BattleAnimCmd_ShakeDelay
 	dw BattleAnimCmd_ED ; dummy
-	dw BattleAnimCmd_IfParamAnd
+	dw BattleAnimCmd_JumpAnd
 	dw BattleAnimCmd_JumpUntil
 	dw BattleAnimCmd_BGEffect
 	dw BattleAnimCmd_BGP
 	dw BattleAnimCmd_OBP0
 	dw BattleAnimCmd_OBP1
 	dw BattleAnimCmd_ClearSprites
-	dw BattleAnimCmd_F5
-	dw BattleAnimCmd_F6
-	dw BattleAnimCmd_F7
-	dw BattleAnimCmd_IfParamEqual
+	dw BattleAnimCmd_DarkenBall
+	dw BattleAnimCmd_F6 ; dummy
+	dw BattleAnimCmd_ClearFirstBGEffect
+	dw BattleAnimCmd_JumpIf
 	dw BattleAnimCmd_SetVar
 	dw BattleAnimCmd_IncVar
-	dw BattleAnimCmd_IfVarEqual
+	dw BattleAnimCmd_JumpVar
 	dw BattleAnimCmd_Jump
 	dw BattleAnimCmd_Loop
 	dw BattleAnimCmd_Call
 	dw BattleAnimCmd_Ret
 
-
-BattleAnimCmd_EA:
-BattleAnimCmd_EB:
-BattleAnimCmd_EC:
-BattleAnimCmd_ED: ; cc304 (33:4304)
+BattleAnimCmd_JumpIfPMode:
+	ld a, [hBattleTurn]
+	and a
+	jr nz, .noJump
+	call CheckPokemonOnlyMode
+	jr nz, .jump
+.noJump
+	ld hl, BattleAnimAddress
+	ld e, [hl]
+	inc hl
+	ld d, [hl]
+	inc de
+	inc de
+	ld [hl], d
+	dec hl
+	ld [hl], e
+	ret
+.jump
+	call GetBattleAnimByte
+	ld e, a
+	call GetBattleAnimByte
+	ld d, a
+	ld hl, BattleAnimAddress
+	ld [hl], e
+	inc hl
+	ld [hl], d
 	ret
 
-BattleAnimCmd_Ret: ; cc305 (33:4305)
+BattleAnimCmd_CheckCriticalCapture:
+	ld a, [rSVBK]
+	push af
+	ld a, $1
+	ld [rSVBK], a
+	ld a, [wCatchMon_Critical]
+	ld b, a
+	pop af
+	ld [rSVBK], a
+	ld a, b
+	ld [BattleAnimVar], a
+BattleAnimCmd_ED:
+	ret
+
+BattleAnimCmd_ShakeDelay:
+	ld a, [rSVBK]
+	push af
+	ld a, $1
+	ld [rSVBK], a
+	ld a, [wCatchMon_NumShakes]
+	ld b, a
+	pop af
+	ld [rSVBK], a
+	ld a, b
+	add a
+	add b
+	add a
+	add a
+	add $30
+	ld [BattleAnimDuration], a
+	; Hack to break out of the loop
+	pop hl
+	ret
+
+BattleAnimCmd_Ret:
 	ld hl, BattleAnimFlags
 	res 1, [hl]
 	ld hl, BattleAnimParent
@@ -421,7 +428,7 @@ BattleAnimCmd_Ret: ; cc305 (33:4305)
 	ld [hl], d
 	ret
 
-BattleAnimCmd_Call: ; cc317 (33:4317)
+BattleAnimCmd_Call:
 	call GetBattleAnimByte
 	ld e, a
 	call GetBattleAnimByte
@@ -444,7 +451,7 @@ BattleAnimCmd_Call: ; cc317 (33:4317)
 	set 1, [hl]
 	ret
 
-BattleAnimCmd_Jump: ; cc339 (33:4339)
+BattleAnimCmd_Jump:
 	call GetBattleAnimByte
 	ld e, a
 	call GetBattleAnimByte
@@ -455,7 +462,7 @@ BattleAnimCmd_Jump: ; cc339 (33:4339)
 	ld [hl], d
 	ret
 
-BattleAnimCmd_Loop: ; cc348 (33:4348)
+BattleAnimCmd_Loop:
 	call GetBattleAnimByte
 	ld hl, BattleAnimFlags
 	bit 2, [hl]
@@ -496,7 +503,7 @@ BattleAnimCmd_Loop: ; cc348 (33:4348)
 	ld [hl], e
 	ret
 
-BattleAnimCmd_JumpUntil: ; cc383 (33:4383)
+BattleAnimCmd_JumpUntil:
 	ld hl, wBattleAnimParam
 	ld a, [hl]
 	and a
@@ -525,17 +532,17 @@ BattleAnimCmd_JumpUntil: ; cc383 (33:4383)
 	ld [hl], e
 	ret
 
-BattleAnimCmd_SetVar: ; cc3a6 (33:43a6)
+BattleAnimCmd_SetVar:
 	call GetBattleAnimByte
 	ld [BattleAnimVar], a
 	ret
 
-BattleAnimCmd_IncVar: ; cc3ad (33:43ad)
+BattleAnimCmd_IncVar:
 	ld hl, BattleAnimVar
 	inc [hl]
 	ret
 
-BattleAnimCmd_IfVarEqual: ; cc3b2 (33:43b2)
+BattleAnimCmd_JumpVar:
 	call GetBattleAnimByte
 	ld hl, BattleAnimVar
 	cp [hl]
@@ -563,7 +570,7 @@ BattleAnimCmd_IfVarEqual: ; cc3b2 (33:43b2)
 	ld [hl], d
 	ret
 
-BattleAnimCmd_IfParamEqual: ; cc3d6 (33:43d6)
+BattleAnimCmd_JumpIf:
 	call GetBattleAnimByte
 	ld hl, wBattleAnimParam
 	cp [hl]
@@ -591,7 +598,7 @@ BattleAnimCmd_IfParamEqual: ; cc3d6 (33:43d6)
 	ld [hl], d
 	ret
 
-BattleAnimCmd_IfParamAnd: ; cc3fa (33:43fa)
+BattleAnimCmd_JumpAnd:
 	call GetBattleAnimByte
 	ld e, a
 	ld a, [wBattleAnimParam]
@@ -608,7 +615,6 @@ BattleAnimCmd_IfParamAnd: ; cc3fa (33:43fa)
 	dec hl
 	ld [hl], e
 	ret
-
 .jump
 	call GetBattleAnimByte
 	ld e, a
@@ -620,7 +626,41 @@ BattleAnimCmd_IfParamAnd: ; cc3fa (33:43fa)
 	ld [hl], d
 	ret
 
-BattleAnimCmd_Obj: ; cc41f (33:441f)
+
+BattleAnimCmd_InsObj:
+	call GetBattleAnimByte
+	; RAM lookup
+	call BattleAnimCmd_FindObjIdx
+	jr c, BattleAnimCmd_Obj ; If the lookup fails, append the object.
+	; Do we have room for this?
+	dec e
+	jr z, BattleAnimCmd_InsObjFail ; If not, skip spawning (don't waste time in QueueBattleAnimation)
+
+	; Loop to shift the memory array down
+	ld hl, AnimObject09
+	ld de, AnimObject10
+.loop
+	push bc
+	push hl
+	push de
+	ld bc, BATTLEANIMSTRUCT_LENGTH
+	rst CopyBytes
+	pop de
+	pop hl
+	pop bc
+	ld a, l
+	cp c
+	jr z, .done
+	push hl
+	ld de, -BATTLEANIMSTRUCT_LENGTH
+	add hl, de
+	pop de
+	jr .loop
+
+.done
+	xor a
+	ld [hl], a
+BattleAnimCmd_Obj:
 ; index, x, y, param
 	call GetBattleAnimByte
 	ld [wBattleAnimTemp0], a
@@ -630,10 +670,15 @@ BattleAnimCmd_Obj: ; cc41f (33:441f)
 	ld [wBattleAnimTemp2], a
 	call GetBattleAnimByte
 	ld [wBattleAnimTemp3], a
-	call QueueBattleAnimation
-	ret
+	jp QueueBattleAnimation
 
-BattleAnimCmd_BGEffect: ; cc43b (33:443b)
+BattleAnimCmd_InsObjFail:
+	call GetBattleAnimByte
+	call GetBattleAnimByte
+	call GetBattleAnimByte
+	jp GetBattleAnimByte
+
+BattleAnimCmd_BGEffect:
 	call GetBattleAnimByte
 	ld [wBattleAnimTemp0], a
 	call GetBattleAnimByte
@@ -642,35 +687,29 @@ BattleAnimCmd_BGEffect: ; cc43b (33:443b)
 	ld [wBattleAnimTemp2], a
 	call GetBattleAnimByte
 	ld [wBattleAnimTemp3], a
-	call _QueueBGEffect
-	ret
+	jpba QueueBGEffect
 
-BattleAnimCmd_BGP: ; cc457 (33:4457)
+BattleAnimCmd_BGP:
 	call GetBattleAnimByte
 	ld [wBGP], a
 	ret
 
-BattleAnimCmd_OBP0: ; cc45e (33:445e)
+BattleAnimCmd_OBP0:
 	call GetBattleAnimByte
 	ld [wOBP0], a
 	ret
 
-BattleAnimCmd_OBP1: ; cc465 (33:4465)
+BattleAnimCmd_OBP1:
 	call GetBattleAnimByte
 	ld [wOBP1], a
 	ret
 
-BattleAnimCmd_ResetObp0: ; cc46c (33:446c)
-	ld a, [hSGB]
-	and a
+BattleAnimCmd_ResetObp0:
 	ld a, $e0
-	jr z, .not_sgb
-	ld a, $f0
-.not_sgb
 	ld [wOBP0], a
 	ret
 
-BattleAnimCmd_ClearObjs: ; cc479 (33:4479)
+BattleAnimCmd_ClearObjs:
 	ld hl, ActiveAnimObjects
 	ld a, $a0
 .loop
@@ -684,7 +723,7 @@ BattleAnimCmd_1GFX:
 BattleAnimCmd_2GFX:
 BattleAnimCmd_3GFX:
 BattleAnimCmd_4GFX:
-BattleAnimCmd_5GFX: ; cc485 (33:4485)
+BattleAnimCmd_5GFX:
 	ld a, [BattleAnimByte]
 	and $f
 	ld c, a
@@ -703,9 +742,10 @@ BattleAnimCmd_5GFX: ; cc485 (33:4485)
 	push hl
 	ld l, a
 	ld h, $0
-rept 4
 	add hl, hl
-endr
+	add hl, hl
+	add hl, hl
+	add hl, hl
 	ld de, VTiles0 tile $31
 	add hl, de
 	ld a, [BattleAnimByte]
@@ -719,84 +759,35 @@ endr
 	jr nz, .loop
 	ret
 
-BattleAnimCmd_IncObj: ; cc4c0 (33:44c0)
+BattleAnimCmd_IncObj:
 	call GetBattleAnimByte
-	ld e, 10
-	ld bc, ActiveAnimObjects
-.loop
-	ld hl, BATTLEANIMSTRUCT_INDEX
-	add hl, bc
-	ld d, [hl]
-	ld a, [BattleAnimByte]
-	cp d
-	jr z, .found
-	ld hl, BATTLEANIMSTRUCT_LENGTH
-	add hl, bc
-	ld c, l
-	ld b, h
-	dec e
-	jr nz, .loop
-	ret
-
-.found
+	call BattleAnimCmd_FindObjIdx
+	ret c
 	ld hl, BATTLEANIMSTRUCT_ANON_JT_INDEX
 	add hl, bc
 	inc [hl]
 	ret
 
-BattleAnimCmd_IncBGEffect: ; cc4e3 (33:44e3)
+BattleAnimCmd_IncBGEffect:
 	call GetBattleAnimByte
-	ld e, 5
-	ld bc, ActiveBGEffects
-.loop
-	ld hl, $0
-	add hl, bc
-	ld d, [hl]
-	ld a, [BattleAnimByte]
-	cp d
-	jr z, .found
-	ld hl, 4
-	add hl, bc
-	ld c, l
-	ld b, h
-	dec e
-	jr nz, .loop
-	ret
-
-.found
+	call BattleAnimCmd_FindBGIdx
+	ret c
 	ld hl, BG_EFFECT_STRUCT_JT_INDEX
 	add hl, bc
 	inc [hl]
 	ret
 
-BattleAnimCmd_SetObj: ; cc506 (33:4506)
+BattleAnimCmd_SetObj:
 	call GetBattleAnimByte
-	ld e, 10
-	ld bc, ActiveAnimObjects
-.loop
-	ld hl, BATTLEANIMSTRUCT_INDEX
-	add hl, bc
-	ld d, [hl]
-	ld a, [BattleAnimByte]
-	cp d
-	jr z, .found
-	ld hl, BATTLEANIMSTRUCT_LENGTH
-	add hl, bc
-	ld c, l
-	ld b, h
-	dec e
-	jr nz, .loop
-	ret
-
-.found
+	call BattleAnimCmd_FindObjIdx
+	ret c
 	call GetBattleAnimByte
 	ld hl, BATTLEANIMSTRUCT_ANON_JT_INDEX
 	add hl, bc
 	ld [hl], a
 	ret
 
-BattleAnimCmd_EnemyFeetObj: ; cc52c (33:452c)
-
+BattleAnimCmd_EnemyFeetObj:
 	ld hl, wBattleAnimTileDict
 .loop
 	ld a, [hl]
@@ -826,10 +817,9 @@ BattleAnimCmd_EnemyFeetObj: ; cc52c (33:452c)
 	ld a, $60
 	ld [wBattleAnimTemp0], a
 	ld a, $6
-	call .LoadFootprint
-	ret
+	jp .LoadFootprint
 
-.LoadFootprint: ; cc561 (33:4561)
+.LoadFootprint
 	push af
 	push hl
 	push de
@@ -850,8 +840,7 @@ BattleAnimCmd_EnemyFeetObj: ; cc52c (33:452c)
 	jr nz, .LoadFootprint
 	ret
 
-BattleAnimCmd_PlayerHeadObj: ; cc57e (33:457e)
-
+BattleAnimCmd_PlayerHeadObj:
 	ld hl, wBattleAnimTileDict
 .loop
 	ld a, [hl]
@@ -881,10 +870,7 @@ BattleAnimCmd_PlayerHeadObj: ; cc57e (33:457e)
 	ld a, $60
 	ld [wBattleAnimTemp0], a
 	ld a, $6
-	call .LoadHead
-	ret
-
-.LoadHead: ; cc5b3 (33:45b3)
+.LoadHead
 	push af
 	push hl
 	push de
@@ -905,302 +891,246 @@ BattleAnimCmd_PlayerHeadObj: ; cc57e (33:457e)
 	jr nz, .LoadHead
 	ret
 
-BattleAnimCmd_CheckPokeball: ; cc5d0 (33:45d0)
-	callab GetPokeBallWobble
+BattleAnimCmd_CheckPokeball:
+	callba GetPokeBallWobble
 	ld a, c
 	ld [BattleAnimVar], a
 	ret
 
-BattleAnimCmd_E7: ; cc5db (33:45db)
-	ret
-
-BattleAnimCmd_Transform: ; cc5dc (33:45dc)
+BattleAnimCmd_Transform:
 	ld a, [rSVBK]
 	push af
-	ld a, 1
+	ld a, BANK(wCurPartySpecies)
 	ld [rSVBK], a
-	ld a, [CurPartySpecies] ; CurPartySpecies
+	ld a, [wCurPartySpecies]
 	push af
 
 	ld a, [hBattleTurn]
 	and a
 	jr z, .player
 
-	ld a, [TempBattleMonSpecies] ; TempBattleMonSpecies
-	ld [CurPartySpecies], a ; CurPartySpecies
-	ld hl, BattleMonDVs ; BattleMonDVs
-	predef GetUnownLetter
+	ld a, [TempBattleMonSpecies]
+	ld [wCurPartySpecies], a
 	ld de, VTiles0 tile $00
 	predef GetFrontpic
 	jr .done
 
 .player
-	ld a, [TempEnemyMonSpecies] ; TempEnemyMonSpecies
-	ld [CurPartySpecies], a ; CurPartySpecies
-	ld hl, EnemyMonDVs ; EnemyMonDVs
-	predef GetUnownLetter
+	ld a, [TempEnemyMonSpecies]
+	ld [wCurPartySpecies], a
 	ld de, VTiles0 tile $00
 	predef GetBackpic
 
 .done
 	pop af
-	ld [CurPartySpecies], a ; CurPartySpecies
+	ld [wCurPartySpecies], a
 	pop af
 	ld [rSVBK], a
 	ret
 
-BattleAnimCmd_UpdateActorPic: ; cc622 (33:4622)
-
+BattleAnimCmd_UpdateActorPic:
 	ld de, VTiles0 tile $00
 	ld a, [hBattleTurn]
 	and a
 	jr z, .player
 
 	ld hl, VTiles2 tile $00
-	ld b, 0
-	ld c, $31
-	call Request2bpp
-	ret
+	lb bc, 0, 7 * 7
+	jp Request2bpp
 
 .player
 	ld hl, VTiles2 tile $31
-	ld b, 0
-	ld c, $24
-	call Request2bpp
-	ret
+	lb bc, 0, 6 * 6
+	jp Request2bpp
 
-BattleAnimCmd_RaiseSub: ; cc640 (33:4640)
-
+BattleAnimCmd_RaiseSub:
 	ld a, [rSVBK]
 	push af
-	ld a, 1
+	ld a, BANK(wDecompressScratch)
 	ld [rSVBK], a
-	xor a
-	call GetSRAMBank
 
-GetSubstitutePic: ; cc64c
-
-	ld hl, sScratch
-	ld bc, (7 * 7) tiles
-.loop
+	ld hl, wDecompressScratch
+	ld bc, 7 * 7 tiles
 	xor a
-	ld [hli], a
-	dec bc
-	ld a, c
-	or b
-	jr nz, .loop
+	call ByteFill
 
 	ld a, [hBattleTurn]
 	and a
 	jr z, .player
+	
+	call .ClearScratch
 
-	ld hl, MonsterSpriteGFX + 0 tiles
-	ld de, sScratch + (2 * 7 + 5) tiles
-	call .CopyTile
-	ld hl, MonsterSpriteGFX + 1 tiles
-	ld de, sScratch + (3 * 7 + 5) tiles
-	call .CopyTile
-	ld hl, MonsterSpriteGFX + 2 tiles
-	ld de, sScratch + (2 * 7 + 6) tiles
-	call .CopyTile
-	ld hl, MonsterSpriteGFX + 3 tiles
-	ld de, sScratch + (3 * 7 + 6) tiles
-	call .CopyTile
-
-	ld hl, VTiles2 tile $00
-	ld de, sScratch
-	lb bc, BANK(GetSubstitutePic), 7 * 7
+	ld hl, VTiles2
+	ld de, wDecompressScratch
+	ld c, 49
 	call Request2bpp
+	
+	ld hl, MonsterSpriteGFX
+	ld de, wDecompressScratch
+	ld a, BANK(MonsterSpriteGFX)
+	call FarDecompress
+	
+	ld hl, VTiles2 tile (19)
+	ld de, wDecompressScratch
+	call .CopyTile
+	
+	ld hl, VTiles2 tile (20)
+	ld de, wDecompressScratch + 2 tiles
+	call .CopyTile
+	
+	ld hl, VTiles2 tile (26)
+	ld de, wDecompressScratch + 1 tiles
+	call .CopyTile
+	
+	ld hl, VTiles2 tile (27)
+	ld de, wDecompressScratch + 3 tiles
+	call .CopyTile
 	jr .done
 
 .player
-	ld hl, MonsterSpriteGFX + 4 tiles
-	ld de, sScratch + (2 * 6 + 4) tiles
-	call .CopyTile
-	ld hl, MonsterSpriteGFX + 5 tiles
-	ld de, sScratch + (3 * 6 + 4) tiles
-	call .CopyTile
-	ld hl, MonsterSpriteGFX + 6 tiles
-	ld de, sScratch + (2 * 6 + 5) tiles
-	call .CopyTile
-	ld hl, MonsterSpriteGFX + 7 tiles
-	ld de, sScratch + (3 * 6 + 5) tiles
-	call .CopyTile
+	call .ClearScratch
 
-	ld hl, VTiles2 tile $31
-	ld de, sScratch
-	lb bc, BANK(GetSubstitutePic), 6 * 6
+	ld hl, VTiles2 tile (7 * 7)
+	ld de, wDecompressScratch
+	ld c, 36
 	call Request2bpp
+	
+	ld hl, MonsterSpriteGFX
+	ld de, wDecompressScratch
+	ld a, BANK(MonsterSpriteGFX)
+	call FarDecompress
+	
+	ld hl, VTiles2 tile (7 * 7 + 16)
+	ld de, wDecompressScratch + 4 tiles
+	call .CopyTile
+	
+	ld hl, VTiles2 tile (7 * 7 + 17)
+	ld de, wDecompressScratch + 6 tiles
+	call .CopyTile
+	
+	ld hl, VTiles2 tile (7 * 7 + 22)
+	ld de, wDecompressScratch + 5 tiles
+	call .CopyTile
+	
+	ld hl, VTiles2 tile (7 * 7 + 23)
+	ld de, wDecompressScratch + 7 tiles
+	call .CopyTile
 
 .done
-	call CloseSRAM
 	pop af
 	ld [rSVBK], a
 	ret
 
-.CopyTile: ; cc6c6 (33:46c6)
-	ld bc, 1 tiles
-	ld a, BANK(MonsterSpriteGFX)
-	call FarCopyBytes
-	ret
+.CopyTile
+	ld c, 1
+	jp Request2bpp
+	
+.ClearScratch
+	ld hl, wDecompressScratch
+	ld bc, 36 tiles
+	xor a
+	jp ByteFill
 
-BattleAnimCmd_MinimizeOpp: ; cc6cf (33:46cf)
+BattleAnimCmd_MinimizeOpp:
 	ld a, [rSVBK]
 	push af
-	ld a, $1
+	ld a, BANK(wDecompressScratch)
 	ld [rSVBK], a
-	xor a
-	call GetSRAMBank
 	call GetMinimizePic
 	call Request2bpp
-	call CloseSRAM
 	pop af
 	ld [rSVBK], a
 	ret
 
-GetMinimizePic: ; cc6e7 (33:46e7)
-	ld hl, sScratch
-	ld bc, $31 tiles
-.loop
+GetMinimizePic:
+	ld hl, wDecompressScratch
+	ld bc, (7 * 7) tiles
 	xor a
-	ld [hli], a
-	dec bc
-	ld a, c
-	or b
-	jr nz, .loop
+	call ByteFill
 
 	ld a, [hBattleTurn]
 	and a
 	jr z, .player
 
-	ld de, sScratch + $1a tiles
+	ld de, wDecompressScratch tile (3 * 7 + 5)
 	call CopyMinimizePic
 	ld hl, VTiles2 tile $00
-	ld de, sScratch
-	lb bc, BANK(GetMinimizePic), $31
+	ld de, wDecompressScratch
+	lb bc, BANK(GetMinimizePic), 7 * 7
 	ret
 
 .player
-	ld de, sScratch + $160
+	ld de, wDecompressScratch tile (3 * 6 + 4)
 	call CopyMinimizePic
-	ld hl, VTiles2 tile $31
-	ld de, sScratch
-	lb bc, BANK(GetMinimizePic), $24
+	ld hl, VTiles2 tile (7 * 7)
+	ld de, wDecompressScratch
+	lb bc, BANK(GetMinimizePic), 6 * 6
 	ret
 
-CopyMinimizePic: ; cc719 (33:4719)
+CopyMinimizePic:
 	ld hl, MinimizePic
-	ld bc, $10
-	ld a, BANK(MinimizePic)
-	call FarCopyBytes
+	ld bc, 1 tiles
+	rst CopyBytes
 	ret
-; cc725 (33:4725)
 
-MinimizePic: ; cc725
-INCBIN "gfx/battle/minimize.2bpp"
-; cc735
+MinimizePic: INCBIN "gfx/battle/minimize.2bpp"
 
-BattleAnimCmd_Minimize: ; cc735 (33:4735)
+BattleAnimCmd_Minimize:
 	ld a, [rSVBK]
 	push af
-	ld a, $1
+	ld a, BANK(wDecompressScratch)
 	ld [rSVBK], a
-	xor a
-	call GetSRAMBank
 	call GetMinimizePic
 	ld hl, VTiles0 tile $00
 	call Request2bpp
-	call CloseSRAM
 	pop af
 	ld [rSVBK], a
 	ret
 
-BattleAnimCmd_DropSub: ; cc750 (33:4750)
+BattleAnimCmd_DropSub:
 	ld a, [rSVBK]
 	push af
-	ld a, $1
+	ld a, BANK(wCurPartySpecies)
 	ld [rSVBK], a
 
-	ld a, [CurPartySpecies] ; CurPartySpecies
+	ld a, [wCurPartySpecies]
 	push af
 	ld a, [hBattleTurn]
 	and a
-	jr z, .player
-
-	callab DropEnemySub
-	jr .done
-
-.player
-	callab DropPlayerSub
-
-.done
+	ld hl, DropPlayerSub
+	jr z, .farcall
+	ld hl, DropEnemySub
+.farcall
+	ld a, BANK(DropEnemySub)
+	call FarCall_hl
 	pop af
-	ld [CurPartySpecies], a ; CurPartySpecies
+	ld [wCurPartySpecies], a
 	pop af
 	ld [rSVBK], a
 	ret
 
-BattleAnimCmd_BeatUp: ; cc776 (33:4776)
-	ld a, [rSVBK]
-	push af
-	ld a, $1
-	ld [rSVBK], a
-	ld a, [CurPartySpecies] ; CurPartySpecies
-	push af
-
-	ld a, [wBattleAnimParam]
-	ld [CurPartySpecies], a ; CurPartySpecies
-
-	ld a, [hBattleTurn]
-	and a
-	jr z, .player
-
-	ld hl, BattleMonDVs
-	predef GetUnownLetter
-	ld de, VTiles2 tile $00
-	predef GetFrontpic
-	jr .done
-
-.player
-	ld hl, EnemyMonDVs
-	predef GetUnownLetter
-	ld de, VTiles2 tile $31
-	predef GetBackpic
-
-.done
-	pop af
-	ld [CurPartySpecies], a ; CurPartySpecies
-	ld b, SCGB_BATTLE_COLORS
-	call GetSGBLayout
-	pop af
-	ld [rSVBK], a
-	ret
-
-BattleAnimCmd_OAMOn: ; cc7bb (33:47bb)
+BattleAnimCmd_OAMOn:
 	xor a
 	ld [hOAMUpdate], a
 	ret
 
-BattleAnimCmd_OAMOff: ; cc7bf (33:47bf)
+BattleAnimCmd_OAMOff:
 	ld a, $1
 	ld [hOAMUpdate], a
 	ret
 
-BattleAnimCmd_ClearSprites: ; cc7c4 (33:47c4)
+BattleAnimCmd_DarkenBall:
+	jpba DarkenBall
+
+BattleAnimCmd_ClearSprites:
 	ld hl, BattleAnimFlags
 	set 3, [hl]
+BattleAnimCmd_E6:
+BattleAnimCmd_F6:
+BattleAnimCmd_F7:
 	ret
 
-BattleAnimCmd_F5: ; cc7ca (33:47ca)
-	ret
-
-BattleAnimCmd_F6: ; cc7cb (33:47cb)
-	ret
-
-BattleAnimCmd_F7: ; cc7cc (33:47cc)
-	ret
-
-BattleAnimCmd_Sound: ; cc7cd (33:47cd)
+BattleAnimCmd_Sound:
 	call GetBattleAnimByte
 	ld e, a
 	srl a
@@ -1220,41 +1150,45 @@ BattleAnimCmd_Sound: ; cc7cd (33:47cd)
 	call GetBattleAnimByte
 	ld e, a
 	ld d, 0
-	callab PlayStereoSFX
+	cp SFX_THROW_BALL
+	jr nz, .play
+	ld a, [FXAnimIDHi]
+	and a
+	jr z, .play
+	ld a, [FXAnimIDLo]
+	cp ANIM_THROW_POKE_BALL % $100
+	jr nz, .play
+	ld a, [rSVBK]
+	push af
+	ld a, BANK(wCatchMon_Critical)
+	ld [rSVBK], a
+	ld a, [wCatchMon_Critical]
+	and a
+	jr z, .pop
+	ld e, SFX_KINESIS
+.pop
+	pop af
+	ld [rSVBK], a
+.play
+	jpba PlayStereoSFX
 
-	ret
-; cc7f8 (33:47f8)
-
-.GetPanning: ; cc7f8
+.GetPanning
 	db $f0, $0f, $f0, $0f
-; cc7fc
 
-.GetCryTrack: ; cc7fc (33:47fc)
+.GetCryTrack
 	ld a, [hBattleTurn]
 	and a
-	jr nz, .enemy
-
 	ld a, e
-	ret
-
-.enemy
-	ld a, e
+	ret z
 	xor 1
 	ret
 
-BattleAnimCmd_Cry: ; cc807 (33:4807)
+BattleAnimCmd_Cry:
 	call GetBattleAnimByte
-	and 3
-	ld e, a
-	ld d, 0
-	ld hl, .CryData
-rept 4
-	add hl, de
-endr
-
+	ld c, a
 	ld a, [rSVBK]
 	push af
-	ld a, 1
+	ld a, $1
 	ld [rSVBK], a
 
 	ld a, [hBattleTurn]
@@ -1272,62 +1206,39 @@ endr
 	ld a, [EnemyMonSpecies] ; EnemyMon
 
 .done_cry_tracks
-	push hl
-	call LoadCryHeader
-	pop hl
-	jr c, .done
-
-	ld a, [hli]
-	ld c, a
-	ld a, [hli]
 	ld b, a
+	push bc
+	call LoadCryHeader
+	pop bc
+	jr c, .ded
+	ld hl, CryLength
+	dec c
+	ld a, $c0
+	jr nz, .gotLengthOffset
+	ld a, $40
+.gotLengthOffset
+	add [hl]
+	ld [hli], a
+	jr nc, .noCarry
+	inc [hl]
+.noCarry
 
-	push hl
-	ld hl, CryPitch
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	add hl, bc
-	ld a, l
-	ld [CryPitch], a
-	ld a, h
-	ld [CryPitch + 1], a
-	pop hl
-
-	ld a, [hli]
-	ld c, a
-	ld b, [hl]
-	ld hl, CryLength ; CryLength
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-	add hl, bc
-
-	ld a, l
-	ld [CryLength], a ; CryLength
-	ld a, h
-	ld [CryLength + 1], a
 	ld a, 1
 	ld [wStereoPanningMask], a
 
-	callab _PlayCryHeader
+	callba _PlayCryHeader
 
 .done
 	pop af
 	ld [rSVBK], a
 	ret
-; cc871 (33:4871)
 
-.CryData: ; cc871
-; +pitch, +length
-	dw $0000, $00c0
-	dw $0000, $0040
-	dw $0000, $0000
-	dw $0000, $0000
-; cc881
+.ded
+	ld a, b
+	ld [hDEDCryFlag], a
+	jr .done
 
-
-PlayHitSound: ; cc881
+PlayHitSound:
 	ld a, [wNumHits]
 	cp $1
 	jr z, .okay
@@ -1349,49 +1260,23 @@ PlayHitSound: ; cc881
 	ld de, SFX_NOT_VERY_EFFECTIVE
 
 .play
-	call PlaySFX
-	ret
-; cc8a4
+	jp PlaySFX
 
-BattleAnimAssignPals: ; cc8a4
-	ld a, [hCGB]
-	and a
-	jr nz, .cgb
-	ld a, [hSGB]
-	and a
-	ld a, %11100000
-	jr z, .sgb
-	ld a, %11110000
-
-.sgb
-	ld [wOBP0], a
-	ld a, %11100100
-	ld [wBGP], a
-	ld [wOBP1], a
-	ret
-
-.cgb
+BattleAnimAssignPals:
 	ld a, %11100100
 	ld [wBGP], a
 	ld [wOBP0], a
 	ld [wOBP1], a
 	call DmgToCgbBGPals
 	lb de, %11100100, %11100100
-	call DmgToCgbObjPals
-	ret
-; cc8d3
+	jp DmgToCgbObjPals
 
-ClearBattleAnims: ; cc8d3
+ClearBattleAnims:
 ; Clear animation block
-	ld hl, LYOverrides
-	ld bc, wBattleAnimEnd - LYOverrides
-.loop
-	ld [hl], $0
-	inc hl
-	dec bc
-	ld a, c
-	or b
-	jr nz, .loop
+	ld hl, wLYOverrides
+	ld bc, wBattleAnimEnd - wLYOverrides
+	xor a
+	call ByteFill
 
 	ld hl, FXAnimIDLo
 	ld e, [hl]
@@ -1402,11 +1287,9 @@ ClearBattleAnims: ; cc8d3
 	add hl, de
 	call GetBattleAnimPointer
 	call BattleAnimAssignPals
-	call BattleAnimDelayFrame
-	ret
-; cc8f6
+	jp DelayFrame
 
-BattleAnim_RevertPals: ; cc8f6
+BattleAnim_RevertPals:
 	call WaitTop
 	ld a, %11100100
 	ld [wBGP], a
@@ -1418,17 +1301,13 @@ BattleAnim_RevertPals: ; cc8f6
 	xor a
 	ld [hSCX], a
 	ld [hSCY], a
-	call BattleAnimDelayFrame
+	call DelayFrame
 	ld a, $1
 	ld [hBGMapMode], a
 	ret
-; cc91a
 
-BattleAnim_SetBGPals: ; cc91a
+BattleAnim_SetBGPals:
 	ld [rBGP], a
-	ld a, [hCGB]
-	and a
-	ret z
 	ld a, [rSVBK]
 	push af
 	ld a, $5
@@ -1450,13 +1329,9 @@ BattleAnim_SetBGPals: ; cc91a
 	ld a, $1
 	ld [hCGBPalUpdate], a
 	ret
-; cc94b
 
-BattleAnim_SetOBPals: ; cc94b
+BattleAnim_SetOBPals:
 	ld [rOBP0], a
-	ld a, [hCGB]
-	and a
-	ret z
 	ld a, [rSVBK]
 	push af
 	ld a, $5
@@ -1472,9 +1347,8 @@ BattleAnim_SetOBPals: ; cc94b
 	ld a, $1
 	ld [hCGBPalUpdate], a
 	ret
-; cc96e
 
-BattleAnim_UpdateOAM_All: ; cc96e
+BattleAnim_UpdateOAM_All:
 	ld a, $0
 	ld [wBattleAnimOAMPointerLo], a
 	ld hl, ActiveAnimObjects
@@ -1491,7 +1365,7 @@ BattleAnim_UpdateOAM_All: ; cc96e
 	call BattleAnimOAMUpdate
 	pop de
 	pop hl
-	jr c, .done
+	ret c
 
 .next
 	ld bc, BATTLEANIMSTRUCT_LENGTH
@@ -1504,11 +1378,50 @@ BattleAnim_UpdateOAM_All: ; cc96e
 .loop2
 	ld a, l
 	cp SpritesEnd % $100
-	jr nc, .done
+	ret nc
 	xor a
 	ld [hli], a
 	jr .loop2
 
-.done
+BattleAnimCmd_FindObjIdx:
+	ld e, 10
+	ld bc, ActiveAnimObjects
+.loop
+	ld hl, BATTLEANIMSTRUCT_INDEX
+	add hl, bc
+	ld d, [hl]
+	ld a, [BattleAnimByte]
+	cp d
+	ret z
+	ld hl, BATTLEANIMSTRUCT_LENGTH
+	add hl, bc
+	ld c, l
+	ld b, h
+	dec e
+	jr nz, .loop
+	scf
 	ret
-; cc9a1
+
+BattleAnimCmd_FindBGIdx:
+	ld e, 5
+	ld bc, ActiveBGEffects
+.loop
+	ld hl, BG_EFFECT_STRUCT_FUNCTION
+	add hl, bc
+	ld d, [hl]
+	ld a, [BattleAnimByte]
+	cp d
+	ret z
+	ld hl, BG_EFFECT_STRUCT_LENGTH
+	add hl, bc
+	ld c, l
+	ld b, h
+	dec e
+	jr nz, .loop
+	scf
+	ret
+
+BattleAnimCmd_ClearFirstBGEffect:
+	xor a
+	ld [ActiveBGEffects], a
+	ret

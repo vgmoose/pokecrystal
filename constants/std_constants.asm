@@ -3,15 +3,14 @@
 	enum difficultbookshelf
 	enum picturebookshelf
 	enum magazinebookshelf
-	enum teamrocketoath
-	enum incenseburner
+	enum fastcurrent
 	enum merchandiseshelf
 	enum townmap
-	enum window
-	enum tv
+	enum mining
+	enum jumpingshoes
 	enum homepage
-	enum radio1
-	enum radio2
+	enum smelting
+	enum jeweling
 	enum trashcan
 	enum strengthboulder
 	enum smashrock
@@ -21,29 +20,7 @@
 	enum radiotowerrockets
 	enum elevatorbutton
 	enum daytotext
-	enum bugcontestresultswarp
-	enum bugcontestresults
 	enum initializeevents
-	enum asknumber1m
-	enum asknumber2m
-	enum registerednumberm
-	enum numberacceptedm
-	enum numberdeclinedm
-	enum phonefullm
-	enum rematchm
-	enum giftm
-	enum packfullm
-	enum rematchgiftm
-	enum asknumber1f
-	enum asknumber2f
-	enum registerednumberf
-	enum numberacceptedf
-	enum numberdeclinedf
-	enum phonefullf
-	enum rematchf
-	enum giftf
-	enum packfullf
-	enum rematchgiftf
 	enum gymstatue1
 	enum gymstatue2
 	enum receiveitem
@@ -51,3 +28,4 @@
 	enum pcscript
 	enum gamecornercoinvendor
 	enum happinesschecknpc
+	enum fieldmovepokepic
