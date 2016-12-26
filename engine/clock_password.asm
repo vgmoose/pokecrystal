@@ -4,8 +4,8 @@ _ResetClock: ; 4d3b1
 	predef GetSGBLayout
 	call LoadStandardFont
 	call LoadFontsExtra
-	ld de, MUSIC_ROUTE_37
-	call PlayMusic
+	; ld de, MUSIC_ROUTE_37
+	; call PlayMusic
 	ld hl, .text_askreset
 	call PrintText
 	ld hl, .NoYes_MenuDataHeader
@@ -15,8 +15,8 @@ _ResetClock: ; 4d3b1
 	ld a, [wMenuCursorY]
 	cp $1
 	ret z
-	call ClockResetPassword
-	jr c, .wrongpassword
+	; call ClockResetPassword
+	; jr c, .wrongpassword
 	ld a, BANK(sRTCStatusFlags)
 	call GetSRAMBank
 	ld a, $80

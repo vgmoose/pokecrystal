@@ -150,7 +150,7 @@ ENDC
 .StatusString  	db "<PLAYER>@"
 .SaveString    	db "Save@"
 .OptionString  	db "Option@"
-.ExitString    	db "Exit@"
+.ExitString    	db "Clock@"
 .MapString	    db "Map@"
 .DebugString    db "Debug@"
 .BagString      db "Bag@"
@@ -351,10 +351,28 @@ ENDC
 	db "remaining"
 .RemainingStringEnd
 
+DateAsk:
+	text "Adjust the time"
+	line "and date?"
+	done
+	
+JustExit:
+	ld a, 1
+	ret
+	
 StartMenu_Exit:
 ; Exit the menu.
-
-	ld a, 1
+	call BufferScreen
+	call SpeechTextBox
+	ld hl, DateAsk
+	call PrintText
+	call YesNoBox
+	jr c, JustExit
+	call BufferScreen
+	callba RestartClock
+	callba CalendarSet
+	closetext
+	call StartMenu_Option
 	ret
 
 StartMenu_Save:
